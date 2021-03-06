@@ -4,6 +4,15 @@
     <OutputType>WinExe</OutputType>
     <TargetFramework>net5.0-windows</TargetFramework>
     <UseWPF>true</UseWPF>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <DefineConstants>TRACE;USE_WPF</DefineConstants>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <DefineConstants>TRACE;USE_WPF</DefineConstants>
   </PropertyGroup>
 
   <ItemGroup>
@@ -11,7 +20,21 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="LivetCask" Version="3.2.1" />
+    <Compile Include="..\..\_Common\LogWriter.cs" Link="_Common\LogWriter.cs" />
+    <Compile Include="..\..\_Common\ShintaCommon.cs" Link="_Common\ShintaCommon.cs" />
+    <Compile Include="..\..\_Common\SimpleTraceListener.cs" Link="_Common\SimpleTraceListener.cs" />
+    <Compile Include="..\..\_Common\WindowsApi.cs" Link="_Common\WindowsApi.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="LivetCask" Version="3.2.3.2" />
+    <PackageReference Include="LivetExtensions" Version="3.2.3.2" />
+    <PackageReference Include="MaterialDesignColors" Version="2.0.0" />
+    <PackageReference Include="MaterialDesignThemes" Version="4.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="_Common\" />
   </ItemGroup>
 
   <ItemGroup>
