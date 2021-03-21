@@ -5,11 +5,13 @@
     xmlns:l="http://schemas.livet-mvvm.net/2011/wpf"
     xmlns:msm="clr-namespace:YukaLister.Models.SharedMisc"
     xmlns:v="clr-namespace:YukaLister.Views"
+    xmlns:vcc="clr-namespace:YukaLister.Views.CustomControls"
+    xmlns:vdgc="clr-namespace:YukaLister.Views.DataGridControls"
     xmlns:vm="clr-namespace:YukaLister.ViewModels"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
     Title="{Binding Title}" Left="{Binding Left, Mode=TwoWay}" Top="{Binding Top, Mode=TwoWay}" Width="{Binding Width, Mode=TwoWay}" Height="{Binding Height, Mode=TwoWay}" 
-    MinWidth="500" MinHeight="300" ResizeMode="CanResizeWithGrip" >
+    MinWidth="600" MinHeight="300" ResizeMode="CanResizeWithGrip" >
 
     <Window.DataContext>
         <vm:MainWindowViewModel />
@@ -53,7 +55,7 @@
                     </Style>
                 </Label.Style>
             </Label>
-            <Button x:Name="ButtonHelp" Style="{StaticResource MaterialDesignRaisedLightButton}" ToolTip="ヘルプ" Width="50" Height="25" DockPanel.Dock="Right" VerticalAlignment="Center">
+            <Button Style="{StaticResource MaterialDesignRaisedLightButton}" ToolTip="ヘルプ" Width="50" Height="25" DockPanel.Dock="Right" VerticalAlignment="Center">
                 <behaviors:Interaction.Triggers>
                     <behaviors:EventTrigger EventName="Click">
                         <behaviors:ChangePropertyAction TargetObject="{Binding ContextMenu, ElementName=ButtonHelp}" PropertyName="IsOpen" Value="True"/>
@@ -62,23 +64,23 @@
                 </behaviors:Interaction.Triggers>
                 <Button.ContextMenu>
                     <ContextMenu>
-                        <MenuItem x:Name="MenuItemHelp" Header="ヘルプ (_H)" Command="{Binding MehuItemHelpClickedCommand}" />
+                        <MenuItem Header="ヘルプ (_H)" Command="{Binding MehuItemHelpClickedCommand}" />
                         <Separator />
-                        <MenuItem x:Name="MenuItemHistory" Header="改訂履歴 (_U)" Command="{Binding MenuItemHistoryClickedCommand}" />
-                        <MenuItem x:Name="MenuItemAbout" Header="バージョン情報 (_A)" Command="{Binding MenuItemAboutClickedCommand}" />
+                        <MenuItem Header="改訂履歴 (_U)" Command="{Binding MenuItemHistoryClickedCommand}" />
+                        <MenuItem Header="バージョン情報 (_A)" Command="{Binding MenuItemAboutClickedCommand}" />
                     </ContextMenu>
                 </Button.ContextMenu>
                 <materialDesign:PackIcon Kind="HelpOutline" Height="18" Width="18" />
             </Button>
-            <Button x:Name="ButtonYukaListerSettings" Style="{StaticResource MaterialDesignRaisedLightButton}" ToolTip="環境設定" Width="50" Height="25" Margin="0,0,10,0" DockPanel.Dock="Right" VerticalAlignment="Center" Command="{Binding ButtonYukaListerSettingsClickedCommand}">
+            <Button Style="{StaticResource MaterialDesignRaisedLightButton}" ToolTip="環境設定" Width="50" Height="25" Margin="0,0,10,0" DockPanel.Dock="Right" VerticalAlignment="Center" Command="{Binding ButtonYukaListerSettingsClickedCommand}">
                 <materialDesign:PackIcon Kind="SettingsOutline" Height="18" Width="18" />
             </Button>
             <materialDesign:Badged Badge="{Binding ReportsBadge}" BadgeColorZoneMode="Dark" DockPanel.Dock="Right" VerticalAlignment="Center" Margin="0,0,15,0" Padding="0,0,-15,0" >
-                <Button x:Name="ButtonReports" Style="{StaticResource MaterialDesignRaisedLightButton}" ToolTip="報告されたリストの問題を一覧表示" Width="50" Height="25" Margin="0,0,10,0" Command="{Binding ButtonReportsClickedCommand}">
+                <Button Style="{StaticResource MaterialDesignRaisedLightButton}" ToolTip="報告されたリストの問題を一覧表示" Width="50" Height="25" Margin="0,0,10,0" Command="{Binding ButtonReportsClickedCommand}">
                     <materialDesign:PackIcon Kind="MessageWarningOutline" Height="18" Width="18" />
                 </Button>
             </materialDesign:Badged>
-            <Label x:Name="LabelYukaListerStatus" Content="{Binding YukaListerStatusDisplayMessage}" Margin="0,0,10,0" VerticalAlignment="Center" Height="30" VerticalContentAlignment="Center" Padding="5,0" >
+            <Label Content="{Binding YukaListerStatusDisplayMessage}" Margin="0,0,10,0" VerticalAlignment="Center" Height="30" VerticalContentAlignment="Center" Padding="5,0" >
                 <Label.Style>
                     <Style TargetType="Label">
                         <Style.Triggers>
@@ -102,13 +104,13 @@
             <Label Content="ゆかり検索対象フォルダー" Margin="10,0" VerticalAlignment="Center"/>
             <Border BorderBrush="{DynamicResource {x:Static SystemColors.ControlLightBrushKey}}" BorderThickness="1" Height="3" Margin="0" VerticalAlignment="Center" />
         </DockPanel>
-        <StatusBar x:Name="StatusBarBgStatus" DockPanel.Dock="Bottom">
+        <StatusBar DockPanel.Dock="Bottom">
             <StatusBarItem>
-                <Label x:Name="LabelBgStatus" Content="{Binding StatusBarMessage}" Foreground="{Binding StatusBarColor}" Padding="0" VerticalContentAlignment="Center" />
+                <Label Content="{Binding StatusBarMessage}" Foreground="{Binding StatusBarColor}" Padding="0" VerticalContentAlignment="Center" />
             </StatusBarItem>
         </StatusBar>
         <DockPanel DockPanel.Dock="Bottom" Margin="20,0,20,20" LastChildFill="False">
-            <Button x:Name="ButtonAddTargetFolder" Content="追加 (_A)" Width="100" Height="Auto" ToolTip="ゆかり検索対象フォルダーを追加" >
+            <Button Content="追加 (_A)" Width="100" Height="Auto" ToolTip="ゆかり検索対象フォルダーを追加" >
                 <behaviors:Interaction.Triggers>
                     <behaviors:EventTrigger EventName="Click">
                         <l:FolderBrowserDialogInteractionMessageAction>
@@ -119,11 +121,11 @@
                     </behaviors:EventTrigger>
                 </behaviors:Interaction.Triggers>
             </Button>
-            <Button x:Name="ButtonRemoveTargetFolder" Content="削除 (_D)" Style="{StaticResource MaterialDesignRaisedLightButton}" Width="100" Height="Auto" Margin="20,0,0,0" ToolTip="ゆかり検索対象フォルダーを削除" Command="{Binding ButtonRemoveTargetFolderClickedCommand}" />
-            <Button x:Name="ButtonFolderSettings" Content="フォルダー設定 (_F)" Style="{StaticResource MaterialDesignRaisedLightButton}" Width="140" Height="Auto" ToolTip="フォルダーの検索設定" DockPanel.Dock="Right" Padding="4" Command="{Binding ButtonFolderSettingsClickedCommand}" />
-            <Button x:Name="ButtonTFounds" Content="ファイル一覧 (_L)" Style="{StaticResource MaterialDesignRaisedLightButton}" Width="140" Height="Auto" Margin="0,0,20,0" ToolTip="ゆかり検索対象のファイルを一覧表示" DockPanel.Dock="Right" Padding="4" Command="{Binding ButtonTFoundsClickedCommand}" />
+            <Button Content="削除 (_D)" Style="{StaticResource MaterialDesignRaisedLightButton}" Width="100" Height="Auto" Margin="20,0,0,0" ToolTip="ゆかり検索対象フォルダーを削除" Command="{Binding ButtonRemoveTargetFolderClickedCommand}" />
+            <Button Content="フォルダー設定 (_F)" Style="{StaticResource MaterialDesignRaisedLightButton}" Width="140" Height="Auto" ToolTip="フォルダーの検索設定" DockPanel.Dock="Right" Padding="4" Command="{Binding ButtonFolderSettingsClickedCommand}" />
+            <Button Content="ファイル一覧 (_L)" Style="{StaticResource MaterialDesignRaisedLightButton}" Width="140" Height="Auto" Margin="0,0,20,0" ToolTip="ゆかり検索対象のファイルを一覧表示" DockPanel.Dock="Right" Padding="4" Command="{Binding ButtonTFoundsClickedCommand}" />
         </DockPanel>
-        <DataGrid x:Name="DataGridTargetFolders" AutoGenerateColumns="False" CanUserReorderColumns="False" CanUserSortColumns="False" CanUserResizeRows="False" CanUserAddRows="False" CanUserDeleteRows="False" 
+        <DataGrid AutoGenerateColumns="False" CanUserReorderColumns="False" CanUserSortColumns="False" CanUserResizeRows="False" CanUserAddRows="False" CanUserDeleteRows="False" 
                   SelectionMode="Single" ItemsSource="{Binding TargetFolderInfosVisible}" SelectedItem="{Binding SelectedTargetFolderInfo}" 
                   Margin="20,10,20,20" materialDesign:DataGridAssist.ColumnHeaderPadding="3 5 3 5" materialDesign:DataGridAssist.CellPadding="3" >
             <DataGrid.InputBindings>
@@ -142,17 +144,16 @@
                         <DataTrigger Binding="{Binding StatusForLabelColor}" Value="{x:Static msm:FolderTaskStatus.Error}">
                             <Setter Property="Background" Value="#FFE1E1" />
                         </DataTrigger>
-                        <DataTrigger Binding="{Binding StatusForLabelColor}" Value="{x:Static msm:FolderTaskStatus.DoneInDisk}">
+                        <DataTrigger Binding="{Binding StatusForLabelColor}" Value="{x:Static msm:FolderTaskStatus.Done}">
                             <Setter Property="Background" Value="#E1E1FF" />
                         </DataTrigger>
                     </Style.Triggers>
                 </Style>
             </DataGrid.ItemContainerStyle>
             <DataGrid.Columns>
-                <DataGridCheckBoxColumn Header="" Width="40" Binding="{Binding IsOpen, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
-                <DataGridTextColumn Header="状態" Width="150" Binding="{Binding FolderTaskStatusLabel}" IsReadOnly="True"/>
-                <DataGridTextColumn Header="フォルダー" Width="*" Binding="{Binding PathLabel}" IsReadOnly="True"/>
+                <vdgc:DataGridFtcColumn Header="フォルダー" Width="*" Binding="{Binding Mode=OneWay}" IsReadOnly="True" />
                 <DataGridTextColumn Header="設定有無" Width="80" Binding="{Binding FolderSettingsStatusLabel}" IsReadOnly="True"/>
+                <DataGridTextColumn Header="状態" Width="150" Binding="{Binding FolderTaskStatusLabel}" IsReadOnly="True"/>
             </DataGrid.Columns>
         </DataGrid>
     </DockPanel>

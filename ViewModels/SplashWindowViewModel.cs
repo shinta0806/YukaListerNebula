@@ -14,14 +14,16 @@ using Livet.Messaging.Windows;
 
 using MaterialDesignColors;
 using MaterialDesignThemes.Wpf;
+
 using Shinta;
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Windows;
 using System.Windows.Threading;
-
+using YukaLister.Models.Database;
 using YukaLister.Models.SharedMisc;
 using YukaLister.Models.YukaListerModels;
 
@@ -65,6 +67,8 @@ namespace YukaLister.ViewModels
 
 			// 環境
 			YukaListerModel.Instance.EnvModel.YlSettings.Load();
+			YukaListerModel.Instance.EnvModel.StartAllCores();
+			DbCommon.PrepareDatabases();
 
 #if DEBUGz
 			Thread.Sleep(3000);

@@ -21,6 +21,30 @@ namespace YukaLister.Models.SharedMisc
 	// ====================================================================
 
 	// --------------------------------------------------------------------
+	// フォルダーに対する操作の詳細
+	// --------------------------------------------------------------------
+	public enum FolderTaskDetail
+	{
+		// 追加詳細
+		CacheToMemory,  // キャッシュ DB からメモリ DB へコピー
+		FindSubFolders, // サブフォルダーの検索（親の場合のみ）
+		AddFileName,    // 追加（ファイル名のみ）
+		AddInfo,        // 追加（ファイルが追加されたレコードに対してその他の情報を付与）
+
+		// 削除詳細
+		Remove,         // 削除
+	}
+
+	// --------------------------------------------------------------------
+	// フォルダーに対する操作の種類
+	// --------------------------------------------------------------------
+	public enum FolderTaskKind
+	{
+		Add,            // 追加
+		Remove,         // 削除
+	}
+
+	// --------------------------------------------------------------------
 	// フォルダーに対する操作の動作状況
 	// --------------------------------------------------------------------
 	public enum FolderTaskStatus
@@ -28,8 +52,7 @@ namespace YukaLister.Models.SharedMisc
 		Queued,         // 待機
 		Running,        // 実行中
 		Error,          // エラー
-		DoneInMemory,   // 完了（インメモリデータベースへの反映）
-		DoneInDisk,     // 完了（ゆかり用データベースへの反映）
+		Done,			// 完了
 	}
 
 	// --------------------------------------------------------------------
@@ -40,7 +63,7 @@ namespace YukaLister.Models.SharedMisc
 		Ready,      // 待機
 		Running,    // 実行中
 		Error,      // エラー
-		__End__
+					//__End__
 	}
 
 	public class YlConstants
@@ -55,8 +78,13 @@ namespace YukaLister.Models.SharedMisc
 		public const String APP_ID = "YukaLister";
 		public const String APP_GENERATION = "NEBULA";
 		public const String APP_NAME_J = "ゆかりすたー " + APP_GENERATION + " ";
-		public const String APP_VER = "Ver 1.00 α";
+		public const String APP_VER = "Ver 0.01 α";
 		public const String COPYRIGHT_J = "Copyright (C) 2021 by SHINTA";
+
+		// --------------------------------------------------------------------
+		// フォルダー名
+		// --------------------------------------------------------------------
+		public const String FOLDER_NAME_DATABASE = "Database\\";
 
 		// --------------------------------------------------------------------
 		// MessageKey
@@ -64,5 +92,12 @@ namespace YukaLister.Models.SharedMisc
 
 		// ウィンドウを閉じる
 		public const String MESSAGE_KEY_WINDOW_CLOSE = "Close";
+
+		// --------------------------------------------------------------------
+		// その他
+		// --------------------------------------------------------------------
+
+		// DPI
+		public const Single DPI = 96.0f;
 	}
 }

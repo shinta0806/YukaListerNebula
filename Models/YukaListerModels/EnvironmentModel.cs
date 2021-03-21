@@ -16,8 +16,9 @@ using System;
 using System.Diagnostics;
 using System.IO;
 using System.Threading;
-
+using System.Threading.Tasks;
 using YukaLister.Models.SharedMisc;
+using YukaLister.Models.YukaListerCores;
 
 namespace YukaLister.Models.YukaListerModels
 {
@@ -54,6 +55,9 @@ namespace YukaLister.Models.YukaListerModels
 		// ログ
 		public LogWriter LogWriter { get; } = new(YlConstants.APP_ID);
 
+		// ネビュラコア
+		public Sifolin Sifolin { get; } = new();
+
 		// EXE フルパス
 		private String? _exeFullPath;
 		public String ExeFullPath
@@ -89,6 +93,31 @@ namespace YukaLister.Models.YukaListerModels
 
 		// アプリケーション終了時タスク安全中断用
 		public CancellationTokenSource AppCancellationTokenSource { get; } = new();
+
+		// ====================================================================
+		// public メンバー関数
+		// ====================================================================
+
+		// --------------------------------------------------------------------
+		// ネビュラコア稼働終了
+		// --------------------------------------------------------------------
+		public async Task QuitAllCoresAsync()
+		{
+			Debug.Assert(AppCancellationTokenSource.Token.IsCancellationRequested, "QuitAllCores() not cancelled");
+			if (Sifolin.MainTask != null)
+			{
+				Sifolin.MainEvent.Set();
+				await Sifolin.MainTask;
+			}
+		}
+
+		// --------------------------------------------------------------------
+		// ネビュラコア稼働開始
+		// --------------------------------------------------------------------
+		public void StartAllCores()
+		{
+			Sifolin.Start();
+		}
 
 		// ====================================================================
 		// private メンバー関数
