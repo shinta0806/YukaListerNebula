@@ -1,6 +1,6 @@
 ﻿// ============================================================================
 // 
-// カテゴリーマスターテーブル
+// タイアップグループマスターテーブル
 // 
 // ============================================================================
 
@@ -9,13 +9,17 @@
 // ----------------------------------------------------------------------------
 
 using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
-namespace YukaLister.Models.Database
+namespace YukaLister.Models.Database.Masters
 {
-	[Table(TABLE_NAME_CATEGORY)]
-	public class TCategory : IRcMaster
+	[Table(TABLE_NAME_TIE_UP_GROUP)]
+	public class TTieUpGroup : IRcMaster
 	{
 		// ====================================================================
 		// public プロパティー
@@ -25,41 +29,41 @@ namespace YukaLister.Models.Database
 		// IRcBase
 		// --------------------------------------------------------------------
 
-		// カテゴリー ID
+		// タイアップグループ ID
 		[Key]
-		[Column(FIELD_NAME_CATEGORY_ID)]
+		[Column(FIELD_NAME_TIE_UP_GROUP_ID)]
 		public String Id { get; set; } = String.Empty;
 
 		// インポートフラグ
-		[Column(FIELD_NAME_CATEGORY_IMPORT)]
+		[Column(FIELD_NAME_TIE_UP_GROUP_IMPORT)]
 		public Boolean Import { get; set; }
 
 		// 無効フラグ
-		[Column(FIELD_NAME_CATEGORY_INVALID)]
+		[Column(FIELD_NAME_TIE_UP_GROUP_INVALID)]
 		public Boolean Invalid { get; set; }
 
 		// 更新日時 UTC（修正ユリウス日）
-		[Column(FIELD_NAME_CATEGORY_UPDATE_TIME)]
+		[Column(FIELD_NAME_TIE_UP_GROUP_UPDATE_TIME)]
 		public Double UpdateTime { get; set; }
 
 		// Dirty フラグ
-		[Column(FIELD_NAME_CATEGORY_DIRTY)]
+		[Column(FIELD_NAME_TIE_UP_GROUP_DIRTY)]
 		public Boolean Dirty { get; set; }
 
 		// --------------------------------------------------------------------
 		// IRcMaster
 		// --------------------------------------------------------------------
 
-		// カテゴリー名
-		[Column(FIELD_NAME_CATEGORY_NAME)]
+		// タイアップグループ名
+		[Column(FIELD_NAME_TIE_UP_GROUP_NAME)]
 		public String? Name { get; set; }
 
-		// カテゴリーフリガナ
-		[Column(FIELD_NAME_CATEGORY_RUBY)]
+		// タイアップグループフリガナ
+		[Column(FIELD_NAME_TIE_UP_GROUP_RUBY)]
 		public String? Ruby { get; set; }
 
 		// 検索ワード
-		[Column(FIELD_NAME_CATEGORY_KEYWORD)]
+		[Column(FIELD_NAME_TIE_UP_GROUP_KEYWORD)]
 		public String? Keyword { get; set; }
 
 		// 同名の区別が付くように DisplayName を設定する
@@ -91,14 +95,14 @@ namespace YukaLister.Models.Database
 		// public 定数
 		// ====================================================================
 
-		public const String TABLE_NAME_CATEGORY = "t_category";
-		public const String FIELD_NAME_CATEGORY_ID = "category_id";
-		public const String FIELD_NAME_CATEGORY_IMPORT = "category_import";
-		public const String FIELD_NAME_CATEGORY_INVALID = "category_invalid";
-		public const String FIELD_NAME_CATEGORY_UPDATE_TIME = "category_update_time";
-		public const String FIELD_NAME_CATEGORY_DIRTY = "category_dirty";
-		public const String FIELD_NAME_CATEGORY_NAME = "category_name";
-		public const String FIELD_NAME_CATEGORY_RUBY = "category_ruby";
-		public const String FIELD_NAME_CATEGORY_KEYWORD = "category_keyword";
+		public const String TABLE_NAME_TIE_UP_GROUP = "t_tie_up_group";
+		public const String FIELD_NAME_TIE_UP_GROUP_ID = "tie_up_group_id";
+		public const String FIELD_NAME_TIE_UP_GROUP_IMPORT = "tie_up_group_import";
+		public const String FIELD_NAME_TIE_UP_GROUP_INVALID = "tie_up_group_invalid";
+		public const String FIELD_NAME_TIE_UP_GROUP_UPDATE_TIME = "tie_up_group_update_time";
+		public const String FIELD_NAME_TIE_UP_GROUP_DIRTY = "tie_up_group_dirty";
+		public const String FIELD_NAME_TIE_UP_GROUP_NAME = "tie_up_group_name";
+		public const String FIELD_NAME_TIE_UP_GROUP_RUBY = "tie_up_group_ruby";
+		public const String FIELD_NAME_TIE_UP_GROUP_KEYWORD = "tie_up_group_keyword";
 	}
 }

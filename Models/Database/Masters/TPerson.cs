@@ -12,7 +12,7 @@ using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace YukaLister.Models.Database
+namespace YukaLister.Models.Database.Masters
 {
 	[Table(TABLE_NAME_PERSON)]
 	public class TPerson : IRcMaster

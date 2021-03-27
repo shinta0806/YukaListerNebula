@@ -9,10 +9,6 @@
 // ----------------------------------------------------------------------------
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace YukaLister.Models.SharedMisc
 {
@@ -33,9 +29,24 @@ namespace YukaLister.Models.SharedMisc
 			Level = level;
 
 			// 初期化
+			if (Level == 0)
+			{
+				PathLabel = Path;
+			}
+			else
+			{
+				PathLabel = System.IO.Path.GetFileName(Path);
+			}
 			NumTotalFolders = 1;
 			FolderTaskStatus = FolderTaskStatus.Queued;
 		}
+
+		// ====================================================================
+		// public プロパティー
+		// ====================================================================
+
+		// IsOpen が変更された時のイベントハンドラー
+		public static IsOpenChanged IsOpenChanged { get; set; } = delegate { };
 
 		// ====================================================================
 		// public プロパティー
@@ -73,10 +84,7 @@ namespace YukaLister.Models.SharedMisc
 				if (HasChildren && NumTotalFolders > 1 && value != null && value != _isOpen)
 				{
 					_isOpen = (Boolean)value;
-					//if (IsOpenChanged != null)
-					//{
-					//	IsOpenChanged(this);
-					//}
+					IsOpenChanged(this);
 				}
 			}
 		}
@@ -92,6 +100,9 @@ namespace YukaLister.Models.SharedMisc
 
 		// UI に表示するかどうか
 		public Boolean Visible { get; set; }
+
+		// 表示用：パス
+		public String PathLabel { get; }
 
 		// ====================================================================
 		// public static メンバー関数
@@ -109,7 +120,5 @@ namespace YukaLister.Models.SharedMisc
 			}
 			return String.Compare(lhs.Path, rhs.Path);
 		}
-
-
 	}
 }

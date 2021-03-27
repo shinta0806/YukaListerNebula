@@ -16,7 +16,9 @@ using Shinta;
 using System;
 
 using YukaLister.Models.Database;
-using YukaLister.Models.SharedMisc;
+using YukaLister.Models.Database.Aliases;
+using YukaLister.Models.Database.Masters;
+using YukaLister.Models.Database.Sequences;
 using YukaLister.Models.YukaListerModels;
 
 namespace YukaLister.Models.DatabaseContexts
@@ -78,6 +80,9 @@ namespace YukaLister.Models.DatabaseContexts
 		// タイアップグループ別名テーブル
 		public DbSet<TTieUpGroupAlias>? TieUpGroupAliases { get; set; }
 
+		// 制作会社別名テーブル
+		public DbSet<TMakerAlias>? MakerAliases { get; set; }
+
 		// --------------------------------------------------------------------
 		// 紐付テーブル
 		// --------------------------------------------------------------------
@@ -109,7 +114,7 @@ namespace YukaLister.Models.DatabaseContexts
 		// --------------------------------------------------------------------
 		public static void BackupDatabase()
 		{
-			DbCommon.BackupDatabase(Path());
+			DbCommon.BackupDatabase(DatabasePath());
 		}
 
 		// --------------------------------------------------------------------
@@ -188,11 +193,7 @@ namespace YukaLister.Models.DatabaseContexts
 		// --------------------------------------------------------------------
 		protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 		{
-			SqliteConnectionStringBuilder stringBuilder = new()
-			{
-				DataSource = Path(),
-			};
-			optionsBuilder.UseSqlite(new SqliteConnection(stringBuilder.ToString()));
+			optionsBuilder.UseSqlite(DbCommon.Connect(DatabasePath()));
 		}
 
 		// --------------------------------------------------------------------
@@ -261,9 +262,9 @@ namespace YukaLister.Models.DatabaseContexts
 		// --------------------------------------------------------------------
 		// データベースのフルパス
 		// --------------------------------------------------------------------
-		private static String Path()
+		private static String DatabasePath()
 		{
-			return DbCommon.DatabaseFullFolder() + FILE_NAME_MUSIC_INFO_DATABASE;
+			return DbCommon.YukaListerDatabaseFullFolder() + FILE_NAME_MUSIC_INFO_DATABASE;
 		}
 	}
 }

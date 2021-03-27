@@ -12,6 +12,7 @@ using Shinta;
 
 using System;
 using System.Diagnostics;
+using System.IO;
 using System.Windows;
 
 using YukaLister.Models.YukaListerModels;
@@ -27,6 +28,9 @@ namespace YukaLister.Models.SharedMisc
 		// --------------------------------------------------------------------
 		// 設定
 		// --------------------------------------------------------------------
+
+		// ゆかり設定ファイルのパス（相対または絶対）
+		public String YukariConfigPathSeed { get; set; } = @"..\" + YlConstants.FILE_NAME_YUKARI_CONFIG;
 
 		// --------------------------------------------------------------------
 		// メンテナンス
@@ -99,5 +103,22 @@ namespace YukaLister.Models.SharedMisc
 				YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, "　スタックトレース：\n" + excep.StackTrace);
 			}
 		}
+
+		// --------------------------------------------------------------------
+		// ゆかり設定ファイルのフルパス
+		// --------------------------------------------------------------------
+		public String YukariConfigPath()
+		{
+			if (Path.IsPathRooted(YukariConfigPathSeed))
+			{
+				return YukariConfigPathSeed;
+			}
+			else
+			{
+				return Common.MakeAbsolutePath(YukaListerModel.Instance.EnvModel.ExeFullFolder, YukariConfigPathSeed);
+			}
+		}
+
+
 	}
 }

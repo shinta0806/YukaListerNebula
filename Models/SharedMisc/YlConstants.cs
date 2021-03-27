@@ -8,6 +8,7 @@
 //
 // ----------------------------------------------------------------------------
 
+using Shinta;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -26,8 +27,8 @@ namespace YukaLister.Models.SharedMisc
 	public enum FolderTaskDetail
 	{
 		// 追加詳細
-		CacheToMemory,  // キャッシュ DB からメモリ DB へコピー
-		FindSubFolders, // サブフォルダーの検索（親の場合のみ）
+		CacheToDisk,    // キャッシュ DB からディスク DB へコピー　※親の場合のみなり得る
+		FindSubFolders, // サブフォルダーの検索
 		AddFileName,    // 追加（ファイル名のみ）
 		AddInfo,        // 追加（ファイルが追加されたレコードに対してその他の情報を付与）
 
@@ -52,7 +53,7 @@ namespace YukaLister.Models.SharedMisc
 		Queued,         // 待機
 		Running,        // 実行中
 		Error,          // エラー
-		Done,			// 完了
+		Done,           // 完了
 	}
 
 	// --------------------------------------------------------------------
@@ -65,6 +66,13 @@ namespace YukaLister.Models.SharedMisc
 		Error,      // エラー
 					//__End__
 	}
+
+	// ====================================================================
+	// public デリゲート
+	// ====================================================================
+
+	// TargetFolderInfo.IsOpen が変更された
+	public delegate void IsOpenChanged(TargetFolderInfo targetFolderInfo);
 
 	public class YlConstants
 	{
@@ -84,7 +92,17 @@ namespace YukaLister.Models.SharedMisc
 		// --------------------------------------------------------------------
 		// フォルダー名
 		// --------------------------------------------------------------------
+
+		// ゆかりすたー用データベースを保存するフォルダー名
 		public const String FOLDER_NAME_DATABASE = "Database\\";
+
+		// ゆかり用データベースを保存するフォルダー名
+		public const String FOLDER_NAME_LIST = "list\\";
+
+		// --------------------------------------------------------------------
+		// ファイル名
+		// --------------------------------------------------------------------
+		public const String FILE_NAME_YUKARI_CONFIG = "config" + Common.FILE_EXT_INI;
 
 		// --------------------------------------------------------------------
 		// MessageKey

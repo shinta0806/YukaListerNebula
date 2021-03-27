@@ -17,6 +17,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
+using YukaLister.Models.DatabaseContexts;
 using YukaLister.Models.SharedMisc;
 using YukaLister.Models.YukaListerCores;
 
@@ -55,8 +56,19 @@ namespace YukaLister.Models.YukaListerModels
 		// ログ
 		public LogWriter LogWriter { get; } = new(YlConstants.APP_ID);
 
+		// インメモリデータベースが生存し続けるようにインスタンスを保持
+		public ListContextInMemory? ListContextInMemory { get; set; }
+
 		// ネビュラコア
 		public Sifolin Sifolin { get; } = new();
+
+		// メインウィンドウの DataGrid を更新する必要があるかどうか
+		private volatile Boolean _isMainWindowDataGridDirty;
+		public Boolean IsMainWindowDataGridDirty
+		{
+			get => _isMainWindowDataGridDirty;
+			set => _isMainWindowDataGridDirty = value;
+		}
 
 		// EXE フルパス
 		private String? _exeFullPath;
@@ -104,6 +116,7 @@ namespace YukaLister.Models.YukaListerModels
 		public async Task QuitAllCoresAsync()
 		{
 			Debug.Assert(AppCancellationTokenSource.Token.IsCancellationRequested, "QuitAllCores() not cancelled");
+			Debug.WriteLine("QuitAllCoresAsync()");
 			if (Sifolin.MainTask != null)
 			{
 				Sifolin.MainEvent.Set();

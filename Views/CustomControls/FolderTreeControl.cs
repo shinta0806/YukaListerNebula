@@ -139,7 +139,7 @@ namespace YukaLister.Views.CustomControls
 				DrawExpander(drawingContext, expanderRect);
 
 				// フォルダー名
-				FormattedText text = new(TargetFolderInfo.Path, CultureInfo.CurrentCulture, FlowDirection.LeftToRight, CreateDefaultTypeface(FontFamily),
+				FormattedText text = new(TargetFolderInfo.PathLabel, CultureInfo.CurrentCulture, FlowDirection.LeftToRight, CreateDefaultTypeface(FontFamily),
 						FontSize, Foreground, YlConstants.DPI);
 				Double x = expanderRect.Right + MARGIN_WIDTH;
 				Double y = (ActualHeight - text.Height) / 2;

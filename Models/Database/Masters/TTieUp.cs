@@ -1,6 +1,6 @@
 ﻿// ============================================================================
 // 
-// 楽曲マスターテーブル
+// タイアップマスターテーブル
 // 
 // ============================================================================
 
@@ -8,14 +8,18 @@
 //
 // ----------------------------------------------------------------------------
 
+using Microsoft.EntityFrameworkCore;
+
 using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace YukaLister.Models.Database
+using YukaLister.Models.DatabaseContexts;
+
+namespace YukaLister.Models.Database.Masters
 {
-	[Table(TABLE_NAME_SONG)]
-	public class TSong : IRcCategorizable
+	[Table(TABLE_NAME_TIE_UP)]
+	public class TTieUp : IRcCategorizable
 	{
 		// ====================================================================
 		// public プロパティー
@@ -25,41 +29,41 @@ namespace YukaLister.Models.Database
 		// IRcBase
 		// --------------------------------------------------------------------
 
-		// 楽曲 ID
+		// タイアップ ID
 		[Key]
-		[Column(FIELD_NAME_SONG_ID)]
+		[Column(FIELD_NAME_TIE_UP_ID)]
 		public String Id { get; set; } = String.Empty;
 
 		// インポートフラグ
-		[Column(FIELD_NAME_SONG_IMPORT)]
+		[Column(FIELD_NAME_TIE_UP_IMPORT)]
 		public Boolean Import { get; set; }
 
 		// 無効フラグ
-		[Column(FIELD_NAME_SONG_INVALID)]
+		[Column(FIELD_NAME_TIE_UP_INVALID)]
 		public Boolean Invalid { get; set; }
 
 		// 更新日時 UTC（修正ユリウス日）
-		[Column(FIELD_NAME_SONG_UPDATE_TIME)]
+		[Column(FIELD_NAME_TIE_UP_UPDATE_TIME)]
 		public Double UpdateTime { get; set; }
 
 		// Dirty フラグ
-		[Column(FIELD_NAME_SONG_DIRTY)]
+		[Column(FIELD_NAME_TIE_UP_DIRTY)]
 		public Boolean Dirty { get; set; }
 
 		// --------------------------------------------------------------------
 		// IRcMaster
 		// --------------------------------------------------------------------
 
-		// 楽曲名
-		[Column(FIELD_NAME_SONG_NAME)]
+		// タイアップ名
+		[Column(FIELD_NAME_TIE_UP_NAME)]
 		public String? Name { get; set; }
 
-		// 楽曲フリガナ
-		[Column(FIELD_NAME_SONG_RUBY)]
+		// タイアップフリガナ
+		[Column(FIELD_NAME_TIE_UP_RUBY)]
 		public String? Ruby { get; set; }
 
 		// 検索ワード
-		[Column(FIELD_NAME_SONG_KEYWORD)]
+		[Column(FIELD_NAME_TIE_UP_KEYWORD)]
 		public String? Keyword { get; set; }
 
 		// 同名の区別が付くように DisplayName を設定する
@@ -76,7 +80,11 @@ namespace YukaLister.Models.Database
 				{
 					if (AvoidSameName)
 					{
-						_displayName = Name + "（" + (String.IsNullOrEmpty(Keyword) ? "キーワード無し" : Keyword) + "）";
+						TCategory? category;
+						using MusicInfoContext musicInfoContext = MusicInfoContext.CreateContext(out DbSet<TCategory> categories);
+						category = DbCommon.SelectBaseById(categories, CategoryId);
+						_displayName = Name + "（" + (String.IsNullOrEmpty(category?.Name) ? "カテゴリー無し" : category?.Name) + ", "
+								+ (String.IsNullOrEmpty(Keyword) ? "キーワード無し" : Keyword) + "）";
 					}
 					else
 					{
@@ -91,42 +99,42 @@ namespace YukaLister.Models.Database
 		// IRcCategorizable
 		// --------------------------------------------------------------------
 
-		// カテゴリー ID ＜参照項目＞（タイアップ ID が null の場合のみ）
-		[Column(FIELD_NAME_SONG_CATEGORY_ID)]
+		// カテゴリー ID ＜参照項目＞
+		[Column(FIELD_NAME_TIE_UP_CATEGORY_ID)]
 		public String? CategoryId { get; set; }
 
 		// リリース日（修正ユリウス日）
-		[Column(FIELD_NAME_SONG_RELEASE_DATE)]
+		[Column(FIELD_NAME_TIE_UP_RELEASE_DATE)]
 		public Double ReleaseDate { get; set; }
 
 		// --------------------------------------------------------------------
-		// TSong 独自項目
+		// TTieUp 独自項目
 		// --------------------------------------------------------------------
 
-		// タイアップ ID ＜参照項目＞
-		[Column(FIELD_NAME_SONG_TIE_UP_ID)]
-		public String? TieUpId { get; set; }
+		// 制作会社 ID ＜参照項目＞
+		[Column(FIELD_NAME_TIE_UP_MAKER_ID)]
+		public String? MakerId { get; set; }
 
-		// 摘要
-		[Column(FIELD_NAME_SONG_OP_ED)]
-		public String? OpEd { get; set; }
+		// 年齢制限（○歳以上対象）
+		[Column(FIELD_NAME_TIE_UP_AGE_LIMIT)]
+		public Int32 AgeLimit { get; set; }
 
 		// ====================================================================
 		// public 定数
 		// ====================================================================
 
-		public const String TABLE_NAME_SONG = "t_song";
-		public const String FIELD_NAME_SONG_ID = "song_id";
-		public const String FIELD_NAME_SONG_IMPORT = "song_import";
-		public const String FIELD_NAME_SONG_INVALID = "song_invalid";
-		public const String FIELD_NAME_SONG_UPDATE_TIME = "song_update_time";
-		public const String FIELD_NAME_SONG_DIRTY = "song_dirty";
-		public const String FIELD_NAME_SONG_NAME = "song_name";
-		public const String FIELD_NAME_SONG_RUBY = "song_ruby";
-		public const String FIELD_NAME_SONG_KEYWORD = "song_keyword";
-		public const String FIELD_NAME_SONG_RELEASE_DATE = "song_release_date";
-		public const String FIELD_NAME_SONG_TIE_UP_ID = "song_tie_up_id";
-		public const String FIELD_NAME_SONG_CATEGORY_ID = "song_category_id";
-		public const String FIELD_NAME_SONG_OP_ED = "song_op_ed";
+		public const String TABLE_NAME_TIE_UP = "t_tie_up";
+		public const String FIELD_NAME_TIE_UP_ID = "tie_up_id";
+		public const String FIELD_NAME_TIE_UP_IMPORT = "tie_up_import";
+		public const String FIELD_NAME_TIE_UP_INVALID = "tie_up_invalid";
+		public const String FIELD_NAME_TIE_UP_UPDATE_TIME = "tie_up_update_time";
+		public const String FIELD_NAME_TIE_UP_DIRTY = "tie_up_dirty";
+		public const String FIELD_NAME_TIE_UP_NAME = "tie_up_name";
+		public const String FIELD_NAME_TIE_UP_RUBY = "tie_up_ruby";
+		public const String FIELD_NAME_TIE_UP_KEYWORD = "tie_up_keyword";
+		public const String FIELD_NAME_TIE_UP_CATEGORY_ID = "tie_up_category_id";
+		public const String FIELD_NAME_TIE_UP_MAKER_ID = "tie_up_maker_id";
+		public const String FIELD_NAME_TIE_UP_AGE_LIMIT = "tie_up_age_limit";
+		public const String FIELD_NAME_TIE_UP_RELEASE_DATE = "tie_up_release_date";
 	}
 }

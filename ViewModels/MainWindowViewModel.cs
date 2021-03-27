@@ -17,7 +17,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Windows;
-
+using System.Windows.Threading;
 using YukaLister.Models.SharedMisc;
 using YukaLister.Models.YukaListerModels;
 
@@ -123,7 +123,7 @@ namespace YukaLister.ViewModels
 		{
 			try
 			{
-				YukaListerModel.Instance.ProjModel.AddFolder(folderSelectionMessage.Response);
+				YukaListerModel.Instance.ProjModel.AddTargetFolder(folderSelectionMessage.Response);
 				TargetFolderInfosVisible = YukaListerModel.Instance.ProjModel.TargetFolderInfosVisible();
 			}
 			catch (Exception excep)
@@ -148,6 +148,9 @@ namespace YukaLister.ViewModels
 				Title = "［デバッグ］" + Title;
 #endif
 
+				// イベントハンドラー
+				TargetFolderInfo.IsOpenChanged = TargetFolderInfoIsOpenChanged;
+
 				// ステータスバー
 				//ClearStatusBarMessage();
 
@@ -157,10 +160,6 @@ namespace YukaLister.ViewModels
 				// 環境の変化に対応
 				DoVerChangedIfNeeded();
 				//LaunchUpdaterIfNeeded();
-
-#if DEBUG
-				Debug.WriteLine("IsSamePath: " + YlCommon.IsSamePath(@"D:\Hoge\", @"D:\HOGE"));
-#endif
 
 #if DEBUGz
 				Debug.WriteLine("Exists 1: " + File.Exists(@"D:\TempD\TestYl\1234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890\1234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890\a.txt"));
@@ -190,6 +189,11 @@ namespace YukaLister.ViewModels
 				targetFolderInfos.Add(t5);
 				TargetFolderInfosVisible = targetFolderInfos;
 #endif
+
+				// タイマー
+				_timerUpdateDataGrid.Interval = TimeSpan.FromSeconds(1.0);
+				_timerUpdateDataGrid.Tick += new EventHandler(TimerUpdateDataGrid_Tick);
+				_timerUpdateDataGrid.Start();
 			}
 			catch (Exception excep)
 			{
@@ -237,6 +241,9 @@ namespace YukaLister.ViewModels
 
 		// スプラッシュウィンドウ
 		private readonly SplashWindowViewModel _splashWindowViewModel;
+
+		// DataGrid 更新用タイマー
+		private DispatcherTimer _timerUpdateDataGrid = new();
 
 		// Dispose フラグ
 		private Boolean _isDisposed = false;
@@ -361,6 +368,50 @@ namespace YukaLister.ViewModels
 			YukaListerModel.Instance.EnvModel.YlSettings.PrevLaunchVer = YlConstants.APP_VER;
 			YukaListerModel.Instance.EnvModel.YlSettings.DesktopBounds = new Rect(Left, Top, Width, Height);
 			YukaListerModel.Instance.EnvModel.YlSettings.Save();
+		}
+
+		// --------------------------------------------------------------------
+		// イベントハンドラー：IsOpen が変更された
+		// --------------------------------------------------------------------
+		public void TargetFolderInfoIsOpenChanged(TargetFolderInfo targetFolderInfo)
+		{
+			try
+			{
+				Debug.WriteLine("TargetFolderInfoIsOpenChanged()");
+				YukaListerModel.Instance.ProjModel.UpdateTargetFolderInfosVisible(targetFolderInfo);
+				TargetFolderInfosVisible = YukaListerModel.Instance.ProjModel.TargetFolderInfosVisible();
+			}
+			catch (Exception excep)
+			{
+				YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(TraceEventType.Error, "IsOpen 変更時エラー：\n" + excep.Message);
+				YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, "　スタックトレース：\n" + excep.StackTrace);
+			}
+		}
+
+		// --------------------------------------------------------------------
+		// イベントハンドラー：DataGrid 表示を更新
+		// --------------------------------------------------------------------
+		private void TimerUpdateDataGrid_Tick(Object? sender, EventArgs e)
+		{
+			try
+			{
+				if (!YukaListerModel.Instance.EnvModel.IsMainWindowDataGridDirty)
+				{
+					return;
+				}
+
+				// 先に Dirty フラグをクリア（後にすると、更新中に他のスレッドが立てたフラグもクリアしてしまうため）
+				YukaListerModel.Instance.EnvModel.IsMainWindowDataGridDirty = false;
+
+				// 更新
+				TargetFolderInfosVisible = YukaListerModel.Instance.ProjModel.TargetFolderInfosVisible();
+			}
+			catch (Exception excep)
+			{
+				_timerUpdateDataGrid.Stop();
+				YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(TraceEventType.Error, "タイマー時エラー：\n" + excep.Message);
+				YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, "　スタックトレース：\n" + excep.StackTrace);
+			}
 		}
 
 
