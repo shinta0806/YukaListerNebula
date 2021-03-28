@@ -9,11 +9,11 @@
 // ----------------------------------------------------------------------------
 
 using Shinta;
+
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.IO;
+
 using YukaLister.Models.YukaListerModels;
 
 namespace YukaLister.Models.SharedMisc
@@ -23,6 +23,91 @@ namespace YukaLister.Models.SharedMisc
 		// ====================================================================
 		// public static メンバー関数
 		// ====================================================================
+
+		// --------------------------------------------------------------------
+		// アプリ独自の変数を格納する変数を生成し、定義済みキーをすべて初期化（キーには <> は含まない）
+		// ・キーが無いと LINQ で例外が発生することがあるため
+		// ・キーの有無と値の null の 2 度チェックは面倒くさいため
+		// --------------------------------------------------------------------
+		public static Dictionary<String, String?> CreateRuleDictionary()
+		{
+			Dictionary<String, String> varMapWith = CreateRuleDictionaryWithDescription();
+			Dictionary<String, String?> varMap = new Dictionary<String, String?>();
+
+			foreach (String key in varMapWith.Keys)
+			{
+				varMap[key] = null;
+			}
+
+			return varMap;
+		}
+
+		// --------------------------------------------------------------------
+		// アプリ独自の変数とその説明
+		// --------------------------------------------------------------------
+		public static Dictionary<String, String> CreateRuleDictionaryWithDescription()
+		{
+			Dictionary<String, String> varMap = new Dictionary<String, String>();
+
+			// タイアップマスターにも同様の項目があるもの
+			varMap[YlConstants.RULE_VAR_CATEGORY] = "カテゴリー";
+			varMap[YlConstants.RULE_VAR_PROGRAM] = "タイアップ名";
+			varMap[YlConstants.RULE_VAR_AGE_LIMIT] = "年齢制限";
+
+			// 楽曲マスターにも同様の項目があるもの
+			varMap[YlConstants.RULE_VAR_OP_ED] = "摘要（OP/ED 別）";
+			varMap[YlConstants.RULE_VAR_TITLE] = "楽曲名";
+			varMap[YlConstants.RULE_VAR_TITLE_RUBY] = "楽曲名フリガナ";
+			varMap[YlConstants.RULE_VAR_ARTIST] = "歌手名";
+
+			// ファイル名からのみ取得可能なもの
+			varMap[YlConstants.RULE_VAR_WORKER] = "ニコカラ制作者";
+			varMap[YlConstants.RULE_VAR_TRACK] = "トラック情報";
+			varMap[YlConstants.RULE_VAR_ON_VOCAL] = "オンボーカルトラック";
+			varMap[YlConstants.RULE_VAR_OFF_VOCAL] = "オフボーカルトラック";
+			varMap[YlConstants.RULE_VAR_COMMENT] = "備考";
+
+			// 楽曲マスターにも同様の項目があるもの
+			varMap[YlConstants.RULE_VAR_TAG] = "タグ";
+
+			// その他
+			varMap[YlConstants.RULE_VAR_ANY] = "無視する部分";
+
+			return varMap;
+		}
+
+		// --------------------------------------------------------------------
+		// 指定されたフォルダーの除外設定有無
+		// 当該フォルダーまたはその親フォルダーに除外設定があるか
+		// --------------------------------------------------------------------
+		public static FolderExcludeSettingsStatus DetectFolderExcludeSettingsStatus(String folder)
+		{
+			String? folderExcludeSettingsFolder = FindExcludeSettingsFolder2Ex(folder);
+			if (String.IsNullOrEmpty(folderExcludeSettingsFolder))
+			{
+				return FolderExcludeSettingsStatus.False;
+			}
+			else
+			{
+				return FolderExcludeSettingsStatus.True;
+			}
+		}
+
+		// --------------------------------------------------------------------
+		// 指定されたフォルダーのフォルダー除外設定ファイルがあるフォルダーを返す
+		// --------------------------------------------------------------------
+		public static String? FindExcludeSettingsFolder2Ex(String? folder)
+		{
+			while (!String.IsNullOrEmpty(folder))
+			{
+				if (File.Exists(folder + "\\" + YlConstants.FILE_NAME_YUKA_LISTER_EXCLUDE_CONFIG))
+				{
+					return folder;
+				}
+				folder = Path.GetDirectoryName(folder);
+			}
+			return null;
+		}
 
 		// --------------------------------------------------------------------
 		// 同一のファイル・フォルダーかどうか

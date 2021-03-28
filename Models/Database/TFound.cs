@@ -36,9 +36,10 @@ namespace YukaLister.Models.Database
 		[Column(FIELD_NAME_FOUND_PATH)]
 		public String Path { get; set; } = String.Empty;
 
-		// フォルダー（項目削除用：デバイス識別文字列＋フォルダー名小文字）
+		// 親フォルダー（項目削除用）
+		// METEOR 時代の Folder とは異なり、親フォルダー名を使用する（フォルダー削除時の速度優先、フォルダー除外の新規指定はレアケースなので通常の更新処理で反映する）
 		[Column(FIELD_NAME_FOUND_FOLDER)]
-		public String Folder { get; set; } = String.Empty;
+		public String ParentFolder { get; set; } = String.Empty;
 
 		// 頭文字（通常は番組名の頭文字、通常はひらがな（濁点なし））
 		[Column(FIELD_NAME_FOUND_HEAD)]

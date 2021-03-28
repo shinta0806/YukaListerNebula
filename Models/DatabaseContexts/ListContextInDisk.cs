@@ -1,6 +1,6 @@
 ﻿// ============================================================================
 // 
-// リストデータベース（ディスク）のコンテキスト
+// リストデータベース（ゆかり用：ディスク）のコンテキスト
 // 
 // ============================================================================
 
@@ -8,14 +8,14 @@
 //
 // ----------------------------------------------------------------------------
 
-using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
+
 using Shinta;
+
 using System;
 using System.Diagnostics;
-using System.IO;
+
 using YukaLister.Models.Database;
-using YukaLister.Models.SharedMisc;
 using YukaLister.Models.YukaListerModels;
 
 namespace YukaLister.Models.DatabaseContexts
@@ -25,6 +25,17 @@ namespace YukaLister.Models.DatabaseContexts
 		// ====================================================================
 		// public static メンバー関数
 		// ====================================================================
+
+		// --------------------------------------------------------------------
+		// データベースコンテキスト生成
+		// ＜例外＞ Exception
+		// --------------------------------------------------------------------
+		public static ListContextInDisk CreateContext(out DbSet<TFound> founds)
+		{
+			ListContextInDisk listContext = new();
+			GetDbSet(listContext, out founds);
+			return listContext;
+		}
 
 		// --------------------------------------------------------------------
 		// データベースコンテキスト生成
@@ -86,7 +97,5 @@ namespace YukaLister.Models.DatabaseContexts
 		{
 			return DbCommon.YukariDatabaseFullFolder() + FILE_NAME_LIST_DATABASE_IN_DISK;
 		}
-
-
 	}
 }

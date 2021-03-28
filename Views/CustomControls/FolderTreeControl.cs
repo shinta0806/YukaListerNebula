@@ -283,7 +283,7 @@ namespace YukaLister.Views.CustomControls
 		private Rect ExpanderRect()
 		{
 			Debug.Assert(TargetFolderInfo != null, "ExpanderRect() bad TargetFolderInfo");
-			Double left = MARGIN_WIDTH + TargetFolderInfo.Level * EXPANDER_SIZE / 2;
+			Double left = MARGIN_WIDTH + TargetFolderInfo.Level * EXPANDER_SIZE;
 			Double top = (ActualHeight - EXPANDER_SIZE) / 2;
 			return new Rect(left, top, EXPANDER_SIZE, EXPANDER_SIZE);
 		}

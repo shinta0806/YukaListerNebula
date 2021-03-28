@@ -65,6 +65,19 @@ namespace YukaLister.Models.DatabaseContexts
 		// データベースセット取得
 		// ＜例外＞ Exception
 		// --------------------------------------------------------------------
+		protected static void GetDbSet(ListContext listContext, out DbSet<TFound> founds)
+		{
+			if (listContext.Founds == null)
+			{
+				throw new Exception("検出ファイルリストテーブルにアクセスできません。");
+			}
+			founds = listContext.Founds;
+		}
+
+		// --------------------------------------------------------------------
+		// データベースセット取得
+		// ＜例外＞ Exception
+		// --------------------------------------------------------------------
 		protected static void GetDbSet(ListContext listContext, out DbSet<TProperty> properties)
 		{
 			if (listContext.Properties == null)
@@ -85,7 +98,7 @@ namespace YukaLister.Models.DatabaseContexts
 		{
 			// 検出ファイルリストテーブル
 			modelBuilder.Entity<TFound>().HasIndex(x => x.Path);
-			modelBuilder.Entity<TFound>().HasIndex(x => x.Folder);
+			modelBuilder.Entity<TFound>().HasIndex(x => x.ParentFolder);
 			modelBuilder.Entity<TFound>().HasIndex(x => x.Head);
 			modelBuilder.Entity<TFound>().HasIndex(x => x.LastWriteTime);
 			modelBuilder.Entity<TFound>().HasIndex(x => x.SongName);

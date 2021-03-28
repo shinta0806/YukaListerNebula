@@ -9,17 +9,25 @@
 // ----------------------------------------------------------------------------
 
 using Shinta;
+
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace YukaLister.Models.SharedMisc
 {
 	// ====================================================================
 	// public 列挙子
 	// ====================================================================
+
+	// --------------------------------------------------------------------
+	// フォルダー除外設定の状態
+	// --------------------------------------------------------------------
+	public enum FolderExcludeSettingsStatus
+	{
+		False,      // 除外しない
+		True,       // 除外する
+		Unchecked,  // 未確認
+		__End__
+	}
 
 	// --------------------------------------------------------------------
 	// フォルダーに対する操作の詳細
@@ -29,8 +37,8 @@ namespace YukaLister.Models.SharedMisc
 		// 追加詳細
 		CacheToDisk,    // キャッシュ DB からディスク DB へコピー　※親の場合のみなり得る
 		FindSubFolders, // サブフォルダーの検索
-		AddFileName,    // 追加（ファイル名のみ）
-		AddInfo,        // 追加（ファイルが追加されたレコードに対してその他の情報を付与）
+		AddFileNames,    // 追加（ファイル名のみ）
+		AddInfos,        // 追加（ファイルが追加されたレコードに対してその他の情報を付与）
 
 		// 削除詳細
 		Remove,         // 削除
@@ -102,6 +110,7 @@ namespace YukaLister.Models.SharedMisc
 		// --------------------------------------------------------------------
 		// ファイル名
 		// --------------------------------------------------------------------
+		public const String FILE_NAME_YUKA_LISTER_EXCLUDE_CONFIG = APP_ID + "Exclude" + Common.FILE_EXT_CONFIG;
 		public const String FILE_NAME_YUKARI_CONFIG = "config" + Common.FILE_EXT_INI;
 
 		// --------------------------------------------------------------------
@@ -110,6 +119,43 @@ namespace YukaLister.Models.SharedMisc
 
 		// ウィンドウを閉じる
 		public const String MESSAGE_KEY_WINDOW_CLOSE = "Close";
+
+		// --------------------------------------------------------------------
+		// アプリ独自ルールでの変数名（小文字で表記）
+		// --------------------------------------------------------------------
+
+		// 番組マスターにも同様の項目があるもの
+		public const String RULE_VAR_CATEGORY = "category";
+		public const String RULE_VAR_GAME_CATEGORY = "gamecategory";
+		public const String RULE_VAR_PROGRAM = "program";
+		//public const String RULE_VAR_PROGRAM_SUB = "programsub";
+		//public const String RULE_VAR_NUM_STORIES = "numstories";
+		public const String RULE_VAR_AGE_LIMIT = "agelimit";
+		//public const String RULE_VAR_BEGINDATE = "begindate";
+
+		// 楽曲マスターにも同様の項目があるもの
+		public const String RULE_VAR_OP_ED = "oped";
+		//public const String RULE_VAR_CAST_SEQ = "castseq";
+		public const String RULE_VAR_TITLE = "title";
+		public const String RULE_VAR_ARTIST = "artist";
+		public const String RULE_VAR_TAG = "tag";
+
+		// ファイル名からのみ取得可能なもの
+		public const String RULE_VAR_TITLE_RUBY = "titleruby";
+		public const String RULE_VAR_WORKER = "worker";
+		public const String RULE_VAR_TRACK = "track";
+		public const String RULE_VAR_ON_VOCAL = "onvocal";
+		public const String RULE_VAR_OFF_VOCAL = "offvocal";
+		//public const String RULE_VAR_COMPOSER = "composer";
+		//public const String RULE_VAR_LYRIST = "lyrist";
+		public const String RULE_VAR_COMMENT = "comment";
+
+		// その他
+		public const String RULE_VAR_ANY = "*";
+
+		// 開始終了
+		public const String RULE_VAR_BEGIN = "<";
+		public const String RULE_VAR_END = ">";
 
 		// --------------------------------------------------------------------
 		// その他

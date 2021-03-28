@@ -1,6 +1,6 @@
 ﻿// ============================================================================
 // 
-// リストデータベース（メモリ）のコンテキスト
+// リストデータベース（作業用：インメモリ）のコンテキスト
 // 
 // ============================================================================
 
@@ -10,13 +10,11 @@
 
 using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
+
 using Shinta;
+
 using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+
 using YukaLister.Models.Database;
 using YukaLister.Models.YukaListerModels;
 
@@ -27,6 +25,17 @@ namespace YukaLister.Models.DatabaseContexts
 		// ====================================================================
 		// public static メンバー関数
 		// ====================================================================
+
+		// --------------------------------------------------------------------
+		// データベースコンテキスト生成
+		// ＜例外＞ Exception
+		// --------------------------------------------------------------------
+		public static ListContextInMemory CreateContext(out DbSet<TFound> founds)
+		{
+			ListContextInMemory listContext = new();
+			GetDbSet(listContext, out founds);
+			return listContext;
+		}
 
 		// --------------------------------------------------------------------
 		// データベースコンテキスト生成
@@ -47,9 +56,9 @@ namespace YukaLister.Models.DatabaseContexts
 			YukaListerModel.Instance.EnvModel.LogWriter.LogMessage(Common.TRACE_EVENT_TYPE_STATUS, "インメモリデータベースを準備しています...");
 
 			// 新規作成
-			YukaListerModel.Instance.EnvModel.ListContextInMemory = CreateContext(out DbSet<TProperty> properties);
-			YukaListerModel.Instance.EnvModel.ListContextInMemory.Database.EnsureCreated();
-			DbCommon.UpdateProperty(YukaListerModel.Instance.EnvModel.ListContextInMemory, properties);
+			_listContextInMemory = CreateContext(out DbSet<TProperty> properties);
+			_listContextInMemory.Database.EnsureCreated();
+			DbCommon.UpdateProperty(_listContextInMemory, properties);
 
 #if DEBUGz
 			Debug.WriteLine("CreateDatabase() count: " + properties.Count());
@@ -86,6 +95,14 @@ namespace YukaLister.Models.DatabaseContexts
 
 		// データベースファイル名
 		private const String FILE_NAME_LIST_DATABASE_IN_MEMORY = "ListInMemory";
+
+		// ====================================================================
+		// private static メンバー変数
+		// ====================================================================
+
+		// インメモリデータベースが生存し続けるようにインスタンスを保持
+		// マルチスレッドで安全に使用できるよう、本変数は使用せず、CreateContext() で新たなコンテキストを作成すること
+		private static ListContextInMemory? _listContextInMemory;
 
 		// ====================================================================
 		// private static メンバー関数

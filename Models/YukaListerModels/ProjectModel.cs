@@ -91,7 +91,7 @@ namespace YukaLister.Models.YukaListerModels
 			}
 
 			// 親の追加
-			TargetFolderInfo targetFolderInfo = new(parentFolder, parentFolder, 0);
+			TargetFolderInfo targetFolderInfo = new(parentFolder);
 			targetFolderInfo.FolderTaskKind = FolderTaskKind.Add;
 			targetFolderInfo.FolderTaskDetail = FolderTaskDetail.CacheToDisk;
 			targetFolderInfo.Visible = true;

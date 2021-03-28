@@ -14,7 +14,7 @@ using Microsoft.EntityFrameworkCore;
 using Shinta;
 
 using System;
-
+using System.Data.Common;
 using YukaLister.Models.Database;
 using YukaLister.Models.Database.Aliases;
 using YukaLister.Models.Database.Masters;
@@ -162,6 +162,10 @@ namespace YukaLister.Models.DatabaseContexts
 			// クリア
 			using MusicInfoContext musicInfoContext = CreateContext(out DbSet<TProperty> properties);
 			musicInfoContext.Database.EnsureDeleted();
+#if DEBUGz
+			DbConnection connection = musicInfoContext.Database.GetDbConnection();
+			SqliteConnection? sqliteConnection = connection as SqliteConnection;
+#endif
 
 			// 新規作成
 			musicInfoContext.Database.EnsureCreated();

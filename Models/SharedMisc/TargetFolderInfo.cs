@@ -8,7 +8,9 @@
 //
 // ----------------------------------------------------------------------------
 
+using Shinta;
 using System;
+using System.Diagnostics;
 
 namespace YukaLister.Models.SharedMisc
 {
@@ -21,24 +23,34 @@ namespace YukaLister.Models.SharedMisc
 		// --------------------------------------------------------------------
 		// コンストラクター
 		// --------------------------------------------------------------------
-		public TargetFolderInfo(String parentPath, String path, Int32 level)
+		public TargetFolderInfo(String parentPath)
 		{
 			// 引数
+			ParentPath = parentPath;
+
+			// 自動設定
+			Path = ParentPath;
+			PathLabel = ParentPath;
+			Level = 0;
+			//WindowsApi.GetVolumeInformation(ParentPath[0..3], null, 0, out UInt32 volumeSerialNumber, out UInt32 maximumComponentLength, out FSF fileSystemFlags, null, 0);
+			//VolumeSerialNumber = volumeSerialNumber.ToString("X8") + SEPARATOR;
+		}
+
+		// --------------------------------------------------------------------
+		// コンストラクター
+		// --------------------------------------------------------------------
+		public TargetFolderInfo(String parentPath, String path, Int32 level)
+		{
+			Debug.Assert(level > 0, "TargetFolderInfo() bad level");
+
+			// 引数
+			//VolumeSerialNumber = volumeSerialNumber;
 			ParentPath = parentPath;
 			Path = path;
 			Level = level;
 
-			// 初期化
-			if (Level == 0)
-			{
-				PathLabel = Path;
-			}
-			else
-			{
-				PathLabel = System.IO.Path.GetFileName(Path);
-			}
-			NumTotalFolders = 1;
-			FolderTaskStatus = FolderTaskStatus.Queued;
+			// 自動設定
+			PathLabel = System.IO.Path.GetFileName(Path);
 		}
 
 		// ====================================================================
@@ -65,7 +77,7 @@ namespace YukaLister.Models.SharedMisc
 		public Boolean HasChildren { get; set; }
 
 		// 自分＋サブフォルダーの数（サブフォルダーが無い場合は 1 となる）
-		public Int32 NumTotalFolders { get; set; }
+		public Int32 NumTotalFolders { get; set; } = 1;
 
 		// サブフォルダーがある場合のみ有効：サブフォルダーを表示しているかどうか
 		private Boolean _isOpen;
@@ -89,6 +101,13 @@ namespace YukaLister.Models.SharedMisc
 			}
 		}
 
+		// ボリュームシリアル番号とセパレーター
+		//public String VolumeSerialNumber { get; set; }
+
+		// キャッシュ DB からディスク DB へコピーにコピー済かどうか
+		// 親でない場合は、常に親フォルダーの IsCacheUsed と同じ値とする
+		public Boolean IsCacheUsed { get; set; }
+
 		// 操作の種類
 		public FolderTaskKind FolderTaskKind { get; set; }
 
@@ -96,7 +115,7 @@ namespace YukaLister.Models.SharedMisc
 		public FolderTaskDetail FolderTaskDetail { get; set; }
 
 		// 動作状況
-		public FolderTaskStatus FolderTaskStatus { get; set; }
+		public FolderTaskStatus FolderTaskStatus { get; set; } = FolderTaskStatus.Queued;
 
 		// UI に表示するかどうか
 		public Boolean Visible { get; set; }
@@ -120,5 +139,12 @@ namespace YukaLister.Models.SharedMisc
 			}
 			return String.Compare(lhs.Path, rhs.Path);
 		}
+
+		// ====================================================================
+		// private メンバー定数
+		// ====================================================================
+
+		// ボリュームシリアル番号のセパレーター（パスとして使えない文字）
+		private const String SEPARATOR = "|";
 	}
 }

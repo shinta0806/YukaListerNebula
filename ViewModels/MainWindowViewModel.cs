@@ -373,11 +373,10 @@ namespace YukaLister.ViewModels
 		// --------------------------------------------------------------------
 		// イベントハンドラー：IsOpen が変更された
 		// --------------------------------------------------------------------
-		public void TargetFolderInfoIsOpenChanged(TargetFolderInfo targetFolderInfo)
+		private void TargetFolderInfoIsOpenChanged(TargetFolderInfo targetFolderInfo)
 		{
 			try
 			{
-				Debug.WriteLine("TargetFolderInfoIsOpenChanged()");
 				YukaListerModel.Instance.ProjModel.UpdateTargetFolderInfosVisible(targetFolderInfo);
 				TargetFolderInfosVisible = YukaListerModel.Instance.ProjModel.TargetFolderInfosVisible();
 			}

@@ -104,7 +104,7 @@ namespace YukaLister.Models.YukaListerCores
 		// ====================================================================
 
 		// Dispose フラグ
-		private Boolean _isDisposed = false;
+		private Boolean _isDisposed;
 
 	}
 }

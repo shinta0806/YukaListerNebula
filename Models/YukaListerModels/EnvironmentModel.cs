@@ -56,9 +56,6 @@ namespace YukaLister.Models.YukaListerModels
 		// ログ
 		public LogWriter LogWriter { get; } = new(YlConstants.APP_ID);
 
-		// インメモリデータベースが生存し続けるようにインスタンスを保持
-		public ListContextInMemory? ListContextInMemory { get; set; }
-
 		// ネビュラコア
 		public Sifolin Sifolin { get; } = new();
 
