@@ -18,18 +18,11 @@ using YukaLister.Models.Database.Sequences;
 
 namespace YukaLister.Models.DatabaseContexts
 {
-	public abstract class ListContext : DbContext
+	public abstract class ListContext : YukaListerContext
 	{
 		// ====================================================================
 		// public プロパティー
 		// ====================================================================
-
-		// --------------------------------------------------------------------
-		// データベースプロパティーテーブル
-		// --------------------------------------------------------------------
-
-		// データベースプロパティーテーブル
-		public DbSet<TProperty>? Properties { get; set; }
 
 		// --------------------------------------------------------------------
 		// 検出ファイルリストテーブル
@@ -74,19 +67,6 @@ namespace YukaLister.Models.DatabaseContexts
 			founds = listContext.Founds;
 		}
 
-		// --------------------------------------------------------------------
-		// データベースセット取得
-		// ＜例外＞ Exception
-		// --------------------------------------------------------------------
-		protected static void GetDbSet(ListContext listContext, out DbSet<TProperty> properties)
-		{
-			if (listContext.Properties == null)
-			{
-				throw new Exception("データベースプロパティーテーブルにアクセスできません。");
-			}
-			properties = listContext.Properties;
-		}
-
 		// ====================================================================
 		// protected メンバー関数
 		// ====================================================================
@@ -114,6 +94,5 @@ namespace YukaLister.Models.DatabaseContexts
 			// タグ関連のテーブル
 			modelBuilder.Entity<TTag>().HasIndex(x => x.Name);
 		}
-
 	}
 }

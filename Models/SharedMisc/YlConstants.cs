@@ -11,6 +11,7 @@
 using Shinta;
 
 using System;
+using System.Windows.Media;
 
 namespace YukaLister.Models.SharedMisc
 {
@@ -26,7 +27,19 @@ namespace YukaLister.Models.SharedMisc
 		False,      // 除外しない
 		True,       // 除外する
 		Unchecked,  // 未確認
-		__End__
+					//__End__
+	}
+
+	// --------------------------------------------------------------------
+	// フォルダー設定の状態
+	// --------------------------------------------------------------------
+	public enum FolderSettingsStatus
+	{
+		None,       // 設定ファイルが存在しない
+		Set,        // 当該フォルダーに設定ファイルが存在する
+		Inherit,    // 親フォルダーの設定を引き継ぐ
+		Unchecked,  // 未確認
+					//__End__
 	}
 
 	// --------------------------------------------------------------------
@@ -42,6 +55,9 @@ namespace YukaLister.Models.SharedMisc
 
 		// 削除詳細
 		Remove,         // 削除
+
+		// 完了
+		Done,           // 完了（ゆかり用データベースに反映されているとは限らない）
 	}
 
 	// --------------------------------------------------------------------
@@ -61,11 +77,12 @@ namespace YukaLister.Models.SharedMisc
 		Queued,         // 待機
 		Running,        // 実行中
 		Error,          // エラー
-		Done,           // 完了
+		DoneInMemory,   // 完了（インメモリデータベースへの反映）
+		DoneInDisk,     // 完了（ゆかり用データベースへの反映）
 	}
 
 	// --------------------------------------------------------------------
-	// ゆかりすたー NEBULA の動作状況
+	// ゆかりすたー NEBULA 全体の動作状況
 	// --------------------------------------------------------------------
 	public enum YukaListerStatus
 	{
@@ -110,6 +127,7 @@ namespace YukaLister.Models.SharedMisc
 		// --------------------------------------------------------------------
 		// ファイル名
 		// --------------------------------------------------------------------
+		public const String FILE_NAME_YUKA_LISTER_CONFIG = APP_ID + Common.FILE_EXT_CONFIG;
 		public const String FILE_NAME_YUKA_LISTER_EXCLUDE_CONFIG = APP_ID + "Exclude" + Common.FILE_EXT_CONFIG;
 		public const String FILE_NAME_YUKARI_CONFIG = "config" + Common.FILE_EXT_INI;
 
@@ -156,6 +174,44 @@ namespace YukaLister.Models.SharedMisc
 		// 開始終了
 		public const String RULE_VAR_BEGIN = "<";
 		public const String RULE_VAR_END = ">";
+
+		// --------------------------------------------------------------------
+		// 色
+		// --------------------------------------------------------------------
+
+		// 待機中
+		public static readonly Color COLOR_STATUS_QUEUED = Color.FromRgb(0xFA, 0xFA, 0xFA);
+
+		// 動作中
+		public static readonly Color COLOR_STATUS_RUNNING = Color.FromRgb(0xE1, 0xFF, 0xE1);
+
+		// 完了
+		public static readonly Color COLOR_STATUS_DONE = Color.FromRgb(0xE1, 0xE1, 0xFF);
+
+		// エラー
+		public static readonly Color COLOR_STATUS_ERROR = Color.FromRgb(0xFF, 0xE1, 0xE1);
+
+		// 対象外
+		public static readonly Color COLOR_EXCLUDE = Color.FromRgb(0x66, 0x66, 0x66);
+
+		// --------------------------------------------------------------------
+		// ブラシ
+		// --------------------------------------------------------------------
+
+		// 待機中
+		public static readonly SolidColorBrush BRUSH_STATUS_QUEUED = new(COLOR_STATUS_QUEUED);
+
+		// 動作中
+		public static readonly SolidColorBrush BRUSH_STATUS_RUNNING = new(COLOR_STATUS_RUNNING);
+
+		// 完了
+		public static readonly SolidColorBrush BRUSH_STATUS_DONE = new(COLOR_STATUS_DONE);
+
+		// エラー
+		public static readonly SolidColorBrush BRUSH_STATUS_ERROR = new(COLOR_STATUS_ERROR);
+
+		// 対象外
+		public static readonly SolidColorBrush BRUSH_EXCLUDE = new(COLOR_EXCLUDE);
 
 		// --------------------------------------------------------------------
 		// その他

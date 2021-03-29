@@ -98,10 +98,11 @@ namespace YukaLister.Models.YukaListerModels
 			lock (TargetFolderInfos)
 			{
 				TargetFolderInfos.Add(targetFolderInfo);
-				TargetFolderInfos.Sort(TargetFolderInfo.Compare);
+				//TargetFolderInfos.Sort(TargetFolderInfo.Compare);
 			}
 
 			// 通知
+			YukaListerModel.Instance.EnvModel.IsMainWindowDataGridCountChanged = true;
 			YukaListerModel.Instance.EnvModel.Sifolin.MainEvent.Set();
 			ListCancellationTokenSource?.Cancel();
 		}
@@ -120,6 +121,9 @@ namespace YukaLister.Models.YukaListerModels
 				}
 				TargetFolderInfos.InsertRange(parentIndex + 1, subFolders);
 			}
+
+			// サブフォルダーは非表示なのでアイテム数は変わらない、親のノブ表示が変わる
+			YukaListerModel.Instance.EnvModel.IsMainWindowDataGridItemUpdated = true;
 		}
 
 		// --------------------------------------------------------------------
@@ -132,26 +136,6 @@ namespace YukaLister.Models.YukaListerModels
 				return TargetFolderInfos.FirstOrDefault(x => x.FolderTaskDetail == folderTaskDetail);
 			}
 		}
-
-#if false
-		// --------------------------------------------------------------------
-		// TargetFolderInfos の中から path を持つ TargetFolderInfo を探してインデックスを返す
-		// 呼び出し元において lock(TargetFolderInfos) 必須
-		// --------------------------------------------------------------------
-		public Int32 FindTargetFolderInfo(String path)
-		{
-			Debug.Assert(Monitor.IsEntered(TargetFolderInfos), "FindTargetFolderInfo() not locked");
-			for (Int32 i = 0; i < TargetFolderInfos.Count; i++)
-			{
-				if (YlCommon.IsSamePath(path, TargetFolderInfos[i].Path))
-				{
-					return i;
-				}
-			}
-
-			return -1;
-		}
-#endif
 
 		// --------------------------------------------------------------------
 		// folders が既に TargetFolderInfos に追加されているかどうか
@@ -185,8 +169,27 @@ namespace YukaLister.Models.YukaListerModels
 				}
 				TargetFolderInfos.RemoveAt(index);
 			}
-			YukaListerModel.Instance.EnvModel.IsMainWindowDataGridDirty = true;
+			YukaListerModel.Instance.EnvModel.IsMainWindowDataGridCountChanged = true;
 			return true;
+		}
+
+		// --------------------------------------------------------------------
+		// すべての DoneInMemory を DoneInDisk にする
+		// --------------------------------------------------------------------
+		public void SetAllFolderTaskStatusToDoneInDisk()
+		{
+			lock (TargetFolderInfos)
+			{
+				for (Int32 i = 0; i < TargetFolderInfos.Count; i++)
+				{
+					if (TargetFolderInfos[i].FolderTaskStatus == FolderTaskStatus.DoneInMemory)
+					{
+						Debug.Assert(TargetFolderInfos[i].FolderTaskDetail == FolderTaskDetail.Done, "SetAllFolderTaskStatusToDoneInDisk() not done");
+						TargetFolderInfos[i].FolderTaskStatus = FolderTaskStatus.DoneInDisk;
+					}
+				}
+			}
+			YukaListerModel.Instance.EnvModel.IsMainWindowDataGridItemUpdated = true;
 		}
 
 		// --------------------------------------------------------------------
@@ -226,6 +229,7 @@ namespace YukaLister.Models.YukaListerModels
 					}
 				}
 			}
+			YukaListerModel.Instance.EnvModel.IsMainWindowDataGridCountChanged = true;
 		}
 
 		// ====================================================================

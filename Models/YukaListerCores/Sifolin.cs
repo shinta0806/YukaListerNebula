@@ -16,6 +16,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using YukaLister.Models.Database;
 using YukaLister.Models.DatabaseContexts;
@@ -89,8 +90,27 @@ namespace YukaLister.Models.YukaListerCores
 							AddFileNames(targetFolderInfo);
 							continue;
 						}
-					}
 
+						// ファイル情報追加
+						targetFolderInfo = YukaListerModel.Instance.ProjModel.FindTargetFolderInfo(FolderTaskDetail.AddInfos);
+						if (targetFolderInfo != null)
+						{
+							AddInfos(targetFolderInfo);
+							continue;
+						}
+
+						// メモリー DB → ディスク DB
+						if (_isMemoryDbDirty)
+						{
+							MemoryToDisk();
+							continue;
+						}
+
+						// やることが無くなったのでループを抜けて待機へ向かう
+						// 念のため最後に表示を更新
+						YukaListerModel.Instance.EnvModel.IsMainWindowDataGridCountChanged = true;
+						break;
+					}
 				}
 				catch (OperationCanceledException)
 				{
@@ -102,6 +122,8 @@ namespace YukaLister.Models.YukaListerCores
 					YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(TraceEventType.Error, GetType().Name + "ループ稼働時エラー：\n" + excep.Message);
 					YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, "　スタックトレース：\n" + excep.StackTrace);
 				}
+
+				Debug.WriteLine("Sifolin.CoreMain() 待機");
 			}
 		}
 
@@ -122,7 +144,6 @@ namespace YukaLister.Models.YukaListerCores
 			// マネージドリソース解放
 			if (isDisposing)
 			{
-				//_listContextInMemoryForMainTask?.Dispose();
 			}
 
 			// アンマネージドリソース解放
@@ -136,9 +157,6 @@ namespace YukaLister.Models.YukaListerCores
 		// ====================================================================
 		// private メンバー変数
 		// ====================================================================
-
-		// リストデータベース（メモリ）のコンテキスト
-		//private ListContextInMemory? _listContextInMemoryForMainTask;
 
 		// メモリ DB 更新フラグ
 		private Boolean _isMemoryDbDirty;
@@ -155,9 +173,15 @@ namespace YukaLister.Models.YukaListerCores
 		// --------------------------------------------------------------------
 		private void AddFileNames(TargetFolderInfo targetFolderInfo)
 		{
-			ListContextInMemory listContextInMemory = ListContextInMemory.CreateContext(out DbSet<TFound> founds);
-			AddFileNames(listContextInMemory, founds, targetFolderInfo);
+			// 動作状況設定
+			SetFolderTaskStatus(targetFolderInfo, FolderTaskStatus.Running);
+
+			// 作業
+			AddFileNamesCore(targetFolderInfo);
+
+			// 動作状況設定
 			targetFolderInfo.FolderTaskDetail = FolderTaskDetail.AddInfos;
+			SetFolderTaskStatus(targetFolderInfo, FolderTaskStatus.Queued);
 		}
 
 		// --------------------------------------------------------------------
@@ -165,7 +189,7 @@ namespace YukaLister.Models.YukaListerCores
 		// ユニーク ID、フルパス、フォルダーのみ記入する
 		// ファイルは再帰検索しない
 		// --------------------------------------------------------------------
-		private void AddFileNames(ListContextInMemory listContextInMemory, DbSet<TFound> founds, TargetFolderInfo targetFolderInfo)
+		private void AddFileNamesCore(TargetFolderInfo targetFolderInfo)
 		{
 			// フォルダー除外設定を読み込む
 			if (YlCommon.DetectFolderExcludeSettingsStatus(targetFolderInfo.Path) == FolderExcludeSettingsStatus.True)
@@ -174,6 +198,7 @@ namespace YukaLister.Models.YukaListerCores
 			}
 
 			// Uid
+			using ListContextInMemory listContextInMemory = ListContextInMemory.CreateContext(out DbSet<TFound> founds);
 			Int64 uid = founds.Any() ? founds.Max(x => x.Uid) + 1 : 1;
 
 			// 検索
@@ -213,14 +238,34 @@ namespace YukaLister.Models.YukaListerCores
 			// メモリー DB に追加
 			founds.AddRange(addRecords);
 			listContextInMemory.SaveChanges();
+			_isMemoryDbDirty = true;
 
 			// キャッシュが使われていない場合はディスク DB にも追加
 			if (!targetFolderInfo.IsCacheUsed)
 			{
-				ListContextInDisk listContextInDisk = ListContextInDisk.CreateContext(out DbSet<TFound> diskFounds);
+				using ListContextInDisk listContextInDisk = ListContextInDisk.CreateContext(out DbSet<TFound> diskFounds);
 				diskFounds.AddRange(addRecords);
 				listContextInDisk.SaveChanges();
 			}
+		}
+
+		// --------------------------------------------------------------------
+		// 検出ファイルリストテーブルにファイル情報を追加
+		// --------------------------------------------------------------------
+		private void AddInfos(TargetFolderInfo targetFolderInfo)
+		{
+			// 動作状況設定
+			SetFolderTaskStatus(targetFolderInfo, FolderTaskStatus.Running);
+
+			// 作業
+			// ToDo: 未実装
+#if DEBUG
+			Thread.Sleep(500);
+#endif
+
+			// 動作状況設定
+			targetFolderInfo.FolderTaskDetail = FolderTaskDetail.Done;
+			SetFolderTaskStatus(targetFolderInfo, FolderTaskStatus.DoneInMemory);
 		}
 
 		// --------------------------------------------------------------------
@@ -228,9 +273,15 @@ namespace YukaLister.Models.YukaListerCores
 		// --------------------------------------------------------------------
 		private void CacheToDisk(TargetFolderInfo targetFolderInfo)
 		{
+			// 動作状況設定
+			SetFolderTaskStatus(targetFolderInfo, FolderTaskStatus.Running);
+
+			// 作業
 			// ToDo: 未実装
+
+			// 動作状況設定
 			targetFolderInfo.FolderTaskDetail = FolderTaskDetail.FindSubFolders;
-			Debug.WriteLine("キャッシュ活用完了：" + targetFolderInfo.ParentPath + " 配下");
+			SetFolderTaskStatus(targetFolderInfo, FolderTaskStatus.Queued);
 		}
 
 		// --------------------------------------------------------------------
@@ -279,6 +330,22 @@ namespace YukaLister.Models.YukaListerCores
 		// --------------------------------------------------------------------
 		private void FindSubFolders(TargetFolderInfo targetFolderInfo)
 		{
+			// 動作状況設定
+			SetFolderTaskStatus(targetFolderInfo, FolderTaskStatus.Running);
+
+			// 作業
+			FindSubFoldersCore(targetFolderInfo);
+
+			// 動作状況設定
+			targetFolderInfo.FolderTaskDetail = FolderTaskDetail.AddFileNames;
+			SetFolderTaskStatus(targetFolderInfo, FolderTaskStatus.Queued);
+		}
+
+		// --------------------------------------------------------------------
+		// サブフォルダーを検索して追加
+		// --------------------------------------------------------------------
+		private void FindSubFoldersCore(TargetFolderInfo targetFolderInfo)
+		{
 			// 子の検索と重複チェック
 			List<TargetFolderInfo> subFolders = EnumSubFolders(targetFolderInfo);
 			Boolean childAdded = YukaListerModel.Instance.ProjModel.IsTargetFolderAdded(subFolders);
@@ -297,12 +364,33 @@ namespace YukaLister.Models.YukaListerCores
 			// 親設定
 			targetFolderInfo.HasChildren = subFolders.Any();
 			targetFolderInfo.NumTotalFolders = 1 + subFolders.Count();
-			targetFolderInfo.FolderTaskDetail = FolderTaskDetail.AddFileNames;
 
 			// その他
-			YukaListerModel.Instance.EnvModel.IsMainWindowDataGridDirty = true;
 			YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, targetFolderInfo.Path
-					+ "\n" + targetFolderInfo.NumTotalFolders + " 個のフォルダーを検索対象に追加予定としました。");
+					+ "\n" + targetFolderInfo.NumTotalFolders + " 個のフォルダーをキューに追加しました。");
 		}
+
+		// --------------------------------------------------------------------
+		// メモリー DB → ディスク DB
+		// --------------------------------------------------------------------
+		private void MemoryToDisk()
+		{
+			// ToDo: 未実装
+			YukaListerModel.Instance.ProjModel.SetAllFolderTaskStatusToDoneInDisk();
+			_isMemoryDbDirty = false;
+		}
+
+		// --------------------------------------------------------------------
+		// フォルダーの動作状況を設定
+		// --------------------------------------------------------------------
+		private void SetFolderTaskStatus(TargetFolderInfo targetFolderInfo, FolderTaskStatus folderTaskStatus)
+		{
+			targetFolderInfo.FolderTaskStatus = folderTaskStatus;
+			if (targetFolderInfo.Visible)
+			{
+				YukaListerModel.Instance.EnvModel.IsMainWindowDataGridItemUpdated = true;
+			}
+		}
+
 	}
 }

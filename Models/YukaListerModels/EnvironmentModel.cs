@@ -59,12 +59,28 @@ namespace YukaLister.Models.YukaListerModels
 		// ネビュラコア
 		public Sifolin Sifolin { get; } = new();
 
-		// メインウィンドウの DataGrid を更新する必要があるかどうか
-		private volatile Boolean _isMainWindowDataGridDirty;
-		public Boolean IsMainWindowDataGridDirty
+		// 動作状況
+		private volatile YukaListerStatus _yukaListerStatus = YukaListerStatus.Ready;
+		public YukaListerStatus YukaListerStatus
 		{
-			get => _isMainWindowDataGridDirty;
-			set => _isMainWindowDataGridDirty = value;
+			get => _yukaListerStatus;
+			set => _yukaListerStatus = value;
+		}
+
+		// メインウィンドウの DataGrid のアイテム数が増減した
+		private volatile Boolean _isMainWindowDataGridCountChanged;
+		public Boolean IsMainWindowDataGridCountChanged
+		{
+			get => _isMainWindowDataGridCountChanged;
+			set => _isMainWindowDataGridCountChanged = value;
+		}
+
+		// メインウィンドウの DataGrid のアイテム数は変わらないがアイテムの内容が更新された
+		private volatile Boolean _isMainWindowDataGridItemUpdated;
+		public Boolean IsMainWindowDataGridItemUpdated
+		{
+			get => _isMainWindowDataGridItemUpdated;
+			set => _isMainWindowDataGridItemUpdated = value;
 		}
 
 		// EXE フルパス

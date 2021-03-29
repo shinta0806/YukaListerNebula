@@ -132,22 +132,8 @@
                 <MouseBinding MouseAction="LeftDoubleClick" Command="{Binding DataGridDoubleClickedCommand}" />
             </DataGrid.InputBindings>
             <DataGrid.ItemContainerStyle>
-                <Style TargetType="DataGridRow">
-                    <Style.Triggers>
-                        <!-- StatusForLabelColor によって背景を設定する -->
-                        <DataTrigger Binding="{Binding StatusForLabelColor}" Value="{x:Static msm:FolderTaskStatus.Queued}">
-                            <Setter Property="Background" Value="#FAFAFA" />
-                        </DataTrigger>
-                        <DataTrigger Binding="{Binding StatusForLabelColor}" Value="{x:Static msm:FolderTaskStatus.Running}">
-                            <Setter Property="Background" Value="#E1FFE1" />
-                        </DataTrigger>
-                        <DataTrigger Binding="{Binding StatusForLabelColor}" Value="{x:Static msm:FolderTaskStatus.Error}">
-                            <Setter Property="Background" Value="#FFE1E1" />
-                        </DataTrigger>
-                        <DataTrigger Binding="{Binding StatusForLabelColor}" Value="{x:Static msm:FolderTaskStatus.Done}">
-                            <Setter Property="Background" Value="#E1E1FF" />
-                        </DataTrigger>
-                    </Style.Triggers>
+                <Style TargetType="DataGridRow" >
+                    <Setter Property="Background" Value="{Binding Background}"/>
                 </Style>
             </DataGrid.ItemContainerStyle>
             <DataGrid.Columns>

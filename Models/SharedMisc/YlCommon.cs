@@ -94,6 +94,26 @@ namespace YukaLister.Models.SharedMisc
 		}
 
 		// --------------------------------------------------------------------
+		// 指定されたフォルダーの設定有無
+		// --------------------------------------------------------------------
+		public static FolderSettingsStatus DetectFolderSettingsStatus2Ex(String folder)
+		{
+			String? folderSettingsFolder = FindSettingsFolder2Ex(folder);
+			if (String.IsNullOrEmpty(folderSettingsFolder))
+			{
+				return FolderSettingsStatus.None;
+			}
+			else if (IsSamePath(folder, folderSettingsFolder))
+			{
+				return FolderSettingsStatus.Set;
+			}
+			else
+			{
+				return FolderSettingsStatus.Inherit;
+			}
+		}
+
+		// --------------------------------------------------------------------
 		// 指定されたフォルダーのフォルダー除外設定ファイルがあるフォルダーを返す
 		// --------------------------------------------------------------------
 		public static String? FindExcludeSettingsFolder2Ex(String? folder)
@@ -101,6 +121,22 @@ namespace YukaLister.Models.SharedMisc
 			while (!String.IsNullOrEmpty(folder))
 			{
 				if (File.Exists(folder + "\\" + YlConstants.FILE_NAME_YUKA_LISTER_EXCLUDE_CONFIG))
+				{
+					return folder;
+				}
+				folder = Path.GetDirectoryName(folder);
+			}
+			return null;
+		}
+
+		// --------------------------------------------------------------------
+		// 指定されたフォルダーのフォルダー設定ファイルがあるフォルダーを返す
+		// --------------------------------------------------------------------
+		public static String? FindSettingsFolder2Ex(String? folder)
+		{
+			while (!String.IsNullOrEmpty(folder))
+			{
+				if (File.Exists(folder + "\\" + YlConstants.FILE_NAME_YUKA_LISTER_CONFIG))
 				{
 					return folder;
 				}

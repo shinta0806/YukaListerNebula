@@ -94,16 +94,6 @@ namespace YukaLister.ViewModels
 			set => RaisePropertyChangedIfSet(ref _targetFolderInfosVisible, value);
 		}
 
-
-#if DEBUGz
-		private TargetFolderInfo? _testTargetFolderInfo;
-		public TargetFolderInfo? TestTargetFolderInfo
-		{
-			get => _testTargetFolderInfo;
-			set => RaisePropertyChangedIfSet(ref _testTargetFolderInfo, value);
-		}
-#endif
-
 		// --------------------------------------------------------------------
 		// 一般プロパティー
 		// --------------------------------------------------------------------
@@ -124,7 +114,7 @@ namespace YukaLister.ViewModels
 			try
 			{
 				YukaListerModel.Instance.ProjModel.AddTargetFolder(folderSelectionMessage.Response);
-				TargetFolderInfosVisible = YukaListerModel.Instance.ProjModel.TargetFolderInfosVisible();
+				UpdateDataGrid();
 			}
 			catch (Exception excep)
 			{
@@ -348,7 +338,7 @@ namespace YukaLister.ViewModels
 			SaveExitStatus();
 
 			// Zone ID 削除
-			Common.DeleteZoneID(YukaListerModel.Instance.EnvModel.ExeFullFolder, SearchOption.AllDirectories);
+			CommonWindows.DeleteZoneID(YukaListerModel.Instance.EnvModel.ExeFullFolder, SearchOption.AllDirectories);
 
 			// パスの注意
 			String? installMsg = InstallWarningMessage();
@@ -378,7 +368,7 @@ namespace YukaLister.ViewModels
 			try
 			{
 				YukaListerModel.Instance.ProjModel.UpdateTargetFolderInfosVisible(targetFolderInfo);
-				TargetFolderInfosVisible = YukaListerModel.Instance.ProjModel.TargetFolderInfosVisible();
+				UpdateDataGrid();
 			}
 			catch (Exception excep)
 			{
@@ -394,16 +384,11 @@ namespace YukaLister.ViewModels
 		{
 			try
 			{
-				if (!YukaListerModel.Instance.EnvModel.IsMainWindowDataGridDirty)
+				if (!YukaListerModel.Instance.EnvModel.IsMainWindowDataGridCountChanged && !YukaListerModel.Instance.EnvModel.IsMainWindowDataGridItemUpdated)
 				{
 					return;
 				}
-
-				// 先に Dirty フラグをクリア（後にすると、更新中に他のスレッドが立てたフラグもクリアしてしまうため）
-				YukaListerModel.Instance.EnvModel.IsMainWindowDataGridDirty = false;
-
-				// 更新
-				TargetFolderInfosVisible = YukaListerModel.Instance.ProjModel.TargetFolderInfosVisible();
+				UpdateDataGrid();
 			}
 			catch (Exception excep)
 			{
@@ -413,6 +398,19 @@ namespace YukaLister.ViewModels
 			}
 		}
 
+		// --------------------------------------------------------------------
+		// DataGrid 表示を更新
+		// --------------------------------------------------------------------
+		private void UpdateDataGrid()
+		{
+			// 先に Dirty フラグをクリア（後にすると、更新中に他のスレッドが立てたフラグもクリアしてしまうため）
+			YukaListerModel.Instance.EnvModel.IsMainWindowDataGridCountChanged = false;
+			YukaListerModel.Instance.EnvModel.IsMainWindowDataGridItemUpdated = false;
+
+			// 更新
+			// ToDo: IsMainWindowDataGridItemUpdated のみが立っていた場合は効率よい処理方法があるのではないか
+			TargetFolderInfosVisible = YukaListerModel.Instance.ProjModel.TargetFolderInfosVisible();
+		}
 
 	}
 }
