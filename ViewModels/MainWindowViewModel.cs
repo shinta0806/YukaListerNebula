@@ -147,6 +147,9 @@ namespace YukaLister.ViewModels
 				// スプラッシュウィンドウを閉じる
 				_splashWindowViewModel.Close();
 
+				// プログラムエラーチェック
+				Debug.Assert(YlConstants.FOLDER_SETTINGS_STATUS_TEXTS.Length == (Int32)FolderSettingsStatus.__End__, "MainWindow.Initialize() bad FOLDER_SETTINGS_STATUS_TEXTS length");
+
 				// 環境の変化に対応
 				DoVerChangedIfNeeded();
 				//LaunchUpdaterIfNeeded();

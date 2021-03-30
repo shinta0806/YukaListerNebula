@@ -160,13 +160,17 @@ namespace YukaLister.Models.SharedMisc
 		// 表示用：パス
 		public String PathLabel { get; }
 
+		// 表示用：フォルダー設定の状態
+		public String FolderSettingsStatusLabel
+		{
+			get => YlConstants.FOLDER_SETTINGS_STATUS_TEXTS[(Int32)FolderSettingsStatus];
+		}
+
 		// 表示用：動作状況
 		public String FolderTaskStatusLabel
 		{
 			get => FolderTaskStatusLabelAndBrush().Item1;
 		}
-
-
 
 		// ====================================================================
 		// public static メンバー関数

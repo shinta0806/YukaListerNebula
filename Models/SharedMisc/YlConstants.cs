@@ -39,7 +39,7 @@ namespace YukaLister.Models.SharedMisc
 		Set,        // 当該フォルダーに設定ファイルが存在する
 		Inherit,    // 親フォルダーの設定を引き継ぐ
 		Unchecked,  // 未確認
-					//__End__
+		__End__,
 	}
 
 	// --------------------------------------------------------------------
@@ -192,7 +192,7 @@ namespace YukaLister.Models.SharedMisc
 		public static readonly Color COLOR_STATUS_ERROR = Color.FromRgb(0xFF, 0xE1, 0xE1);
 
 		// 対象外
-		public static readonly Color COLOR_EXCLUDE = Color.FromRgb(0x66, 0x66, 0x66);
+		public static readonly Color COLOR_EXCLUDE = Color.FromRgb(0xCC, 0xCC, 0xCC);
 
 		// --------------------------------------------------------------------
 		// ブラシ
@@ -216,6 +216,9 @@ namespace YukaLister.Models.SharedMisc
 		// --------------------------------------------------------------------
 		// その他
 		// --------------------------------------------------------------------
+
+		// FolderSettingsStatus に対応する文字列
+		public static readonly String[] FOLDER_SETTINGS_STATUS_TEXTS = { "無", "有", "親に有", "未確認" };
 
 		// DPI
 		public const Single DPI = 96.0f;
