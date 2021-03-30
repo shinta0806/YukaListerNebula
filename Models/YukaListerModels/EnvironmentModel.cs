@@ -59,7 +59,7 @@ namespace YukaLister.Models.YukaListerModels
 		// ネビュラコア
 		public Sifolin Sifolin { get; } = new();
 
-		// 動作状況
+		// ゆかりすたー NEBULA 全体の動作状況
 		private volatile YukaListerStatus _yukaListerStatus = YukaListerStatus.Ready;
 		public YukaListerStatus YukaListerStatus
 		{

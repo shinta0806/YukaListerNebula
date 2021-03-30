@@ -33,28 +33,10 @@
     </behaviors:Interaction.Triggers>
 
     <DockPanel>
-        <DockPanel DockPanel.Dock="Top" Margin="20,20,20,0">
-            <Label Content="{Binding YukaListerStatusDisplayMessage}" Margin="0,0,10,0" VerticalAlignment="Center" Height="30" VerticalContentAlignment="Center" Padding="5,0" >
-                <Label.Style>
-                    <Style TargetType="Label">
-                        <Style.Triggers>
-                            <!-- YukariDbYukaListerStatus によって背景を設定する -->
-                            <DataTrigger Binding="{Binding YukaListerDbStatus}" Value="{x:Static msm:YukaListerStatus.Ready}">
-                                <Setter Property="Background" Value="#E1E1FF" />
-                            </DataTrigger>
-                            <DataTrigger Binding="{Binding YukaListerDbStatus}" Value="{x:Static msm:YukaListerStatus.Running}">
-                                <Setter Property="Background" Value="#E1FFE1" />
-                            </DataTrigger>
-                            <DataTrigger Binding="{Binding YukaListerDbStatus}" Value="{x:Static msm:YukaListerStatus.Error}">
-                                <Setter Property="Background" Value="#FFE1E1" />
-                            </DataTrigger>
-                        </Style.Triggers>
-                    </Style>
-                </Label.Style>
-            </Label>
-        </DockPanel>
+        <Label DockPanel.Dock="Top" Content="{Binding YukaListerStatusLabel}" Background="{Binding YukaListerStatusBackground}" Margin="20,5,20,0" VerticalAlignment="Center" Height="30" VerticalContentAlignment="Center" Padding="5,0" />
         <DockPanel DockPanel.Dock="Top" Margin="20,5,20,0">
             <Label Content="検索可能ファイル数：" />
+            <Label />
             <Button Style="{StaticResource MaterialDesignRaisedLightButton}" ToolTip="ヘルプ" Width="50" Height="25" DockPanel.Dock="Right" VerticalAlignment="Center">
                 <behaviors:Interaction.Triggers>
                     <behaviors:EventTrigger EventName="Click">

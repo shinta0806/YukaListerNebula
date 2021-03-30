@@ -55,6 +55,11 @@ namespace YukaLister.Models.YukaListerCores
 			while (true)
 			{
 				MainEvent.WaitOne();
+				if (YukaListerModel.Instance.EnvModel.YukaListerStatus == YukaListerStatus.Error)
+				{
+					continue;
+				}
+				YukaListerModel.Instance.EnvModel.YukaListerStatus = YukaListerStatus.Running;
 				Debug.WriteLine("Sifolin.CoreMain() 進行");
 
 				try

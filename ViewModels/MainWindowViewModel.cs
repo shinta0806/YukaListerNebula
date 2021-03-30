@@ -17,6 +17,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Windows;
+using System.Windows.Media;
 using System.Windows.Threading;
 using YukaLister.Models.SharedMisc;
 using YukaLister.Models.YukaListerModels;
@@ -86,6 +87,22 @@ namespace YukaLister.ViewModels
 			set => RaisePropertyChangedIfSet(ref _height, value);
 		}
 
+		// ゆかりすたー NEBULA 全体の動作状況
+		private String _yukaListerStatusLabel = String.Empty;
+		public String YukaListerStatusLabel
+		{
+			get => _yukaListerStatusLabel;
+			set => RaisePropertyChangedIfSet(ref _yukaListerStatusLabel, value);
+		}
+
+		// ゆかりすたー NEBULA 全体の動作状況の背景
+		private Brush _yukaListerStatusBackground = YlConstants.BRUSH_STATUS_DONE;
+		public Brush YukaListerStatusBackground
+		{
+			get => _yukaListerStatusBackground;
+			set => RaisePropertyChangedIfSet(ref _yukaListerStatusBackground, value);
+		}
+
 		// ゆかり検索対象フォルダー（表示用）
 		private List<TargetFolderInfo>? _targetFolderInfosVisible;
 		public List<TargetFolderInfo>? TargetFolderInfosVisible
@@ -153,6 +170,9 @@ namespace YukaLister.ViewModels
 				// 環境の変化に対応
 				DoVerChangedIfNeeded();
 				//LaunchUpdaterIfNeeded();
+
+				// 動作エラーチェック
+				CheckYukaListerStatusError();
 
 #if DEBUGz
 				Debug.WriteLine("Exists 1: " + File.Exists(@"D:\TempD\TestYl\1234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890\1234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890\a.txt"));
@@ -244,6 +264,30 @@ namespace YukaLister.ViewModels
 		// ====================================================================
 		// private メンバー関数
 		// ====================================================================
+
+		// --------------------------------------------------------------------
+		// ゆかりすたー NEBULA 全体のエラーチェック
+		// --------------------------------------------------------------------
+		private void CheckYukaListerStatusError()
+		{
+			if (!YukaListerModel.Instance.EnvModel.YlSettings.IsYukariConfigPathValid())
+			{
+				// ゆかり設定ファイルエラー
+				YukaListerModel.Instance.EnvModel.YukaListerStatus = YukaListerStatus.Error;
+				YukaListerStatusLabel = "ゆかり設定ファイルが正しく指定されていません。";
+				SetYukaListerStatusBackground();
+			}
+			else
+			{
+				// 正常
+				if (YukaListerModel.Instance.EnvModel.YukaListerStatus != YukaListerStatus.Running)
+				{
+					YukaListerModel.Instance.EnvModel.YukaListerStatus = YukaListerStatus.Ready;
+					YukaListerStatusLabel = YlConstants.APP_NAME_J + "は正常に動作しています。";
+					SetYukaListerStatusBackground();
+				}
+			}
+		}
 
 		// --------------------------------------------------------------------
 		// バージョン更新時の処理
@@ -361,6 +405,19 @@ namespace YukaLister.ViewModels
 			YukaListerModel.Instance.EnvModel.YlSettings.PrevLaunchVer = YlConstants.APP_VER;
 			YukaListerModel.Instance.EnvModel.YlSettings.DesktopBounds = new Rect(Left, Top, Width, Height);
 			YukaListerModel.Instance.EnvModel.YlSettings.Save();
+		}
+
+		// --------------------------------------------------------------------
+		// ゆかりすたー NEBULA 全体の動作状況に応じて背景を設定
+		// --------------------------------------------------------------------
+		private void SetYukaListerStatusBackground()
+		{
+			YukaListerStatusBackground = YukaListerModel.Instance.EnvModel.YukaListerStatus switch
+			{
+				YukaListerStatus.Error => YlConstants.BRUSH_STATUS_ERROR,
+				YukaListerStatus.Running => YlConstants.BRUSH_STATUS_RUNNING,
+				_ => YlConstants.BRUSH_STATUS_DONE,
+			};
 		}
 
 		// --------------------------------------------------------------------
