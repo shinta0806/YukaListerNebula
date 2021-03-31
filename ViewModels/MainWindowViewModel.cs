@@ -9,16 +9,20 @@
 // ----------------------------------------------------------------------------
 
 using Livet.Messaging.IO;
-
+using Microsoft.EntityFrameworkCore;
 using Shinta;
 
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
+using System.Threading;
 using System.Windows;
 using System.Windows.Media;
 using System.Windows.Threading;
+using YukaLister.Models.Database;
+using YukaLister.Models.DatabaseContexts;
 using YukaLister.Models.SharedMisc;
 using YukaLister.Models.YukaListerModels;
 
@@ -103,6 +107,14 @@ namespace YukaLister.ViewModels
 			set => RaisePropertyChangedIfSet(ref _yukaListerStatusBackground, value);
 		}
 
+		// 検索可能ファイル数
+		private String _numRecordsLabel = String.Empty;
+		public String NumRecordsLabel
+		{
+			get => _numRecordsLabel;
+			set => RaisePropertyChangedIfSet(ref _numRecordsLabel, value);
+		}
+
 		// ゆかり検索対象フォルダー（表示用）
 		private List<TargetFolderInfo>? _targetFolderInfosVisible;
 		public List<TargetFolderInfo>? TargetFolderInfosVisible
@@ -173,6 +185,9 @@ namespace YukaLister.ViewModels
 
 				// 動作エラーチェック
 				UpdateYukaListerStatusError();
+
+				// その他
+				UpdateNumRecordsLabel();
 
 #if DEBUGz
 				Debug.WriteLine("Exists 1: " + File.Exists(@"D:\TempD\TestYl\1234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890\1234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890\a.txt"));
@@ -430,9 +445,12 @@ namespace YukaLister.ViewModels
 		{
 			try
 			{
+				_timerUpdateUi.Stop();
+
 				// ゆかりすたー NEBULA 全体の動作状況
 				if (YukaListerModel.Instance.EnvModel.YukaListerStatus == YukaListerStatus.Running)
 				{
+					UpdateNumRecordsLabel();
 					UpdateYukaListerStatusRunning();
 				}
 
@@ -441,11 +459,13 @@ namespace YukaLister.ViewModels
 				{
 					UpdateDataGrid();
 				}
+
+				_timerUpdateUi.Start();
 			}
 			catch (Exception excep)
 			{
-				_timerUpdateUi.Stop();
-				YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(TraceEventType.Error, "タイマー時エラー：\n" + excep.Message);
+				// 定期的にタイマーエラーが表示されることのないよう、エラー発生時はタイマーを再開しない
+				YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(TraceEventType.Error, "タイマー時エラー：\n" + excep.Message + "\n再起動してください。");
 				YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, "　スタックトレース：\n" + excep.StackTrace);
 			}
 		}
@@ -462,6 +482,15 @@ namespace YukaLister.ViewModels
 			// 更新
 			// ToDo: IsMainWindowDataGridItemUpdated のみが立っていた場合は効率よい処理方法があるのではないか
 			TargetFolderInfosVisible = YukaListerModel.Instance.ProjModel.TargetFolderInfosVisible();
+		}
+
+		// --------------------------------------------------------------------
+		// 検索可能ファイル数を更新
+		// --------------------------------------------------------------------
+		private void UpdateNumRecordsLabel()
+		{
+			using ListContextInDisk listContextInDisk = ListContextInDisk.CreateContext(out DbSet<TFound> founds);
+			NumRecordsLabel = founds.Count().ToString("#,0");
 		}
 
 		// --------------------------------------------------------------------
