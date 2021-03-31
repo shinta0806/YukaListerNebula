@@ -172,7 +172,7 @@ namespace YukaLister.ViewModels
 				//LaunchUpdaterIfNeeded();
 
 				// 動作エラーチェック
-				CheckYukaListerStatusError();
+				UpdateYukaListerStatusError();
 
 #if DEBUGz
 				Debug.WriteLine("Exists 1: " + File.Exists(@"D:\TempD\TestYl\1234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890\1234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890\a.txt"));
@@ -204,9 +204,9 @@ namespace YukaLister.ViewModels
 #endif
 
 				// タイマー
-				_timerUpdateDataGrid.Interval = TimeSpan.FromSeconds(1.0);
-				_timerUpdateDataGrid.Tick += new EventHandler(TimerUpdateDataGrid_Tick);
-				_timerUpdateDataGrid.Start();
+				_timerUpdateUi.Interval = TimeSpan.FromSeconds(1.0);
+				_timerUpdateUi.Tick += new EventHandler(TimerUpdateUi_Tick);
+				_timerUpdateUi.Start();
 			}
 			catch (Exception excep)
 			{
@@ -255,8 +255,8 @@ namespace YukaLister.ViewModels
 		// スプラッシュウィンドウ
 		private readonly SplashWindowViewModel _splashWindowViewModel;
 
-		// DataGrid 更新用タイマー
-		private DispatcherTimer _timerUpdateDataGrid = new();
+		// UI 更新用タイマー
+		private DispatcherTimer _timerUpdateUi = new();
 
 		// Dispose フラグ
 		private Boolean _isDisposed = false;
@@ -264,30 +264,6 @@ namespace YukaLister.ViewModels
 		// ====================================================================
 		// private メンバー関数
 		// ====================================================================
-
-		// --------------------------------------------------------------------
-		// ゆかりすたー NEBULA 全体のエラーチェック
-		// --------------------------------------------------------------------
-		private void CheckYukaListerStatusError()
-		{
-			if (!YukaListerModel.Instance.EnvModel.YlSettings.IsYukariConfigPathValid())
-			{
-				// ゆかり設定ファイルエラー
-				YukaListerModel.Instance.EnvModel.YukaListerStatus = YukaListerStatus.Error;
-				YukaListerStatusLabel = "ゆかり設定ファイルが正しく指定されていません。";
-				SetYukaListerStatusBackground();
-			}
-			else
-			{
-				// 正常
-				if (YukaListerModel.Instance.EnvModel.YukaListerStatus != YukaListerStatus.Running)
-				{
-					YukaListerModel.Instance.EnvModel.YukaListerStatus = YukaListerStatus.Ready;
-					YukaListerStatusLabel = YlConstants.APP_NAME_J + "は正常に動作しています。";
-					SetYukaListerStatusBackground();
-				}
-			}
-		}
 
 		// --------------------------------------------------------------------
 		// バージョン更新時の処理
@@ -421,6 +397,16 @@ namespace YukaLister.ViewModels
 		}
 
 		// --------------------------------------------------------------------
+		// ゆかりすたー NEBULA 全体の動作状況を待機にする
+		// --------------------------------------------------------------------
+		private void SetYukaListerStatusReady()
+		{
+			YukaListerModel.Instance.EnvModel.YukaListerStatus = YukaListerStatus.Ready;
+			YukaListerStatusLabel = YlConstants.APP_NAME_J + "は正常に動作しています。";
+			SetYukaListerStatusBackground();
+		}
+
+		// --------------------------------------------------------------------
 		// イベントハンドラー：IsOpen が変更された
 		// --------------------------------------------------------------------
 		private void TargetFolderInfoIsOpenChanged(TargetFolderInfo targetFolderInfo)
@@ -438,21 +424,27 @@ namespace YukaLister.ViewModels
 		}
 
 		// --------------------------------------------------------------------
-		// イベントハンドラー：DataGrid 表示を更新
+		// イベントハンドラー：UI 表示を更新
 		// --------------------------------------------------------------------
-		private void TimerUpdateDataGrid_Tick(Object? sender, EventArgs e)
+		private void TimerUpdateUi_Tick(Object? sender, EventArgs e)
 		{
 			try
 			{
-				if (!YukaListerModel.Instance.EnvModel.IsMainWindowDataGridCountChanged && !YukaListerModel.Instance.EnvModel.IsMainWindowDataGridItemUpdated)
+				// ゆかりすたー NEBULA 全体の動作状況
+				if (YukaListerModel.Instance.EnvModel.YukaListerStatus == YukaListerStatus.Running)
 				{
-					return;
+					UpdateYukaListerStatusRunning();
 				}
-				UpdateDataGrid();
+
+				// DataGrid
+				if (YukaListerModel.Instance.EnvModel.IsMainWindowDataGridCountChanged || YukaListerModel.Instance.EnvModel.IsMainWindowDataGridItemUpdated)
+				{
+					UpdateDataGrid();
+				}
 			}
 			catch (Exception excep)
 			{
-				_timerUpdateDataGrid.Stop();
+				_timerUpdateUi.Stop();
 				YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(TraceEventType.Error, "タイマー時エラー：\n" + excep.Message);
 				YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, "　スタックトレース：\n" + excep.StackTrace);
 			}
@@ -471,6 +463,56 @@ namespace YukaLister.ViewModels
 			// ToDo: IsMainWindowDataGridItemUpdated のみが立っていた場合は効率よい処理方法があるのではないか
 			TargetFolderInfosVisible = YukaListerModel.Instance.ProjModel.TargetFolderInfosVisible();
 		}
+
+		// --------------------------------------------------------------------
+		// ゆかりすたー NEBULA 全体のエラーチェック
+		// --------------------------------------------------------------------
+		private void UpdateYukaListerStatusError()
+		{
+			if (!YukaListerModel.Instance.EnvModel.YlSettings.IsYukariConfigPathValid())
+			{
+				// ゆかり設定ファイルエラー
+				YukaListerModel.Instance.EnvModel.YukaListerStatus = YukaListerStatus.Error;
+				YukaListerStatusLabel = "ゆかり設定ファイルが正しく指定されていません。";
+				SetYukaListerStatusBackground();
+			}
+			else
+			{
+				// 正常
+				if (YukaListerModel.Instance.EnvModel.YukaListerStatus != YukaListerStatus.Running)
+				{
+					SetYukaListerStatusReady();
+				}
+			}
+		}
+
+		// --------------------------------------------------------------------
+		// ゆかりすたー NEBULA 全体の動作状況チェック
+		// --------------------------------------------------------------------
+		private void UpdateYukaListerStatusRunning()
+		{
+			TargetFolderInfo? targetFolderInfo = YukaListerModel.Instance.ProjModel.RunningTargetFolderInfo();
+			if (targetFolderInfo == null)
+			{
+				// 動作中のタスクが無くなった
+				YukaListerModel.Instance.EnvModel.YukaListerStatus = YukaListerStatus.Ready;
+				SetYukaListerStatusReady();
+			}
+			else
+			{
+				YukaListerStatusLabel = targetFolderInfo.FolderTaskDetail switch
+				{
+					FolderTaskDetail.CacheToDisk => YlConstants.RUNNING_CACHE_TO_DISK,
+					FolderTaskDetail.FindSubFolders => YlConstants.RUNNING_FIND_SUB_FOLDERS,
+					FolderTaskDetail.AddFileNames => YlConstants.RUNNING_ADD_FILE_NAMES,
+					FolderTaskDetail.AddInfos => YlConstants.RUNNING_ADD_INFOS,
+					FolderTaskDetail.Remove => YlConstants.RUNNING_REMOVE,
+					_ => String.Empty,
+				} + "...\n" + targetFolderInfo.Path;
+				SetYukaListerStatusBackground();
+			}
+		}
+
 
 	}
 }

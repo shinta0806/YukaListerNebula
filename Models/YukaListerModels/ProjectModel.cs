@@ -53,12 +53,6 @@ namespace YukaLister.Models.YukaListerModels
 		// 一般プロパティー
 		// --------------------------------------------------------------------
 
-		// ゆかり検索対象フォルダー（全部）
-		// この中から絞って VM の表示用に渡す
-		// アクセス時はロックが必要
-		// private にしてみる
-		private List<TargetFolderInfo> TargetFolderInfos { get; set; } = new();
-
 		// リスト更新タスク安全中断用
 		public CancellationTokenSource? ListCancellationTokenSource { get; set; }
 
@@ -95,9 +89,9 @@ namespace YukaLister.Models.YukaListerModels
 			targetFolderInfo.FolderTaskKind = FolderTaskKind.Add;
 			targetFolderInfo.FolderTaskDetail = FolderTaskDetail.CacheToDisk;
 			targetFolderInfo.Visible = true;
-			lock (TargetFolderInfos)
+			lock (_targetFolderInfos)
 			{
-				TargetFolderInfos.Add(targetFolderInfo);
+				_targetFolderInfos.Add(targetFolderInfo);
 				//TargetFolderInfos.Sort(TargetFolderInfo.Compare);
 			}
 
@@ -112,14 +106,14 @@ namespace YukaLister.Models.YukaListerModels
 		// --------------------------------------------------------------------
 		public void AddTargetSubFolders(TargetFolderInfo parentFolder, List<TargetFolderInfo> subFolders)
 		{
-			lock (TargetFolderInfos)
+			lock (_targetFolderInfos)
 			{
 				Int32 parentIndex = IndexOfTargetFolderInfoWithoutLock(parentFolder.Path);
 				if (parentIndex < 0)
 				{
 					return;
 				}
-				TargetFolderInfos.InsertRange(parentIndex + 1, subFolders);
+				_targetFolderInfos.InsertRange(parentIndex + 1, subFolders);
 			}
 
 			// サブフォルダーは非表示なのでアイテム数は変わらない、親のノブ表示が変わる
@@ -131,9 +125,9 @@ namespace YukaLister.Models.YukaListerModels
 		// --------------------------------------------------------------------
 		public TargetFolderInfo? FindTargetFolderInfo(FolderTaskDetail folderTaskDetail)
 		{
-			lock (TargetFolderInfos)
+			lock (_targetFolderInfos)
 			{
-				return TargetFolderInfos.FirstOrDefault(x => x.FolderTaskDetail == folderTaskDetail);
+				return _targetFolderInfos.FirstOrDefault(x => x.FolderTaskDetail == folderTaskDetail);
 			}
 		}
 
@@ -142,7 +136,7 @@ namespace YukaLister.Models.YukaListerModels
 		// --------------------------------------------------------------------
 		public Boolean IsTargetFolderAdded(List<TargetFolderInfo> folders)
 		{
-			lock (TargetFolderInfos)
+			lock (_targetFolderInfos)
 			{
 				for (Int32 i = 0; i < folders.Count; i++)
 				{
@@ -160,17 +154,28 @@ namespace YukaLister.Models.YukaListerModels
 		// --------------------------------------------------------------------
 		public Boolean RemoveTargetFolder(String path)
 		{
-			lock (TargetFolderInfos)
+			lock (_targetFolderInfos)
 			{
 				Int32 index = IndexOfTargetFolderInfoWithoutLock(path);
 				if (index < 0)
 				{
 					return false;
 				}
-				TargetFolderInfos.RemoveAt(index);
+				_targetFolderInfos.RemoveAt(index);
 			}
 			YukaListerModel.Instance.EnvModel.IsMainWindowDataGridCountChanged = true;
 			return true;
+		}
+
+		// --------------------------------------------------------------------
+		// FolderTaskStatus が Running の TargetFolderInfo を取得
+		// --------------------------------------------------------------------
+		public TargetFolderInfo? RunningTargetFolderInfo()
+		{
+			lock (_targetFolderInfos)
+			{
+				return _targetFolderInfos.FirstOrDefault(x => x.FolderTaskStatus == FolderTaskStatus.Running);
+			}
 		}
 
 		// --------------------------------------------------------------------
@@ -178,14 +183,14 @@ namespace YukaLister.Models.YukaListerModels
 		// --------------------------------------------------------------------
 		public void SetAllFolderTaskStatusToDoneInDisk()
 		{
-			lock (TargetFolderInfos)
+			lock (_targetFolderInfos)
 			{
-				for (Int32 i = 0; i < TargetFolderInfos.Count; i++)
+				for (Int32 i = 0; i < _targetFolderInfos.Count; i++)
 				{
-					if (TargetFolderInfos[i].FolderTaskStatus == FolderTaskStatus.DoneInMemory)
+					if (_targetFolderInfos[i].FolderTaskStatus == FolderTaskStatus.DoneInMemory)
 					{
-						Debug.Assert(TargetFolderInfos[i].FolderTaskDetail == FolderTaskDetail.Done, "SetAllFolderTaskStatusToDoneInDisk() not done");
-						TargetFolderInfos[i].FolderTaskStatus = FolderTaskStatus.DoneInDisk;
+						Debug.Assert(_targetFolderInfos[i].FolderTaskDetail == FolderTaskDetail.Done, "SetAllFolderTaskStatusToDoneInDisk() not done");
+						_targetFolderInfos[i].FolderTaskStatus = FolderTaskStatus.DoneInDisk;
 					}
 				}
 			}
@@ -197,9 +202,9 @@ namespace YukaLister.Models.YukaListerModels
 		// --------------------------------------------------------------------
 		public List<TargetFolderInfo> TargetFolderInfosVisible()
 		{
-			lock (TargetFolderInfos)
+			lock (_targetFolderInfos)
 			{
-				return TargetFolderInfos.Where(x => x.Visible).ToList();
+				return _targetFolderInfos.Where(x => x.Visible).ToList();
 			}
 		}
 
@@ -208,7 +213,7 @@ namespace YukaLister.Models.YukaListerModels
 		// --------------------------------------------------------------------
 		public void UpdateTargetFolderInfosVisible(TargetFolderInfo parentFolder)
 		{
-			lock (TargetFolderInfos)
+			lock (_targetFolderInfos)
 			{
 				Int32 parentIndex = IndexOfTargetFolderInfoWithoutLock(parentFolder.Path);
 				if (parentIndex < 0)
@@ -225,12 +230,21 @@ namespace YukaLister.Models.YukaListerModels
 					// すべてのサブフォルダーを非表示にする
 					for (Int32 i = parentIndex + 1; i < parentIndex + parentFolder.NumTotalFolders; i++)
 					{
-						TargetFolderInfos[i].Visible = false;
+						_targetFolderInfos[i].Visible = false;
 					}
 				}
 			}
 			YukaListerModel.Instance.EnvModel.IsMainWindowDataGridCountChanged = true;
 		}
+
+		// ====================================================================
+		// private メンバー変数
+		// ====================================================================
+
+		// ゆかり検索対象フォルダー（全部）
+		// この中から絞って VM の表示用に渡す
+		// アクセス時はロックが必要
+		private List<TargetFolderInfo> _targetFolderInfos = new();
 
 		// ====================================================================
 		// private メンバー関数
@@ -241,7 +255,7 @@ namespace YukaLister.Models.YukaListerModels
 		// --------------------------------------------------------------------
 		private Int32 IndexOfTargetFolderInfoWithLock(String path)
 		{
-			lock (TargetFolderInfos)
+			lock (_targetFolderInfos)
 			{
 				return IndexOfTargetFolderInfoWithoutLock(path);
 			}
@@ -254,10 +268,10 @@ namespace YukaLister.Models.YukaListerModels
 		// --------------------------------------------------------------------
 		private Int32 IndexOfTargetFolderInfoWithoutLock(String path)
 		{
-			Debug.Assert(Monitor.IsEntered(TargetFolderInfos), "IndexOfTargetFolderInfoWithoutLock() not locked");
-			for (Int32 i = 0; i < TargetFolderInfos.Count; i++)
+			Debug.Assert(Monitor.IsEntered(_targetFolderInfos), "IndexOfTargetFolderInfoWithoutLock() not locked");
+			for (Int32 i = 0; i < _targetFolderInfos.Count; i++)
 			{
-				if (YlCommon.IsSamePath(path, TargetFolderInfos[i].Path))
+				if (YlCommon.IsSamePath(path, _targetFolderInfos[i].Path))
 				{
 					return i;
 				}
@@ -270,16 +284,16 @@ namespace YukaLister.Models.YukaListerModels
 		// --------------------------------------------------------------------
 		private void SetTargetFolderInfosVisibleToTrue(Int32 parentIndex)
 		{
-			Debug.Assert(Monitor.IsEntered(TargetFolderInfos), "SetTargetFolderInfosVisibleToTrue() not locked");
+			Debug.Assert(Monitor.IsEntered(_targetFolderInfos), "SetTargetFolderInfosVisibleToTrue() not locked");
 			Int32 index = parentIndex + 1;
-			while (index < parentIndex + TargetFolderInfos[parentIndex].NumTotalFolders)
+			while (index < parentIndex + _targetFolderInfos[parentIndex].NumTotalFolders)
 			{
-				TargetFolderInfos[index].Visible = true;
-				if (TargetFolderInfos[index].IsOpen == true)
+				_targetFolderInfos[index].Visible = true;
+				if (_targetFolderInfos[index].IsOpen == true)
 				{
 					SetTargetFolderInfosVisibleToTrue(index);
 				}
-				index += TargetFolderInfos[index].NumTotalFolders;
+				index += _targetFolderInfos[index].NumTotalFolders;
 			}
 		}
 

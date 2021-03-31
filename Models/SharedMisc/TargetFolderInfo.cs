@@ -259,19 +259,19 @@ namespace YukaLister.Models.SharedMisc
 					switch (FolderTaskDetail)
 					{
 						case FolderTaskDetail.CacheToDisk:
-							label = "キャッシュ有効化中";
+							label = YlConstants.RUNNING_CACHE_TO_DISK;
 							break;
 						case FolderTaskDetail.FindSubFolders:
-							label = "サブフォルダー検索中";
+							label = YlConstants.RUNNING_FIND_SUB_FOLDERS;
 							break;
 						case FolderTaskDetail.AddFileNames:
-							label = "ファイル名確認中";
+							label = YlConstants.RUNNING_ADD_FILE_NAMES;
 							break;
 						case FolderTaskDetail.AddInfos:
-							label = "属性確認中";
+							label = YlConstants.RUNNING_ADD_INFOS;
 							break;
 						case FolderTaskDetail.Remove:
-							label = "削除中";
+							label = YlConstants.RUNNING_REMOVE;
 							break;
 						case FolderTaskDetail.Done:
 							Debug.Assert(false, "FolderTaskStatusLabelAndBrush() done but Running");

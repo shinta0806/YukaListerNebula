@@ -33,7 +33,7 @@
     </behaviors:Interaction.Triggers>
 
     <DockPanel>
-        <Label DockPanel.Dock="Top" Content="{Binding YukaListerStatusLabel}" Background="{Binding YukaListerStatusBackground}" Margin="20,5,20,0" VerticalAlignment="Center" Height="30" VerticalContentAlignment="Center" Padding="5,0" />
+        <Label DockPanel.Dock="Top" Content="{Binding YukaListerStatusLabel}" Background="{Binding YukaListerStatusBackground}" Margin="20,5,20,0" VerticalAlignment="Center" Height="35" VerticalContentAlignment="Center" Padding="5,0" />
         <DockPanel DockPanel.Dock="Top" Margin="20,5,20,0">
             <Label Content="検索可能ファイル数：" />
             <Label />

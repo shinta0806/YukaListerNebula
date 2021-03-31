@@ -214,6 +214,16 @@ namespace YukaLister.Models.SharedMisc
 		public static readonly SolidColorBrush BRUSH_EXCLUDE = new(COLOR_EXCLUDE);
 
 		// --------------------------------------------------------------------
+		// 実行中
+		// --------------------------------------------------------------------
+
+		public const String RUNNING_CACHE_TO_DISK = "キャッシュ有効化中";
+		public const String RUNNING_FIND_SUB_FOLDERS = "サブフォルダー検索中";
+		public const String RUNNING_ADD_FILE_NAMES = "ファイル名確認中";
+		public const String RUNNING_ADD_INFOS = "属性確認中";
+		public const String RUNNING_REMOVE = "削除中";
+
+		// --------------------------------------------------------------------
 		// その他
 		// --------------------------------------------------------------------
 
