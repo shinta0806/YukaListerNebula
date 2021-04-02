@@ -8,6 +8,7 @@
 //
 // ----------------------------------------------------------------------------
 
+using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
 using Shinta;
 using System;
@@ -19,6 +20,9 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using YukaLister.Models.Database;
+using YukaLister.Models.Database.Aliases;
+using YukaLister.Models.Database.Masters;
+using YukaLister.Models.Database.Sequences;
 using YukaLister.Models.DatabaseContexts;
 using YukaLister.Models.SharedMisc;
 using YukaLister.Models.YukaListerModels;
@@ -230,6 +234,7 @@ namespace YukaLister.Models.YukaListerCores
 				TFound record = new();
 				record.Uid = uid;
 				record.Path = path;
+				record.Folder = Path.GetDirectoryName(path) ?? String.Empty;
 				record.ParentFolder = targetFolderInfo.ParentPath;
 
 				// 楽曲名とファイルサイズが両方とも初期値だと、ゆかりが検索結果をまとめてしまうため、ダミーのファイルサイズを入れる
@@ -263,7 +268,7 @@ namespace YukaLister.Models.YukaListerCores
 			SetFolderTaskStatus(targetFolderInfo, FolderTaskStatus.Running);
 
 			// 作業
-			// ToDo: 未実装
+			AddInfosCore(targetFolderInfo);
 #if DEBUG
 			Thread.Sleep(500);
 #endif
@@ -271,6 +276,41 @@ namespace YukaLister.Models.YukaListerCores
 			// 動作状況設定
 			targetFolderInfo.FolderTaskDetail = FolderTaskDetail.Done;
 			SetFolderTaskStatus(targetFolderInfo, FolderTaskStatus.DoneInMemory);
+		}
+
+		// --------------------------------------------------------------------
+		// 検出ファイルリストテーブルにファイル情報を追加
+		// AddFileNames() で追加されない情報をすべて付与する
+		// ファイルは再帰検索しない
+		// --------------------------------------------------------------------
+		private void AddInfosCore(TargetFolderInfo targetFolderInfo)
+		{
+			// フォルダー設定を読み込む
+			FolderSettingsInDisk folderSettingsInDisk = YlCommon.LoadFolderSettings2Ex(targetFolderInfo.Path);
+			FolderSettingsInMemory folderSettingsInMemory = YlCommon.CreateFolderSettingsInMemory(folderSettingsInDisk);
+
+			using ListContextInMemory listContextInMemory = ListContextInMemory.CreateContext(out DbSet<TFound> founds);
+			using TFoundSetter foundSetter = new(founds);
+
+			// 指定フォルダーの全レコード
+			IQueryable<TFound> targetRecords = founds.Where(x => x.Folder == targetFolderInfo.Path);
+
+			// 情報付与
+			foreach (TFound record in targetRecords)
+			{
+				FileInfo fileInfo = new(record.Path);
+				record.LastWriteTime = JulianDay.DateTimeToModifiedJulianDate(fileInfo.LastWriteTime);
+				record.FileSize = fileInfo.Length;
+
+				// ToDo: aTFoundSetter
+
+				YukaListerModel.Instance.EnvModel.AppCancellationTokenSource.Token.ThrowIfCancellationRequested();
+			}
+
+			// ToDo: タグ付与
+
+			// コミット
+			listContextInMemory.SaveChanges();
 		}
 
 		// --------------------------------------------------------------------
@@ -380,9 +420,19 @@ namespace YukaLister.Models.YukaListerCores
 		// --------------------------------------------------------------------
 		private void MemoryToDisk()
 		{
-			// ToDo: 未実装
-			YukaListerModel.Instance.ProjModel.SetAllFolderTaskStatusToDoneInDisk();
-			_isMemoryDbDirty = false;
+			using ListContextInMemory listContextInMemory = ListContextInMemory.CreateContext(out DbSet<TFound> f);
+#if DEBUG
+			Debug.WriteLine("MemoryToDisk test: " + (f.FirstOrDefault()?.LastWriteTime ?? 0).ToString());
+#endif
+			using SqliteConnection? sqliteConnectionInMemory = listContextInMemory.Database.GetDbConnection() as SqliteConnection;
+			using ListContextInDisk listContextInDisk = ListContextInDisk.CreateContext(out DbSet<TFound> _);
+			using SqliteConnection? sqliteConnectionInDisk = listContextInDisk.Database.GetDbConnection() as SqliteConnection;
+			if (sqliteConnectionInMemory != null && sqliteConnectionInDisk != null)
+			{
+				sqliteConnectionInMemory.BackupDatabase(sqliteConnectionInDisk);
+				YukaListerModel.Instance.ProjModel.SetAllFolderTaskStatusToDoneInDisk();
+				_isMemoryDbDirty = false;
+			}
 		}
 
 		// --------------------------------------------------------------------

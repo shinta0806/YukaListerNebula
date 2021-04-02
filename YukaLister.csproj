@@ -23,6 +23,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Compile Include="..\..\_Common\JulianDay.cs" Link="_Common\JulianDay.cs" />
     <Compile Include="..\..\_Common\LogWriter.cs" Link="_Common\LogWriter.cs" />
     <Compile Include="..\..\_Common\ShintaCommon.cs" Link="_Common\ShintaCommon.cs" />
     <Compile Include="..\..\_Common\ShintaCommonWindows.cs" Link="_Common\ShintaCommonWindows.cs" />

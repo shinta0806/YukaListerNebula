@@ -78,6 +78,7 @@ namespace YukaLister.Models.DatabaseContexts
 		{
 			// 検出ファイルリストテーブル
 			modelBuilder.Entity<TFound>().HasIndex(x => x.Path);
+			modelBuilder.Entity<TFound>().HasIndex(x => x.Folder);
 			modelBuilder.Entity<TFound>().HasIndex(x => x.ParentFolder);
 			modelBuilder.Entity<TFound>().HasIndex(x => x.Head);
 			modelBuilder.Entity<TFound>().HasIndex(x => x.LastWriteTime);

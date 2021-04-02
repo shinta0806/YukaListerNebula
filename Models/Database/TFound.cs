@@ -36,9 +36,12 @@ namespace YukaLister.Models.Database
 		[Column(FIELD_NAME_FOUND_PATH)]
 		public String Path { get; set; } = String.Empty;
 
-		// 親フォルダー（項目削除用）
-		// METEOR 時代の Folder とは異なり、親フォルダー名を使用する（フォルダー削除時の速度優先、フォルダー除外の新規指定はレアケースなので通常の更新処理で反映する）
+		// フォルダー
 		[Column(FIELD_NAME_FOUND_FOLDER)]
+		public String Folder { get; set; } = String.Empty;
+
+		// 親フォルダー（追加ボタンをクリックした時のフォルダー）（項目削除用）
+		[Column(FIELD_NAME_FOUND_PARENT_FOLDER)]
 		public String ParentFolder { get; set; } = String.Empty;
 
 		// 頭文字（通常は番組名の頭文字、通常はひらがな（濁点なし））
@@ -226,6 +229,7 @@ namespace YukaLister.Models.Database
 		public const String FIELD_NAME_FOUND_UID = "found_uid";
 		public const String FIELD_NAME_FOUND_PATH = "found_path";
 		public const String FIELD_NAME_FOUND_FOLDER = "found_folder";
+		public const String FIELD_NAME_FOUND_PARENT_FOLDER = "found_parent_folder";
 		public const String FIELD_NAME_FOUND_HEAD = "found_head";
 		public const String FIELD_NAME_FOUND_TITLE_RUBY = "found_title_ruby";
 		public const String FIELD_NAME_FOUND_WORKER = "found_worker";

@@ -154,11 +154,6 @@ namespace YukaLister.Models.SharedMisc
 		// --------------------------------------------------------------------
 		private void Adjust()
 		{
-			// Load() 時に TargetExts が null となるかもしれないので対応
-			if (TargetExts == null)
-			{
-				TargetExts = new();
-			}
 			if (TargetExts.Count == 0)
 			{
 				// 動画の拡張子をアルファベット順に追加（比較的メジャーで現在もサポートが行われている形式のみ）
@@ -170,10 +165,6 @@ namespace YukaLister.Models.SharedMisc
 				TargetExts.Add(Common.FILE_EXT_WMV);
 			}
 #if false
-			if (YukaListerSettings.LastIdNumbers == null)
-			{
-				YukaListerSettings.LastIdNumbers = new List<Int32>();
-			}
 			if (YukaListerSettings.LastIdNumbers.Count < (Int32)MusicInfoDbTables.__End__)
 			{
 				YukaListerSettings.LastIdNumbers.Clear();
