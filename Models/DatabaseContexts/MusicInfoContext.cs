@@ -8,13 +8,12 @@
 //
 // ----------------------------------------------------------------------------
 
-using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
 
 using Shinta;
 
 using System;
-using System.Data.Common;
+
 using YukaLister.Models.Database;
 using YukaLister.Models.Database.Aliases;
 using YukaLister.Models.Database.Masters;

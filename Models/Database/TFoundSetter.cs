@@ -126,7 +126,10 @@ namespace YukaLister.Models.Database
 			record.TieUpName = record.TieUpName == null ? dicByFile[YlConstants.RULE_VAR_PROGRAM] : record.TieUpName;
 			record.TieUpAgeLimit = record.TieUpAgeLimit == 0 ? Common.StringToInt32(dicByFile[YlConstants.RULE_VAR_AGE_LIMIT]) : record.TieUpAgeLimit;
 			record.SongOpEd = record.SongOpEd == null ? dicByFile[YlConstants.RULE_VAR_OP_ED] : record.SongOpEd;
-			record.SongName = record.SongName == null ? dicByFile[YlConstants.RULE_VAR_TITLE] : record.SongName;
+			if (record.SongName == null)
+			{
+				record.SongName = dicByFile[YlConstants.RULE_VAR_TITLE] != null ? dicByFile[YlConstants.RULE_VAR_TITLE] : Path.GetFileNameWithoutExtension(record.Path);
+			}
 
 			// SongId が無い場合は楽曲名を採用（フォルダー設定の歌手名やタグを紐付できるように）
 			if (String.IsNullOrEmpty(record.SongId))
