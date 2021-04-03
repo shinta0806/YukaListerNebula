@@ -53,7 +53,7 @@ namespace YukaLister.Models.DatabaseContexts
 		// --------------------------------------------------------------------
 		public static void CreateDatabase()
 		{
-			YukaListerModel.Instance.EnvModel.LogWriter.LogMessage(Common.TRACE_EVENT_TYPE_STATUS, "リストデータベースを準備しています...");
+			YukaListerModel.Instance.EnvModel.LogWriter.LogMessage(Common.TRACE_EVENT_TYPE_STATUS, "ゆかり用リストデータベース初期化中...");
 
 			// クリア
 			using ListContextInDisk listContext = CreateContext(out DbSet<TProperty> properties);
@@ -63,7 +63,7 @@ namespace YukaLister.Models.DatabaseContexts
 			listContext.Database.EnsureCreated();
 			DbCommon.UpdateProperty(listContext, properties);
 
-			YukaListerModel.Instance.EnvModel.LogWriter.LogMessage(Common.TRACE_EVENT_TYPE_STATUS, "リストデータベースを作成しました。");
+			YukaListerModel.Instance.EnvModel.LogWriter.LogMessage(Common.TRACE_EVENT_TYPE_STATUS, "ゆかり用リストデータベースを初期化しました。");
 		}
 
 		// ====================================================================

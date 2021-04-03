@@ -108,10 +108,11 @@ namespace YukaLister.Models.YukaListerCores
 							continue;
 						}
 
-						// メモリー DB → ディスク DB
+						// メモリー DB → ディスク DB とキャッシュ DB
 						if (_isMemoryDbDirty)
 						{
 							MemoryToDisk();
+							MemoryToCache();
 							continue;
 						}
 
@@ -256,16 +257,18 @@ namespace YukaLister.Models.YukaListerCores
 				using ListContextInDisk listContextInDisk = ListContextInDisk.CreateContext(out DbSet<TFound> diskFounds);
 				diskFounds.AddRange(addRecords);
 				listContextInDisk.SaveChanges();
+				YukaListerModel.Instance.EnvModel.LogWriter.LogMessage(Common.TRACE_EVENT_TYPE_STATUS, "ゆかり用リストデータベースにファイル名を追加しました。" + targetFolderInfo.Path);
 			}
 		}
 
 		// --------------------------------------------------------------------
-		// 検出ファイルリストテーブルにファイル情報を追加
+		// 検出ファイルリストテーブルに属性を追加
 		// --------------------------------------------------------------------
 		private void AddInfos(TargetFolderInfo targetFolderInfo)
 		{
 			// 動作状況設定
 			SetFolderTaskStatus(targetFolderInfo, FolderTaskStatus.Running);
+			YukaListerModel.Instance.EnvModel.LogWriter.LogMessage(Common.TRACE_EVENT_TYPE_STATUS, "属性確認中... " + targetFolderInfo.Path);
 
 			// 作業
 			AddInfosCore(targetFolderInfo);
@@ -417,6 +420,21 @@ namespace YukaLister.Models.YukaListerCores
 		}
 
 		// --------------------------------------------------------------------
+		// メモリー DB → キャッシュ DB
+		// --------------------------------------------------------------------
+		private void MemoryToCache()
+		{
+			using ListContextInMemory listContextInMemory = ListContextInMemory.CreateContext(out DbSet<TFound> founds);
+			IQueryable<String> parentFolders = founds.GroupBy(x => x.ParentFolder).Select(x => x.Key);
+			foreach (String parentFolder in parentFolders)
+			{
+				using CacheContext cacheContext = new(parentFolder[0..2]);
+				IQueryable<TFound> records = founds.Where(x => x.ParentFolder == parentFolder);
+				cacheContext.UpdateCache(records);
+			}
+		}
+
+		// --------------------------------------------------------------------
 		// メモリー DB → ディスク DB
 		// --------------------------------------------------------------------
 		private void MemoryToDisk()
@@ -428,6 +446,7 @@ namespace YukaLister.Models.YukaListerCores
 			if (sqliteConnectionInMemory != null && sqliteConnectionInDisk != null)
 			{
 				sqliteConnectionInMemory.BackupDatabase(sqliteConnectionInDisk);
+				YukaListerModel.Instance.EnvModel.LogWriter.LogMessage(Common.TRACE_EVENT_TYPE_STATUS, "ゆかり用リストデータベースの作成が完了しました。");
 				YukaListerModel.Instance.ProjModel.SetAllFolderTaskStatusToDoneInDisk();
 				_isMemoryDbDirty = false;
 			}

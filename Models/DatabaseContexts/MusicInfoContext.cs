@@ -182,7 +182,7 @@ namespace YukaLister.Models.DatabaseContexts
 		public static void CreateDatabase()
 		{
 			BackupDatabase();
-			YukaListerModel.Instance.EnvModel.LogWriter.LogMessage(Common.TRACE_EVENT_TYPE_STATUS, "楽曲情報データベースを準備しています...");
+			YukaListerModel.Instance.EnvModel.LogWriter.LogMessage(Common.TRACE_EVENT_TYPE_STATUS, "楽曲情報データベース初期化中...");
 
 			// クリア
 			using MusicInfoContext musicInfoContext = CreateContext(out DbSet<TProperty> properties);
@@ -196,7 +196,7 @@ namespace YukaLister.Models.DatabaseContexts
 			musicInfoContext.Database.EnsureCreated();
 			DbCommon.UpdateProperty(musicInfoContext, properties);
 
-			YukaListerModel.Instance.EnvModel.LogWriter.LogMessage(Common.TRACE_EVENT_TYPE_STATUS, "楽曲情報データベースを作成しました。");
+			YukaListerModel.Instance.EnvModel.LogWriter.LogMessage(Common.TRACE_EVENT_TYPE_STATUS, "楽曲情報データベースを初期化しました。");
 		}
 
 		// --------------------------------------------------------------------

@@ -340,7 +340,7 @@ namespace YukaLister.Models.SharedMisc
 				return null;
 			}
 
-			StringBuilder katakana = new ();
+			StringBuilder katakana = new();
 
 			for (Int32 i = 0; i < str.Length; i++)
 			{
@@ -426,6 +426,14 @@ namespace YukaLister.Models.SharedMisc
 			}
 
 			return normalizedString;
+		}
+
+		// --------------------------------------------------------------------
+		// 現在時刻（UTC）の修正ユリウス日
+		// --------------------------------------------------------------------
+		public static Double UtcNowModifiedJulianDate()
+		{
+			return JulianDay.DateTimeToModifiedJulianDate(DateTime.UtcNow);
 		}
 
 		// ====================================================================

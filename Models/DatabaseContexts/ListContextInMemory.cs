@@ -73,7 +73,7 @@ namespace YukaLister.Models.DatabaseContexts
 		// --------------------------------------------------------------------
 		public static void CreateDatabase()
 		{
-			YukaListerModel.Instance.EnvModel.LogWriter.LogMessage(Common.TRACE_EVENT_TYPE_STATUS, "インメモリデータベースを準備しています...");
+			YukaListerModel.Instance.EnvModel.LogWriter.LogMessage(Common.TRACE_EVENT_TYPE_STATUS, "インメモリデータベース初期化中...");
 
 			// 新規作成
 			_listContextInMemory = CreateContext(out DbSet<TProperty> properties);
@@ -86,7 +86,7 @@ namespace YukaLister.Models.DatabaseContexts
 			Debug.WriteLine("CreateDatabase() count2: " + properties2.Count());
 #endif
 
-			YukaListerModel.Instance.EnvModel.LogWriter.LogMessage(Common.TRACE_EVENT_TYPE_STATUS, "インメモリデータベースを作成しました。");
+			YukaListerModel.Instance.EnvModel.LogWriter.LogMessage(Common.TRACE_EVENT_TYPE_STATUS, "インメモリデータベースを初期化しました。");
 		}
 
 		// ====================================================================
