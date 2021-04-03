@@ -9,15 +9,19 @@
 // ----------------------------------------------------------------------------
 
 using Microsoft.EntityFrameworkCore;
+
+using Shinta;
+
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+
 using YukaLister.Models.Database.Aliases;
 using YukaLister.Models.Database.Masters;
 using YukaLister.Models.Database.Sequences;
 using YukaLister.Models.DatabaseContexts;
+using YukaLister.Models.SharedMisc;
 
 namespace YukaLister.Models.Database
 {
@@ -30,9 +34,17 @@ namespace YukaLister.Models.Database
 		// --------------------------------------------------------------------
 		// コンストラクター
 		// --------------------------------------------------------------------
-		public TFoundSetter(DbSet<TFound> founds)
+		public TFoundSetter(ListContextInMemory listContextInMemory, DbSet<TFound> listFounds,
+				DbSet<TPerson> listPeople, DbSet<TArtistSequence> listArtistSequences, DbSet<TComposerSequence> listComposerSequences,
+				DbSet<TTag> listTags, DbSet<TTagSequence> listTagSequences)
 		{
-			_founds = founds;
+			_listContextInMemory = listContextInMemory;
+			_listFounds = listFounds;
+			_listPeople = listPeople;
+			_listArtistSequences = listArtistSequences;
+			_listComposerSequences = listComposerSequences;
+			_listTags = listTags;
+			_listTagSequences = listTagSequences;
 			_musicInfoContext = MusicInfoContext.CreateContext(out _properties,
 					out _songs, out _people, out _tieUps, out _categories,
 					out _tieUpGroups, out _makers, out _tags,
@@ -40,6 +52,7 @@ namespace YukaLister.Models.Database
 					out _categoryAliases, out _tieUpGroupAliases, out _makerAliases,
 					out _artistSequences, out _lyristSequences, out _composerSequences, out _arrangerSequences,
 					out _tieUpGroupSequences, out _tagSequences);
+			_categoryNames = DbCommon.SelectCategoryNames(_categories);
 		}
 
 		// ====================================================================
@@ -53,6 +66,144 @@ namespace YukaLister.Models.Database
 		{
 			Dispose(true);
 			GC.SuppressFinalize(this);
+		}
+
+		// --------------------------------------------------------------------
+		// 別名から元のタイアップ名を取得
+		// --------------------------------------------------------------------
+		public virtual String? ProgramOrigin(String? alias)
+		{
+			if (String.IsNullOrEmpty(alias))
+			{
+				return null;
+			}
+
+			// タイアップマスターテーブルに登録済みの名前の場合は、別名解決しない
+			if (DbCommon.SelectMastersByName(_tieUps, alias).Any())
+			{
+				return alias;
+			}
+
+			// ToDo: METEOR 時代は SQL で高速化していた
+			TTieUpAlias? tieUpAlias = DbCommon.SelectAliasByAlias(_tieUpAliases, alias);
+			if (tieUpAlias != null)
+			{
+				TTieUp? tieUp = DbCommon.SelectBaseById(_tieUps, tieUpAlias.OriginalId);
+				if (tieUp != null)
+				{
+					// 元のタイアップ名
+					return tieUp.Name;
+				}
+			}
+
+			// 別名が見つからない場合はそのまま返す
+			return alias;
+		}
+
+		// --------------------------------------------------------------------
+		// 検出ファイルレコードの値を、フォルダー設定や楽曲情報データベースから検索して設定する
+		// oRecord.Path は事前に設定されている必要がある
+		// --------------------------------------------------------------------
+		public void SetTFoundValues(TFound record, FolderSettingsInMemory folderSettingsInMemory)
+		{
+			// ファイル名・フォルダー固定値と合致する命名規則を探す
+			Dictionary<String, String?> dicByFile = YlCommon.MatchFileNameRulesAndFolderRuleForListContext(Path.GetFileNameWithoutExtension(record.Path), folderSettingsInMemory);
+			dicByFile[YlConstants.RULE_VAR_PROGRAM] = ProgramOrigin(dicByFile[YlConstants.RULE_VAR_PROGRAM]);
+			dicByFile[YlConstants.RULE_VAR_TITLE] = SongOrigin(dicByFile[YlConstants.RULE_VAR_TITLE]);
+			if (dicByFile[YlConstants.RULE_VAR_CATEGORY] != null)
+			{
+				if (!_categoryNames.Contains(dicByFile[YlConstants.RULE_VAR_CATEGORY]!))
+				{
+					dicByFile[YlConstants.RULE_VAR_CATEGORY] = null;
+				}
+			}
+
+			// 楽曲情報データベースを適用
+			SetTFoundValuesByMusicInfoDatabase(record, dicByFile);
+
+			// 楽曲情報データベースに無かった項目をファイル名・フォルダー固定値から取得
+			record.Category = record.Category == null ? dicByFile[YlConstants.RULE_VAR_CATEGORY] : record.Category;
+			record.TieUpName = record.TieUpName == null ? dicByFile[YlConstants.RULE_VAR_PROGRAM] : record.TieUpName;
+			record.TieUpAgeLimit = record.TieUpAgeLimit == 0 ? Common.StringToInt32(dicByFile[YlConstants.RULE_VAR_AGE_LIMIT]) : record.TieUpAgeLimit;
+			record.SongOpEd = record.SongOpEd == null ? dicByFile[YlConstants.RULE_VAR_OP_ED] : record.SongOpEd;
+			record.SongName = record.SongName == null ? dicByFile[YlConstants.RULE_VAR_TITLE] : record.SongName;
+
+			// SongId が無い場合は楽曲名を採用（フォルダー設定の歌手名やタグを紐付できるように）
+			if (String.IsNullOrEmpty(record.SongId))
+			{
+				record.SongId = TEMP_ID_PREFIX + record.SongName;
+			}
+
+			SetTFoundArtistByDic(record, dicByFile);
+			record.SongRuby = record.SongRuby == null ? dicByFile[YlConstants.RULE_VAR_TITLE_RUBY] : record.SongRuby;
+			record.Worker = record.Worker == null ? dicByFile[YlConstants.RULE_VAR_WORKER] : record.Worker;
+			record.Track = record.Track == null ? dicByFile[YlConstants.RULE_VAR_TRACK] : record.Track;
+			record.SmartTrackOnVocal = !record.SmartTrackOnVocal ? dicByFile[YlConstants.RULE_VAR_ON_VOCAL] != null : record.SmartTrackOnVocal;
+			record.SmartTrackOffVocal = !record.SmartTrackOffVocal ? dicByFile[YlConstants.RULE_VAR_OFF_VOCAL] != null : record.SmartTrackOffVocal;
+			record.Comment = record.Comment == null ? dicByFile[YlConstants.RULE_VAR_COMMENT] : record.Comment;
+
+			// トラック情報からスマートトラック解析
+			(Boolean hasOn, Boolean hasOff) = AnalyzeSmartTrack(record.Track);
+			record.SmartTrackOnVocal |= hasOn;
+			record.SmartTrackOffVocal |= hasOff;
+
+			// ルビが無い場合は漢字を採用
+			if (String.IsNullOrEmpty(record.TieUpRuby))
+			{
+				record.TieUpRuby = record.TieUpName;
+			}
+			if (String.IsNullOrEmpty(record.SongRuby))
+			{
+				record.SongRuby = record.SongName;
+			}
+
+			// 頭文字
+			if (!String.IsNullOrEmpty(record.TieUpRuby))
+			{
+				record.Head = YlCommon.Head(record.TieUpRuby);
+			}
+			else
+			{
+				record.Head = YlCommon.Head(record.SongRuby);
+			}
+
+			// 番組名が無い場合は頭文字を採用（ボカロ曲等のリスト化用）
+			if (String.IsNullOrEmpty(record.TieUpName))
+			{
+				record.TieUpName = record.Head;
+			}
+		}
+
+		// --------------------------------------------------------------------
+		// 別名から元の楽曲名を取得
+		// --------------------------------------------------------------------
+		public virtual String? SongOrigin(String? alias)
+		{
+			if (String.IsNullOrEmpty(alias))
+			{
+				return null;
+			}
+
+			// 楽曲マスターテーブルに登録済みの名前の場合は、別名解決しない
+			if (DbCommon.SelectMastersByName(_songs, alias).Any())
+			{
+				return alias;
+			}
+
+			// ToDo: METEOR 時代は SQL で高速化していた
+			TSongAlias? songAlias = DbCommon.SelectAliasByAlias(_songAliases, alias);
+			if (songAlias != null)
+			{
+				TSong? song = DbCommon.SelectBaseById(_songs, songAlias.OriginalId);
+				if (song != null)
+				{
+					// 元の楽曲名
+					return song.Name;
+				}
+			}
+
+			// 別名が見つからない場合はそのまま返す
+			return alias;
 		}
 
 		// ====================================================================
@@ -84,6 +235,17 @@ namespace YukaLister.Models.Database
 		}
 
 		// ====================================================================
+		// private メンバー定数
+		// ====================================================================
+
+		// スマートトラック判定用の単語（小文字表記、両端を | で括る）
+		private const String OFF_VOCAL_WORDS = "|cho|cut|dam|guide|guidevocal|inst|joy|off|offcho|offvocal|offのみ|vc|オフ|オフボ|オフボーカル|ボイキャン|ボーカルキャンセル|配信|";
+		private const String BOTH_VOCAL_WORDS = "|2tr|2ch|onoff|offon|";
+
+		// 一時的に付与する ID の接頭辞
+		private const String TEMP_ID_PREFIX = "!";
+
+		// ====================================================================
 		// private メンバー変数
 		// ====================================================================
 
@@ -92,83 +254,98 @@ namespace YukaLister.Models.Database
 		// --------------------------------------------------------------------
 
 		// データベースプロパティーテーブル
-		public DbSet<TProperty> _properties;
+		private DbSet<TProperty> _properties;
 
 		// --------------------------------------------------------------------
 		// マスターテーブル
 		// --------------------------------------------------------------------
 
 		// 楽曲マスターテーブル
-		public DbSet<TSong> _songs;
+		private DbSet<TSong> _songs;
 
 		// 人物マスターテーブル
-		public DbSet<TPerson> _people;
+		private DbSet<TPerson> _people;
 
 		// タイアップマスターテーブル
-		public DbSet<TTieUp> _tieUps;
+		private DbSet<TTieUp> _tieUps;
 
 		// カテゴリーマスターテーブル
-		public DbSet<TCategory> _categories;
+		private DbSet<TCategory> _categories;
 
 		// タイアップグループマスターテーブル
-		public DbSet<TTieUpGroup> _tieUpGroups;
+		private DbSet<TTieUpGroup> _tieUpGroups;
 
 		// 制作会社マスターテーブル
-		public DbSet<TMaker> _makers;
+		private DbSet<TMaker> _makers;
 
 		// タグマスターテーブル
-		public DbSet<TTag> _tags;
+		private DbSet<TTag> _tags;
 
 		// --------------------------------------------------------------------
 		// 別名テーブル
 		// --------------------------------------------------------------------
 
 		// 楽曲別名テーブル
-		public DbSet<TSongAlias> _songAliases;
+		private DbSet<TSongAlias> _songAliases;
 
 		// 人物別名テーブル
-		public DbSet<TPersonAlias> _personAliases;
+		private DbSet<TPersonAlias> _personAliases;
 
 		// タイアップ別名テーブル
-		public DbSet<TTieUpAlias> _tieUpAliases;
+		private DbSet<TTieUpAlias> _tieUpAliases;
 
 		// カテゴリー別名テーブル
-		public DbSet<TCategoryAlias> _categoryAliases;
+		private DbSet<TCategoryAlias> _categoryAliases;
 
 		// タイアップグループ別名テーブル
-		public DbSet<TTieUpGroupAlias> _tieUpGroupAliases;
+		private DbSet<TTieUpGroupAlias> _tieUpGroupAliases;
 
 		// 制作会社別名テーブル
-		public DbSet<TMakerAlias> _makerAliases;
+		private DbSet<TMakerAlias> _makerAliases;
 
 		// --------------------------------------------------------------------
 		// 紐付テーブル
 		// --------------------------------------------------------------------
 
 		// 歌手紐付テーブル
-		public DbSet<TArtistSequence> _artistSequences;
+		private DbSet<TArtistSequence> _artistSequences;
 
 		// 作詞者紐付テーブル
-		public DbSet<TLyristSequence> _lyristSequences;
+		private DbSet<TLyristSequence> _lyristSequences;
 
 		// 作曲者紐付テーブル
-		public DbSet<TComposerSequence> _composerSequences;
+		private DbSet<TComposerSequence> _composerSequences;
 
 		// 編曲者紐付テーブル
-		public DbSet<TArrangerSequence> _arrangerSequences;
+		private DbSet<TArrangerSequence> _arrangerSequences;
 
 		// タイアップグループ紐付テーブル
-		public DbSet<TTieUpGroupSequence> _tieUpGroupSequences;
+		private DbSet<TTieUpGroupSequence> _tieUpGroupSequences;
 
 		// タグ紐付テーブル
-		public DbSet<TTagSequence> _tagSequences;
+		private DbSet<TTagSequence> _tagSequences;
 
 		// --------------------------------------------------------------------
 		// リストデータベース：検出ファイルリストテーブル
 		// --------------------------------------------------------------------
 
 		// 検出ファイルリストテーブル
-		private DbSet<TFound> _founds;
+		private DbSet<TFound> _listFounds;
+
+		// 人物マスターテーブル
+		private DbSet<TPerson> _listPeople;
+
+		// 歌手紐付テーブル
+		private DbSet<TArtistSequence> _listArtistSequences;
+
+		// 作曲者紐付テーブル
+		private DbSet<TComposerSequence> _listComposerSequences;
+
+		// タグマスターテーブル
+		private DbSet<TTag> _listTags;
+
+		// タグ紐付テーブル
+		private DbSet<TTagSequence> _listTagSequences;
 
 		// --------------------------------------------------------------------
 		// その他
@@ -177,8 +354,364 @@ namespace YukaLister.Models.Database
 		// 楽曲情報データベースのコンテキスト
 		private MusicInfoContext _musicInfoContext;
 
+		// リストデータベース（作業用：インメモリ）のコンテキスト
+		private ListContextInMemory _listContextInMemory;
+
+		// カテゴリー名正規化用
+		private List<String> _categoryNames;
+
 		// Dispose フラグ
 		private Boolean _isDisposed;
 
+		// ====================================================================
+		// private メンバー関数
+		// ====================================================================
+
+		// --------------------------------------------------------------------
+		// トラック情報からオンボーカル・オフボーカルがあるか解析する
+		// --------------------------------------------------------------------
+		private (Boolean hasOn, Boolean hasOff) AnalyzeSmartTrack(String? trackString)
+		{
+			Boolean hasOn = false;
+			Boolean hasOff = false;
+
+			if (!String.IsNullOrEmpty(trackString))
+			{
+				String[] tracks = trackString.Split(new Char[] { '-', '_', '+', ',', '.', ' ', (Char)0x2010 }, StringSplitOptions.RemoveEmptyEntries);
+				for (Int32 i = 0; i < tracks.Length; i++)
+				{
+					Int32 bothPos = BOTH_VOCAL_WORDS.IndexOf("|" + tracks[i] + "|", StringComparison.OrdinalIgnoreCase);
+					if (bothPos >= 0)
+					{
+						// オンオフ両方を意味する単語の場合
+						hasOn = true;
+						hasOff = true;
+					}
+					else
+					{
+						Int32 offPos = OFF_VOCAL_WORDS.IndexOf("|" + tracks[i] + "|", StringComparison.OrdinalIgnoreCase);
+						if (offPos >= 0)
+						{
+							// オフを意味する単語の場合
+							hasOff = true;
+						}
+						else
+						{
+							// それ以外の単語はオン扱い
+							hasOn = true;
+						}
+					}
+				}
+			}
+			return (hasOn, hasOff);
+		}
+
+		// --------------------------------------------------------------------
+		// 複数の IRcMaster の名前とルビをカンマで結合
+		// --------------------------------------------------------------------
+		private (String names, String rubies) ConcatMasterNamesAndRubies(List<IRcMaster> masters)
+		{
+			return (String.Join(YlConstants.VAR_VALUE_DELIMITER[0], masters.Select(x => x.Name)), String.Join(YlConstants.VAR_VALUE_DELIMITER[0], masters.Select(x => x.Ruby)));
+		}
+
+		// --------------------------------------------------------------------
+		// （dicByFile から取得した）人物情報をゆかり用リストデータベースに登録
+		// --------------------------------------------------------------------
+		private void RegisterPerson<T>(DbSet<T> listSequences, TFound found, TPerson person) where T : class, IRcSequence, new()
+		{
+			if (String.IsNullOrEmpty(found.SongId))
+			{
+				return;
+			}
+
+			// 人物は人物テーブルに登録済みか？
+			TPerson? registeredPerson;
+			if (!String.IsNullOrEmpty(person.Id))
+			{
+				// 登録済み
+				registeredPerson = person;
+			}
+			else
+			{
+				// 人物テーブルにフォルダー設定の人物情報と同名の人物があるか？
+				registeredPerson = DbCommon.SelectMastersByName(_listPeople, person.Name).FirstOrDefault();
+				if (registeredPerson == null)
+				{
+					// ID で再検索
+					String personId = TEMP_ID_PREFIX + person.Name;
+					registeredPerson = DbCommon.SelectBaseById(_listPeople, personId);
+
+					if (registeredPerson == null)
+					{
+						// 同名も同 ID もないので作成
+						registeredPerson = new()
+						{
+							// IRcBase
+							Id = personId,
+							Import = false,
+							Invalid = false,
+							UpdateTime = YlConstants.INVALID_MJD,
+							Dirty = true,
+
+							// IRcMaster
+							Name = person.Name,
+							Ruby = null,
+							Keyword = null,
+						};
+						_listPeople.Add(registeredPerson);
+					}
+				}
+			}
+
+			// TXxxSequence にフォルダー設定のタグ情報が無ければ保存
+			T? registeredSequence = listSequences.FirstOrDefault(x => x.Id == found.SongId && x.LinkId == registeredPerson.Id);
+			if (registeredSequence == null)
+			{
+				IQueryable<Int32> sequenceResults = listSequences.Where(x => x.Id == found.SongId).Select(x => x.Sequence);
+				Int32 seqMax = sequenceResults.Any() ? sequenceResults.Max() : -1;
+				registeredSequence = new()
+				{
+					// IDbBase
+					Id = found.SongId,
+					Import = false,
+					Invalid = false,
+					UpdateTime = YlConstants.INVALID_MJD,
+					Dirty = true,
+
+					// IDbSequence
+					Sequence = seqMax + 1,
+					LinkId = registeredPerson.Id,
+				};
+				listSequences.Add(registeredSequence);
+			}
+
+			// 直後から検索できるように直ちにコミット
+			_listContextInMemory.SaveChanges();
+		}
+
+		// --------------------------------------------------------------------
+		// 歌手情報を dicByFile から設定
+		// --------------------------------------------------------------------
+		private void SetTFoundArtistByDic(TFound record, Dictionary<String, String?> dicByFile)
+		{
+			String? dicArtist = dicByFile[YlConstants.RULE_VAR_ARTIST];
+
+			if (record.ArtistName == null && dicArtist != null)
+			{
+				// ファイル名から歌手名を取得できている場合は、楽曲情報データベースからフリガナを探す
+				List<TPerson> artists;
+				artists = DbCommon.SelectMastersByName(_people, dicArtist);
+				if (artists.Any())
+				{
+					// 歌手名が楽曲情報データベースに登録されていた場合はその情報を使う
+					record.ArtistName = artists[0].Name;
+					record.ArtistRuby = artists[0].Ruby;
+					RegisterPerson(_listArtistSequences, record, artists[0]);
+				}
+				else
+				{
+					// 歌手名そのままでは楽曲情報データベースに登録されていない場合
+					if (dicArtist.Contains(YlConstants.VAR_VALUE_DELIMITER))
+					{
+						// 区切り文字で区切られた複数の歌手名が記載されている場合は分解して解析する
+						String[] artistNames = dicArtist.Split(YlConstants.VAR_VALUE_DELIMITER[0]);
+						foreach (String artistName in artistNames)
+						{
+							List<TPerson> artistsTmp = DbCommon.SelectMastersByName(_listPeople, artistName);
+							if (artistsTmp.Any())
+							{
+								// 区切られた歌手名が楽曲情報データベースに存在する
+								artists.Add(artistsTmp[0]);
+							}
+							else
+							{
+								// 区切られた歌手名が楽曲情報データベースに存在しないので仮の人物を作成
+								TPerson artistTmp = new()
+								{
+									Name = artistName,
+								};
+								artists.Add(artistTmp);
+							}
+						}
+						(record.ArtistName, record.ArtistRuby) = ConcatMasterNamesAndRubies(artists.ToList<IRcMaster>());
+						for (Int32 i = 0; i < artists.Count; i++)
+						{
+							RegisterPerson(_listArtistSequences, record, artists[i]);
+						}
+					}
+					else
+					{
+						// 楽曲情報データベースに登録されていないので漢字のみ格納
+						record.ArtistName = dicArtist;
+						TPerson artistTmp = new()
+						{
+							Name = dicArtist,
+						};
+						RegisterPerson(_listArtistSequences, record, artistTmp);
+					}
+				}
+			}
+		}
+
+		// --------------------------------------------------------------------
+		// 検出ファイルレコードの値を、楽曲情報データベースから検索して設定する
+		// ファイル名を元に検索し、結果が複数ある場合は他の情報も照らし合わせて最も近い物を設定する
+		// --------------------------------------------------------------------
+		private void SetTFoundValuesByMusicInfoDatabase(TFound record, Dictionary<String, String?> dicByFile)
+		{
+			if (dicByFile[YlConstants.RULE_VAR_TITLE] == null)
+			{
+				return;
+			}
+
+			List<TSong> songs;
+
+			// 楽曲名で検索
+			songs = DbCommon.SelectMastersByName(_songs, dicByFile[YlConstants.RULE_VAR_TITLE]);
+
+			// タイアップ名で絞り込み
+			if (songs.Count > 1 && dicByFile[YlConstants.RULE_VAR_PROGRAM] != null)
+			{
+				List<TSong> songsWithTieUp = new();
+				foreach (TSong song in songs)
+				{
+					TTieUp? tieUp = DbCommon.SelectBaseById(_tieUps, song.TieUpId);
+					if (tieUp != null && tieUp.Name == dicByFile[YlConstants.RULE_VAR_PROGRAM])
+					{
+						songsWithTieUp.Add(song);
+					}
+				}
+				if (songsWithTieUp.Any())
+				{
+					songs = songsWithTieUp;
+				}
+			}
+
+			// カテゴリーで絞り込み
+			if (songs.Count > 1 && dicByFile[YlConstants.RULE_VAR_CATEGORY] != null)
+			{
+				List<TSong> songsWithCategory = new();
+				foreach (TSong song in songs)
+				{
+					TCategory? category = DbCommon.SelectBaseById(_categories, song.CategoryId);
+					if (category != null && category.Name == dicByFile[YlConstants.RULE_VAR_CATEGORY])
+					{
+						songsWithCategory.Add(song);
+					}
+				}
+				if (songsWithCategory.Any())
+				{
+					songs = songsWithCategory;
+				}
+			}
+
+			// 歌手名で絞り込み
+			if (songs.Count > 1 && dicByFile[YlConstants.RULE_VAR_ARTIST] != null)
+			{
+				List<TSong> songsWithArtist = new();
+				foreach (TSong song in songs)
+				{
+					(String artistNames, _) = ConcatMasterNamesAndRubies(DbCommon.SelectSequencedPeopleBySongId(_artistSequences, _people, song.Id).ToList<IRcMaster>());
+					if (!String.IsNullOrEmpty(artistNames) && artistNames == dicByFile[YlConstants.RULE_VAR_ARTIST])
+					{
+						songsWithArtist.Add(song);
+					}
+				}
+				if (songsWithArtist.Any())
+				{
+					songs = songsWithArtist;
+				}
+			}
+
+			TTieUp? tieUpOfSong = null;
+			TSong? selectedSong = null;
+			if (songs.Any())
+			{
+				// 楽曲情報データベース内に曲情報がある場合は、曲に紐付くタイアップを得る
+				selectedSong = songs[0];
+				tieUpOfSong = DbCommon.SelectBaseById(_tieUps, selectedSong.TieUpId);
+			}
+			else
+			{
+				// 楽曲情報データベース内に曲情報が無い場合は、タイアップ情報があるか検索
+				if (dicByFile[YlConstants.RULE_VAR_PROGRAM] != null)
+				{
+					List<TTieUp> tieUps = DbCommon.SelectMastersByName(_tieUps, dicByFile[YlConstants.RULE_VAR_PROGRAM]);
+					if (tieUps.Any())
+					{
+						tieUpOfSong = tieUps[0];
+					}
+				}
+				if (tieUpOfSong == null)
+				{
+					// 曲情報もタイアップ情報も無い場合は諦める
+					return;
+				}
+			}
+
+			if (tieUpOfSong != null)
+			{
+				TCategory? categoryOfTieUp = DbCommon.SelectBaseById(_categories, tieUpOfSong.CategoryId);
+				if (categoryOfTieUp != null)
+				{
+					// TCategory 由来項目の設定
+					record.Category = categoryOfTieUp.Name;
+				}
+
+				TMaker? makerOfTieUp = DbCommon.SelectBaseById(_makers, tieUpOfSong.MakerId);
+				if (makerOfTieUp != null)
+				{
+					// TMaker 由来項目の設定
+					record.MakerName = makerOfTieUp.Name;
+					record.MakerRuby = makerOfTieUp.Ruby;
+				}
+
+				List<TTieUpGroup> tieUpGroups = DbCommon.SelectSequencedTieUpGroupsByTieUpId(_tieUpGroupSequences, _tieUpGroups, tieUpOfSong.Id);
+				if (tieUpGroups.Any())
+				{
+					// TTieUpGroup 由来項目の設定
+					record.TieUpGroupName = tieUpGroups[0].Name;
+					record.TieUpGroupRuby = tieUpGroups[0].Ruby;
+				}
+
+				// TieUp 由来項目の設定
+				record.TieUpName = tieUpOfSong.Name;
+				record.TieUpRuby = tieUpOfSong.Ruby;
+				record.TieUpAgeLimit = tieUpOfSong.AgeLimit;
+				record.SongReleaseDate = tieUpOfSong.ReleaseDate;
+			}
+
+			if (selectedSong == null)
+			{
+				return;
+			}
+
+			// 人物系
+			(record.ArtistName, record.ArtistRuby) = ConcatMasterNamesAndRubies(DbCommon.SelectSequencedPeopleBySongId(_artistSequences, _people, selectedSong.Id).ToList<IRcMaster>());
+			(record.LyristName, record.LyristRuby) = ConcatMasterNamesAndRubies(DbCommon.SelectSequencedPeopleBySongId(_lyristSequences, _people, selectedSong.Id).ToList<IRcMaster>());
+			(record.ComposerName, record.ComposerRuby) = ConcatMasterNamesAndRubies(DbCommon.SelectSequencedPeopleBySongId(_composerSequences, _people, selectedSong.Id).ToList<IRcMaster>());
+			(record.ArrangerName, record.ArrangerRuby) = ConcatMasterNamesAndRubies(DbCommon.SelectSequencedPeopleBySongId(_arrangerSequences, _people, selectedSong.Id).ToList<IRcMaster>());
+
+			// TSong 由来項目の設定
+			record.SongId = selectedSong.Id;
+			record.SongName = selectedSong.Name;
+			record.SongRuby = selectedSong.Ruby;
+			record.SongOpEd = selectedSong.OpEd;
+			if (record.SongReleaseDate <= YlConstants.INVALID_MJD && selectedSong.ReleaseDate > YlConstants.INVALID_MJD)
+			{
+				record.SongReleaseDate = selectedSong.ReleaseDate;
+			}
+			if (String.IsNullOrEmpty(record.Category))
+			{
+				TCategory? categoryOfSong = DbCommon.SelectBaseById(_categories, selectedSong.CategoryId);
+				if (categoryOfSong != null)
+				{
+					record.Category = categoryOfSong.Name;
+				}
+			}
+
+			// タグ
+			(record.TagName, record.TagRuby) = ConcatMasterNamesAndRubies(DbCommon.SelectSequencedTagsBySongId(_tagSequences, _tags, selectedSong.Id).ToList<IRcMaster>());
+		}
 	}
 }

@@ -154,7 +154,7 @@ namespace YukaLister.Models.SharedMisc
 		// 表示用：背景色
 		public Brush Background
 		{
-			get => FolderTaskStatusLabelAndBrush().Item2;
+			get => FolderTaskStatusLabelAndBrush().brush;
 		}
 
 		// 表示用：パス
@@ -169,7 +169,7 @@ namespace YukaLister.Models.SharedMisc
 		// 表示用：動作状況
 		public String FolderTaskStatusLabel
 		{
-			get => FolderTaskStatusLabelAndBrush().Item1;
+			get => FolderTaskStatusLabelAndBrush().label;
 		}
 
 		// ====================================================================
@@ -205,7 +205,7 @@ namespace YukaLister.Models.SharedMisc
 		// --------------------------------------------------------------------
 		// 動作状況のラベルと背景色
 		// --------------------------------------------------------------------
-		private (String, Brush) FolderTaskStatusLabelAndBrush()
+		private (String label, Brush brush) FolderTaskStatusLabelAndBrush()
 		{
 			// 全体がエラーの場合はフォルダーもエラー
 			if (YukaListerModel.Instance.EnvModel.YukaListerStatus == YukaListerStatus.Error)

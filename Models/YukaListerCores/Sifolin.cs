@@ -289,8 +289,10 @@ namespace YukaLister.Models.YukaListerCores
 			FolderSettingsInDisk folderSettingsInDisk = YlCommon.LoadFolderSettings2Ex(targetFolderInfo.Path);
 			FolderSettingsInMemory folderSettingsInMemory = YlCommon.CreateFolderSettingsInMemory(folderSettingsInDisk);
 
-			using ListContextInMemory listContextInMemory = ListContextInMemory.CreateContext(out DbSet<TFound> founds);
-			using TFoundSetter foundSetter = new(founds);
+			using ListContextInMemory listContextInMemory = ListContextInMemory.CreateContext(out DbSet<TFound> founds,
+					out DbSet<TPerson> people, out DbSet<TArtistSequence> artistSequences, out DbSet<TComposerSequence> composerSequences,
+					out DbSet<TTag> tags, out DbSet<TTagSequence> tagSequences);
+			using TFoundSetter foundSetter = new(listContextInMemory, founds, people, artistSequences, composerSequences, tags, tagSequences);
 
 			// 指定フォルダーの全レコード
 			IQueryable<TFound> targetRecords = founds.Where(x => x.Folder == targetFolderInfo.Path);
@@ -301,8 +303,7 @@ namespace YukaLister.Models.YukaListerCores
 				FileInfo fileInfo = new(record.Path);
 				record.LastWriteTime = JulianDay.DateTimeToModifiedJulianDate(fileInfo.LastWriteTime);
 				record.FileSize = fileInfo.Length;
-
-				// ToDo: aTFoundSetter
+				foundSetter.SetTFoundValues(record, folderSettingsInMemory);
 
 				YukaListerModel.Instance.EnvModel.AppCancellationTokenSource.Token.ThrowIfCancellationRequested();
 			}
@@ -420,10 +421,7 @@ namespace YukaLister.Models.YukaListerCores
 		// --------------------------------------------------------------------
 		private void MemoryToDisk()
 		{
-			using ListContextInMemory listContextInMemory = ListContextInMemory.CreateContext(out DbSet<TFound> f);
-#if DEBUG
-			Debug.WriteLine("MemoryToDisk test: " + (f.FirstOrDefault()?.LastWriteTime ?? 0).ToString());
-#endif
+			using ListContextInMemory listContextInMemory = ListContextInMemory.CreateContext(out DbSet<TFound> _);
 			using SqliteConnection? sqliteConnectionInMemory = listContextInMemory.Database.GetDbConnection() as SqliteConnection;
 			using ListContextInDisk listContextInDisk = ListContextInDisk.CreateContext(out DbSet<TFound> _);
 			using SqliteConnection? sqliteConnectionInDisk = listContextInDisk.Database.GetDbConnection() as SqliteConnection;

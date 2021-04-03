@@ -67,6 +67,71 @@ namespace YukaLister.Models.DatabaseContexts
 			founds = listContext.Founds;
 		}
 
+		// --------------------------------------------------------------------
+		// データベースセット取得
+		// ＜例外＞ Exception
+		// --------------------------------------------------------------------
+		protected static void GetDbSet(ListContext listContext, out DbSet<TPerson> people)
+		{
+			if (listContext.People == null)
+			{
+				throw new Exception("人物マスターテーブルにアクセスできません。");
+			}
+			people = listContext.People;
+		}
+
+		// --------------------------------------------------------------------
+		// データベースセット取得
+		// ＜例外＞ Exception
+		// --------------------------------------------------------------------
+		protected static void GetDbSet(ListContext listContext, out DbSet<TArtistSequence> artistSequences)
+		{
+			if (listContext.ArtistSequences == null)
+			{
+				throw new Exception("歌手紐付テーブルにアクセスできません。");
+			}
+			artistSequences = listContext.ArtistSequences;
+		}
+
+		// --------------------------------------------------------------------
+		// データベースセット取得
+		// ＜例外＞ Exception
+		// --------------------------------------------------------------------
+		protected static void GetDbSet(ListContext listContext, out DbSet<TComposerSequence> composerSequences)
+		{
+			if (listContext.ComposerSequences == null)
+			{
+				throw new Exception("作曲者紐付テーブルにアクセスできません。");
+			}
+			composerSequences = listContext.ComposerSequences;
+		}
+
+		// --------------------------------------------------------------------
+		// データベースセット取得
+		// ＜例外＞ Exception
+		// --------------------------------------------------------------------
+		protected static void GetDbSet(ListContext listContext, out DbSet<TTag> tags)
+		{
+			if (listContext.Tags == null)
+			{
+				throw new Exception("タグマスターテーブルにアクセスできません。");
+			}
+			tags = listContext.Tags;
+		}
+
+		// --------------------------------------------------------------------
+		// データベースセット取得
+		// ＜例外＞ Exception
+		// --------------------------------------------------------------------
+		protected static void GetDbSet(ListContext listContext, out DbSet<TTagSequence> tagSequences)
+		{
+			if (listContext.TagSequences == null)
+			{
+				throw new Exception("タグ紐付テーブルにアクセスできません。");
+			}
+			tagSequences = listContext.TagSequences;
+		}
+
 		// ====================================================================
 		// protected メンバー関数
 		// ====================================================================

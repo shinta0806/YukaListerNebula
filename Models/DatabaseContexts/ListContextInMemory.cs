@@ -16,6 +16,8 @@ using Shinta;
 using System;
 
 using YukaLister.Models.Database;
+using YukaLister.Models.Database.Masters;
+using YukaLister.Models.Database.Sequences;
 using YukaLister.Models.YukaListerModels;
 
 namespace YukaLister.Models.DatabaseContexts
@@ -25,6 +27,24 @@ namespace YukaLister.Models.DatabaseContexts
 		// ====================================================================
 		// public static メンバー関数
 		// ====================================================================
+
+		// --------------------------------------------------------------------
+		// データベースコンテキスト生成
+		// ＜例外＞ Exception
+		// --------------------------------------------------------------------
+		public static ListContextInMemory CreateContext(out DbSet<TFound> founds,
+				out DbSet<TPerson> people, out DbSet<TArtistSequence> artistSequences, out DbSet<TComposerSequence> composerSequences,
+				out DbSet<TTag> tags, out DbSet<TTagSequence> tagSequences)
+		{
+			ListContextInMemory listContext = new();
+			GetDbSet(listContext, out founds);
+			GetDbSet(listContext, out people);
+			GetDbSet(listContext, out artistSequences);
+			GetDbSet(listContext, out composerSequences);
+			GetDbSet(listContext, out tags);
+			GetDbSet(listContext, out tagSequences);
+			return listContext;
+		}
 
 		// --------------------------------------------------------------------
 		// データベースコンテキスト生成

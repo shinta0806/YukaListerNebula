@@ -224,11 +224,30 @@ namespace YukaLister.Models.SharedMisc
 		public const String RUNNING_REMOVE = "削除中";
 
 		// --------------------------------------------------------------------
+		// 日付関連
+		// --------------------------------------------------------------------
+
+		// 日付が指定されていない場合はこの年にする
+		public const Int32 INVALID_YEAR = 1900;
+
+		// 日付が指定されていない場合の修正ユリウス日
+		public static readonly Double INVALID_MJD = JulianDay.DateTimeToModifiedJulianDate(new DateTime(INVALID_YEAR, 1, 1));
+
+		// --------------------------------------------------------------------
 		// その他
 		// --------------------------------------------------------------------
 
 		// FolderSettingsStatus に対応する文字列
 		public static readonly String[] FOLDER_SETTINGS_STATUS_TEXTS = { "無", "有", "親に有", "未確認" };
+
+		// グループの「その他」
+		public const String GROUP_MISC = "その他";
+
+		// 頭文字の「その他」
+		public const String HEAD_MISC = GROUP_MISC;
+
+		// 変数の値を区切る文字
+		public const String VAR_VALUE_DELIMITER = ",";
 
 		// DPI
 		public const Single DPI = 96.0f;

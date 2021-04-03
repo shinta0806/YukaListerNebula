@@ -252,17 +252,17 @@ namespace YukaLister.Models.DatabaseContexts
 			modelBuilder.Entity<TTag>().HasIndex(x => x.Name);
 
 			// 別名テーブル
-			modelBuilder.Entity<TSongAlias>().HasIndex(x => x.Alias);
+			modelBuilder.Entity<TSongAlias>().HasIndex(x => x.Alias).IsUnique();
 
-			modelBuilder.Entity<TPersonAlias>().HasIndex(x => x.Alias);
+			modelBuilder.Entity<TPersonAlias>().HasIndex(x => x.Alias).IsUnique();
 
-			modelBuilder.Entity<TTieUpAlias>().HasIndex(x => x.Alias);
+			modelBuilder.Entity<TTieUpAlias>().HasIndex(x => x.Alias).IsUnique();
 
-			modelBuilder.Entity<TCategoryAlias>().HasIndex(x => x.Alias);
+			modelBuilder.Entity<TCategoryAlias>().HasIndex(x => x.Alias).IsUnique();
 
-			modelBuilder.Entity<TTieUpGroupAlias>().HasIndex(x => x.Alias);
+			modelBuilder.Entity<TTieUpGroupAlias>().HasIndex(x => x.Alias).IsUnique();
 
-			modelBuilder.Entity<TMakerAlias>().HasIndex(x => x.Alias);
+			modelBuilder.Entity<TMakerAlias>().HasIndex(x => x.Alias).IsUnique();
 
 			// 紐付テーブル
 			modelBuilder.Entity<TArtistSequence>().HasKey(x => new { x.Id, x.Sequence });
@@ -283,7 +283,7 @@ namespace YukaLister.Models.DatabaseContexts
 		// ====================================================================
 
 		// データベースファイル名
-		private const String FILE_NAME_MUSIC_INFO_DATABASE = "MusicInfo" + Common.FILE_EXT_SQLITE3;
+		private const String FILE_NAME_MUSIC_INFO_DATABASE = "NebulaMusicInfo" + Common.FILE_EXT_SQLITE3;
 
 		// ====================================================================
 		// private static メンバー関数
