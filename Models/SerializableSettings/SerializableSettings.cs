@@ -76,11 +76,27 @@ namespace YukaLister.Models.SerializableSettings
 				YukaListerModel.Instance.EnvModel.LogWriter.LogMessage(TraceEventType.Error, GetType().Name + "設定保存時エラー：\n" + excep.Message);
 				YukaListerModel.Instance.EnvModel.LogWriter.LogMessage(Common.TRACE_EVENT_TYPE_STATUS, "　スタックトレース：\n" + excep.StackTrace);
 			}
+			try
+			{
+				AdjustAfterSave();
+			}
+			catch (Exception excep)
+			{
+				YukaListerModel.Instance.EnvModel.LogWriter.LogMessage(TraceEventType.Error, GetType().Name + "保存後設定調整時エラー：\n" + excep.Message);
+				YukaListerModel.Instance.EnvModel.LogWriter.LogMessage(Common.TRACE_EVENT_TYPE_STATUS, "　スタックトレース：\n" + excep.StackTrace);
+			}
 		}
 
 		// ====================================================================
 		// protected メンバー関数
 		// ====================================================================
+
+		// --------------------------------------------------------------------
+		// 保存後の調整
+		// --------------------------------------------------------------------
+		protected virtual void AdjustAfterSave()
+		{
+		}
 
 		// --------------------------------------------------------------------
 		// 保存前の調整

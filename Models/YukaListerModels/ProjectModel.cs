@@ -26,7 +26,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Threading;
-
+using YukaLister.Models.SerializableSettings;
 using YukaLister.Models.SharedMisc;
 
 namespace YukaLister.Models.YukaListerModels
@@ -53,8 +53,8 @@ namespace YukaLister.Models.YukaListerModels
 		// 一般プロパティー
 		// --------------------------------------------------------------------
 
-		// リスト更新タスク安全中断用
-		public CancellationTokenSource? ListCancellationTokenSource { get; set; }
+		// リスト更新タスク安全中断用 → Env にする？
+		//public CancellationTokenSource? ListCancellationTokenSource { get; set; }
 
 		// ====================================================================
 		// public メンバー関数
@@ -94,7 +94,8 @@ namespace YukaLister.Models.YukaListerModels
 			// 通知
 			YukaListerModel.Instance.EnvModel.IsMainWindowDataGridCountChanged = true;
 			YukaListerModel.Instance.EnvModel.Sifolin.MainEvent.Set();
-			ListCancellationTokenSource?.Cancel();
+			AdjustAutoTargetInfoIfNeeded2Sh(YlCommon.DriveLetter(parentFolder));
+			//ListCancellationTokenSource?.Cancel();
 		}
 
 		// --------------------------------------------------------------------
@@ -212,6 +213,7 @@ namespace YukaLister.Models.YukaListerModels
 				Debug.Assert(_targetFolderInfos[parentIndex].IsParent, "SetFolderTaskDetailToRemove() not parent");
 				for (Int32 i = parentIndex; i < parentIndex + _targetFolderInfos[parentIndex].NumTotalFolders; i++)
 				{
+					_targetFolderInfos[i].FolderTaskKind = FolderTaskKind.Remove;
 					_targetFolderInfos[i].SetFolderTaskDetail(FolderTaskDetail.Remove);
 					_targetFolderInfos[i].FolderTaskStatus = FolderTaskStatus.Queued;
 				}
@@ -220,7 +222,8 @@ namespace YukaLister.Models.YukaListerModels
 			// 通知
 			YukaListerModel.Instance.EnvModel.IsMainWindowDataGridItemUpdated = true;
 			YukaListerModel.Instance.EnvModel.Sifolin.MainEvent.Set();
-			ListCancellationTokenSource?.Cancel();
+			AdjustAutoTargetInfoIfNeeded2Sh(YlCommon.DriveLetter(parentFolder));
+			//ListCancellationTokenSource?.Cancel();
 			return true;
 		}
 
@@ -297,6 +300,31 @@ namespace YukaLister.Models.YukaListerModels
 		// ====================================================================
 
 		// --------------------------------------------------------------------
+		// 自動追加フォルダーを最適化
+		// --------------------------------------------------------------------
+		private void AdjustAutoTargetInfoIfNeeded2Sh(String driveLetter)
+		{
+			Debug.Assert(driveLetter.Length == 2, "AdjustAutoTargetInfoIfNeeded2Sh() bad driveLetter");
+			if (!IsAutoTargetDrive2Sh(driveLetter))
+			{
+				return;
+			}
+
+			AutoTargetInfo autoTargetInfo = new(driveLetter);
+			lock (_targetFolderInfos)
+			{
+				IEnumerable<TargetFolderInfo> targets
+						= _targetFolderInfos.Where(x => x.IsParent && x.FolderTaskKind == FolderTaskKind.Add && x.Path.StartsWith(driveLetter, StringComparison.OrdinalIgnoreCase));
+				foreach (TargetFolderInfo target in targets)
+				{
+					autoTargetInfo.Folders.Add(YlCommon.WithoutDriveLetter(target.Path));
+				}
+			}
+			autoTargetInfo.Folders.Sort();
+			autoTargetInfo.Save();
+		}
+
+		// --------------------------------------------------------------------
 		// TargetFolderInfos の中から path を持つ TargetFolderInfo を探してインデックスを返す
 		// --------------------------------------------------------------------
 		private Int32 IndexOfTargetFolderInfoWithLock(String path)
@@ -323,6 +351,31 @@ namespace YukaLister.Models.YukaListerModels
 				}
 			}
 			return -1;
+		}
+
+		// --------------------------------------------------------------------
+		// 自動追加対象のドライブかどうか
+		// --------------------------------------------------------------------
+		private Boolean IsAutoTargetDrive2Sh(String driveLetter)
+		{
+			DriveInfo driveInfo = new DriveInfo(driveLetter);
+			if (!driveInfo.IsReady)
+			{
+				YukaListerModel.Instance.EnvModel.LogWriter.LogMessage(TraceEventType.Verbose, "IsAutoTargetDrive2Sh() 準備ができていない：" + driveLetter);
+				return false;
+			}
+
+			// リムーバブルドライブのみを対象としたいが、ポータブル HDD/SSD も Fixed 扱いになるため、Fixed も対象とする
+			switch (driveInfo.DriveType)
+			{
+				case DriveType.Fixed:
+				case DriveType.Removable:
+					YukaListerModel.Instance.EnvModel.LogWriter.LogMessage(TraceEventType.Verbose, "IsAutoTargetDrive2Sh() 対象：" + driveLetter);
+					return true;
+				default:
+					YukaListerModel.Instance.EnvModel.LogWriter.LogMessage(TraceEventType.Verbose, "IsAutoTargetDrive2Sh() 非対象：" + driveLetter + ", " + driveInfo.DriveType.ToString());
+					return false;
+			}
 		}
 
 		// --------------------------------------------------------------------
