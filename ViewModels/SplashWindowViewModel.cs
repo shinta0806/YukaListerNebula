@@ -67,6 +67,7 @@ namespace YukaLister.ViewModels
 
 			// 環境
 			YukaListerModel.Instance.EnvModel.YlSettings.Load();
+			YukaListerModel.Instance.EnvModel.TagSettings.Load();
 			DbCommon.PrepareDatabases();
 			YukaListerModel.Instance.EnvModel.StartAllCores();
 

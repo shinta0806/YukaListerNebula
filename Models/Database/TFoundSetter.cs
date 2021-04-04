@@ -135,7 +135,7 @@ namespace YukaLister.Models.Database
 			// SongId が無い場合は楽曲名を採用（フォルダー設定の歌手名やタグを紐付できるように）
 			if (String.IsNullOrEmpty(record.SongId))
 			{
-				record.SongId = TEMP_ID_PREFIX + record.SongName;
+				record.SongId = YlConstants.TEMP_ID_PREFIX + record.SongName;
 			}
 
 			SetTFoundArtistByDic(record, dicByFile);
@@ -245,9 +245,6 @@ namespace YukaLister.Models.Database
 		// スマートトラック判定用の単語（小文字表記、両端を | で括る）
 		private const String OFF_VOCAL_WORDS = "|cho|cut|dam|guide|guidevocal|inst|joy|off|offcho|offvocal|offのみ|vc|オフ|オフボ|オフボーカル|ボイキャン|ボーカルキャンセル|配信|";
 		private const String BOTH_VOCAL_WORDS = "|2tr|2ch|onoff|offon|";
-
-		// 一時的に付与する ID の接頭辞
-		private const String TEMP_ID_PREFIX = "!";
 
 		// ====================================================================
 		// private メンバー変数
@@ -442,7 +439,7 @@ namespace YukaLister.Models.Database
 				if (registeredPerson == null)
 				{
 					// ID で再検索
-					String personId = TEMP_ID_PREFIX + person.Name;
+					String personId = YlConstants.TEMP_ID_PREFIX + person.Name;
 					registeredPerson = DbCommon.SelectBaseById(_listPeople, personId);
 
 					if (registeredPerson == null)

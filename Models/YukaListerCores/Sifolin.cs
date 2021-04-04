@@ -275,6 +275,96 @@ namespace YukaLister.Models.YukaListerCores
 		}
 
 		// --------------------------------------------------------------------
+		// フォルダー設定で指定されているタグを TFound とゆかり用リストデータベースに付与する
+		// --------------------------------------------------------------------
+		private void AddFolderTagsInfo(TargetFolderInfo targetFolderInfo, IQueryable<TFound> records, DbSet<TTag> tags, DbSet<TTagSequence> tagSequences)
+		{
+			try
+			{
+				String tagKey = YlCommon.WithoutDriveLetter(targetFolderInfo.Path);
+				if (!YukaListerModel.Instance.EnvModel.TagSettings.FolderTags.ContainsKey(tagKey))
+				{
+					return;
+				}
+
+				// TTag にフォルダー設定のタグ情報と同名のタグがあるか？
+				String tagValue = YukaListerModel.Instance.EnvModel.TagSettings.FolderTags[tagKey];
+				TTag? tagRecord = DbCommon.SelectMastersByName(tags, tagValue).FirstOrDefault();
+				if (tagRecord == null)
+				{
+					// 同名のタグが無いので、tagKey を Id とするタグがまだ存在しなければ作成
+					String tagId = YlConstants.TEMP_ID_PREFIX + tagKey;
+					tagRecord = DbCommon.SelectBaseById(tags, tagId);
+					if (tagRecord == null)
+					{
+						tagRecord = new()
+						{
+							// IRcBase
+							Id = tagId,
+							Import = false,
+							Invalid = false,
+							UpdateTime = YlConstants.INVALID_MJD,
+							Dirty = true,
+
+							// IRcMaster
+							Name = tagValue,
+							Ruby = null,
+							Keyword = null,
+						};
+						tags.Add(tagRecord);
+					}
+				}
+
+				Dictionary<String, Boolean> addedIds = new();
+				foreach (TFound record in records)
+				{
+					// TFound にタグ情報を追加
+					// 楽曲情報データベースで付与されたものと同じ場合は重複連結となるが、ゆかりが検索するためのものなので問題ない
+					record.TagName += "," + tagRecord.Name;
+					if (!String.IsNullOrEmpty(tagRecord.Ruby))
+					{
+						record.TagRuby += "," + tagRecord.Ruby;
+					}
+
+					// ゆかり用リストデータベースの TTagSequence にタグ情報を追加
+					// 1 つのフォルダー内に同じ曲が複数個存在する場合があるので、既に作業済みの曲はスキップ
+					if (String.IsNullOrEmpty(record.SongId) || addedIds.ContainsKey(record.SongId))
+					{
+						continue;
+					}
+
+					// TTagSequence にフォルダー設定のタグ情報が無ければ保存
+					List<TTag> songTags = DbCommon.SelectSequencedTagsBySongId(tagSequences, tags, record.SongId);
+					if (songTags.FirstOrDefault(x => x.Name == tagRecord.Name) == null)
+					{
+						IQueryable<Int32> sequenceResults = tagSequences.Where(x => x.Id == record.SongId).Select(x => x.Sequence);
+						Int32 seqMax = sequenceResults.Any() ? sequenceResults.Max() : -1;
+						TTagSequence tagSequenceRecord = new()
+						{
+							// IDbBase
+							Id = record.SongId,
+							Import = false,
+							Invalid = false,
+							UpdateTime = YlConstants.INVALID_MJD,
+							Dirty = true,
+
+							// IDbSequence
+							Sequence = seqMax + 1,
+							LinkId = tagRecord.Id,
+						};
+						tagSequences.Add(tagSequenceRecord);
+						addedIds[record.SongId] = true;
+					}
+				}
+			}
+			catch (Exception excep)
+			{
+				YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(TraceEventType.Error, "フォルダー設定タグ付与時エラー：\n" + excep.Message);
+				YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, "　スタックトレース：\n" + excep.StackTrace);
+			}
+		}
+
+		// --------------------------------------------------------------------
 		// 検出ファイルリストテーブルに属性を追加
 		// --------------------------------------------------------------------
 		private void AddInfos(TargetFolderInfo targetFolderInfo)
@@ -323,8 +413,7 @@ namespace YukaLister.Models.YukaListerCores
 
 				YukaListerModel.Instance.EnvModel.AppCancellationTokenSource.Token.ThrowIfCancellationRequested();
 			}
-
-			// ToDo: タグ付与
+			AddFolderTagsInfo(targetFolderInfo, targetRecords, tags, tagSequences);
 
 			// コミット
 			listContextInMemory.SaveChanges();

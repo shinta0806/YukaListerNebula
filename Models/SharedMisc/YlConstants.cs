@@ -259,6 +259,9 @@ namespace YukaLister.Models.SharedMisc
 		// 変数の値を区切る文字
 		public const String VAR_VALUE_DELIMITER = ",";
 
+		// 一時的に付与する ID の接頭辞
+		public const String TEMP_ID_PREFIX = "!";
+
 		// DPI
 		public const Single DPI = 96.0f;
 	}

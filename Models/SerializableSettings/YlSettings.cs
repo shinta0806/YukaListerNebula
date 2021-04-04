@@ -16,11 +16,12 @@ using System.Diagnostics;
 using System.IO;
 using System.Windows;
 
+using YukaLister.Models.SharedMisc;
 using YukaLister.Models.YukaListerModels;
 
-namespace YukaLister.Models.SharedMisc
+namespace YukaLister.Models.SerializableSettings
 {
-	public class YlSettings
+	public class YlSettings : SerializableSettings
 	{
 		// ====================================================================
 		// public プロパティー
@@ -64,18 +65,6 @@ namespace YukaLister.Models.SharedMisc
 		public DateTime RssCheckDate { get; set; }
 
 		// ====================================================================
-		// public static メンバー関数
-		// ====================================================================
-
-		// --------------------------------------------------------------------
-		// 保存パス
-		// --------------------------------------------------------------------
-		public static String SettingsPath()
-		{
-			return Common.UserAppDataFolderPath() + nameof(YlSettings) + Common.FILE_EXT_CONFIG;
-		}
-
-		// ====================================================================
 		// public メンバー関数
 		// ====================================================================
 
@@ -85,48 +74,6 @@ namespace YukaLister.Models.SharedMisc
 		public Boolean IsYukariConfigPathValid()
 		{
 			return File.Exists(YukariConfigPath());
-		}
-
-		// --------------------------------------------------------------------
-		// 読み込み
-		// --------------------------------------------------------------------
-		public void Load()
-		{
-			try
-			{
-				YlSettings loaded = Common.Deserialize(SettingsPath(), this);
-				Common.ShallowCopy(loaded, this);
-			}
-			catch (Exception excep)
-			{
-				YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(TraceEventType.Error, "アプリケーション設定読み込み時エラー：\n" + excep.Message, true);
-				YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, "　スタックトレース：\n" + excep.StackTrace);
-			}
-			try
-			{
-				Adjust();
-			}
-			catch (Exception excep)
-			{
-				YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(TraceEventType.Error, "アプリケーション設定調整時エラー：\n" + excep.Message, true);
-				YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, "　スタックトレース：\n" + excep.StackTrace);
-			}
-		}
-
-		// --------------------------------------------------------------------
-		// 保存
-		// --------------------------------------------------------------------
-		public void Save()
-		{
-			try
-			{
-				Common.Serialize(SettingsPath(), this);
-			}
-			catch (Exception excep)
-			{
-				YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(TraceEventType.Error, "アプリケーション設定保存時エラー：\n" + excep.Message, true);
-				YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, "　スタックトレース：\n" + excep.StackTrace);
-			}
 		}
 
 		// --------------------------------------------------------------------
@@ -145,14 +92,14 @@ namespace YukaLister.Models.SharedMisc
 		}
 
 		// ====================================================================
-		// public メンバー関数
+		// protected メンバー関数
 		// ====================================================================
 
 		// --------------------------------------------------------------------
 		// 設定を調整
 		// ＜例外＞ Exception
 		// --------------------------------------------------------------------
-		private void Adjust()
+		protected override void AdjustAfterLoad()
 		{
 			if (TargetExts.Count == 0)
 			{
@@ -175,6 +122,14 @@ namespace YukaLister.Models.SharedMisc
 			}
 			YukaListerSettings.AnalyzeYukariEasyAuthConfig(this);
 #endif
+		}
+
+		// --------------------------------------------------------------------
+		// 保存パス
+		// --------------------------------------------------------------------
+		protected override String SettingsPath()
+		{
+			return Common.UserAppDataFolderPath() + nameof(YlSettings) + Common.FILE_EXT_CONFIG;
 		}
 	}
 }

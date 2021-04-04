@@ -19,6 +19,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
+using YukaLister.Models.SerializableSettings;
 using YukaLister.Models.SharedMisc;
 using YukaLister.Models.YukaListerCores;
 
@@ -38,9 +39,7 @@ namespace YukaLister.Models.YukaListerModels
 			// 最初にログの設定をする
 			SetLogWriter();
 
-			// 環境設定
-			// Load() はしない（YukaListerModel.Instance 生成途中で EnvironmentModel が生成され、エラー発生時に YukaListerModel.Instance 経由でのログ記録ができないため）
-			YlSettings = new();
+			// 環境設定の Load() はしない（YukaListerModel.Instance 生成途中で EnvironmentModel が生成され、エラー発生時に YukaListerModel.Instance 経由でのログ記録ができないため）
 		}
 
 		// ====================================================================
@@ -52,7 +51,10 @@ namespace YukaLister.Models.YukaListerModels
 		// --------------------------------------------------------------------
 
 		// 環境設定
-		public YlSettings YlSettings { get; set; }
+		public YlSettings YlSettings { get; } = new();
+
+		// タグ設定
+		public TagSettings TagSettings { get; } = new();
 
 		// ログ
 		public LogWriter LogWriter { get; } = new(YlConstants.APP_ID);

@@ -453,6 +453,15 @@ namespace YukaLister.Models.SharedMisc
 			return JulianDay.DateTimeToModifiedJulianDate(DateTime.UtcNow);
 		}
 
+		// --------------------------------------------------------------------
+		// ドライブレターを除いたパス
+		// "D:" 等を除いたパス
+		// --------------------------------------------------------------------
+		public static String WithoutDriveLetter(String path)
+		{
+			return path.Substring(2);
+		}
+
 		// ====================================================================
 		// private メンバー定数
 		// ====================================================================
