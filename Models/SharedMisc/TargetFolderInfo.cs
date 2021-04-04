@@ -208,7 +208,7 @@ namespace YukaLister.Models.SharedMisc
 		private (String label, Brush brush) FolderTaskStatusLabelAndBrush()
 		{
 			// 全体がエラーの場合はフォルダーもエラー
-			if (YukaListerModel.Instance.EnvModel.YukaListerStatus == YukaListerStatus.Error)
+			if (YukaListerModel.Instance.EnvModel.YukaListerWholeStatus == YukaListerStatus.Error)
 			{
 				return ("エラー解決待ち", YlConstants.BRUSH_STATUS_ERROR);
 			}

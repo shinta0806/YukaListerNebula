@@ -186,10 +186,10 @@ namespace YukaLister.ViewModels
 				//LaunchUpdaterIfNeeded();
 
 				// 動作エラーチェック
-				UpdateYukaListerStatusError();
+				UpdateYukaListerEnvironmentStatus();
 
 				// その他
-				UpdateNumRecordsLabel();
+				UpdateUi(YukaListerModel.Instance.EnvModel.YukaListerWholeStatus);
 
 #if DEBUGz
 				CacheContext.CreateContext("D:", out _);
@@ -278,6 +278,9 @@ namespace YukaLister.ViewModels
 
 		// UI 更新用タイマー
 		private DispatcherTimer _timerUpdateUi = new();
+
+		// 前回 UI 更新時のゆかりすたー NEBULA 全体の動作状況
+		private YukaListerStatus _prevYukaListerWholeStatus = YukaListerStatus.__End__;
 
 		// Dispose フラグ
 		private Boolean _isDisposed = false;
@@ -407,9 +410,9 @@ namespace YukaLister.ViewModels
 		// --------------------------------------------------------------------
 		// ゆかりすたー NEBULA 全体の動作状況に応じて背景を設定
 		// --------------------------------------------------------------------
-		private void SetYukaListerStatusBackground()
+		private void SetYukaListerStatusBackground(YukaListerStatus currentWholeStatus)
 		{
-			YukaListerStatusBackground = YukaListerModel.Instance.EnvModel.YukaListerStatus switch
+			YukaListerStatusBackground = currentWholeStatus switch
 			{
 				YukaListerStatus.Error => YlConstants.BRUSH_STATUS_ERROR,
 				YukaListerStatus.Running => YlConstants.BRUSH_STATUS_RUNNING,
@@ -417,6 +420,7 @@ namespace YukaLister.ViewModels
 			};
 		}
 
+#if false
 		// --------------------------------------------------------------------
 		// ゆかりすたー NEBULA 全体の動作状況を待機にする
 		// --------------------------------------------------------------------
@@ -426,6 +430,7 @@ namespace YukaLister.ViewModels
 			YukaListerStatusLabel = YlConstants.APP_NAME_J + "は正常に動作しています。";
 			SetYukaListerStatusBackground();
 		}
+#endif
 
 		// --------------------------------------------------------------------
 		// イベントハンドラー：IsOpen が変更された
@@ -453,19 +458,11 @@ namespace YukaLister.ViewModels
 			{
 				_timerUpdateUi.Stop();
 
-				// ゆかりすたー NEBULA 全体の動作状況
-				if (YukaListerModel.Instance.EnvModel.YukaListerStatus == YukaListerStatus.Running)
-				{
-					UpdateNumRecordsLabel();
-					UpdateYukaListerStatusRunning();
-				}
-
-				// DataGrid
-				if (YukaListerModel.Instance.EnvModel.IsMainWindowDataGridCountChanged || YukaListerModel.Instance.EnvModel.IsMainWindowDataGridItemUpdated)
-				{
-					UpdateDataGrid();
-				}
-
+				// 常に EnvModel.YukaListerWholeStatus を参照していると、表示中は Running だったのに _prevYukaListerWholeStatus に代入する頃には Ready になっており、
+				// 次回更新時に Ready 同士と判定されて更新されない、という事態が起こりえるので、一度参照した EnvModel.YukaListerWholeStatus を継承させるようにする
+				YukaListerStatus currentWholeStatus = YukaListerModel.Instance.EnvModel.YukaListerWholeStatus;
+				UpdateUi(currentWholeStatus);
+				_prevYukaListerWholeStatus = currentWholeStatus;
 				_timerUpdateUi.Start();
 			}
 			catch (Exception excep)
@@ -500,27 +497,85 @@ namespace YukaLister.ViewModels
 		}
 
 		// --------------------------------------------------------------------
-		// ゆかりすたー NEBULA 全体のエラーチェック
+		// UI 表示を更新
 		// --------------------------------------------------------------------
-		private void UpdateYukaListerStatusError()
+		private void UpdateUi(YukaListerStatus currentWholeStatus)
+		{
+			// 引き続き Ready の場合は更新不要
+			if (currentWholeStatus == YukaListerStatus.Ready && _prevYukaListerWholeStatus == YukaListerStatus.Ready)
+			{
+				return;
+			}
+
+			// ウィンドウ上部の情報
+			UpdateYukaListerStatusLabel(currentWholeStatus);
+			UpdateNumRecordsLabel();
+
+			// DataGrid
+			if (YukaListerModel.Instance.EnvModel.IsMainWindowDataGridCountChanged || YukaListerModel.Instance.EnvModel.IsMainWindowDataGridItemUpdated)
+			{
+				UpdateDataGrid();
+			}
+		}
+
+		// --------------------------------------------------------------------
+		// 環境系のステータスを更新
+		// --------------------------------------------------------------------
+		private void UpdateYukaListerEnvironmentStatus()
 		{
 			if (!YukaListerModel.Instance.EnvModel.YlSettings.IsYukariConfigPathValid())
 			{
 				// ゆかり設定ファイルエラー
-				YukaListerModel.Instance.EnvModel.YukaListerStatus = YukaListerStatus.Error;
+				YukaListerModel.Instance.EnvModel.YukaListerPartsStatus[(Int32)YukaListerPartsStatusIndex.Environment] = YukaListerStatus.Error;
 				YukaListerStatusLabel = "ゆかり設定ファイルが正しく指定されていません。";
-				SetYukaListerStatusBackground();
 			}
 			else
 			{
 				// 正常
-				if (YukaListerModel.Instance.EnvModel.YukaListerStatus != YukaListerStatus.Running)
-				{
-					SetYukaListerStatusReady();
-				}
+				YukaListerModel.Instance.EnvModel.YukaListerPartsStatus[(Int32)YukaListerPartsStatusIndex.Environment] = YukaListerStatus.Ready;
 			}
 		}
 
+		// --------------------------------------------------------------------
+		// ゆかりすたー NEBULA 全体の動作ラベルを更新
+		// --------------------------------------------------------------------
+		private void UpdateYukaListerStatusLabel(YukaListerStatus currentWholeStatus)
+		{
+			switch (currentWholeStatus)
+			{
+				case YukaListerStatus.Ready:
+					YukaListerStatusLabel = YlConstants.APP_NAME_J + "は正常に動作しています。";
+					break;
+				case YukaListerStatus.Running:
+					TargetFolderInfo? targetFolderInfo = YukaListerModel.Instance.ProjModel.RunningTargetFolderInfo();
+					if (targetFolderInfo == null)
+					{
+						// タイミングによっては一時的に null になることがありえるが、その場合は何もしない
+					}
+					else
+					{
+						YukaListerStatusLabel = targetFolderInfo.FolderTaskDetail switch
+						{
+							FolderTaskDetail.CacheToDisk => YlConstants.RUNNING_CACHE_TO_DISK,
+							FolderTaskDetail.FindSubFolders => YlConstants.RUNNING_FIND_SUB_FOLDERS,
+							FolderTaskDetail.AddFileNames => YlConstants.RUNNING_ADD_FILE_NAMES,
+							FolderTaskDetail.AddInfos => YlConstants.RUNNING_ADD_INFOS,
+							FolderTaskDetail.Remove => YlConstants.RUNNING_REMOVE,
+							_ => String.Empty,
+						} + "...\n" + targetFolderInfo.Path;
+					}
+					break;
+				case YukaListerStatus.Error:
+					// エラー判定時に既に設定されているので何もしない
+					break;
+				default:
+					Debug.Assert(false, "UpdateYukaListerStatusLabel() bad status");
+					break;
+			}
+			SetYukaListerStatusBackground(currentWholeStatus);
+		}
+
+#if false
 		// --------------------------------------------------------------------
 		// ゆかりすたー NEBULA 全体の動作状況チェック
 		// --------------------------------------------------------------------
@@ -547,7 +602,7 @@ namespace YukaLister.ViewModels
 				SetYukaListerStatusBackground();
 			}
 		}
-
+#endif
 
 	}
 }

@@ -128,9 +128,15 @@ namespace YukaLister.Models.DatabaseContexts
 
 			// 旧キャッシュ削除
 			GetDbSet(this, out DbSet<TFound> founds);
-			founds.RemoveRange(founds.Where(x => x.ParentFolder == parentFolder));
+			IQueryable<TFound> removes = founds.Where(x => x.ParentFolder == parentFolder);
+			founds.RemoveRange(removes);
 
 			// 新キャッシュ追加
+			foreach (TFound record in records)
+			{
+				// Uid を初期化して自動的に Uid を振ってもらうようにする
+				record.Uid = 0;
+			}
 			founds.AddRange(records);
 
 			// キャッシュ管理テーブル更新

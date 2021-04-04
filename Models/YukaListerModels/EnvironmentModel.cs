@@ -15,6 +15,7 @@ using Shinta;
 using System;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -59,15 +60,27 @@ namespace YukaLister.Models.YukaListerModels
 		// ネビュラコア
 		public Sifolin Sifolin { get; } = new();
 
-		// ゆかりすたー NEBULA 全体の動作状況
-		private volatile YukaListerStatus _yukaListerStatus = YukaListerStatus.Ready;
-		public YukaListerStatus YukaListerStatus
+		// ゆかりすたー NEBULA パーツごとの動作状況
+		private volatile YukaListerStatus[] _yukaListerPartsStatus = new YukaListerStatus[(Int32)YukaListerPartsStatusIndex.__End__];
+		public YukaListerStatus[] YukaListerPartsStatus
 		{
-			get => _yukaListerStatus;
-			set
+			get => _yukaListerPartsStatus;
+		}
+
+		// ゆかりすたー NEBULA 全体の動作状況
+		public YukaListerStatus YukaListerWholeStatus
+		{
+			get
 			{
-				_yukaListerStatus = value;
-				Debug.WriteLine("YukaListerStatus setter: " + _yukaListerStatus.ToString());
+				if (YukaListerPartsStatus.Contains(YukaListerStatus.Error))
+				{
+					return YukaListerStatus.Error;
+				}
+				if (YukaListerPartsStatus.Contains(YukaListerStatus.Running))
+				{
+					return YukaListerStatus.Running;
+				}
+				return YukaListerStatus.Ready;
 			}
 		}
 
