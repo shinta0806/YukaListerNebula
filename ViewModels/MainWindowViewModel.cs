@@ -186,6 +186,7 @@ namespace YukaLister.ViewModels
 
 				YukaListerModel.Instance.ProjModel.SetFolderTaskDetailToRemove(SelectedTargetFolderInfo.ParentPath);
 				UpdateDataGrid();
+				_prevYukaListerWholeStatus = YukaListerStatus.__End__;
 			}
 			catch (Exception excep)
 			{
@@ -245,6 +246,7 @@ namespace YukaLister.ViewModels
 			{
 				YukaListerModel.Instance.ProjModel.AddTargetFolder(folderSelectionMessage.Response);
 				UpdateDataGrid();
+				_prevYukaListerWholeStatus = YukaListerStatus.__End__;
 			}
 			catch (Exception excep)
 			{
