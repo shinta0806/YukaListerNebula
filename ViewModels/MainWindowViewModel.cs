@@ -14,18 +14,20 @@ using Livet.Messaging.IO;
 using Microsoft.EntityFrameworkCore;
 
 using Shinta;
-
+using Shinta.Behaviors;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Media;
 using System.Windows.Threading;
 
 using YukaLister.Models.Database;
 using YukaLister.Models.DatabaseContexts;
+using YukaLister.Models.SerializableSettings;
 using YukaLister.Models.SharedMisc;
 using YukaLister.Models.YukaListerModels;
 
@@ -141,6 +143,22 @@ namespace YukaLister.ViewModels
 			set => RaisePropertyChangedIfSet(ref _targetFolderInfosVisible, value);
 		}
 
+		// ステータスバーメッセージ
+		private String _statusBarMessage = String.Empty;
+		public String StatusBarMessage
+		{
+			get => _statusBarMessage;
+			set => RaisePropertyChangedIfSet(ref _statusBarMessage, value);
+		}
+
+		// ステータスバー文字色
+		private Brush _statusBarForeground = YlConstants.BRUSH_NORMAL_STRING;
+		public Brush StatusBarForeground
+		{
+			get => _statusBarForeground;
+			set => RaisePropertyChangedIfSet(ref _statusBarForeground, value);
+		}
+
 		// --------------------------------------------------------------------
 		// 一般プロパティー
 		// --------------------------------------------------------------------
@@ -148,6 +166,50 @@ namespace YukaLister.ViewModels
 		// --------------------------------------------------------------------
 		// コマンド
 		// --------------------------------------------------------------------
+
+		#region リムーバブルメディア着脱の制御
+		private ListenerCommand<DeviceChangeInfo>? _windowDeviceChangeCommand;
+
+		public ListenerCommand<DeviceChangeInfo> WindowDeviceChangeCommand
+		{
+			get
+			{
+				if (_windowDeviceChangeCommand == null)
+				{
+					_windowDeviceChangeCommand = new ListenerCommand<DeviceChangeInfo>(WindowDeviceChange);
+				}
+				return _windowDeviceChangeCommand;
+			}
+		}
+
+		public async void WindowDeviceChange(DeviceChangeInfo deviceChangeInfo)
+		{
+			try
+			{
+				if (String.IsNullOrEmpty(deviceChangeInfo.DriveLetter))
+				{
+					return;
+				}
+
+				switch (deviceChangeInfo.Kind)
+				{
+					case DBT.DBT_DEVICEARRIVAL:
+						SetStatusBarMessage(Common.TRACE_EVENT_TYPE_STATUS, "リムーバブルドライブが接続されました：" + deviceChangeInfo.DriveLetter);
+						await DeviceArrival(deviceChangeInfo.DriveLetter);
+						break;
+					case DBT.DBT_DEVICEREMOVECOMPLETE:
+						SetStatusBarMessage(Common.TRACE_EVENT_TYPE_STATUS, "リムーバブルドライブが切断されました：" + deviceChangeInfo.DriveLetter);
+						DeviceRemoveComplete(deviceChangeInfo.DriveLetter);
+						break;
+				}
+			}
+			catch (Exception excep)
+			{
+				YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(TraceEventType.Error, "デバイス着脱時エラー：\n" + excep.Message);
+				YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, "　スタックトレース：\n" + excep.StackTrace);
+			}
+		}
+		#endregion
 
 		#region 削除ボタンの制御
 		private ViewModelCommand? _buttonRemoveTargetFolderClickedCommand;
@@ -184,7 +246,7 @@ namespace YukaLister.ViewModels
 					return;
 				}
 
-				YukaListerModel.Instance.ProjModel.SetFolderTaskDetailToRemove(SelectedTargetFolderInfo.ParentPath);
+				YukaListerModel.Instance.ProjModel.SetFolderTaskDetailOfFolderToRemove(SelectedTargetFolderInfo.ParentPath);
 				UpdateDataGrid();
 				_prevYukaListerWholeStatus = YukaListerStatus.__End__;
 			}
@@ -391,6 +453,44 @@ namespace YukaLister.ViewModels
 		// ====================================================================
 
 		// --------------------------------------------------------------------
+		// イベントハンドラー
+		// ＜引数＞ driveLetter: "D:" のようにコロンまで
+		// --------------------------------------------------------------------
+		private async ValueTask DeviceArrival(String driveLetter)
+		{
+			if (!YukaListerModel.Instance.EnvModel.YlSettings.AddFolderOnDeviceArrived)
+			{
+				return;
+			}
+
+			await YlCommon.LaunchTaskAsync(DeviceArrivalBgTask, driveLetter);
+			_prevYukaListerWholeStatus = YukaListerStatus.__End__;
+		}
+
+		// --------------------------------------------------------------------
+		// バックグラウンドタスクで実行される前提
+		// ＜引数＞ driveLetter: "D:" のようにコロンまで
+		// --------------------------------------------------------------------
+		private void DeviceArrivalBgTask(String driveLetter)
+		{
+			AutoTargetInfo autoTargetInfo = new(driveLetter);
+			autoTargetInfo.Load();
+			foreach (String folder in autoTargetInfo.Folders)
+			{
+				YukaListerModel.Instance.ProjModel.AddTargetFolder(driveLetter + folder);
+			}
+		}
+
+		// --------------------------------------------------------------------
+		// イベントハンドラー
+		// --------------------------------------------------------------------
+		private void DeviceRemoveComplete(String driveLetter)
+		{
+			YukaListerModel.Instance.ProjModel.SetFolderTaskDetailOfDriveToRemove(driveLetter);
+			_prevYukaListerWholeStatus = YukaListerStatus.__End__;
+		}
+
+		// --------------------------------------------------------------------
 		// バージョン更新時の処理
 		// --------------------------------------------------------------------
 		private void DoVerChangedIfNeeded()
@@ -506,6 +606,23 @@ namespace YukaLister.ViewModels
 			YukaListerModel.Instance.EnvModel.YlSettings.PrevLaunchVer = YlConstants.APP_VER;
 			YukaListerModel.Instance.EnvModel.YlSettings.DesktopBounds = new Rect(Left, Top, Width, Height);
 			YukaListerModel.Instance.EnvModel.YlSettings.Save();
+		}
+
+		// --------------------------------------------------------------------
+		// ステータスバーにメッセージを表示
+		// --------------------------------------------------------------------
+		public void SetStatusBarMessage(TraceEventType traceEventType, String msg)
+		{
+			StatusBarMessage = msg;
+			if (traceEventType == TraceEventType.Error)
+			{
+				StatusBarForeground = YlConstants.BRUSH_ERROR_STRING;
+			}
+			else
+			{
+				StatusBarForeground = YlConstants.BRUSH_NORMAL_STRING;
+			}
+			YukaListerModel.Instance.EnvModel.LogWriter.LogMessage(traceEventType, msg);
 		}
 
 		// --------------------------------------------------------------------

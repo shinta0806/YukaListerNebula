@@ -16,7 +16,8 @@ using System.Diagnostics;
 using System.IO;
 using System.Text;
 using System.Text.RegularExpressions;
-
+using System.Threading;
+using System.Threading.Tasks;
 using YukaLister.Models.YukaListerModels;
 
 namespace YukaLister.Models.SharedMisc
@@ -262,6 +263,30 @@ namespace YukaLister.Models.SharedMisc
 				path2 = path2[0..^1];
 			}
 			return String.Compare(path1, path2, true) == 0;
+		}
+
+		// --------------------------------------------------------------------
+		// 関数を非同期駆動
+		// --------------------------------------------------------------------
+		public static Task LaunchTaskAsync<T>(TaskAsyncDelegate<T> deleg, T vari) where T : class?
+		{
+			return Task.Run(() =>
+			{
+				try
+				{
+					// 終了時に強制終了されないように設定
+					Thread.CurrentThread.IsBackground = false;
+
+					YukaListerModel.Instance.EnvModel.LogWriter.LogMessage(Common.TRACE_EVENT_TYPE_STATUS, "バックグラウンド処理開始：" + deleg.Method.Name);
+					deleg(vari);
+					YukaListerModel.Instance.EnvModel.LogWriter.LogMessage(Common.TRACE_EVENT_TYPE_STATUS, "バックグラウンド処理終了：" + deleg.Method.Name);
+				}
+				catch (Exception excep)
+				{
+					YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(TraceEventType.Error, "バックグラウンド処理 " + deleg.Method.Name + " 実行時エラー：\n" + excep.Message);
+					YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, "　スタックトレース：\n" + excep.StackTrace);
+				}
+			});
 		}
 
 		// --------------------------------------------------------------------

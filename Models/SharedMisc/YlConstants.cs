@@ -86,7 +86,7 @@ namespace YukaLister.Models.SharedMisc
 	// --------------------------------------------------------------------
 	public enum YukaListerPartsStatusIndex
 	{
-		Environment,	// 環境系
+		Environment,    // 環境系
 		Sifolin,        // Sifolin
 		__End__,
 	}
@@ -108,6 +108,9 @@ namespace YukaLister.Models.SharedMisc
 
 	// TargetFolderInfo.IsOpen が変更された
 	public delegate void IsOpenChanged(TargetFolderInfo targetFolderInfo);
+
+	// タスク非同期実行
+	public delegate void TaskAsyncDelegate<T>(T var) where T : class?;
 
 	public class YlConstants
 	{
@@ -186,7 +189,7 @@ namespace YukaLister.Models.SharedMisc
 		public const String RULE_VAR_END = ">";
 
 		// --------------------------------------------------------------------
-		// 色
+		// 状態色
 		// --------------------------------------------------------------------
 
 		// 待機中
@@ -205,7 +208,7 @@ namespace YukaLister.Models.SharedMisc
 		public static readonly Color COLOR_EXCLUDE = Color.FromRgb(0xCC, 0xCC, 0xCC);
 
 		// --------------------------------------------------------------------
-		// ブラシ
+		// 状態ブラシ
 		// --------------------------------------------------------------------
 
 		// 待機中
@@ -222,6 +225,16 @@ namespace YukaLister.Models.SharedMisc
 
 		// 対象外
 		public static readonly SolidColorBrush BRUSH_EXCLUDE = new(COLOR_EXCLUDE);
+
+		// --------------------------------------------------------------------
+		// 文字ブラシ
+		// --------------------------------------------------------------------
+
+		// 通常文字
+		public static readonly SolidColorBrush BRUSH_NORMAL_STRING = new(Colors.Black);
+
+		// エラー文字
+		public static readonly SolidColorBrush BRUSH_ERROR_STRING = new(Colors.Red);
 
 		// --------------------------------------------------------------------
 		// 実行中

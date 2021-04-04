@@ -199,9 +199,28 @@ namespace YukaLister.Models.YukaListerModels
 		}
 
 		// --------------------------------------------------------------------
+		// 指定ドライブの FolderTaskDetail を Remove にする
+		// --------------------------------------------------------------------
+		public Boolean SetFolderTaskDetailOfDriveToRemove(String driveLetter)
+		{
+			List<TargetFolderInfo> removeTargets;
+			lock (_targetFolderInfos)
+			{
+				removeTargets = _targetFolderInfos.Where(x => x.IsParent && x.Path.StartsWith(driveLetter, StringComparison.OrdinalIgnoreCase)).ToList();
+			}
+
+			Boolean result = false;
+			foreach (TargetFolderInfo removeTarget in removeTargets)
+			{
+				result |= SetFolderTaskDetailOfFolderToRemove(removeTarget.Path);
+			}
+			return result;
+		}
+
+		// --------------------------------------------------------------------
 		// サブフォルダーも含めて FolderTaskDetail を Remove にする
 		// --------------------------------------------------------------------
-		public Boolean SetFolderTaskDetailToRemove(String parentFolder)
+		public Boolean SetFolderTaskDetailOfFolderToRemove(String parentFolder)
 		{
 			lock (_targetFolderInfos)
 			{
