@@ -75,7 +75,6 @@ namespace YukaLister.Models.DatabaseContexts
 		// --------------------------------------------------------------------
 		protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 		{
-			Debug.WriteLine("OnConfiguring() DatabasePath: " + DatabasePath());
 			optionsBuilder.UseSqlite(DbCommon.Connect(DatabasePath()));
 		}
 

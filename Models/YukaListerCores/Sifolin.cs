@@ -63,8 +63,10 @@ namespace YukaLister.Models.YukaListerCores
 				{
 					continue;
 				}
+
+				Int32 startTick = Environment.TickCount;
 				YukaListerModel.Instance.EnvModel.YukaListerPartsStatus[(Int32)YukaListerPartsStatusIndex.Sifolin] = YukaListerStatus.Running;
-				Debug.WriteLine("Sifolin.CoreMain() 進行");
+				YukaListerModel.Instance.EnvModel.LogWriter.LogMessage(Common.TRACE_EVENT_TYPE_STATUS, GetType().Name + " アクティブ化。");
 
 				try
 				{
@@ -137,7 +139,8 @@ namespace YukaLister.Models.YukaListerCores
 					YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, "　スタックトレース：\n" + excep.StackTrace);
 				}
 
-				Debug.WriteLine("Sifolin.CoreMain() 待機");
+				TimeSpan timeSpan = new(YlCommon.MiliToHNano(Environment.TickCount - startTick));
+				YukaListerModel.Instance.EnvModel.LogWriter.LogMessage(Common.TRACE_EVENT_TYPE_STATUS, GetType().Name + " スリープ化：アクティブ時間：" + timeSpan.ToString(@"hh\:mm\:ss"));
 			}
 		}
 

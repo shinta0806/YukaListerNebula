@@ -14,6 +14,7 @@ using Shinta;
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 
@@ -485,6 +486,7 @@ namespace YukaLister.Models.Database
 					Sequence = seqMax + 1,
 					LinkId = registeredPerson.Id,
 				};
+				//Debug.WriteLine("RegisterPerson() id: " + registeredSequence.Id + ", seq: " + registeredSequence.Sequence);
 				listSequences.Add(registeredSequence);
 			}
 

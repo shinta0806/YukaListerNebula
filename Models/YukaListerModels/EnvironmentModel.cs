@@ -172,6 +172,8 @@ namespace YukaLister.Models.YukaListerModels
 		private void SetLogWriter()
 		{
 			LogWriter.ApplicationQuitToken = AppCancellationTokenSource.Token;
+			LogWriter.SimpleTraceListener.MaxSize = 10 * 1024 * 1024;
+			LogWriter.SimpleTraceListener.MaxOldGenerations = 5;
 			LogWriter.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, "起動しました：" + YlConstants.APP_NAME_J + " "
 					+ YlConstants.APP_VER + " ====================");
 #if DEBUG

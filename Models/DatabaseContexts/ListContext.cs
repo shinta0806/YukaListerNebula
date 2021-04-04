@@ -159,6 +159,11 @@ namespace YukaLister.Models.DatabaseContexts
 
 			// タグ関連のテーブル
 			modelBuilder.Entity<TTag>().HasIndex(x => x.Name);
+
+			// 紐付テーブル
+			modelBuilder.Entity<TArtistSequence>().HasKey(x => new { x.Id, x.Sequence });
+			modelBuilder.Entity<TComposerSequence>().HasKey(x => new { x.Id, x.Sequence });
+			modelBuilder.Entity<TTagSequence>().HasKey(x => new { x.Id, x.Sequence });
 		}
 	}
 }
