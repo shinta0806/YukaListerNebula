@@ -9,12 +9,10 @@
 // ----------------------------------------------------------------------------
 
 using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+
+using YukaLister.Models.Database.Masters;
 
 namespace YukaLister.Models.Database
 {
@@ -38,9 +36,13 @@ namespace YukaLister.Models.Database
 		[Column(FIELD_NAME_FOUND_PATH)]
 		public String Path { get; set; } = String.Empty;
 
-		// フォルダー（項目削除用：デバイス識別文字列＋フォルダー名小文字）
+		// フォルダー
 		[Column(FIELD_NAME_FOUND_FOLDER)]
 		public String Folder { get; set; } = String.Empty;
+
+		// 親フォルダー（追加ボタンをクリックした時のフォルダー）（項目削除用）
+		[Column(FIELD_NAME_FOUND_PARENT_FOLDER)]
+		public String ParentFolder { get; set; } = String.Empty;
 
 		// 頭文字（通常は番組名の頭文字、通常はひらがな（濁点なし））
 		[Column(FIELD_NAME_FOUND_HEAD)]
@@ -227,6 +229,7 @@ namespace YukaLister.Models.Database
 		public const String FIELD_NAME_FOUND_UID = "found_uid";
 		public const String FIELD_NAME_FOUND_PATH = "found_path";
 		public const String FIELD_NAME_FOUND_FOLDER = "found_folder";
+		public const String FIELD_NAME_FOUND_PARENT_FOLDER = "found_parent_folder";
 		public const String FIELD_NAME_FOUND_HEAD = "found_head";
 		public const String FIELD_NAME_FOUND_TITLE_RUBY = "found_title_ruby";
 		public const String FIELD_NAME_FOUND_WORKER = "found_worker";

@@ -20,9 +20,9 @@ using Shinta;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading;
 using System.Windows;
 using System.Windows.Threading;
+
 using YukaLister.Models.Database;
 using YukaLister.Models.SharedMisc;
 using YukaLister.Models.YukaListerModels;
@@ -67,8 +67,8 @@ namespace YukaLister.ViewModels
 
 			// 環境
 			YukaListerModel.Instance.EnvModel.YlSettings.Load();
-			YukaListerModel.Instance.EnvModel.StartAllCores();
 			DbCommon.PrepareDatabases();
+			YukaListerModel.Instance.EnvModel.StartAllCores();
 
 #if DEBUGz
 			Thread.Sleep(3000);
@@ -83,7 +83,7 @@ namespace YukaLister.ViewModels
 			else
 			{
 				// 前回のウィンドウサイズ
-				Rect adjustedRect = Common.AdjustWindowRect(YukaListerModel.Instance.EnvModel.YlSettings.DesktopBounds);
+				Rect adjustedRect = CommonWindows.AdjustWindowRect(YukaListerModel.Instance.EnvModel.YlSettings.DesktopBounds);
 				_mainWindowViewModel.Left = adjustedRect.Left;
 				_mainWindowViewModel.Top = adjustedRect.Top;
 				_mainWindowViewModel.Width = adjustedRect.Width;

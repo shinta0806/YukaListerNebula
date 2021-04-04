@@ -139,7 +139,7 @@ namespace YukaLister.Views.CustomControls
 				DrawExpander(drawingContext, expanderRect);
 
 				// フォルダー名
-				FormattedText text = new(TargetFolderInfo.Path, CultureInfo.CurrentCulture, FlowDirection.LeftToRight, CreateDefaultTypeface(FontFamily),
+				FormattedText text = new(TargetFolderInfo.PathLabel, CultureInfo.CurrentCulture, FlowDirection.LeftToRight, CreateDefaultTypeface(FontFamily),
 						FontSize, Foreground, YlConstants.DPI);
 				Double x = expanderRect.Right + MARGIN_WIDTH;
 				Double y = (ActualHeight - text.Height) / 2;
@@ -283,7 +283,7 @@ namespace YukaLister.Views.CustomControls
 		private Rect ExpanderRect()
 		{
 			Debug.Assert(TargetFolderInfo != null, "ExpanderRect() bad TargetFolderInfo");
-			Double left = MARGIN_WIDTH + TargetFolderInfo.Level * EXPANDER_SIZE / 2;
+			Double left = MARGIN_WIDTH + TargetFolderInfo.Level * EXPANDER_SIZE;
 			Double top = (ActualHeight - EXPANDER_SIZE) / 2;
 			return new Rect(left, top, EXPANDER_SIZE, EXPANDER_SIZE);
 		}

@@ -12,7 +12,7 @@ using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace YukaLister.Models.Database
+namespace YukaLister.Models.Database.Aliases
 {
 	[Table(TABLE_NAME_SONG_ALIAS)]
 	public class TSongAlias : IRcAlias

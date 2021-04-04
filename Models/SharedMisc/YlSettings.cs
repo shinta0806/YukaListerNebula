@@ -11,7 +11,9 @@
 using Shinta;
 
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Windows;
 
 using YukaLister.Models.YukaListerModels;
@@ -27,6 +29,16 @@ namespace YukaLister.Models.SharedMisc
 		// --------------------------------------------------------------------
 		// 設定
 		// --------------------------------------------------------------------
+
+		// ゆかり設定ファイルのパス（相対または絶対）
+		public String YukariConfigPathSeed { get; set; } = @"..\" + YlConstants.FILE_NAME_YUKARI_CONFIG;
+
+		// --------------------------------------------------------------------
+		// リスト対象
+		// --------------------------------------------------------------------
+
+		// リスト化対象ファイルの拡張子
+		public List<String> TargetExts = new();
 
 		// --------------------------------------------------------------------
 		// メンテナンス
@@ -68,6 +80,14 @@ namespace YukaLister.Models.SharedMisc
 		// ====================================================================
 
 		// --------------------------------------------------------------------
+		// ゆかり設定ファイルが正しく指定されているかどうか
+		// --------------------------------------------------------------------
+		public Boolean IsYukariConfigPathValid()
+		{
+			return File.Exists(YukariConfigPath());
+		}
+
+		// --------------------------------------------------------------------
 		// 読み込み
 		// --------------------------------------------------------------------
 		public void Load()
@@ -80,6 +100,15 @@ namespace YukaLister.Models.SharedMisc
 			catch (Exception excep)
 			{
 				YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(TraceEventType.Error, "アプリケーション設定読み込み時エラー：\n" + excep.Message, true);
+				YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, "　スタックトレース：\n" + excep.StackTrace);
+			}
+			try
+			{
+				Adjust();
+			}
+			catch (Exception excep)
+			{
+				YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(TraceEventType.Error, "アプリケーション設定調整時エラー：\n" + excep.Message, true);
 				YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, "　スタックトレース：\n" + excep.StackTrace);
 			}
 		}
@@ -98,6 +127,54 @@ namespace YukaLister.Models.SharedMisc
 				YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(TraceEventType.Error, "アプリケーション設定保存時エラー：\n" + excep.Message, true);
 				YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, "　スタックトレース：\n" + excep.StackTrace);
 			}
+		}
+
+		// --------------------------------------------------------------------
+		// ゆかり設定ファイルのフルパス
+		// --------------------------------------------------------------------
+		public String YukariConfigPath()
+		{
+			if (Path.IsPathRooted(YukariConfigPathSeed))
+			{
+				return YukariConfigPathSeed;
+			}
+			else
+			{
+				return Common.MakeAbsolutePath(YukaListerModel.Instance.EnvModel.ExeFullFolder, YukariConfigPathSeed);
+			}
+		}
+
+		// ====================================================================
+		// public メンバー関数
+		// ====================================================================
+
+		// --------------------------------------------------------------------
+		// 設定を調整
+		// ＜例外＞ Exception
+		// --------------------------------------------------------------------
+		private void Adjust()
+		{
+			if (TargetExts.Count == 0)
+			{
+				// 動画の拡張子をアルファベット順に追加（比較的メジャーで現在もサポートが行われている形式のみ）
+				TargetExts.Add(Common.FILE_EXT_AVI);
+				TargetExts.Add(Common.FILE_EXT_MKV);
+				TargetExts.Add(Common.FILE_EXT_MOV);
+				TargetExts.Add(Common.FILE_EXT_MP4);
+				TargetExts.Add(Common.FILE_EXT_MPG);
+				TargetExts.Add(Common.FILE_EXT_WMV);
+			}
+#if false
+			if (YukaListerSettings.LastIdNumbers.Count < (Int32)MusicInfoDbTables.__End__)
+			{
+				YukaListerSettings.LastIdNumbers.Clear();
+				for (Int32 i = 0; i < (Int32)MusicInfoDbTables.__End__; i++)
+				{
+					YukaListerSettings.LastIdNumbers.Add(0);
+				}
+			}
+			YukaListerSettings.AnalyzeYukariEasyAuthConfig(this);
+#endif
 		}
 	}
 }

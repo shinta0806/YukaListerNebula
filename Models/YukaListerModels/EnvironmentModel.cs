@@ -15,8 +15,10 @@ using Shinta;
 using System;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+
 using YukaLister.Models.SharedMisc;
 using YukaLister.Models.YukaListerCores;
 
@@ -57,6 +59,46 @@ namespace YukaLister.Models.YukaListerModels
 
 		// ネビュラコア
 		public Sifolin Sifolin { get; } = new();
+
+		// ゆかりすたー NEBULA パーツごとの動作状況
+		private volatile YukaListerStatus[] _yukaListerPartsStatus = new YukaListerStatus[(Int32)YukaListerPartsStatusIndex.__End__];
+		public YukaListerStatus[] YukaListerPartsStatus
+		{
+			get => _yukaListerPartsStatus;
+		}
+
+		// ゆかりすたー NEBULA 全体の動作状況
+		public YukaListerStatus YukaListerWholeStatus
+		{
+			get
+			{
+				if (YukaListerPartsStatus.Contains(YukaListerStatus.Error))
+				{
+					return YukaListerStatus.Error;
+				}
+				if (YukaListerPartsStatus.Contains(YukaListerStatus.Running))
+				{
+					return YukaListerStatus.Running;
+				}
+				return YukaListerStatus.Ready;
+			}
+		}
+
+		// メインウィンドウの DataGrid のアイテム数が増減した
+		private volatile Boolean _isMainWindowDataGridCountChanged;
+		public Boolean IsMainWindowDataGridCountChanged
+		{
+			get => _isMainWindowDataGridCountChanged;
+			set => _isMainWindowDataGridCountChanged = value;
+		}
+
+		// メインウィンドウの DataGrid のアイテム数は変わらないがアイテムの内容が更新された
+		private volatile Boolean _isMainWindowDataGridItemUpdated;
+		public Boolean IsMainWindowDataGridItemUpdated
+		{
+			get => _isMainWindowDataGridItemUpdated;
+			set => _isMainWindowDataGridItemUpdated = value;
+		}
 
 		// EXE フルパス
 		private String? _exeFullPath;
@@ -104,6 +146,7 @@ namespace YukaLister.Models.YukaListerModels
 		public async Task QuitAllCoresAsync()
 		{
 			Debug.Assert(AppCancellationTokenSource.Token.IsCancellationRequested, "QuitAllCores() not cancelled");
+			Debug.WriteLine("QuitAllCoresAsync()");
 			if (Sifolin.MainTask != null)
 			{
 				Sifolin.MainEvent.Set();
@@ -129,6 +172,8 @@ namespace YukaLister.Models.YukaListerModels
 		private void SetLogWriter()
 		{
 			LogWriter.ApplicationQuitToken = AppCancellationTokenSource.Token;
+			LogWriter.SimpleTraceListener.MaxSize = 10 * 1024 * 1024;
+			LogWriter.SimpleTraceListener.MaxOldGenerations = 5;
 			LogWriter.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, "起動しました：" + YlConstants.APP_NAME_J + " "
 					+ YlConstants.APP_VER + " ====================");
 #if DEBUG
