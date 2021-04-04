@@ -420,18 +420,6 @@ namespace YukaLister.ViewModels
 			};
 		}
 
-#if false
-		// --------------------------------------------------------------------
-		// ゆかりすたー NEBULA 全体の動作状況を待機にする
-		// --------------------------------------------------------------------
-		private void SetYukaListerStatusReady()
-		{
-			YukaListerModel.Instance.EnvModel.YukaListerStatus = YukaListerStatus.Ready;
-			YukaListerStatusLabel = YlConstants.APP_NAME_J + "は正常に動作しています。";
-			SetYukaListerStatusBackground();
-		}
-#endif
-
 		// --------------------------------------------------------------------
 		// イベントハンドラー：IsOpen が変更された
 		// --------------------------------------------------------------------
@@ -529,6 +517,14 @@ namespace YukaLister.ViewModels
 				YukaListerModel.Instance.EnvModel.YukaListerPartsStatus[(Int32)YukaListerPartsStatusIndex.Environment] = YukaListerStatus.Error;
 				YukaListerStatusLabel = "ゆかり設定ファイルが正しく指定されていません。";
 			}
+#if false
+			else if (!IsMusicInfoDatabaseValid())
+			{
+				// 楽曲情報データベースエラー
+				YukaListerModel.Instance.EnvModel.YukaListerPartsStatus[(Int32)YukaListerPartsStatusIndex.Environment] = YukaListerStatus.Error;
+				YukaListerStatusLabel = "ゆかり設定ファイルが正しく指定されていません。";
+			}
+#endif
 			else
 			{
 				// 正常
@@ -574,35 +570,5 @@ namespace YukaLister.ViewModels
 			}
 			SetYukaListerStatusBackground(currentWholeStatus);
 		}
-
-#if false
-		// --------------------------------------------------------------------
-		// ゆかりすたー NEBULA 全体の動作状況チェック
-		// --------------------------------------------------------------------
-		private void UpdateYukaListerStatusRunning()
-		{
-			TargetFolderInfo? targetFolderInfo = YukaListerModel.Instance.ProjModel.RunningTargetFolderInfo();
-			if (targetFolderInfo == null)
-			{
-				// 動作中のタスクが無くなった
-				YukaListerModel.Instance.EnvModel.YukaListerStatus = YukaListerStatus.Ready;
-				SetYukaListerStatusReady();
-			}
-			else
-			{
-				YukaListerStatusLabel = targetFolderInfo.FolderTaskDetail switch
-				{
-					FolderTaskDetail.CacheToDisk => YlConstants.RUNNING_CACHE_TO_DISK,
-					FolderTaskDetail.FindSubFolders => YlConstants.RUNNING_FIND_SUB_FOLDERS,
-					FolderTaskDetail.AddFileNames => YlConstants.RUNNING_ADD_FILE_NAMES,
-					FolderTaskDetail.AddInfos => YlConstants.RUNNING_ADD_INFOS,
-					FolderTaskDetail.Remove => YlConstants.RUNNING_REMOVE,
-					_ => String.Empty,
-				} + "...\n" + targetFolderInfo.Path;
-				SetYukaListerStatusBackground();
-			}
-		}
-#endif
-
 	}
 }

@@ -291,7 +291,7 @@ namespace YukaLister.Models.Database
 		public static Boolean ValidPropertyExists(DbSet<TProperty> properties)
 		{
 			TProperty property = Property(properties);
-			return property.AppId == YlConstants.APP_ID;
+			return property.AppId == YlConstants.APP_ID && property.AppVer.Contains(YlConstants.APP_GENERATION);
 		}
 
 		// --------------------------------------------------------------------
