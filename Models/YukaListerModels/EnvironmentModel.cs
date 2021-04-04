@@ -64,7 +64,11 @@ namespace YukaLister.Models.YukaListerModels
 		public YukaListerStatus YukaListerStatus
 		{
 			get => _yukaListerStatus;
-			set => _yukaListerStatus = value;
+			set
+			{
+				_yukaListerStatus = value;
+				Debug.WriteLine("YukaListerStatus setter: " + _yukaListerStatus.ToString());
+			}
 		}
 
 		// メインウィンドウの DataGrid のアイテム数が増減した

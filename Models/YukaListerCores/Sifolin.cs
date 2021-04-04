@@ -70,6 +70,9 @@ namespace YukaLister.Models.YukaListerCores
 				{
 					while (true)
 					{
+#if DEBUG
+			Thread.Sleep(1000);
+#endif
 						YukaListerModel.Instance.EnvModel.AppCancellationTokenSource.Token.ThrowIfCancellationRequested();
 
 						TargetFolderInfo? targetFolderInfo;
@@ -272,7 +275,7 @@ namespace YukaLister.Models.YukaListerCores
 
 			// 作業
 			AddInfosCore(targetFolderInfo);
-#if DEBUG
+#if DEBUGz
 			Thread.Sleep(500);
 #endif
 
@@ -322,15 +325,36 @@ namespace YukaLister.Models.YukaListerCores
 		// --------------------------------------------------------------------
 		private void CacheToDisk(TargetFolderInfo targetFolderInfo)
 		{
+			Debug.Assert(targetFolderInfo.Path == targetFolderInfo.ParentPath, "CacheToDisk() not parent");
+
 			// 動作状況設定
 			SetFolderTaskStatus(targetFolderInfo, FolderTaskStatus.Running);
 
 			// 作業
-			// ToDo: 未実装
+			CacheToDiskCore(targetFolderInfo);
 
 			// 動作状況設定
 			targetFolderInfo.FolderTaskDetail = FolderTaskDetail.FindSubFolders;
 			SetFolderTaskStatus(targetFolderInfo, FolderTaskStatus.Queued);
+		}
+
+		// --------------------------------------------------------------------
+		// キャッシュ DB からディスク DB へコピー
+		// --------------------------------------------------------------------
+		private void CacheToDiskCore(TargetFolderInfo targetFolderInfo)
+		{
+			using CacheContext cacheContext = CacheContext.CreateContext(YlCommon.DriveLetter(targetFolderInfo.Path), out DbSet<TFound> cacheFounds);
+			IQueryable<TFound> cacheRecords = cacheFounds.Where(x => x.ParentFolder == targetFolderInfo.Path);
+			if (!cacheRecords.Any())
+			{
+				return;
+			}
+
+			using ListContextInDisk listContextInDisk = ListContextInDisk.CreateContext(out DbSet<TFound> diskFounds);
+			diskFounds.AddRange(cacheRecords);
+			listContextInDisk.SaveChanges();
+			YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, targetFolderInfo.Path
+					+ "\nキャッシュをゆかり用リストデータベースに反映しました。");
 		}
 
 		// --------------------------------------------------------------------
@@ -428,7 +452,7 @@ namespace YukaLister.Models.YukaListerCores
 			IQueryable<String> parentFolders = founds.GroupBy(x => x.ParentFolder).Select(x => x.Key);
 			foreach (String parentFolder in parentFolders)
 			{
-				using CacheContext cacheContext = new(parentFolder[0..2]);
+				using CacheContext cacheContext = new(YlCommon.DriveLetter(parentFolder));
 				IQueryable<TFound> records = founds.Where(x => x.ParentFolder == parentFolder);
 				cacheContext.UpdateCache(records);
 			}
