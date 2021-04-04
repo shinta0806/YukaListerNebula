@@ -524,7 +524,7 @@ namespace YukaLister.Models.YukaListerCores
 			if (childAdded)
 			{
 				// 追加済みの親を削除
-				YukaListerModel.Instance.ProjModel.RemoveTargetFolder(targetFolderInfo.Path);
+				YukaListerModel.Instance.ProjModel.SetFolderTaskDetailToRemove(targetFolderInfo.ParentPath);
 				YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(TraceEventType.Error, targetFolderInfo.Path
 						+ "\nのサブフォルダーが既に追加されています。\nサブフォルダーを一旦削除してから追加しなおして下さい。");
 				return;

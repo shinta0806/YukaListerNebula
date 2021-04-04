@@ -145,6 +145,7 @@ namespace YukaLister.Models.YukaListerModels
 			return false;
 		}
 
+#if false
 		// --------------------------------------------------------------------
 		// ゆかり検索対象フォルダーから削除
 		// TargetFolderInfo のみの削除で、データベースはいじらない
@@ -163,6 +164,7 @@ namespace YukaLister.Models.YukaListerModels
 			YukaListerModel.Instance.EnvModel.IsMainWindowDataGridCountChanged = true;
 			return true;
 		}
+#endif
 
 		// --------------------------------------------------------------------
 		// ゆかり検索対象フォルダーから削除（サブフォルダー含む）
