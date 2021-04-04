@@ -79,7 +79,13 @@ namespace YukaLister.Models.YukaListerCores
 
 						TargetFolderInfo? targetFolderInfo;
 
-						// ToDo: 削除系未実装
+						// 削除
+						targetFolderInfo = YukaListerModel.Instance.ProjModel.FindTargetFolderInfo(FolderTaskDetail.Remove);
+						if (targetFolderInfo != null)
+						{
+							Remove(targetFolderInfo);
+							continue;
+						}
 
 						// キャッシュ活用
 						targetFolderInfo = YukaListerModel.Instance.ProjModel.FindTargetFolderInfo(FolderTaskDetail.CacheToDisk);
@@ -197,7 +203,7 @@ namespace YukaLister.Models.YukaListerCores
 			AddFileNamesCore(targetFolderInfo);
 
 			// 動作状況設定
-			targetFolderInfo.FolderTaskDetail = FolderTaskDetail.AddInfos;
+			targetFolderInfo.SetFolderTaskDetail(FolderTaskDetail.AddFileNames, FolderTaskDetail.AddInfos);
 			SetFolderTaskStatus(targetFolderInfo, FolderTaskStatus.Queued);
 		}
 
@@ -284,7 +290,7 @@ namespace YukaLister.Models.YukaListerCores
 #endif
 
 			// 動作状況設定
-			targetFolderInfo.FolderTaskDetail = FolderTaskDetail.Done;
+			targetFolderInfo.SetFolderTaskDetail(FolderTaskDetail.AddInfos, FolderTaskDetail.Done);
 			SetFolderTaskStatus(targetFolderInfo, FolderTaskStatus.DoneInMemory);
 		}
 
@@ -329,7 +335,7 @@ namespace YukaLister.Models.YukaListerCores
 		// --------------------------------------------------------------------
 		private void CacheToDisk(TargetFolderInfo targetFolderInfo)
 		{
-			Debug.Assert(targetFolderInfo.Path == targetFolderInfo.ParentPath, "CacheToDisk() not parent");
+			Debug.Assert(targetFolderInfo.IsParent, "CacheToDisk() not parent");
 
 			// 動作状況設定
 			SetFolderTaskStatus(targetFolderInfo, FolderTaskStatus.Running);
@@ -338,7 +344,7 @@ namespace YukaLister.Models.YukaListerCores
 			CacheToDiskCore(targetFolderInfo);
 
 			// 動作状況設定
-			targetFolderInfo.FolderTaskDetail = FolderTaskDetail.FindSubFolders;
+			targetFolderInfo.SetFolderTaskDetail(FolderTaskDetail.CacheToDisk, FolderTaskDetail.FindSubFolders);
 			SetFolderTaskStatus(targetFolderInfo, FolderTaskStatus.Queued);
 		}
 
@@ -380,8 +386,6 @@ namespace YukaLister.Models.YukaListerCores
 				{
 					// サブフォルダー追加
 					TargetFolderInfo subFolder = new(parentFolder.ParentPath, subFolderPath, parentFolder.Level + 1);
-					subFolder.FolderTaskKind = FolderTaskKind.Add;
-					subFolder.FolderTaskDetail = FolderTaskDetail.AddFileNames;
 					subFolder.IsCacheUsed = parentFolder.IsCacheUsed;
 					folders.Add(subFolder);
 
@@ -416,7 +420,7 @@ namespace YukaLister.Models.YukaListerCores
 			FindSubFoldersCore(targetFolderInfo);
 
 			// 動作状況設定
-			targetFolderInfo.FolderTaskDetail = FolderTaskDetail.AddFileNames;
+			targetFolderInfo.SetFolderTaskDetail(FolderTaskDetail.FindSubFolders, FolderTaskDetail.AddFileNames);
 			SetFolderTaskStatus(targetFolderInfo, FolderTaskStatus.Queued);
 		}
 
@@ -480,6 +484,53 @@ namespace YukaLister.Models.YukaListerCores
 				YukaListerModel.Instance.ProjModel.SetAllFolderTaskStatusToDoneInDisk();
 				_isMemoryDbDirty = false;
 			}
+		}
+
+		// --------------------------------------------------------------------
+		// 削除
+		// --------------------------------------------------------------------
+		private void Remove(TargetFolderInfo targetFolderInfo)
+		{
+			// 動作状況設定
+			SetFolderTaskStatus(targetFolderInfo, FolderTaskStatus.Running);
+
+			// 作業
+			RemoveCore(targetFolderInfo);
+
+			// 動作状況設定は削除済みのため不要
+		}
+
+		// --------------------------------------------------------------------
+		// 削除
+		// --------------------------------------------------------------------
+		private void RemoveCore(TargetFolderInfo targetFolderInfo)
+		{
+			if (!targetFolderInfo.IsParent)
+			{
+				// 親が一括削除するので、親でない場合は削除しない
+				return;
+			}
+
+#if DEBUGz
+			Thread.Sleep(3000);
+#endif
+
+			// まずディスク DB から削除
+			using ListContextInDisk listContextInDisk = ListContextInDisk.CreateContext(out DbSet<TFound> diskFounds);
+			diskFounds.RemoveRange(diskFounds.Where(x => x.ParentFolder == targetFolderInfo.ParentPath));
+			listContextInDisk.SaveChanges();
+
+			// メモリ DB から削除
+			using ListContextInMemory listContextInMemory = ListContextInMemory.CreateContext(out DbSet<TFound> memoryFounds);
+			memoryFounds.RemoveRange(memoryFounds.Where(x => x.ParentFolder == targetFolderInfo.ParentPath));
+			listContextInMemory.SaveChanges();
+
+			// TargetFolderInfo 削除
+			YukaListerModel.Instance.ProjModel.RemoveTargetFolders(targetFolderInfo.ParentPath);
+
+			// その他
+			YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, targetFolderInfo.ParentPath
+					+ "\nとその配下のフォルダーをゆかり検索対象から削除しました。");
 		}
 
 		// --------------------------------------------------------------------

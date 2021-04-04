@@ -8,6 +8,7 @@
 //
 // ----------------------------------------------------------------------------
 
+using Livet.Commands;
 using Livet.Messaging.IO;
 
 using Microsoft.EntityFrameworkCore;
@@ -117,6 +118,21 @@ namespace YukaLister.ViewModels
 			set => RaisePropertyChangedIfSet(ref _numRecordsLabel, value);
 		}
 
+		// DataGrid の選択
+		private TargetFolderInfo? _selectedTargetFolderInfo;
+		public TargetFolderInfo? SelectedTargetFolderInfo
+		{
+			get => _selectedTargetFolderInfo;
+			set
+			{
+				if (RaisePropertyChangedIfSet(ref _selectedTargetFolderInfo, value))
+				{
+					ButtonRemoveTargetFolderClickedCommand.RaiseCanExecuteChanged();
+					ButtonFolderSettingsClickedCommand.RaiseCanExecuteChanged();
+				}
+			}
+		}
+
 		// ゆかり検索対象フォルダー（表示用）
 		private List<TargetFolderInfo>? _targetFolderInfosVisible;
 		public List<TargetFolderInfo>? TargetFolderInfosVisible
@@ -132,6 +148,89 @@ namespace YukaLister.ViewModels
 		// --------------------------------------------------------------------
 		// コマンド
 		// --------------------------------------------------------------------
+
+		#region 削除ボタンの制御
+		private ViewModelCommand? _buttonRemoveTargetFolderClickedCommand;
+
+		public ViewModelCommand ButtonRemoveTargetFolderClickedCommand
+		{
+			get
+			{
+				if (_buttonRemoveTargetFolderClickedCommand == null)
+				{
+					_buttonRemoveTargetFolderClickedCommand = new ViewModelCommand(ButtonRemoveTargetFolderClicked, CanButtonRemoveTargetFolderClick);
+				}
+				return _buttonRemoveTargetFolderClickedCommand;
+			}
+		}
+
+		public Boolean CanButtonRemoveTargetFolderClick()
+		{
+			return SelectedTargetFolderInfo != null;
+		}
+
+		public void ButtonRemoveTargetFolderClicked()
+		{
+			try
+			{
+				if (SelectedTargetFolderInfo == null)
+				{
+					return;
+				}
+
+				if (MessageBox.Show(SelectedTargetFolderInfo.ParentPath + "\nおよびサブフォルダーをゆかり検索対象から削除しますか？",
+						"確認", MessageBoxButton.YesNo, MessageBoxImage.Exclamation) != MessageBoxResult.Yes)
+				{
+					return;
+				}
+
+				YukaListerModel.Instance.ProjModel.SetFolderTaskDetailToRemove(SelectedTargetFolderInfo.ParentPath);
+				UpdateDataGrid();
+			}
+			catch (Exception excep)
+			{
+				YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(TraceEventType.Error, "削除ボタンクリック時エラー：\n" + excep.Message);
+				YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, "　スタックトレース：\n" + excep.StackTrace);
+			}
+		}
+		#endregion
+
+		#region フォルダー設定ボタンの制御
+		private ViewModelCommand? _buttonFolderSettingsClickedCommand;
+
+		public ViewModelCommand ButtonFolderSettingsClickedCommand
+		{
+			get
+			{
+				if (_buttonFolderSettingsClickedCommand == null)
+				{
+					_buttonFolderSettingsClickedCommand = new ViewModelCommand(ButtonFolderSettingsClicked, CanButtonFolderSettingsClick);
+				}
+				return _buttonFolderSettingsClickedCommand;
+			}
+		}
+
+		public Boolean CanButtonFolderSettingsClick()
+		{
+			return SelectedTargetFolderInfo != null;
+		}
+
+		public void ButtonFolderSettingsClicked()
+		{
+#if false
+			Debug.Assert(YukaLister != null, "YukaLister is null");
+			try
+			{
+				YukaLister!.YukariDb.ButtonFolderSettingsClicked();
+			}
+			catch (Exception oExcep)
+			{
+				YukaLister!.Environment.LogWriter.ShowLogMessage(TraceEventType.Error, "フォルダー設定ボタンクリック時エラー：\n" + oExcep.Message);
+				YukaLister.Environment.LogWriter.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, "　スタックトレース：\n" + oExcep.StackTrace);
+			}
+#endif
+		}
+		#endregion
 
 		// ====================================================================
 		// public メンバー関数
@@ -489,15 +588,16 @@ namespace YukaLister.ViewModels
 		// --------------------------------------------------------------------
 		private void UpdateUi(YukaListerStatus currentWholeStatus)
 		{
-			// 引き続き Ready の場合は更新不要
+			// ウィンドウ上部の情報
 			if (currentWholeStatus == YukaListerStatus.Ready && _prevYukaListerWholeStatus == YukaListerStatus.Ready)
 			{
-				return;
+				// 引き続き Ready の場合は更新不要
 			}
-
-			// ウィンドウ上部の情報
-			UpdateYukaListerStatusLabel(currentWholeStatus);
-			UpdateNumRecordsLabel();
+			else
+			{
+				UpdateYukaListerStatusLabel(currentWholeStatus);
+				UpdateNumRecordsLabel();
+			}
 
 			// DataGrid
 			if (YukaListerModel.Instance.EnvModel.IsMainWindowDataGridCountChanged || YukaListerModel.Instance.EnvModel.IsMainWindowDataGridItemUpdated)

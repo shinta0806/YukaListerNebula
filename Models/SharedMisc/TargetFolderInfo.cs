@@ -10,6 +10,7 @@
 
 using System;
 using System.Diagnostics;
+using System.Threading;
 using System.Windows.Media;
 using YukaLister.Models.YukaListerModels;
 
@@ -22,7 +23,7 @@ namespace YukaLister.Models.SharedMisc
 		// ====================================================================
 
 		// --------------------------------------------------------------------
-		// コンストラクター
+		// コンストラクター（親フォルダー追加用）
 		// --------------------------------------------------------------------
 		public TargetFolderInfo(String parentPath)
 		{
@@ -33,12 +34,15 @@ namespace YukaLister.Models.SharedMisc
 			Path = ParentPath;
 			PathLabel = ParentPath;
 			Level = 0;
+			FolderTaskKind = FolderTaskKind.Add;
+			_folderTaskDetail = (Int32)FolderTaskDetail.CacheToDisk;
+			Visible = true;
 			//WindowsApi.GetVolumeInformation(ParentPath[0..3], null, 0, out UInt32 volumeSerialNumber, out UInt32 maximumComponentLength, out FSF fileSystemFlags, null, 0);
 			//VolumeSerialNumber = volumeSerialNumber.ToString("X8") + SEPARATOR;
 		}
 
 		// --------------------------------------------------------------------
-		// コンストラクター
+		// コンストラクター（子フォルダー追加用）
 		// --------------------------------------------------------------------
 		public TargetFolderInfo(String parentPath, String path, Int32 level)
 		{
@@ -51,6 +55,8 @@ namespace YukaLister.Models.SharedMisc
 			Level = level;
 
 			// 自動設定
+			FolderTaskKind = FolderTaskKind.Add;
+			_folderTaskDetail = (Int32)FolderTaskDetail.AddFileNames;
 			PathLabel = System.IO.Path.GetFileName(Path);
 		}
 
@@ -73,6 +79,12 @@ namespace YukaLister.Models.SharedMisc
 
 		// 親フォルダーからの深さ（親フォルダーは 0）
 		public Int32 Level { get; }
+
+		// 親フォルダーかどうか
+		public Boolean IsParent
+		{
+			get => Level == 0;
+		}
 
 		// サブフォルダーがあるかどうか
 		public Boolean HasChildren { get; set; }
@@ -113,7 +125,11 @@ namespace YukaLister.Models.SharedMisc
 		public FolderTaskKind FolderTaskKind { get; set; }
 
 		// 操作の詳細
-		public FolderTaskDetail FolderTaskDetail { get; set; }
+		private volatile Int32 _folderTaskDetail;
+		public FolderTaskDetail FolderTaskDetail
+		{
+			get => (FolderTaskDetail)_folderTaskDetail;
+		}
 
 		// 動作状況
 		public FolderTaskStatus FolderTaskStatus { get; set; } = FolderTaskStatus.Queued;
@@ -173,23 +189,26 @@ namespace YukaLister.Models.SharedMisc
 		}
 
 		// ====================================================================
-		// public static メンバー関数
+		// public メンバー関数
 		// ====================================================================
 
-#if false
 		// --------------------------------------------------------------------
-		// ソート用比較関数
-		// 例えば @"C:\A" 配下と @"C:\A 2" を正しく並べ替えるために ParentPath が必要
+		// FolderTaskDetail を指定値に設定
 		// --------------------------------------------------------------------
-		public static Int32 Compare(TargetFolderInfo lhs, TargetFolderInfo rhs)
+		public void SetFolderTaskDetail(FolderTaskDetail folderTaskDetail)
 		{
-			if (lhs.ParentPath != rhs.ParentPath)
-			{
-				return String.Compare(lhs.ParentPath, rhs.ParentPath);
-			}
-			return String.Compare(lhs.Path, rhs.Path);
+			_folderTaskDetail = (Int32)folderTaskDetail;
 		}
-#endif
+
+		// --------------------------------------------------------------------
+		// FolderTaskDetail を from から to に変更
+		// 現在値が from と等しくない場合は変更しない
+		// ユーザーの意思により現在値が別の値に変更されている場合に、ユーザーの意思を継続するための関数
+		// --------------------------------------------------------------------
+		public void SetFolderTaskDetail(FolderTaskDetail from, FolderTaskDetail to)
+		{
+			Interlocked.CompareExchange(ref _folderTaskDetail, (Int32)to, (Int32)from);
+		}
 
 		// ====================================================================
 		// private メンバー定数
@@ -226,7 +245,14 @@ namespace YukaLister.Models.SharedMisc
 				case FolderTaskStatus.Queued:
 					if (IsCacheUsed)
 					{
-						label = "キャッシュ有効";
+						if(FolderTaskDetail == FolderTaskDetail.Remove)
+						{
+							label = "削除予定";
+						}
+						else
+						{
+							label = "キャッシュ有効";
+						}
 					}
 					else
 					{

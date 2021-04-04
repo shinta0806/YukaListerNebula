@@ -86,13 +86,9 @@ namespace YukaLister.Models.YukaListerModels
 
 			// 親の追加
 			TargetFolderInfo targetFolderInfo = new(parentFolder);
-			targetFolderInfo.FolderTaskKind = FolderTaskKind.Add;
-			targetFolderInfo.FolderTaskDetail = FolderTaskDetail.CacheToDisk;
-			targetFolderInfo.Visible = true;
 			lock (_targetFolderInfos)
 			{
 				_targetFolderInfos.Add(targetFolderInfo);
-				//TargetFolderInfos.Sort(TargetFolderInfo.Compare);
 			}
 
 			// 通知
@@ -151,17 +147,38 @@ namespace YukaLister.Models.YukaListerModels
 
 		// --------------------------------------------------------------------
 		// ゆかり検索対象フォルダーから削除
+		// TargetFolderInfo のみの削除で、データベースはいじらない
 		// --------------------------------------------------------------------
-		public Boolean RemoveTargetFolder(String path)
+		public Boolean RemoveTargetFolder(String folder)
 		{
 			lock (_targetFolderInfos)
 			{
-				Int32 index = IndexOfTargetFolderInfoWithoutLock(path);
+				Int32 index = IndexOfTargetFolderInfoWithoutLock(folder);
 				if (index < 0)
 				{
 					return false;
 				}
 				_targetFolderInfos.RemoveAt(index);
+			}
+			YukaListerModel.Instance.EnvModel.IsMainWindowDataGridCountChanged = true;
+			return true;
+		}
+
+		// --------------------------------------------------------------------
+		// ゆかり検索対象フォルダーから削除（サブフォルダー含む）
+		// TargetFolderInfo のみの削除で、データベースはいじらない
+		// --------------------------------------------------------------------
+		public Boolean RemoveTargetFolders(String parentFolder)
+		{
+			lock (_targetFolderInfos)
+			{
+				Int32 parentIndex = IndexOfTargetFolderInfoWithoutLock(parentFolder);
+				if (parentIndex < 0)
+				{
+					return false;
+				}
+				Debug.Assert(_targetFolderInfos[parentIndex].IsParent, "RemoveTargetFolders() not parent");
+				_targetFolderInfos.RemoveRange(parentIndex, _targetFolderInfos[parentIndex].NumTotalFolders);
 			}
 			YukaListerModel.Instance.EnvModel.IsMainWindowDataGridCountChanged = true;
 			return true;
@@ -179,7 +196,34 @@ namespace YukaLister.Models.YukaListerModels
 		}
 
 		// --------------------------------------------------------------------
-		// すべての DoneInMemory を DoneInDisk にする
+		// サブフォルダーも含めて FolderTaskDetail を Remove にする
+		// --------------------------------------------------------------------
+		public Boolean SetFolderTaskDetailToRemove(String parentFolder)
+		{
+			lock (_targetFolderInfos)
+			{
+				Int32 parentIndex = IndexOfTargetFolderInfoWithoutLock(parentFolder);
+				if (parentIndex < 0)
+				{
+					return false;
+				}
+				Debug.Assert(_targetFolderInfos[parentIndex].IsParent, "SetFolderTaskDetailToRemove() not parent");
+				for (Int32 i = parentIndex; i < parentIndex + _targetFolderInfos[parentIndex].NumTotalFolders; i++)
+				{
+					_targetFolderInfos[i].SetFolderTaskDetail(FolderTaskDetail.Remove);
+					_targetFolderInfos[i].FolderTaskStatus = FolderTaskStatus.Queued;
+				}
+			}
+
+			// 通知
+			YukaListerModel.Instance.EnvModel.IsMainWindowDataGridItemUpdated = true;
+			YukaListerModel.Instance.EnvModel.Sifolin.MainEvent.Set();
+			ListCancellationTokenSource?.Cancel();
+			return true;
+		}
+
+		// --------------------------------------------------------------------
+		// すべての FolderTaskStatus.DoneInMemory を DoneInDisk にする
 		// --------------------------------------------------------------------
 		public void SetAllFolderTaskStatusToDoneInDisk()
 		{
