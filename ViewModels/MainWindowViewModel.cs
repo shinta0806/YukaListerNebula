@@ -20,6 +20,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Media;
@@ -195,7 +196,7 @@ namespace YukaLister.ViewModels
 				{
 					case DBT.DBT_DEVICEARRIVAL:
 						SetStatusBarMessage(Common.TRACE_EVENT_TYPE_STATUS, "リムーバブルドライブが接続されました：" + deviceChangeInfo.DriveLetter);
-						await DeviceArrival(deviceChangeInfo.DriveLetter);
+						await DeviceArrivalAsync(deviceChangeInfo.DriveLetter);
 						break;
 					case DBT.DBT_DEVICEREMOVECOMPLETE:
 						SetStatusBarMessage(Common.TRACE_EVENT_TYPE_STATUS, "リムーバブルドライブが切断されました：" + deviceChangeInfo.DriveLetter);
@@ -320,7 +321,7 @@ namespace YukaLister.ViewModels
 		// --------------------------------------------------------------------
 		// 初期化
 		// --------------------------------------------------------------------
-		public override void Initialize()
+		public override async void Initialize()
 		{
 			base.Initialize();
 
@@ -353,6 +354,10 @@ namespace YukaLister.ViewModels
 
 				// その他
 				UpdateUi(YukaListerModel.Instance.EnvModel.YukaListerWholeStatus);
+
+				// 非同期系
+				await YlCommon.LaunchTaskAsync<Object?>(AutoTargetAllDrivesBgTask, null);
+				_prevYukaListerWholeStatus = YukaListerStatus.__End__;
 
 #if DEBUGz
 				CacheContext.CreateContext("D:", out _);
@@ -453,10 +458,32 @@ namespace YukaLister.ViewModels
 		// ====================================================================
 
 		// --------------------------------------------------------------------
-		// イベントハンドラー
+		// 接続されているすべてのドライブで自動接続
+		// バックグラウンドタスクで実行される前提（GetLogicalDrives() に時間がかかるかもしれないため）
+		// --------------------------------------------------------------------
+		private async void AutoTargetAllDrivesBgTask(Object? _)
+		{
+			YukaListerModel.Instance.EnvModel.YukaListerPartsStatus[(Int32)YukaListerPartsStatusIndex.Startup] = YukaListerStatus.Running;
+			YukaListerModel.Instance.EnvModel.YukaListerPartsStatusMessage[(Int32)YukaListerPartsStatusIndex.Startup] = "前回のゆかり検索対象フォルダーを確認中...";
+			YukaListerModel.Instance.EnvModel.LogWriter.LogMessage(TraceEventType.Verbose, "AutoTargetAllDrivesBgTask() before " + Environment.TickCount);
+			String[] drives = Directory.GetLogicalDrives();
+			YukaListerModel.Instance.EnvModel.LogWriter.LogMessage(TraceEventType.Verbose, "AutoTargetAllDrivesBgTask() after  " + Environment.TickCount);
+			foreach (String drive in drives)
+			{
+				await DeviceArrivalAsync(YlCommon.DriveLetter(drive));
+			}
+#if DEBUGz
+			Thread.Sleep(3000);
+			YukaListerModel.Instance.EnvModel.LogWriter.LogMessage(TraceEventType.Verbose, "AutoTargetAllDrivesBgTask() after2 " + Environment.TickCount);
+#endif
+			YukaListerModel.Instance.EnvModel.YukaListerPartsStatus[(Int32)YukaListerPartsStatusIndex.Startup] = YukaListerStatus.Ready;
+		}
+
+		// --------------------------------------------------------------------
+		// イベントハンドラー：デバイスが接続された
 		// ＜引数＞ driveLetter: "D:" のようにコロンまで
 		// --------------------------------------------------------------------
-		private async ValueTask DeviceArrival(String driveLetter)
+		private async ValueTask DeviceArrivalAsync(String driveLetter)
 		{
 			if (!YukaListerModel.Instance.EnvModel.YlSettings.AddFolderOnDeviceArrived)
 			{
@@ -468,7 +495,8 @@ namespace YukaLister.ViewModels
 		}
 
 		// --------------------------------------------------------------------
-		// バックグラウンドタスクで実行される前提
+		// デバイスが接続された
+		// バックグラウンドタスクで実行される前提（接続されたばかりのデバイスからのロードに時間がかかるかもしれないため）
 		// ＜引数＞ driveLetter: "D:" のようにコロンまで
 		// --------------------------------------------------------------------
 		private void DeviceArrivalBgTask(String driveLetter)
@@ -734,20 +762,15 @@ namespace YukaLister.ViewModels
 			{
 				// ゆかり設定ファイルエラー
 				YukaListerModel.Instance.EnvModel.YukaListerPartsStatus[(Int32)YukaListerPartsStatusIndex.Environment] = YukaListerStatus.Error;
-				YukaListerStatusLabel = "ゆかり設定ファイルが正しく指定されていません。";
+				YukaListerModel.Instance.EnvModel.YukaListerPartsStatusMessage[(Int32)YukaListerPartsStatusIndex.Environment]
+						= YukaListerStatusLabel = "ゆかり設定ファイルが正しく指定されていません。";
 			}
-#if false
-			else if (!IsMusicInfoDatabaseValid())
-			{
-				// 楽曲情報データベースエラー
-				YukaListerModel.Instance.EnvModel.YukaListerPartsStatus[(Int32)YukaListerPartsStatusIndex.Environment] = YukaListerStatus.Error;
-				YukaListerStatusLabel = "ゆかり設定ファイルが正しく指定されていません。";
-			}
-#endif
 			else
 			{
 				// 正常
 				YukaListerModel.Instance.EnvModel.YukaListerPartsStatus[(Int32)YukaListerPartsStatusIndex.Environment] = YukaListerStatus.Ready;
+				YukaListerModel.Instance.EnvModel.YukaListerPartsStatusMessage[(Int32)YukaListerPartsStatusIndex.Environment]
+						= YlConstants.APP_NAME_J + "は正常に動作しています。";
 			}
 		}
 
@@ -759,29 +782,37 @@ namespace YukaLister.ViewModels
 			switch (currentWholeStatus)
 			{
 				case YukaListerStatus.Ready:
-					YukaListerStatusLabel = YlConstants.APP_NAME_J + "は正常に動作しています。";
+					YukaListerStatusLabel = YukaListerModel.Instance.EnvModel.YukaListerPartsStatusMessage[(Int32)YukaListerPartsStatusIndex.Environment];
 					break;
 				case YukaListerStatus.Running:
-					TargetFolderInfo? targetFolderInfo = YukaListerModel.Instance.ProjModel.RunningTargetFolderInfo();
-					if (targetFolderInfo == null)
+					if (YukaListerModel.Instance.EnvModel.YukaListerPartsStatus[(Int32)YukaListerPartsStatusIndex.Startup] == YukaListerStatus.Running)
 					{
-						// タイミングによっては一時的に null になることがありえるが、その場合は何もしない
+						// 起動時処理
+						YukaListerStatusLabel = YukaListerModel.Instance.EnvModel.YukaListerPartsStatusMessage[(Int32)YukaListerPartsStatusIndex.Startup];
 					}
 					else
 					{
-						YukaListerStatusLabel = targetFolderInfo.FolderTaskDetail switch
+						TargetFolderInfo? targetFolderInfo = YukaListerModel.Instance.ProjModel.RunningTargetFolderInfo();
+						if (targetFolderInfo == null)
 						{
-							FolderTaskDetail.CacheToDisk => YlConstants.RUNNING_CACHE_TO_DISK,
-							FolderTaskDetail.FindSubFolders => YlConstants.RUNNING_FIND_SUB_FOLDERS,
-							FolderTaskDetail.AddFileNames => YlConstants.RUNNING_ADD_FILE_NAMES,
-							FolderTaskDetail.AddInfos => YlConstants.RUNNING_ADD_INFOS,
-							FolderTaskDetail.Remove => YlConstants.RUNNING_REMOVE,
-							_ => String.Empty,
-						} + "...\n" + targetFolderInfo.Path;
+							// タイミングによっては一時的に null になることがありえるが、その場合は何もしない
+						}
+						else
+						{
+							YukaListerStatusLabel = targetFolderInfo.FolderTaskDetail switch
+							{
+								FolderTaskDetail.CacheToDisk => YlConstants.RUNNING_CACHE_TO_DISK,
+								FolderTaskDetail.FindSubFolders => YlConstants.RUNNING_FIND_SUB_FOLDERS,
+								FolderTaskDetail.AddFileNames => YlConstants.RUNNING_ADD_FILE_NAMES,
+								FolderTaskDetail.AddInfos => YlConstants.RUNNING_ADD_INFOS,
+								FolderTaskDetail.Remove => YlConstants.RUNNING_REMOVE,
+								_ => String.Empty,
+							} + "...\n" + targetFolderInfo.Path;
+						}
 					}
 					break;
 				case YukaListerStatus.Error:
-					// エラー判定時に既に設定されているので何もしない
+					YukaListerStatusLabel = YukaListerModel.Instance.EnvModel.YukaListerPartsStatusMessage[(Int32)YukaListerPartsStatusIndex.Environment];
 					break;
 				default:
 					Debug.Assert(false, "UpdateYukaListerStatusLabel() bad status");

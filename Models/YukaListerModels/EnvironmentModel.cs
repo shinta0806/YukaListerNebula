@@ -69,6 +69,14 @@ namespace YukaLister.Models.YukaListerModels
 			get => _yukaListerPartsStatus;
 		}
 
+		// ゆかりすたー NEBULA パーツごとの動作メッセージ
+		// YukaListerPartsStatusMessage[YukaListerPartsStatusIndex.Sifolin] は使用しない
+		private volatile String[] _yukaListerPartsStatusMessage = new String[(Int32)YukaListerPartsStatusIndex.__End__];
+		public String[] YukaListerPartsStatusMessage
+		{
+			get => _yukaListerPartsStatusMessage;
+		}
+
 		// ゆかりすたー NEBULA 全体の動作状況
 		public YukaListerStatus YukaListerWholeStatus
 		{

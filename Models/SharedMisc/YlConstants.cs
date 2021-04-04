@@ -87,6 +87,7 @@ namespace YukaLister.Models.SharedMisc
 	public enum YukaListerPartsStatusIndex
 	{
 		Environment,    // 環境系
+		Startup,		// 起動時処理
 		Sifolin,        // Sifolin
 		__End__,
 	}

@@ -32,7 +32,7 @@ namespace YukaLister.Models.SerializableSettings
 		// --------------------------------------------------------------------
 		public AutoTargetInfo(String driveLetter)
 		{
-			Debug.WriteLine(driveLetter.Length == 2, "AutoTargetInfo() bad driveLetter");
+			Debug.Assert(driveLetter.Length == 2, "AutoTargetInfo() bad driveLetter");
 			_driveLetter = driveLetter;
 		}
 
