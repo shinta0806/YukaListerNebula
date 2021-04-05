@@ -470,7 +470,7 @@ namespace YukaLister.Models.YukaListerCores
 			targetFolderInfo.IsCacheUsed = true;
 			YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, targetFolderInfo.Path
 					+ "\nキャッシュをゆかり用リストデータベースに反映しました。");
-#if DEBUG
+#if DEBUGz
 			Thread.Sleep(30 * 1000);
 #endif
 		}

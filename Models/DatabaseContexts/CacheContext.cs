@@ -126,9 +126,13 @@ namespace YukaLister.Models.DatabaseContexts
 		{
 			String parentFolder = records.First().ParentFolder;
 
-			// 旧キャッシュ削除
+			// 追加しようとしているキャッシュと同じ親フォルダーの旧キャッシュ削除
 			GetDbSet(this, out DbSet<TFound> founds);
 			IQueryable<TFound> removes = founds.Where(x => x.ParentFolder == parentFolder);
+			founds.RemoveRange(removes);
+
+			// 追加しようとしているキャッシュとドライブレターが異なるキャッシュ削除
+			removes = founds.Where(x => !x.ParentFolder.Contains(YlCommon.DriveLetter(parentFolder)));
 			founds.RemoveRange(removes);
 
 			// 新キャッシュ追加
