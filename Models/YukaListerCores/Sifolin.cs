@@ -446,7 +446,22 @@ namespace YukaLister.Models.YukaListerCores
 			IQueryable<TFound> cacheRecords = cacheFounds.Where(x => x.ParentFolder == targetFolderInfo.Path);
 			if (!cacheRecords.Any())
 			{
-				return;
+				// キャッシュが見つからない場合、ドライブレター以外の部分で合致するか再度検索
+				cacheRecords = cacheFounds.Where(x => x.ParentFolder.Contains(targetFolderInfo.Path.Substring(1)));
+				if (!cacheRecords.Any())
+				{
+					return;
+				}
+
+				YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, targetFolderInfo.Path
+						+ "\nキャッシュのドライブレターを変換しています...");
+				String drive = targetFolderInfo.Path[0..1];
+				foreach (TFound cacheRecord in cacheRecords)
+				{
+					cacheRecord.Path = drive + cacheRecord.Path.Substring(1);
+					cacheRecord.Folder = drive + cacheRecord.Folder.Substring(1);
+					cacheRecord.ParentFolder = drive + cacheRecord.ParentFolder.Substring(1);
+				}
 			}
 
 			using ListContextInDisk listContextInDisk = ListContextInDisk.CreateContext(out DbSet<TFound> diskFounds);
@@ -455,6 +470,9 @@ namespace YukaLister.Models.YukaListerCores
 			targetFolderInfo.IsCacheUsed = true;
 			YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, targetFolderInfo.Path
 					+ "\nキャッシュをゆかり用リストデータベースに反映しました。");
+#if DEBUG
+			Thread.Sleep(30 * 1000);
+#endif
 		}
 
 		// --------------------------------------------------------------------
