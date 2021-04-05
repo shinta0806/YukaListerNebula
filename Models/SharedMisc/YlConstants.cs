@@ -11,6 +11,7 @@
 using Shinta;
 
 using System;
+using System.Threading.Tasks;
 using System.Windows.Media;
 
 namespace YukaLister.Models.SharedMisc
@@ -111,7 +112,7 @@ namespace YukaLister.Models.SharedMisc
 	public delegate void IsOpenChanged(TargetFolderInfo targetFolderInfo);
 
 	// タスク非同期実行
-	public delegate void TaskAsyncDelegate<T>(T var) where T : class?;
+	public delegate Task TaskAsyncDelegate<T>(T var) where T : class?;
 
 	public class YlConstants
 	{

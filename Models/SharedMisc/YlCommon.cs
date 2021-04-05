@@ -268,9 +268,9 @@ namespace YukaLister.Models.SharedMisc
 		// --------------------------------------------------------------------
 		// 関数を非同期駆動
 		// --------------------------------------------------------------------
-		public static Task LaunchTaskAsync<T>(TaskAsyncDelegate<T> deleg, T vari) where T : class?
+		public static async Task LaunchTaskAsync<T>(TaskAsyncDelegate<T> deleg, T vari) where T : class?
 		{
-			return Task.Run(() =>
+			await Task.Run(async () =>
 			{
 				try
 				{
@@ -278,7 +278,7 @@ namespace YukaLister.Models.SharedMisc
 					Thread.CurrentThread.IsBackground = false;
 
 					YukaListerModel.Instance.EnvModel.LogWriter.LogMessage(Common.TRACE_EVENT_TYPE_STATUS, "バックグラウンド処理開始：" + deleg.Method.Name);
-					deleg(vari);
+					await deleg(vari);
 					YukaListerModel.Instance.EnvModel.LogWriter.LogMessage(Common.TRACE_EVENT_TYPE_STATUS, "バックグラウンド処理終了：" + deleg.Method.Name);
 				}
 				catch (Exception excep)

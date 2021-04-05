@@ -106,7 +106,7 @@ namespace YukaLister.ViewModels
 		}
 
 		// ゆかりすたー NEBULA 全体の動作状況の背景
-		private Brush _yukaListerStatusBackground = YlConstants.BRUSH_STATUS_DONE;
+		private Brush _yukaListerStatusBackground = YlConstants.BRUSH_STATUS_RUNNING;
 		public Brush YukaListerStatusBackground
 		{
 			get => _yukaListerStatusBackground;
@@ -249,6 +249,8 @@ namespace YukaLister.ViewModels
 
 				YukaListerModel.Instance.ProjModel.SetFolderTaskDetailOfFolderToRemove(SelectedTargetFolderInfo.ParentPath);
 				UpdateDataGrid();
+
+				// 次回 UI 更新タイミングまでに削除が完了してしまっていても検索可能ファイル数が更新されるようにする
 				_prevYukaListerWholeStatus = YukaListerStatus.__End__;
 			}
 			catch (Exception excep)
@@ -309,6 +311,8 @@ namespace YukaLister.ViewModels
 			{
 				YukaListerModel.Instance.ProjModel.AddTargetFolder(folderSelectionMessage.Response);
 				UpdateDataGrid();
+
+				// 次回 UI 更新タイミングまでに追加が完了してしまっていても検索可能ファイル数が更新されるようにする
 				_prevYukaListerWholeStatus = YukaListerStatus.__End__;
 			}
 			catch (Exception excep)
@@ -327,6 +331,7 @@ namespace YukaLister.ViewModels
 
 			try
 			{
+				YukaListerModel.Instance.EnvModel.LogWriter.LogMessage(TraceEventType.Verbose, "MainWindowViewModel.Initialize() 開始");
 				// タイトルバー
 				Title = YlConstants.APP_NAME_J;
 #if DEBUG
@@ -349,15 +354,19 @@ namespace YukaLister.ViewModels
 				DoVerChangedIfNeeded();
 				//LaunchUpdaterIfNeeded();
 
-				// 動作エラーチェック
+				// 動作状況
+				YukaListerModel.Instance.EnvModel.YukaListerPartsStatus[(Int32)YukaListerPartsStatusIndex.Startup] = YukaListerStatus.Running;
+				YukaListerModel.Instance.EnvModel.YukaListerPartsStatusMessage[(Int32)YukaListerPartsStatusIndex.Startup] = "前回のゆかり検索対象フォルダーを確認中...";
 				UpdateYukaListerEnvironmentStatus();
-
-				// その他
 				UpdateUi(YukaListerModel.Instance.EnvModel.YukaListerWholeStatus);
 
-				// 非同期系
-				await YlCommon.LaunchTaskAsync<Object?>(AutoTargetAllDrivesBgTask, null);
-				_prevYukaListerWholeStatus = YukaListerStatus.__End__;
+				// UI 更新タイマー
+				_timerUpdateUi.Interval = TimeSpan.FromSeconds(1.0);
+				_timerUpdateUi.Tick += new EventHandler(TimerUpdateUi_Tick);
+				_timerUpdateUi.Start();
+
+				// 時間がかかるかもしれない処理を非同期で実行
+				await AutoTargetAllDrivesAsync();
 
 #if DEBUGz
 				CacheContext.CreateContext("D:", out _);
@@ -392,10 +401,8 @@ namespace YukaLister.ViewModels
 				TargetFolderInfosVisible = targetFolderInfos;
 #endif
 
-				// タイマー
-				_timerUpdateUi.Interval = TimeSpan.FromSeconds(1.0);
-				_timerUpdateUi.Tick += new EventHandler(TimerUpdateUi_Tick);
-				_timerUpdateUi.Start();
+				// スタートアップ終了
+				YukaListerModel.Instance.EnvModel.YukaListerPartsStatus[(Int32)YukaListerPartsStatusIndex.Startup] = YukaListerStatus.Ready;
 			}
 			catch (Exception excep)
 			{
@@ -459,24 +466,17 @@ namespace YukaLister.ViewModels
 
 		// --------------------------------------------------------------------
 		// 接続されているすべてのドライブで自動接続
-		// バックグラウンドタスクで実行される前提（GetLogicalDrives() に時間がかかるかもしれないため）
 		// --------------------------------------------------------------------
-		private async void AutoTargetAllDrivesBgTask(Object? _)
+		private async Task AutoTargetAllDrivesAsync()
 		{
-			YukaListerModel.Instance.EnvModel.YukaListerPartsStatus[(Int32)YukaListerPartsStatusIndex.Startup] = YukaListerStatus.Running;
-			YukaListerModel.Instance.EnvModel.YukaListerPartsStatusMessage[(Int32)YukaListerPartsStatusIndex.Startup] = "前回のゆかり検索対象フォルダーを確認中...";
-			YukaListerModel.Instance.EnvModel.LogWriter.LogMessage(TraceEventType.Verbose, "AutoTargetAllDrivesBgTask() before " + Environment.TickCount);
 			String[] drives = Directory.GetLogicalDrives();
-			YukaListerModel.Instance.EnvModel.LogWriter.LogMessage(TraceEventType.Verbose, "AutoTargetAllDrivesBgTask() after  " + Environment.TickCount);
 			foreach (String drive in drives)
 			{
 				await DeviceArrivalAsync(YlCommon.DriveLetter(drive));
 			}
 #if DEBUGz
-			Thread.Sleep(3000);
-			YukaListerModel.Instance.EnvModel.LogWriter.LogMessage(TraceEventType.Verbose, "AutoTargetAllDrivesBgTask() after2 " + Environment.TickCount);
+			await Task.Delay(1000);
 #endif
-			YukaListerModel.Instance.EnvModel.YukaListerPartsStatus[(Int32)YukaListerPartsStatusIndex.Startup] = YukaListerStatus.Ready;
 		}
 
 		// --------------------------------------------------------------------
@@ -491,6 +491,8 @@ namespace YukaLister.ViewModels
 			}
 
 			await YlCommon.LaunchTaskAsync(DeviceArrivalBgTask, driveLetter);
+	
+			// 次回 UI 更新タイミングまでに追加が完了してしまっていても検索可能ファイル数が更新されるようにする
 			_prevYukaListerWholeStatus = YukaListerStatus.__End__;
 		}
 
@@ -499,7 +501,7 @@ namespace YukaLister.ViewModels
 		// バックグラウンドタスクで実行される前提（接続されたばかりのデバイスからのロードに時間がかかるかもしれないため）
 		// ＜引数＞ driveLetter: "D:" のようにコロンまで
 		// --------------------------------------------------------------------
-		private void DeviceArrivalBgTask(String driveLetter)
+		private Task DeviceArrivalBgTask(String driveLetter)
 		{
 			AutoTargetInfo autoTargetInfo = new(driveLetter);
 			autoTargetInfo.Load();
@@ -507,6 +509,7 @@ namespace YukaLister.ViewModels
 			{
 				YukaListerModel.Instance.ProjModel.AddTargetFolder(driveLetter + folder);
 			}
+			return Task.CompletedTask;
 		}
 
 		// --------------------------------------------------------------------
@@ -515,6 +518,8 @@ namespace YukaLister.ViewModels
 		private void DeviceRemoveComplete(String driveLetter)
 		{
 			YukaListerModel.Instance.ProjModel.SetFolderTaskDetailOfDriveToRemove(driveLetter);
+
+			// 次回 UI 更新タイミングまでに削除が完了してしまっていても検索可能ファイル数が更新されるようにする
 			_prevYukaListerWholeStatus = YukaListerStatus.__End__;
 		}
 
