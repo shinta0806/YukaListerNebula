@@ -11,6 +11,7 @@
 using Livet;
 
 using System;
+using System.Windows.Input;
 
 namespace YukaLister.ViewModels
 {
@@ -41,6 +42,14 @@ namespace YukaLister.ViewModels
 		{
 			get => _title;
 			set => RaisePropertyChangedIfSet(ref _title, value);
+		}
+
+		// カーソル
+		private Cursor? _cursor;
+		public Cursor? Cursor
+		{
+			get => _cursor;
+			set => RaisePropertyChangedIfSet(ref _cursor, value);
 		}
 
 		// ====================================================================

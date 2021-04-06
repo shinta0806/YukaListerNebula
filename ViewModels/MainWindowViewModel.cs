@@ -98,14 +98,6 @@ namespace YukaLister.ViewModels
 			set => RaisePropertyChangedIfSet(ref _height, value);
 		}
 
-		// カーソル
-		private Cursor? _cursor;
-		public Cursor? Cursor
-		{
-			get => _cursor;
-			set => RaisePropertyChangedIfSet(ref _cursor, value);
-		}
-
 		// ゆかりすたー NEBULA 全体の動作状況
 		private String _yukaListerStatusLabel = String.Empty;
 		public String YukaListerStatusLabel
@@ -318,6 +310,11 @@ namespace YukaLister.ViewModels
 		{
 			try
 			{
+				if (String.IsNullOrEmpty(folderSelectionMessage.Response))
+				{
+					return;
+				}
+
 				// AddTargetFolderAsync() に時間を要することがあるので表示を更新しておく
 				Cursor = Cursors.Wait;
 				await YukaListerModel.Instance.ProjModel.AddTargetFolderAsync(folderSelectionMessage.Response);
