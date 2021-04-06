@@ -120,7 +120,7 @@ namespace YukaLister.Models.DatabaseContexts
 
 		// --------------------------------------------------------------------
 		// キャッシュ更新（追加）
-		// founds の ParentFolder はすべて同じ前提
+		// records の ParentFolder はすべて同じ前提
 		// --------------------------------------------------------------------
 		public void UpdateCache(IQueryable<TFound> records)
 		{

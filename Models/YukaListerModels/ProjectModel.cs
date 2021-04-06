@@ -26,6 +26,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Threading;
+using System.Threading.Tasks;
 using YukaLister.Models.SerializableSettings;
 using YukaLister.Models.SharedMisc;
 
@@ -65,37 +66,51 @@ namespace YukaLister.Models.YukaListerModels
 		// 指定された親フォルダーのみを追加し、サブフォルダーは追加しない
 		// ＜例外＞ Exception
 		// --------------------------------------------------------------------
-		public void AddTargetFolder(String parentFolder)
+		public async Task AddTargetFolderAsync(String parentFolder)
 		{
-			// フォルダーチェック
-			if (String.IsNullOrEmpty(parentFolder))
+			await Task.Run(() =>
 			{
-				throw new Exception("追加するフォルダーの名前が空です。");
-			}
-			if (!Directory.Exists(parentFolder))
-			{
-				throw new Exception("指定されたフォルダーが存在しません：" + parentFolder);
-			}
+#if DEBUGz
+				Thread.Sleep(2000);
+#endif
+				// フォルダーチェック
+				if (String.IsNullOrEmpty(parentFolder))
+				{
+					throw new Exception("追加するフォルダーの名前が空です。");
+				}
+				Debug.WriteLine("AddTargetFolder() before 存在チェック " + Environment.TickCount.ToString("#,0"));
+				Boolean exists = Directory.Exists(parentFolder);
+				Debug.WriteLine("AddTargetFolder() after 存在チェック " + Environment.TickCount.ToString("#,0"));
+				if (!exists)
+				{
+					throw new Exception("指定されたフォルダーが存在しません：" + parentFolder);
+				}
 
-			// 親の重複チェック
-			Boolean parentAdded = IndexOfTargetFolderInfoWithLock(parentFolder) >= 0;
-			if (parentAdded)
-			{
-				throw new Exception(parentFolder + " は既に追加されています。");
-			}
+				// 親の重複チェック
+				Debug.WriteLine("AddTargetFolder() C " + Environment.TickCount.ToString("#,0"));
+				Boolean parentAdded = IndexOfTargetFolderInfoWithLock(parentFolder) >= 0;
+				if (parentAdded)
+				{
+					throw new Exception(parentFolder + " は既に追加されています。");
+				}
 
-			// 親の追加
-			TargetFolderInfo targetFolderInfo = new(parentFolder);
-			lock (_targetFolderInfos)
-			{
-				_targetFolderInfos.Add(targetFolderInfo);
-			}
+				// 親の追加
+				Debug.WriteLine("AddTargetFolder() D " + Environment.TickCount.ToString("#,0"));
+				TargetFolderInfo targetFolderInfo = new(parentFolder);
+				lock (_targetFolderInfos)
+				{
+					_targetFolderInfos.Add(targetFolderInfo);
+				}
 
-			// 通知
-			YukaListerModel.Instance.EnvModel.IsMainWindowDataGridCountChanged = true;
-			YukaListerModel.Instance.EnvModel.Sifolin.MainEvent.Set();
-			AdjustAutoTargetInfoIfNeeded2Sh(YlCommon.DriveLetter(parentFolder));
-			//ListCancellationTokenSource?.Cancel();
+				// 通知
+				Debug.WriteLine("AddTargetFolder() E " + Environment.TickCount.ToString("#,0"));
+				YukaListerModel.Instance.EnvModel.IsMainWindowDataGridCountChanged = true;
+				YukaListerModel.Instance.EnvModel.Sifolin.MainEvent.Set();
+				Debug.WriteLine("AddTargetFolder() F " + Environment.TickCount.ToString("#,0"));
+				AdjustAutoTargetInfoIfNeeded2Sh(YlCommon.DriveLetter(parentFolder));
+				Debug.WriteLine("AddTargetFolder() G " + Environment.TickCount.ToString("#,0"));
+				//ListCancellationTokenSource?.Cancel();
+			});
 		}
 
 		// --------------------------------------------------------------------

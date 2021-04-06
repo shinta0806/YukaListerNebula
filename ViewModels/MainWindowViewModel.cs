@@ -23,6 +23,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Threading;
 
@@ -95,6 +96,14 @@ namespace YukaLister.ViewModels
 		{
 			get => _height;
 			set => RaisePropertyChangedIfSet(ref _height, value);
+		}
+
+		// カーソル
+		private Cursor? _cursor;
+		public Cursor? Cursor
+		{
+			get => _cursor;
+			set => RaisePropertyChangedIfSet(ref _cursor, value);
 		}
 
 		// ゆかりすたー NEBULA 全体の動作状況
@@ -305,11 +314,13 @@ namespace YukaLister.ViewModels
 		// --------------------------------------------------------------------
 		// イベントハンドラー
 		// --------------------------------------------------------------------
-		public void AddFolderSelected(FolderSelectionMessage folderSelectionMessage)
+		public async void AddFolderSelected(FolderSelectionMessage folderSelectionMessage)
 		{
 			try
 			{
-				YukaListerModel.Instance.ProjModel.AddTargetFolder(folderSelectionMessage.Response);
+				// AddTargetFolderAsync() に時間を要することがあるので表示を更新しておく
+				Cursor = Cursors.Wait;
+				await YukaListerModel.Instance.ProjModel.AddTargetFolderAsync(folderSelectionMessage.Response);
 				UpdateDataGrid();
 
 				// 次回 UI 更新タイミングまでに追加が完了してしまっていても検索可能ファイル数が更新されるようにする
@@ -319,6 +330,10 @@ namespace YukaLister.ViewModels
 			{
 				YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(TraceEventType.Error, "追加フォルダー選択時エラー：\n" + excep.Message);
 				YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, "　スタックトレース：\n" + excep.StackTrace);
+			}
+			finally
+			{
+				Cursor = null;
 			}
 		}
 
@@ -362,6 +377,9 @@ namespace YukaLister.ViewModels
 
 				// UI 更新タイマー
 				_timerUpdateUi.Interval = TimeSpan.FromSeconds(1.0);
+#if DEBUGz
+				_timerUpdateUi.Interval = TimeSpan.FromSeconds(5.0);
+#endif
 				_timerUpdateUi.Tick += new EventHandler(TimerUpdateUi_Tick);
 				_timerUpdateUi.Start();
 
@@ -490,26 +508,24 @@ namespace YukaLister.ViewModels
 				return;
 			}
 
-			await YlCommon.LaunchTaskAsync(DeviceArrivalBgTask, driveLetter);
-	
+			await DeviceArrivalCoreAsync(driveLetter);
+
 			// 次回 UI 更新タイミングまでに追加が完了してしまっていても検索可能ファイル数が更新されるようにする
 			_prevYukaListerWholeStatus = YukaListerStatus.__End__;
 		}
 
 		// --------------------------------------------------------------------
 		// デバイスが接続された
-		// バックグラウンドタスクで実行される前提（接続されたばかりのデバイスからのロードに時間がかかるかもしれないため）
 		// ＜引数＞ driveLetter: "D:" のようにコロンまで
 		// --------------------------------------------------------------------
-		private Task DeviceArrivalBgTask(String driveLetter)
+		private async Task DeviceArrivalCoreAsync(String driveLetter)
 		{
 			AutoTargetInfo autoTargetInfo = new(driveLetter);
 			autoTargetInfo.Load();
 			foreach (String folder in autoTargetInfo.Folders)
 			{
-				YukaListerModel.Instance.ProjModel.AddTargetFolder(driveLetter + folder);
+				await YukaListerModel.Instance.ProjModel.AddTargetFolderAsync(driveLetter + folder);
 			}
-			return Task.CompletedTask;
 		}
 
 		// --------------------------------------------------------------------
