@@ -18,6 +18,8 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Windows;
+using System.Windows.Controls;
 using YukaLister.Models.YukaListerModels;
 
 namespace YukaLister.Models.SharedMisc
@@ -27,6 +29,19 @@ namespace YukaLister.Models.SharedMisc
 		// ====================================================================
 		// public static メンバー関数
 		// ====================================================================
+
+		// --------------------------------------------------------------------
+		// コンテキストメニューにアイテムを追加
+		// ToDo: MVVM 的なやり方でのコンテキストメニューへのコマンド登録方法が分からなかったのでこの方法としている
+		// List<ViewModelCommand> をバインドするとコマンドの制御はできるが、表示文字列の制御ができない
+		// --------------------------------------------------------------------
+		public static void AddContextMenuItem(List<MenuItem> items, String label, RoutedEventHandler click)
+		{
+			MenuItem menuItem = new();
+			menuItem.Header = label;
+			menuItem.Click += click;
+			items.Add(menuItem);
+		}
 
 		// --------------------------------------------------------------------
 		// 設定ファイルのルールを動作時用に変換
@@ -99,7 +114,7 @@ namespace YukaLister.Models.SharedMisc
 		// --------------------------------------------------------------------
 		public static Dictionary<String, String> CreateRuleDictionaryWithDescription()
 		{
-			Dictionary<String, String> varMap = new Dictionary<String, String>();
+			Dictionary<String, String> varMap = new();
 
 			// タイアップマスターにも同様の項目があるもの
 			varMap[YlConstants.RULE_VAR_CATEGORY] = "カテゴリー";

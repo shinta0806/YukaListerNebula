@@ -78,16 +78,12 @@ namespace YukaLister.Models.YukaListerModels
 				{
 					throw new Exception("追加するフォルダーの名前が空です。");
 				}
-				Debug.WriteLine("AddTargetFolder() before 存在チェック " + Environment.TickCount.ToString("#,0"));
-				Boolean exists = Directory.Exists(parentFolder);
-				Debug.WriteLine("AddTargetFolder() after 存在チェック " + Environment.TickCount.ToString("#,0"));
-				if (!exists)
+				if (!Directory.Exists(parentFolder))
 				{
 					throw new Exception("指定されたフォルダーが存在しません：" + parentFolder);
 				}
 
 				// 親の重複チェック
-				Debug.WriteLine("AddTargetFolder() C " + Environment.TickCount.ToString("#,0"));
 				Boolean parentAdded = IndexOfTargetFolderInfoWithLock(parentFolder) >= 0;
 				if (parentAdded)
 				{
@@ -95,7 +91,6 @@ namespace YukaLister.Models.YukaListerModels
 				}
 
 				// 親の追加
-				Debug.WriteLine("AddTargetFolder() D " + Environment.TickCount.ToString("#,0"));
 				TargetFolderInfo targetFolderInfo = new(parentFolder);
 				lock (_targetFolderInfos)
 				{
@@ -103,12 +98,11 @@ namespace YukaLister.Models.YukaListerModels
 				}
 
 				// 通知
-				Debug.WriteLine("AddTargetFolder() E " + Environment.TickCount.ToString("#,0"));
 				YukaListerModel.Instance.EnvModel.IsMainWindowDataGridCountChanged = true;
 				YukaListerModel.Instance.EnvModel.Sifolin.MainEvent.Set();
-				Debug.WriteLine("AddTargetFolder() F " + Environment.TickCount.ToString("#,0"));
+
+				// スリープ状態のデバイスだとここで時間がかかる
 				AdjustAutoTargetInfoIfNeeded2Sh(YlCommon.DriveLetter(parentFolder));
-				Debug.WriteLine("AddTargetFolder() G " + Environment.TickCount.ToString("#,0"));
 				//ListCancellationTokenSource?.Cancel();
 			});
 		}

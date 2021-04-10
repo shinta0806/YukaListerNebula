@@ -1,6 +1,6 @@
 ﻿// ============================================================================
 // 
-// メインウィンドウの ViewModel 
+// メインウィンドウの ViewModel
 // 
 // ============================================================================
 
@@ -9,6 +9,7 @@
 // ----------------------------------------------------------------------------
 
 using Livet.Commands;
+using Livet.Messaging;
 using Livet.Messaging.IO;
 
 using Microsoft.EntityFrameworkCore;
@@ -284,18 +285,65 @@ namespace YukaLister.ViewModels
 
 		public void ButtonFolderSettingsClicked()
 		{
-#if false
-			Debug.Assert(YukaLister != null, "YukaLister is null");
 			try
 			{
-				YukaLister!.YukariDb.ButtonFolderSettingsClicked();
-			}
-			catch (Exception oExcep)
-			{
-				YukaLister!.Environment.LogWriter.ShowLogMessage(TraceEventType.Error, "フォルダー設定ボタンクリック時エラー：\n" + oExcep.Message);
-				YukaLister.Environment.LogWriter.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, "　スタックトレース：\n" + oExcep.StackTrace);
-			}
+				if (SelectedTargetFolderInfo == null)
+				{
+					return;
+				}
+
+				using FolderSettingsWindowViewModel folderSettingsWindowViewModel = new();
+				Messenger.Raise(new TransitionMessage(folderSettingsWindowViewModel, YlConstants.MESSAGE_KEY_OPEN_FOLDER_SETTINGS_WINDOW));
+#if false
+				using (MusicInfoDatabaseInDisk aMusicInfoDbInDisk = new MusicInfoDatabaseInDisk(mEnvironment))
+				{
+					DateTime aMusicInfoDbTimeBak = aMusicInfoDbInDisk.LastWriteTime();
+
+					// ViewModel 経由でフォルダー設定ウィンドウを開く
+					using (FolderSettingsWindowViewModel aFolderSettingsWindowViewModel = new FolderSettingsWindowViewModel())
+					{
+						aFolderSettingsWindowViewModel.Environment = mEnvironment;
+						aFolderSettingsWindowViewModel.PathExLen = aTargetFolderInfo.Path;
+						mMainWindowViewModel.Messenger.Raise(new TransitionMessage(aFolderSettingsWindowViewModel, "OpenFolderSettingsWindow"));
+					}
+
+					// フォルダー設定の有無の表示を更新
+					// キャンセルでも実行（設定削除→キャンセルの場合はフォルダー設定の有無が変わる）
+					lock (mTargetFolderInfos)
+					{
+						Int32 aIndex = mTargetFolderInfos.IndexOf(aTargetFolderInfo);
+						if (aIndex < 0)
+						{
+							throw new Exception("フォルダー設定有無を更新する対象が見つかりません。");
+						}
+						while (aIndex < mTargetFolderInfos.Count)
+						{
+							if (!mTargetFolderInfos[aIndex].Path.StartsWith(aTargetFolderInfo.Path))
+							{
+								break;
+							}
+							mTargetFolderInfos[aIndex].FolderExcludeSettingsStatus = FolderExcludeSettingsStatus.Unchecked;
+							mTargetFolderInfos[aIndex].FolderSettingsStatus = FolderSettingsStatus.Unchecked;
+							mDirtyDg = true;
+							aIndex++;
+						}
+					}
+					UpdateDirtyDgWithInvoke();
+
+					// 楽曲情報データベースが更新された場合は同期を行う
+					DateTime aMusicInfoDbTime = aMusicInfoDbInDisk.LastWriteTime();
+					if (aMusicInfoDbTime != aMusicInfoDbTimeBak)
+					{
+						RunSyncClientIfNeeded();
+					}
+				}
 #endif
+			}
+			catch (Exception excep)
+			{
+				YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(TraceEventType.Error, "フォルダー設定ボタンクリック時エラー：\n" + excep.Message);
+				YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, "　スタックトレース：\n" + excep.StackTrace);
+			}
 		}
 		#endregion
 
@@ -343,7 +391,6 @@ namespace YukaLister.ViewModels
 
 			try
 			{
-				YukaListerModel.Instance.EnvModel.LogWriter.LogMessage(TraceEventType.Verbose, "MainWindowViewModel.Initialize() 開始");
 				// タイトルバー
 				Title = YlConstants.APP_NAME_J;
 #if DEBUG

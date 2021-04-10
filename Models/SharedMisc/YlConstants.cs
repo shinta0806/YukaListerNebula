@@ -153,6 +153,9 @@ namespace YukaLister.Models.SharedMisc
 		// ウィンドウを閉じる
 		public const String MESSAGE_KEY_WINDOW_CLOSE = "Close";
 
+		// フォルダー設定ウィンドウを開く
+		public const String MESSAGE_KEY_OPEN_FOLDER_SETTINGS_WINDOW = "OpenFolderSettingsWindow";
+
 		// --------------------------------------------------------------------
 		// アプリ独自ルールでの変数名（小文字で表記）
 		// --------------------------------------------------------------------
