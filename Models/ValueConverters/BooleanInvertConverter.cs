@@ -9,11 +9,8 @@
 // ----------------------------------------------------------------------------
 
 using System;
-using System.Diagnostics;
 using System.Globalization;
 using System.Windows.Data;
-
-#nullable enable
 
 namespace YukaLister.Models.ValueConverters
 {
@@ -26,25 +23,24 @@ namespace YukaLister.Models.ValueConverters
 		// --------------------------------------------------------------------
 		// コンバート
 		// --------------------------------------------------------------------
-		public Object Convert(Object oValue, Type oTargetType, Object oParameter, CultureInfo oCulture)
+		public Object Convert(Object value, Type targetType, Object parameter, CultureInfo culture)
 		{
-			if(!(oValue is Boolean))
+			if (value is Boolean booleanValue)
+			{
+				return !booleanValue;
+			}
+			else
 			{
 				throw new ArgumentException("Boolean 型ではありません。");
 			}
-
-			return !(Boolean)oValue;
 		}
 
 		// --------------------------------------------------------------------
 		// 逆コンバート
 		// --------------------------------------------------------------------
-		public Object ConvertBack(Object oValue, Type oTargetType, Object oParameter, CultureInfo oCulture)
+		public Object ConvertBack(Object value, Type targetType, Object parameter, CultureInfo culture)
 		{
 			throw new NotImplementedException();
 		}
 	}
-	// class BooleanInvertConverter ___END___
-
 }
-// namespace YukaLister.Models.ValueConverters ___END___

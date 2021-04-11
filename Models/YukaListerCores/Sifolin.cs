@@ -136,7 +136,6 @@ namespace YukaLister.Models.YukaListerCores
 				}
 				catch (OperationCanceledException)
 				{
-					YukaListerModel.Instance.EnvModel.LogWriter.LogMessage(Common.TRACE_EVENT_TYPE_STATUS, GetType().Name + " の稼働を終了します。");
 					return;
 				}
 				catch (Exception excep)
@@ -289,7 +288,7 @@ namespace YukaLister.Models.YukaListerCores
 
 				// TTag にフォルダー設定のタグ情報と同名のタグがあるか？
 				String tagValue = YukaListerModel.Instance.EnvModel.TagSettings.FolderTags[tagKey];
-				TTag? tagRecord = DbCommon.SelectMastersByName(tags, tagValue).FirstOrDefault();
+				TTag? tagRecord = DbCommon.SelectMasterByName(tags, tagValue);
 				if (tagRecord == null)
 				{
 					// 同名のタグが無いので、tagKey を Id とするタグがまだ存在しなければ作成

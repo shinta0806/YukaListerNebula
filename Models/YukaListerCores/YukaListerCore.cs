@@ -8,9 +8,12 @@
 //
 // ----------------------------------------------------------------------------
 
+using Livet;
+
 using Shinta;
 
 using System;
+using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -56,16 +59,19 @@ namespace YukaLister.Models.YukaListerCores
 
 		// --------------------------------------------------------------------
 		// 稼働開始
+		// UI スレッドから呼ばれる前提
 		// --------------------------------------------------------------------
 		public void Start()
 		{
+			Debug.Assert(Thread.CurrentThread.ManagedThreadId == DispatcherHelper.UIDispatcher.Thread.ManagedThreadId, "Start() not UI thread");
+
+			// UI スレッドから呼ばれる前提のため、この方法で排他にできる
 			if (MainTask != null)
 			{
 				return;
 			}
 
-			YukaListerModel.Instance.EnvModel.LogWriter.LogMessage(Common.TRACE_EVENT_TYPE_STATUS, GetType().Name + " の稼働を開始します。");
-			MainTask = Task.Factory.StartNew(CoreMain, TaskCreationOptions.LongRunning);
+			MainTask = Task.Factory.StartNew(StartCoreMain, TaskCreationOptions.LongRunning);
 		}
 
 		// ====================================================================
@@ -107,5 +113,22 @@ namespace YukaLister.Models.YukaListerCores
 
 		// Dispose フラグ
 		private Boolean _isDisposed;
+
+		// ====================================================================
+		// protected メンバー関数
+		// ====================================================================
+
+		// --------------------------------------------------------------------
+		// ネビュラコアのメインルーチンを稼働開始
+		// --------------------------------------------------------------------
+		private void StartCoreMain()
+		{
+			// アプリ終了時に強制終了されないように設定
+			Thread.CurrentThread.IsBackground = false;
+
+			YukaListerModel.Instance.EnvModel.LogWriter.LogMessage(Common.TRACE_EVENT_TYPE_STATUS, GetType().Name + " の稼働を開始します。");
+			CoreMain();
+			YukaListerModel.Instance.EnvModel.LogWriter.LogMessage(Common.TRACE_EVENT_TYPE_STATUS, GetType().Name + " の稼働を終了します。");
+		}
 	}
 }

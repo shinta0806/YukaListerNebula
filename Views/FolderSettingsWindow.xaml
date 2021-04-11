@@ -41,11 +41,11 @@
     <DockPanel>
         <StackPanel Margin="20,15,20,0" Orientation="Horizontal" DockPanel.Dock="Top">
             <Label Content="設定対象フォルダー：" Width="120" HorizontalContentAlignment="Right"/>
-            <Label x:Name="LabelFolder" Content="{Binding PathShLen}"/>
+            <Label Content="{Binding TargetPath}"/>
         </StackPanel>
         <StackPanel Margin="140,0,20,0" Orientation="Horizontal" DockPanel.Dock="Top">
-            <Label x:Name="LabelSettingsFileStatus" Content="{Binding SettingsFileStatus, Converter={StaticResource FolderSettingsStatusToDescriptionConverter}}"/>
-            <Label x:Name="LabelHelp" >
+            <Label Content="{Binding SettingsFileStatus, Converter={StaticResource FolderSettingsStatusToDescriptionConverter}}"/>
+            <Label >
                 <Hyperlink Command="{Binding HelpClickedCommand}" CommandParameter="FolderSettei" >
                     <TextBlock Text="詳細情報" />
                 </Hyperlink>

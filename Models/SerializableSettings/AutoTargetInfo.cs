@@ -71,10 +71,7 @@ namespace YukaLister.Models.SerializableSettings
 		protected override void AdjustBeforeSave()
 		{
 			// 隠しファイルを直接上書きできないので一旦削除する
-			if (File.Exists(SettingsPath()))
-			{
-				File.Delete(SettingsPath());
-			}
+			YlCommon.DeleteFileIfExists(SettingsPath());
 		}
 
 		// --------------------------------------------------------------------

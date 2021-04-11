@@ -15,8 +15,6 @@ using System.Windows.Data;
 
 using YukaLister.Models.SharedMisc;
 
-#nullable enable
-
 namespace YukaLister.Models.ValueConverters
 {
 	class FolderSettingsStatusToDescriptionConverter : IValueConverter
@@ -28,36 +26,30 @@ namespace YukaLister.Models.ValueConverters
 		// --------------------------------------------------------------------
 		// コンバート
 		// --------------------------------------------------------------------
-		public Object Convert(Object oValue, Type oTargetType, Object oParameter, CultureInfo oCulture)
+		public Object Convert(Object value, Type targetType, Object parameter, CultureInfo culture)
 		{
-			if(!(oValue is FolderSettingsStatus))
+			if (value is FolderSettingsStatus folderSettingsStatus)
+			{
+				return folderSettingsStatus switch
+				{
+					FolderSettingsStatus.None => "このフォルダーの設定がありません。",
+					FolderSettingsStatus.Set => "このフォルダーは設定済みです。",
+					FolderSettingsStatus.Inherit => "親フォルダーの設定を参照しています（設定変更すると親フォルダーとは別の設定になります）。",
+					_ => String.Empty,
+				};
+			}
+			else
 			{
 				throw new ArgumentException("FolderSettingsStatus 型ではありません。");
-			}
-
-			switch (oValue)
-			{
-				case FolderSettingsStatus.None:
-					return "このフォルダーの設定がありません。";
-				case FolderSettingsStatus.Set:
-					return "このフォルダーは設定済みです。";
-				case FolderSettingsStatus.Inherit:
-					return "親フォルダーの設定を参照しています（設定変更すると親フォルダーとは別の設定になります）。";
-				default:
-					Debug.Assert(false, "FolderSettingsStatusToDescriptionConverter.Convert() bad FolderSettingsStatus");
-					return String.Empty;
 			}
 		}
 
 		// --------------------------------------------------------------------
 		// 逆コンバート
 		// --------------------------------------------------------------------
-		public Object ConvertBack(Object oValue, Type oTargetType, Object oParameter, CultureInfo oCulture)
+		public Object ConvertBack(Object value, Type targetType, Object parameter, CultureInfo culture)
 		{
 			throw new NotImplementedException();
 		}
 	}
-	// class FolderSettingsStatusToDescriptionConverter ___END___
-
 }
-// namespace YukaLister.Models.ValueConverters ___END___

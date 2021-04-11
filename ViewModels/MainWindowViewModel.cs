@@ -16,6 +16,7 @@ using Microsoft.EntityFrameworkCore;
 
 using Shinta;
 using Shinta.Behaviors;
+
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -293,6 +294,7 @@ namespace YukaLister.ViewModels
 				}
 
 				using FolderSettingsWindowViewModel folderSettingsWindowViewModel = new();
+				folderSettingsWindowViewModel.TargetPath = SelectedTargetFolderInfo.Path;
 				Messenger.Raise(new TransitionMessage(folderSettingsWindowViewModel, YlConstants.MESSAGE_KEY_OPEN_FOLDER_SETTINGS_WINDOW));
 #if false
 				using (MusicInfoDatabaseInDisk aMusicInfoDbInDisk = new MusicInfoDatabaseInDisk(mEnvironment))

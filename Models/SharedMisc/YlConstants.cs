@@ -274,6 +274,12 @@ namespace YukaLister.Models.SharedMisc
 		// 頭文字の「その他」
 		public const String HEAD_MISC = GROUP_MISC;
 
+		// 日付の書式指定子
+		public const String DATE_FORMAT = "yyyy/MM/dd";
+
+		// RULE_VAR_ON_VOCAL / RULE_VAR_OFF_VOCAL のデフォルト値
+		public const Int32 RULE_VALUE_VOCAL_DEFAULT = 1;
+
 		// 変数の値を区切る文字
 		public const String VAR_VALUE_DELIMITER = ",";
 

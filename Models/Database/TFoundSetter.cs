@@ -80,7 +80,7 @@ namespace YukaLister.Models.Database
 			}
 
 			// タイアップマスターテーブルに登録済みの名前の場合は、別名解決しない
-			if (DbCommon.SelectMastersByName(_tieUps, alias).Any())
+			if (DbCommon.SelectMasterByName(_tieUps, alias) != null)
 			{
 				return alias;
 			}
@@ -189,7 +189,7 @@ namespace YukaLister.Models.Database
 			}
 
 			// 楽曲マスターテーブルに登録済みの名前の場合は、別名解決しない
-			if (DbCommon.SelectMastersByName(_songs, alias).Any())
+			if (DbCommon.SelectMasterByName(_songs, alias) != null)
 			{
 				return alias;
 			}
@@ -435,7 +435,7 @@ namespace YukaLister.Models.Database
 			else
 			{
 				// 人物テーブルにフォルダー設定の人物情報と同名の人物があるか？
-				registeredPerson = DbCommon.SelectMastersByName(_listPeople, person.Name).FirstOrDefault();
+				registeredPerson = DbCommon.SelectMasterByName(_listPeople, person.Name);
 				if (registeredPerson == null)
 				{
 					// ID で再検索
@@ -519,11 +519,11 @@ namespace YukaLister.Models.Database
 						String[] artistNames = dicArtist.Split(YlConstants.VAR_VALUE_DELIMITER[0]);
 						foreach (String artistName in artistNames)
 						{
-							List<TPerson> artistsTmp = DbCommon.SelectMastersByName(_listPeople, artistName);
-							if (artistsTmp.Any())
+							TPerson? artistsTmp = DbCommon.SelectMasterByName(_listPeople, artistName);
+							if (artistsTmp != null)
 							{
 								// 区切られた歌手名が楽曲情報データベースに存在する
-								artists.Add(artistsTmp[0]);
+								artists.Add(artistsTmp);
 							}
 							else
 							{
@@ -638,11 +638,7 @@ namespace YukaLister.Models.Database
 				// 楽曲情報データベース内に曲情報が無い場合は、タイアップ情報があるか検索
 				if (dicByFile[YlConstants.RULE_VAR_PROGRAM] != null)
 				{
-					List<TTieUp> tieUps = DbCommon.SelectMastersByName(_tieUps, dicByFile[YlConstants.RULE_VAR_PROGRAM]);
-					if (tieUps.Any())
-					{
-						tieUpOfSong = tieUps[0];
-					}
+					tieUpOfSong = DbCommon.SelectMasterByName(_tieUps, dicByFile[YlConstants.RULE_VAR_PROGRAM]);
 				}
 				if (tieUpOfSong == null)
 				{

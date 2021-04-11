@@ -144,6 +144,32 @@ namespace YukaLister.Models.SharedMisc
 		}
 
 		// --------------------------------------------------------------------
+		// ファイルが存在していれば削除
+		// ＜返値＞ ファイルが存在していた場合の属性
+		// --------------------------------------------------------------------
+		public static FileAttributes DeleteFileIfExists(String path)
+		{
+
+			if (!File.Exists(path))
+			{
+				return 0;
+			}
+
+			FileAttributes attrs = 0;
+			try
+			{
+				attrs = File.GetAttributes(path);
+				File.Delete(path);
+			}
+			catch (Exception excep)
+			{
+				YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(TraceEventType.Error, "ファイル削除時エラー：\n" + path + "\n" + excep.Message);
+				YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, "　スタックトレース：\n" + excep.StackTrace);
+			}
+			return attrs;
+		}
+
+		// --------------------------------------------------------------------
 		// 指定されたフォルダーの除外設定有無
 		// 当該フォルダーまたはその親フォルダーに除外設定があるか
 		// --------------------------------------------------------------------
@@ -280,14 +306,14 @@ namespace YukaLister.Models.SharedMisc
 			return String.Compare(path1, path2, true) == 0;
 		}
 
-#if false
 		// --------------------------------------------------------------------
 		// 関数を非同期駆動
 		// --------------------------------------------------------------------
-		public static async Task LaunchTaskAsync<T>(TaskAsyncDelegate<T> deleg, T vari) where T : class?
+		public static async Task LaunchTaskAsync<T>(SemaphoreSlim semaphoreSlim, TaskAsyncDelegate<T> deleg, T vari) where T : class?
 		{
 			await Task.Run(async () =>
 			{
+				semaphoreSlim.Wait();
 				try
 				{
 					// 終了時に強制終了されないように設定
@@ -297,14 +323,21 @@ namespace YukaLister.Models.SharedMisc
 					await deleg(vari);
 					YukaListerModel.Instance.EnvModel.LogWriter.LogMessage(Common.TRACE_EVENT_TYPE_STATUS, "バックグラウンド処理終了：" + deleg.Method.Name);
 				}
+				catch (OperationCanceledException)
+				{
+					YukaListerModel.Instance.EnvModel.LogWriter.LogMessage(TraceEventType.Error, "バックグラウンド処理中止：" + deleg.Method.Name);
+				}
 				catch (Exception excep)
 				{
 					YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(TraceEventType.Error, "バックグラウンド処理 " + deleg.Method.Name + " 実行時エラー：\n" + excep.Message);
 					YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, "　スタックトレース：\n" + excep.StackTrace);
 				}
+				finally
+				{
+					semaphoreSlim.Release();
+				}
 			});
 		}
-#endif
 
 		// --------------------------------------------------------------------
 		// フォルダー設定を読み込む

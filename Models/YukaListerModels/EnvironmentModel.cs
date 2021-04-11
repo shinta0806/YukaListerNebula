@@ -9,7 +9,7 @@
 // ----------------------------------------------------------------------------
 
 using Livet;
-
+using Livet.Commands;
 using Shinta;
 
 using System;
@@ -146,6 +146,39 @@ namespace YukaLister.Models.YukaListerModels
 		// アプリケーション終了時タスク安全中断用
 		public CancellationTokenSource AppCancellationTokenSource { get; } = new();
 
+		// --------------------------------------------------------------------
+		// コマンド
+		// --------------------------------------------------------------------
+
+		#region ヘルプリンクの制御
+		private ListenerCommand<String>? _helpClickedCommand;
+
+		public ListenerCommand<String> HelpClickedCommand
+		{
+			get
+			{
+				if (_helpClickedCommand == null)
+				{
+					_helpClickedCommand = new ListenerCommand<String>(HelpClicked);
+				}
+				return _helpClickedCommand;
+			}
+		}
+
+		public void HelpClicked(String parameter)
+		{
+			try
+			{
+				ShowHelp(parameter);
+			}
+			catch (Exception excep)
+			{
+				LogWriter.ShowLogMessage(TraceEventType.Error, "ヘルプ表示時エラー：\n" + excep.Message);
+				LogWriter.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, "　スタックトレース：\n" + excep.StackTrace);
+			}
+		}
+		#endregion
+
 		// ====================================================================
 		// public メンバー関数
 		// ====================================================================
@@ -173,6 +206,20 @@ namespace YukaLister.Models.YukaListerModels
 		}
 
 		// ====================================================================
+		// private メンバー定数
+		// ====================================================================
+
+		// --------------------------------------------------------------------
+		// ファイル名
+		// --------------------------------------------------------------------
+		private const String FILE_NAME_HELP_PREFIX = YlConstants.APP_ID + "_JPN";
+
+		// --------------------------------------------------------------------
+		// フォルダー名
+		// --------------------------------------------------------------------
+		private const String FOLDER_NAME_HELP_PARTS = "HelpParts\\";
+
+		// ====================================================================
 		// private メンバー関数
 		// ====================================================================
 
@@ -193,5 +240,39 @@ namespace YukaLister.Models.YukaListerModels
 			LogWriter.ShowLogMessage(TraceEventType.Verbose, "Path: " + ExeFullPath);
 		}
 
+		// --------------------------------------------------------------------
+		// ヘルプの表示
+		// --------------------------------------------------------------------
+		private void ShowHelp(String? anchor = null)
+		{
+			String? helpPath = null;
+
+			try
+			{
+				// アンカーが指定されている場合は状況依存型ヘルプを表示
+				if (!String.IsNullOrEmpty(anchor))
+				{
+					helpPath = ExeFullFolder + FOLDER_NAME_HELP_PARTS + FILE_NAME_HELP_PREFIX + "_" + anchor + Common.FILE_EXT_HTML;
+					try
+					{
+						Process.Start(helpPath);
+						return;
+					}
+					catch (Exception excep)
+					{
+						LogWriter.ShowLogMessage(TraceEventType.Error, "状況に応じたヘルプを表示できませんでした：\n" + excep.Message + "\n" + helpPath
+								+ "\n通常のヘルプを表示します。");
+					}
+				}
+
+				// アンカーが指定されていない場合・状況依存型ヘルプを表示できなかった場合は通常のヘルプを表示
+				helpPath = ExeFullFolder + FILE_NAME_HELP_PREFIX + Common.FILE_EXT_HTML;
+				Process.Start(helpPath);
+			}
+			catch (Exception excep)
+			{
+				LogWriter.ShowLogMessage(TraceEventType.Error, "ヘルプを表示できませんでした。\n" + excep.Message + "\n" + helpPath);
+			}
+		}
 	}
 }

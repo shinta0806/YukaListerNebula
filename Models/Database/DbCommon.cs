@@ -178,6 +178,18 @@ namespace YukaLister.Models.Database
 		}
 
 		// --------------------------------------------------------------------
+		// 楽曲情報データベースから IRcMaster を 1 つだけ検索
+		// --------------------------------------------------------------------
+		public static T? SelectMasterByName<T>(DbSet<T> records, String? name, Boolean includesInvalid = false) where T : class, IRcMaster
+		{
+			if (String.IsNullOrEmpty(name))
+			{
+				return null;
+			}
+			return records.FirstOrDefault(x => x.Name == name && (includesInvalid || !x.Invalid));
+		}
+
+		// --------------------------------------------------------------------
 		// 楽曲情報データベースから IRcMaster をすべて検索
 		// --------------------------------------------------------------------
 		public static List<T> SelectMastersByName<T>(DbSet<T> records, String? name, Boolean includesInvalid = false) where T : class, IRcMaster
