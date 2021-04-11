@@ -123,7 +123,7 @@ namespace YukaLister.ViewModels
 		// --------------------------------------------------------------------
 		private void OpenMainWindow()
 		{
-			Messenger.Raise(new TransitionMessage(_mainWindowViewModel, "OpenMainWindow"));
+			Messenger.Raise(new TransitionMessage(_mainWindowViewModel, YlConstants.MESSAGE_KEY_OPEN_MAIN_WINDOW));
 		}
 	}
 }

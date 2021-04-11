@@ -174,6 +174,7 @@ namespace YukaLister.ViewModels
 				if (RaisePropertyChangedIfSet(ref _selectedFolderNameRuleName, value))
 				{
 					UpdateFolderNameRuleProperties();
+					SelectedFolderNameRuleToNameAndValue();
 					ButtonAddFolderNameRuleClickedCommand.RaiseCanExecuteChanged();
 				}
 			}
@@ -972,7 +973,7 @@ namespace YukaLister.ViewModels
 			try
 			{
 				SaveSettingsIfNeeded();
-				Messenger.Raise(new WindowActionMessage("Close"));
+				Messenger.Raise(new WindowActionMessage(YlConstants.MESSAGE_KEY_WINDOW_CLOSE));
 			}
 			catch (Exception excep)
 			{
@@ -1203,7 +1204,8 @@ namespace YukaLister.ViewModels
 			String normalizedNewRule = NormalizeRule(FileNameRule);
 			if (normalizedNewRule.Contains(YlConstants.RULE_VAR_ANY + YlConstants.RULE_VAR_ANY))
 			{
-				throw new Exception("<変数> や " + YlConstants.RULE_VAR_ANY + " が連続していると正常にファイル名を解析できません。");
+				throw new Exception("<変数> や " + YlConstants.RULE_VAR_ANY + " が連続していると正常にファイル名を解析できません。\n"
+						+ "間に区切り用の文字を入れてください。");
 			}
 
 			// 競合する命名規則が無いか
@@ -1646,29 +1648,36 @@ namespace YukaLister.ViewModels
 		{
 			try
 			{
+				String value;
 				if (String.IsNullOrEmpty(SelectedFolderNameRule))
 				{
-					return;
+					// 選択されていない場合は空欄にする
+					value = String.Empty;
 				}
-
-				// 名前設定
-				String? key = FindRuleVarName(SelectedFolderNameRule);
-				if (String.IsNullOrEmpty(key))
+				else
 				{
-					return;
-				}
-				String varName = WrapVarName(key);
-				for (Int32 i = 0; i < FolderNameRuleNames.Count; i++)
-				{
-					if (FolderNameRuleNames[i].IndexOf(varName) == 0)
+					String? key = FindRuleVarName(SelectedFolderNameRule);
+					if (String.IsNullOrEmpty(key))
 					{
-						SelectedFolderNameRuleName = FolderNameRuleNames[i];
-						break;
+						// キーに対応する値が設定されていない場合は空欄にする
+						value = String.Empty;
+					}
+					else
+					{
+						// キーに対応する値を反映する
+						String varName = WrapVarName(key);
+						for (Int32 i = 0; i < FolderNameRuleNames.Count; i++)
+						{
+							if (FolderNameRuleNames[i].IndexOf(varName) == 0)
+							{
+								SelectedFolderNameRuleName = FolderNameRuleNames[i];
+								break;
+							}
+						}
+						value = FindRuleValue(SelectedFolderNameRule);
 					}
 				}
 
-				// 値設定
-				String value = FindRuleValue(SelectedFolderNameRule);
 				if (SelectedFolderNameRuleValueVisibility == Visibility.Visible)
 				{
 					SelectedFolderNameRuleValue = value;

@@ -155,27 +155,6 @@ namespace YukaLister.Models.YukaListerModels
 			return false;
 		}
 
-#if false
-		// --------------------------------------------------------------------
-		// ゆかり検索対象フォルダーから削除
-		// TargetFolderInfo のみの削除で、データベースはいじらない
-		// --------------------------------------------------------------------
-		public Boolean RemoveTargetFolder(String folder)
-		{
-			lock (_targetFolderInfos)
-			{
-				Int32 index = IndexOfTargetFolderInfoWithoutLock(folder);
-				if (index < 0)
-				{
-					return false;
-				}
-				_targetFolderInfos.RemoveAt(index);
-			}
-			YukaListerModel.Instance.EnvModel.IsMainWindowDataGridCountChanged = true;
-			return true;
-		}
-#endif
-
 		// --------------------------------------------------------------------
 		// ゆかり検索対象フォルダーから削除（サブフォルダー含む）
 		// TargetFolderInfo のみの削除で、データベースはいじらない
@@ -205,6 +184,32 @@ namespace YukaLister.Models.YukaListerModels
 			{
 				return _targetFolderInfos.FirstOrDefault(x => x.FolderTaskStatus == FolderTaskStatus.Running);
 			}
+		}
+
+		// --------------------------------------------------------------------
+		// サブフォルダーも含めて FolderSettingsStatus と FolderExcludeSettingsStatus を Unchecked にする
+		// folder は IsParent でなくても構わない
+		// --------------------------------------------------------------------
+		public Boolean SetFolderSettingsStatusToUnchecked(String folder)
+		{
+			lock (_targetFolderInfos)
+			{
+				Int32 parentIndex = IndexOfTargetFolderInfoWithoutLock(folder);
+				if (parentIndex < 0)
+				{
+					return false;
+				}
+				for (Int32 i = parentIndex; i < parentIndex + _targetFolderInfos[parentIndex].NumTotalFolders; i++)
+				{
+					_targetFolderInfos[i].FolderExcludeSettingsStatus = FolderExcludeSettingsStatus.Unchecked;
+					_targetFolderInfos[i].FolderSettingsStatus = FolderSettingsStatus.Unchecked;
+				}
+			}
+
+			// 通知
+			YukaListerModel.Instance.EnvModel.IsMainWindowDataGridItemUpdated = true;
+			//ListCancellationTokenSource?.Cancel();
+			return true;
 		}
 
 		// --------------------------------------------------------------------

@@ -128,7 +128,7 @@ namespace YukaLister.Models.SharedMisc
 			varMap[YlConstants.RULE_VAR_ARTIST] = "歌手名";
 
 			// ファイル名からのみ取得可能なもの
-			varMap[YlConstants.RULE_VAR_WORKER] = "ニコカラ制作者";
+			varMap[YlConstants.RULE_VAR_WORKER] = "カラオケ動画制作者";
 			varMap[YlConstants.RULE_VAR_TRACK] = "トラック情報";
 			varMap[YlConstants.RULE_VAR_ON_VOCAL] = "オンボーカルトラック";
 			varMap[YlConstants.RULE_VAR_OFF_VOCAL] = "オフボーカルトラック";

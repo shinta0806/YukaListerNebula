@@ -48,7 +48,7 @@ namespace YukaLister.Models.Database
 		[Column(FIELD_NAME_FOUND_HEAD)]
 		public String? Head { get; set; }
 
-		// ニコカラ制作者
+		// カラオケ動画制作者
 		[Column(FIELD_NAME_FOUND_WORKER)]
 		public String? Worker { get; set; }
 

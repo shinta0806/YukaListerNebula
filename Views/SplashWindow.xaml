@@ -25,7 +25,7 @@
 
         <!-- If you make user choose 'OK or Cancel' closing Window, then please use Window Close cancel Behavior. -->
 
-        <l:InteractionMessageTrigger MessageKey="OpenMainWindow" Messenger="{Binding Messenger}">
+        <l:InteractionMessageTrigger MessageKey="{x:Static msm:YlConstants.MESSAGE_KEY_OPEN_MAIN_WINDOW}" Messenger="{Binding Messenger}">
             <l:TransitionInteractionMessageAction WindowType="{x:Type v:MainWindow}" Mode="Normal" IsOwned="False"/>
         </l:InteractionMessageTrigger>
 

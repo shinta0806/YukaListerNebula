@@ -88,7 +88,7 @@ namespace YukaLister.Models.SharedMisc
 	public enum YukaListerPartsStatusIndex
 	{
 		Environment,    // 環境系
-		Startup,		// 起動時処理
+		Startup,        // 起動時処理
 		Sifolin,        // Sifolin
 		__End__,
 	}
@@ -152,6 +152,9 @@ namespace YukaLister.Models.SharedMisc
 
 		// ウィンドウを閉じる
 		public const String MESSAGE_KEY_WINDOW_CLOSE = "Close";
+
+		// メインウィンドウを開く
+		public const String MESSAGE_KEY_OPEN_MAIN_WINDOW = "OpenMainWindow";
 
 		// フォルダー設定ウィンドウを開く
 		public const String MESSAGE_KEY_OPEN_FOLDER_SETTINGS_WINDOW = "OpenFolderSettingsWindow";
