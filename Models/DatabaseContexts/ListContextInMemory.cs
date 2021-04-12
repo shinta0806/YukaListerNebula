@@ -104,7 +104,7 @@ namespace YukaLister.Models.DatabaseContexts
 				Mode = SqliteOpenMode.Memory,
 				Cache = SqliteCacheMode.Shared,
 			};
-			SqliteConnection sqliteConnection = new SqliteConnection(stringBuilder.ToString());
+			SqliteConnection sqliteConnection = new(stringBuilder.ToString());
 			sqliteConnection.Open();
 			optionsBuilder.UseSqlite(sqliteConnection);
 		}

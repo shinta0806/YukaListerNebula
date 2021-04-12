@@ -123,13 +123,13 @@ namespace YukaLister.Models.Database
 			SetTFoundValuesByMusicInfoDatabase(record, dicByFile);
 
 			// 楽曲情報データベースに無かった項目をファイル名・フォルダー固定値から取得
-			record.Category = record.Category == null ? dicByFile[YlConstants.RULE_VAR_CATEGORY] : record.Category;
-			record.TieUpName = record.TieUpName == null ? dicByFile[YlConstants.RULE_VAR_PROGRAM] : record.TieUpName;
+			record.Category ??= dicByFile[YlConstants.RULE_VAR_CATEGORY];
+			record.TieUpName ??= dicByFile[YlConstants.RULE_VAR_PROGRAM];
 			record.TieUpAgeLimit = record.TieUpAgeLimit == 0 ? Common.StringToInt32(dicByFile[YlConstants.RULE_VAR_AGE_LIMIT]) : record.TieUpAgeLimit;
-			record.SongOpEd = record.SongOpEd == null ? dicByFile[YlConstants.RULE_VAR_OP_ED] : record.SongOpEd;
+			record.SongOpEd ??= dicByFile[YlConstants.RULE_VAR_OP_ED];
 			if (record.SongName == null)
 			{
-				record.SongName = dicByFile[YlConstants.RULE_VAR_TITLE] != null ? dicByFile[YlConstants.RULE_VAR_TITLE] : Path.GetFileNameWithoutExtension(record.Path);
+				record.SongName = dicByFile[YlConstants.RULE_VAR_TITLE] ?? Path.GetFileNameWithoutExtension(record.Path);
 			}
 
 			// SongId が無い場合は楽曲名を採用（フォルダー設定の歌手名やタグを紐付できるように）
@@ -139,12 +139,12 @@ namespace YukaLister.Models.Database
 			}
 
 			SetTFoundArtistByDic(record, dicByFile);
-			record.SongRuby = record.SongRuby == null ? dicByFile[YlConstants.RULE_VAR_TITLE_RUBY] : record.SongRuby;
-			record.Worker = record.Worker == null ? dicByFile[YlConstants.RULE_VAR_WORKER] : record.Worker;
-			record.Track = record.Track == null ? dicByFile[YlConstants.RULE_VAR_TRACK] : record.Track;
+			record.SongRuby ??= dicByFile[YlConstants.RULE_VAR_TITLE_RUBY];
+			record.Worker ??= dicByFile[YlConstants.RULE_VAR_WORKER];
+			record.Track ??= dicByFile[YlConstants.RULE_VAR_TRACK];
 			record.SmartTrackOnVocal = !record.SmartTrackOnVocal ? dicByFile[YlConstants.RULE_VAR_ON_VOCAL] != null : record.SmartTrackOnVocal;
 			record.SmartTrackOffVocal = !record.SmartTrackOffVocal ? dicByFile[YlConstants.RULE_VAR_OFF_VOCAL] != null : record.SmartTrackOffVocal;
-			record.Comment = record.Comment == null ? dicByFile[YlConstants.RULE_VAR_COMMENT] : record.Comment;
+			record.Comment ??= dicByFile[YlConstants.RULE_VAR_COMMENT];
 
 			// トラック情報からスマートトラック解析
 			(Boolean hasOn, Boolean hasOff) = AnalyzeSmartTrack(record.Track);
@@ -255,123 +255,123 @@ namespace YukaLister.Models.Database
 		// --------------------------------------------------------------------
 
 		// データベースプロパティーテーブル
-		private DbSet<TProperty> _properties;
+		private readonly DbSet<TProperty> _properties;
 
 		// --------------------------------------------------------------------
 		// マスターテーブル
 		// --------------------------------------------------------------------
 
 		// 楽曲マスターテーブル
-		private DbSet<TSong> _songs;
+		private readonly DbSet<TSong> _songs;
 
 		// 人物マスターテーブル
-		private DbSet<TPerson> _people;
+		private readonly DbSet<TPerson> _people;
 
 		// タイアップマスターテーブル
-		private DbSet<TTieUp> _tieUps;
+		private readonly DbSet<TTieUp> _tieUps;
 
 		// カテゴリーマスターテーブル
-		private DbSet<TCategory> _categories;
+		private readonly DbSet<TCategory> _categories;
 
 		// タイアップグループマスターテーブル
-		private DbSet<TTieUpGroup> _tieUpGroups;
+		private readonly DbSet<TTieUpGroup> _tieUpGroups;
 
 		// 制作会社マスターテーブル
-		private DbSet<TMaker> _makers;
+		private readonly DbSet<TMaker> _makers;
 
 		// タグマスターテーブル
-		private DbSet<TTag> _tags;
+		private readonly DbSet<TTag> _tags;
 
 		// --------------------------------------------------------------------
 		// 別名テーブル
 		// --------------------------------------------------------------------
 
 		// 楽曲別名テーブル
-		private DbSet<TSongAlias> _songAliases;
+		private readonly DbSet<TSongAlias> _songAliases;
 
 		// 人物別名テーブル
-		private DbSet<TPersonAlias> _personAliases;
+		private readonly DbSet<TPersonAlias> _personAliases;
 
 		// タイアップ別名テーブル
-		private DbSet<TTieUpAlias> _tieUpAliases;
+		private readonly DbSet<TTieUpAlias> _tieUpAliases;
 
 		// カテゴリー別名テーブル
-		private DbSet<TCategoryAlias> _categoryAliases;
+		private readonly DbSet<TCategoryAlias> _categoryAliases;
 
 		// タイアップグループ別名テーブル
-		private DbSet<TTieUpGroupAlias> _tieUpGroupAliases;
+		private readonly DbSet<TTieUpGroupAlias> _tieUpGroupAliases;
 
 		// 制作会社別名テーブル
-		private DbSet<TMakerAlias> _makerAliases;
+		private readonly DbSet<TMakerAlias> _makerAliases;
 
 		// --------------------------------------------------------------------
 		// 紐付テーブル
 		// --------------------------------------------------------------------
 
 		// 歌手紐付テーブル
-		private DbSet<TArtistSequence> _artistSequences;
+		private readonly DbSet<TArtistSequence> _artistSequences;
 
 		// 作詞者紐付テーブル
-		private DbSet<TLyristSequence> _lyristSequences;
+		private readonly DbSet<TLyristSequence> _lyristSequences;
 
 		// 作曲者紐付テーブル
-		private DbSet<TComposerSequence> _composerSequences;
+		private readonly DbSet<TComposerSequence> _composerSequences;
 
 		// 編曲者紐付テーブル
-		private DbSet<TArrangerSequence> _arrangerSequences;
+		private readonly DbSet<TArrangerSequence> _arrangerSequences;
 
 		// タイアップグループ紐付テーブル
-		private DbSet<TTieUpGroupSequence> _tieUpGroupSequences;
+		private readonly DbSet<TTieUpGroupSequence> _tieUpGroupSequences;
 
 		// タグ紐付テーブル
-		private DbSet<TTagSequence> _tagSequences;
+		private readonly DbSet<TTagSequence> _tagSequences;
 
 		// --------------------------------------------------------------------
 		// リストデータベース：検出ファイルリストテーブル
 		// --------------------------------------------------------------------
 
 		// 検出ファイルリストテーブル
-		private DbSet<TFound> _listFounds;
+		private readonly DbSet<TFound> _listFounds;
 
 		// 人物マスターテーブル
-		private DbSet<TPerson> _listPeople;
+		private readonly DbSet<TPerson> _listPeople;
 
 		// 歌手紐付テーブル
-		private DbSet<TArtistSequence> _listArtistSequences;
+		private readonly DbSet<TArtistSequence> _listArtistSequences;
 
 		// 作曲者紐付テーブル
-		private DbSet<TComposerSequence> _listComposerSequences;
+		private readonly DbSet<TComposerSequence> _listComposerSequences;
 
 		// タグマスターテーブル
-		private DbSet<TTag> _listTags;
+		private readonly DbSet<TTag> _listTags;
 
 		// タグ紐付テーブル
-		private DbSet<TTagSequence> _listTagSequences;
+		private readonly DbSet<TTagSequence> _listTagSequences;
 
 		// --------------------------------------------------------------------
 		// その他
 		// --------------------------------------------------------------------
 
 		// 楽曲情報データベースのコンテキスト
-		private MusicInfoContext _musicInfoContext;
+		private readonly MusicInfoContext _musicInfoContext;
 
 		// リストデータベース（作業用：インメモリ）のコンテキスト
-		private ListContextInMemory _listContextInMemory;
+		private readonly ListContextInMemory _listContextInMemory;
 
 		// カテゴリー名正規化用
-		private List<String> _categoryNames;
+		private readonly List<String> _categoryNames;
 
 		// Dispose フラグ
 		private Boolean _isDisposed;
 
 		// ====================================================================
-		// private メンバー関数
+		// private static メンバー関数
 		// ====================================================================
 
 		// --------------------------------------------------------------------
 		// トラック情報からオンボーカル・オフボーカルがあるか解析する
 		// --------------------------------------------------------------------
-		private (Boolean hasOn, Boolean hasOff) AnalyzeSmartTrack(String? trackString)
+		private static (Boolean hasOn, Boolean hasOff) AnalyzeSmartTrack(String? trackString)
 		{
 			Boolean hasOn = false;
 			Boolean hasOff = false;
@@ -381,8 +381,7 @@ namespace YukaLister.Models.Database
 				String[] tracks = trackString.Split(new Char[] { '-', '_', '+', ',', '.', ' ', (Char)0x2010 }, StringSplitOptions.RemoveEmptyEntries);
 				for (Int32 i = 0; i < tracks.Length; i++)
 				{
-					Int32 bothPos = BOTH_VOCAL_WORDS.IndexOf("|" + tracks[i] + "|", StringComparison.OrdinalIgnoreCase);
-					if (bothPos >= 0)
+					if (BOTH_VOCAL_WORDS.Contains("|" + tracks[i] + "|", StringComparison.OrdinalIgnoreCase))
 					{
 						// オンオフ両方を意味する単語の場合
 						hasOn = true;
@@ -390,8 +389,7 @@ namespace YukaLister.Models.Database
 					}
 					else
 					{
-						Int32 offPos = OFF_VOCAL_WORDS.IndexOf("|" + tracks[i] + "|", StringComparison.OrdinalIgnoreCase);
-						if (offPos >= 0)
+						if (OFF_VOCAL_WORDS.Contains("|" + tracks[i] + "|", StringComparison.OrdinalIgnoreCase))
 						{
 							// オフを意味する単語の場合
 							hasOff = true;
@@ -410,10 +408,14 @@ namespace YukaLister.Models.Database
 		// --------------------------------------------------------------------
 		// 複数の IRcMaster の名前とルビをカンマで結合
 		// --------------------------------------------------------------------
-		private (String names, String rubies) ConcatMasterNamesAndRubies(List<IRcMaster> masters)
+		private static (String names, String rubies) ConcatMasterNamesAndRubies(List<IRcMaster> masters)
 		{
 			return (String.Join(YlConstants.VAR_VALUE_DELIMITER[0], masters.Select(x => x.Name)), String.Join(YlConstants.VAR_VALUE_DELIMITER[0], masters.Select(x => x.Ruby)));
 		}
+
+		// ====================================================================
+		// private メンバー関数
+		// ====================================================================
 
 		// --------------------------------------------------------------------
 		// （dicByFile から取得した）人物情報をゆかり用リストデータベースに登録

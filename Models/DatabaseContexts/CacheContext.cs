@@ -9,14 +9,14 @@
 // ----------------------------------------------------------------------------
 
 using Microsoft.EntityFrameworkCore;
+
 using Shinta;
+
 using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+
 using YukaLister.Models.Database;
 using YukaLister.Models.SharedMisc;
 using YukaLister.Models.YukaListerModels;
@@ -60,45 +60,6 @@ namespace YukaLister.Models.DatabaseContexts
 		// ====================================================================
 		// public static メンバー関数
 		// ====================================================================
-
-#if false
-		// --------------------------------------------------------------------
-		// データベースコンテキスト生成
-		// ＜例外＞ Exception
-		// --------------------------------------------------------------------
-		public static CacheContext CreateContext(String driveLetter, out DbSet<TProperty> properties,
-				out DbSet<TFound> founds, out DbSet<TCacheHeader> cacheHeaders)
-		{
-			CacheContext cacheContext = new(driveLetter);
-
-			// データベースプロパティーテーブル
-			GetDbSet(cacheContext, out properties);
-
-			// 検出ファイルリストテーブル
-			GetDbSet(cacheContext, out founds);
-
-			// キャッシュ管理テーブル
-			GetDbSet(cacheContext, out cacheHeaders);
-
-			return cacheContext;
-		}
-#endif
-
-#if false
-		// --------------------------------------------------------------------
-		// データベースコンテキスト生成
-		// ＜例外＞ Exception
-		// --------------------------------------------------------------------
-		public static CacheContext CreateContext(String driveLetter, out DbSet<TProperty> properties)
-		{
-			CacheContext cacheContext = new(driveLetter);
-
-			// データベースプロパティーテーブル
-			GetDbSet(cacheContext, out properties);
-
-			return cacheContext;
-		}
-#endif
 
 		// --------------------------------------------------------------------
 		// データベースコンテキスト生成
@@ -201,7 +162,7 @@ namespace YukaLister.Models.DatabaseContexts
 		// ====================================================================
 
 		// 対象ドライブ（"D:" のようにコロンまで）
-		private String _driveLetter;
+		private readonly String _driveLetter;
 
 		// ====================================================================
 		// private static メンバー関数
