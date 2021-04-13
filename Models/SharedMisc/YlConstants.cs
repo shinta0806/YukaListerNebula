@@ -159,6 +159,9 @@ namespace YukaLister.Models.SharedMisc
 		// フォルダー設定ウィンドウを開く
 		public const String MESSAGE_KEY_OPEN_FOLDER_SETTINGS_WINDOW = "OpenFolderSettingsWindow";
 
+		// 楽曲情報等編集ウィンドウを開く
+		public const String MESSAGE_KEY_OPEN_EDIT_MUSIC_INFO_WINDOW = "OpenEditMusicInfoWindow";
+
 		// --------------------------------------------------------------------
 		// アプリ独自ルールでの変数名（小文字で表記）
 		// --------------------------------------------------------------------

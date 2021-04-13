@@ -1,0 +1,179 @@
+﻿<Window x:Class="YukaLister.Views.EditMusicInfoWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:behaviors="http://schemas.microsoft.com/xaml/behaviors"
+        xmlns:l="http://schemas.livet-mvvm.net/2011/wpf"
+        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+        xmlns:msm="clr-namespace:YukaLister.Models.SharedMisc"
+        xmlns:sb="clr-namespace:Shinta.Behaviors"
+        xmlns:v="clr-namespace:YukaLister.Views"
+        xmlns:vm="clr-namespace:YukaLister.ViewModels"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="{Binding Title}" ResizeMode="NoResize" ShowInTaskbar="False" SizeToContent="WidthAndHeight" >
+
+    <Window.DataContext>
+        <vm:EditMusicInfoWindowViewModel />
+    </Window.DataContext>
+
+    <behaviors:Interaction.Behaviors>
+        <sb:WindowBindingSupportBehavior IsCascade="True" MinimizeBox="False"/>
+    </behaviors:Interaction.Behaviors>
+
+    <behaviors:Interaction.Triggers>
+        <!-- When ContentRendered event raised, Initialize method of ViewModel would be called. -->
+        <behaviors:EventTrigger EventName="ContentRendered">
+            <l:LivetCallMethodAction MethodTarget="{Binding}" MethodName="Initialize" />
+        </behaviors:EventTrigger>
+
+        <!-- Dispose method is called, when Window closing. -->
+        <behaviors:EventTrigger EventName="Closed">
+            <l:DataContextDisposeAction />
+        </behaviors:EventTrigger>
+
+        <!-- If you make user choose 'OK or Cancel' closing Window, then please use Window Close cancel Behavior. -->
+
+        <l:InteractionMessageTrigger MessageKey="{x:Static msm:YlConstants.MESSAGE_KEY_WINDOW_CLOSE}" Messenger="{Binding Messenger}">
+            <l:WindowInteractionMessageAction InvokeActionOnlyWhenWindowIsActive="False" />
+        </l:InteractionMessageTrigger>
+
+    </behaviors:Interaction.Triggers>
+
+    <StackPanel>
+        <StackPanel Margin="20,15,20,0" Orientation="Horizontal">
+            <Label Content="ファイル名等から取得した名称が間違っている場合でも楽曲情報データベースを適用できるようにします。" HorizontalAlignment="Left" Margin="0" VerticalAlignment="Center"/>
+            <Label x:Name="LabelHelp" Grid.Column="1" Margin="0" VerticalAlignment="Center" HorizontalAlignment="Left">
+                <Hyperlink Command="{Binding HelpClickedCommand}" CommandParameter="NamaewoSoroeru" >
+                    <TextBlock Text="詳細情報" />
+                </Hyperlink>
+            </Label>
+        </StackPanel>
+        <StackPanel Orientation="Horizontal" Margin="20,5,20,0">
+            <Label Content="ファイル名：" Margin="0" HorizontalAlignment="Left"/>
+            <Label x:Name="LabelPath" Margin="0" HorizontalAlignment="Left">
+                <ContentPresenter  RecognizesAccessKey="False" Content="{Binding FileName}" ></ContentPresenter>
+            </Label>
+        </StackPanel>
+        <StackPanel Orientation="Horizontal" Margin="20,10,20,0">
+            <GroupBox Header="ファイル名・フォルダー固定値から取得した名称" Padding="5" Margin="0" materialDesign:ColorZoneAssist.Mode="SecondaryMid" >
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="30"/>
+                        <RowDefinition Height="30"/>
+                        <RowDefinition Height="30"/>
+                        <RowDefinition Height="30"/>
+                        <RowDefinition Height="30"/>
+                        <RowDefinition Height="30"/>
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="100"/>
+                        <ColumnDefinition Width="210"/>
+                    </Grid.ColumnDefinitions>
+                    <Label Content="タイアップ名：" Margin="0" HorizontalAlignment="Right" Grid.Row="1"/>
+                    <Label x:Name="LabelTieUpName" Content="{Binding DicByFile[program]}" Margin="0" Grid.Row="1" Grid.Column="1"/>
+                    <Label x:Name="LabelTieUpNameRegistered" Margin="0" Grid.Row="2" Grid.Column="1">
+                        <Label.Style>
+                            <Style TargetType="{x:Type Label}">
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding IsTieUpNameRegistered}" Value="True">
+                                        <Setter Property="Content" Value="（データベース登録済）"/>
+                                        <Setter Property="Foreground" Value="Black"/>
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding IsTieUpNameRegistered}" Value="False">
+                                        <Setter Property="Content" Value="（データベース未登録）"/>
+                                        <Setter Property="Foreground" Value="Red"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Label.Style>
+                    </Label>
+                    <Label Content="楽曲名：" Margin="0" HorizontalAlignment="Right" Grid.Row="4"/>
+                    <Label x:Name="LabelSongName" Content="{Binding DicByFile[title]}" Margin="0" Grid.Row="4" Grid.Column="1"/>
+                    <Label x:Name="LabelSongNameRegistered" Margin="0" Grid.Row="5" Grid.Column="1">
+                        <Label.Style>
+                            <Style TargetType="{x:Type Label}">
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding IsSongNameRegistered}" Value="True">
+                                        <Setter Property="Content" Value="（データベース登録済）"/>
+                                        <Setter Property="Foreground" Value="Black"/>
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding IsSongNameRegistered}" Value="False">
+                                        <Setter Property="Content" Value="（データベース未登録）"/>
+                                        <Setter Property="Foreground" Value="Red"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Label.Style>
+                    </Label>
+                </Grid>
+            </GroupBox>
+            <GroupBox Header="名称を揃える（データベース登録済の名称に名寄せする）" Padding="5" Margin="10,0,0,0" materialDesign:ColorZoneAssist.Mode="SecondaryMid" >
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="30"/>
+                        <RowDefinition Height="30"/>
+                        <RowDefinition Height="30"/>
+                        <RowDefinition Height="30"/>
+                        <RowDefinition Height="30"/>
+                        <RowDefinition Height="30"/>
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="80"/>
+                        <ColumnDefinition Width="70"/>
+                        <ColumnDefinition Width="210"/>
+                    </Grid.ColumnDefinitions>
+                    <CheckBox x:Name="CheckBoxUseTieUpAlias" Content="タイアップ名を揃える" Grid.ColumnSpan="3" IsChecked="{Binding UseTieUpAlias}" />
+                    <Label Content="正式名称：" Margin="0" HorizontalAlignment="Right" Grid.Row="1"/>
+                    <Button x:Name="ButtonSearchTieUpOrigin" Content="検索" Grid.Row="1" Grid.Column="1" Height="Auto" FontSize="12" Padding="2" Style="{StaticResource MaterialDesignRaisedLightButton}" Margin="0,5,5,5" Command="{Binding ButtonSearchTieUpOriginClickedCommand}"/>
+                    <Label x:Name="LabelTieUpOrigin" Content="{Binding TieUpOrigin}" Margin="0" Grid.Row="1" Grid.Column="2"/>
+                    <CheckBox x:Name="CheckBoxUseSongAlias" Content="楽曲名を揃える" Grid.Row="3" Grid.ColumnSpan="3" IsChecked="{Binding UseSongAlias}" />
+                    <Label Content="正式名称：" Margin="0" HorizontalAlignment="Right" Grid.Row="4"/>
+                    <Button x:Name="ButtonSearchSongOrigin" Content="検索" Grid.Row="4" Grid.Column="1" Height="Auto" FontSize="12" Padding="2" Style="{StaticResource MaterialDesignRaisedLightButton}" Margin="0,5,5,5" Command="{Binding ButtonSearchSongOriginClickedCommand}"/>
+                    <Label x:Name="LabelSongOrigin" Content="{Binding SongOrigin}" Margin="0" Grid.Row="4" Grid.Column="2"/>
+                </Grid>
+            </GroupBox>
+            <GroupBox Header="データベース編集" Padding="5" Margin="10,0,0,0" materialDesign:ColorZoneAssist.Mode="SecondaryMid" >
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="30"/>
+                        <RowDefinition Height="30"/>
+                        <RowDefinition Height="30"/>
+                        <RowDefinition Height="30"/>
+                        <RowDefinition Height="30"/>
+                        <RowDefinition Height="30"/>
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="130"/>
+                    </Grid.ColumnDefinitions>
+                    <Button x:Name="ButtonEditTieUp" Content="タイアップ詳細編集" Grid.Row="1" Height="20" FontSize="12" Padding="2" Margin="5,0" Style="{StaticResource MaterialDesignRaisedLightButton}" Command="{Binding ButtonEditTieUpClickedCommand}"/>
+                    <Button x:Name="ButtonEditSong" Content="楽曲詳細編集" Grid.Row="4" Height="20" FontSize="12" Padding="2" Margin="5,0" Style="{StaticResource MaterialDesignRaisedLightButton}" Command="{Binding ButtonEditSongClickedCommand}"/>
+                </Grid>
+            </GroupBox>
+        </StackPanel>
+        <StackPanel Margin="20,15,20,0">
+            <Label Content="上記の名寄せを踏まえた上で、タイアップ名や楽曲名等を楽曲情報データベースから総合的に検索した結果、リスト出力される項目は以下となります。" />
+        </StackPanel>
+        <StackPanel Margin="40,0,20,0" Orientation="Horizontal">
+            <Label Content="カテゴリー：" Width="90" HorizontalContentAlignment="Right" />
+            <Label Content="{Binding ListCategoryName}" />
+        </StackPanel>
+        <StackPanel Margin="40,0,20,0" Orientation="Horizontal">
+            <Label Content="タイアップ名：" Width="90" HorizontalContentAlignment="Right" />
+            <Label Content="{Binding ListTieUpName}" />
+        </StackPanel>
+        <StackPanel Margin="40,0,20,0" Orientation="Horizontal">
+            <Label Content="楽曲名：" Width="90" HorizontalContentAlignment="Right" />
+            <Label Content="{Binding ListSongName}" />
+        </StackPanel>
+        <StackPanel Margin="40,0,20,0" Orientation="Horizontal">
+            <Label Content="歌手名：" Width="90" HorizontalContentAlignment="Right" />
+            <Label Content="{Binding ListArtistName}" />
+        </StackPanel>
+        <StackPanel Margin="20,0,0,0">
+            <Label Content="※ファイル名等から取得したタイアップ名と、リスト出力されるタイアップ名が異なる場合、楽曲名に紐付くタイアップ名が優先されています。" Foreground="Gray" />
+        </StackPanel>
+        <StackPanel Margin="20" Orientation="Horizontal" FlowDirection="RightToLeft">
+            <Button x:Name="ButtonCancel" Content="キャンセル" Margin="0" Height="Auto" Style="{StaticResource MaterialDesignRaisedLightButton}" IsCancel="True" Width="100" DockPanel.Dock="Right" Padding="4"/>
+            <Button x:Name="ButtonOk" Content="OK" Margin="20,0,0,0" Height="Auto" IsDefault="True" Width="100" DockPanel.Dock="Right" Command="{Binding ButtonOkClickedCommand}"/>
+        </StackPanel>
+    </StackPanel>
+
+</Window>

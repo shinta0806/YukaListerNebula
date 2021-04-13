@@ -41,6 +41,10 @@
             <l:WindowInteractionMessageAction InvokeActionOnlyWhenWindowIsActive="False" />
         </l:InteractionMessageTrigger>
 
+        <l:InteractionMessageTrigger MessageKey="{x:Static msm:YlConstants.MESSAGE_KEY_OPEN_EDIT_MUSIC_INFO_WINDOW}" Messenger="{Binding Messenger}">
+            <l:TransitionInteractionMessageAction WindowType="{x:Type v:EditMusicInfoWindow}" Mode="Modal" IsOwned="True" />
+        </l:InteractionMessageTrigger>
+
     </behaviors:Interaction.Triggers>
 
     <DockPanel>

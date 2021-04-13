@@ -10,12 +10,13 @@
 
 using Livet;
 using Livet.Commands;
-using Livet.EventListeners;
 using Livet.Messaging;
-using Livet.Messaging.IO;
 using Livet.Messaging.Windows;
+
 using Microsoft.EntityFrameworkCore;
+
 using Shinta;
+
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -30,7 +31,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using YukaLister.Models;
+
 using YukaLister.Models.Database;
 using YukaLister.Models.Database.Aliases;
 using YukaLister.Models.Database.Masters;
@@ -781,19 +782,16 @@ namespace YukaLister.ViewModels
 		{
 			try
 			{
-#if false
-				if (!IsExcluded && SelectedPreviewInfo != null)
+				if (IsExcluded || SelectedPreviewInfo == null)
 				{
-					using (EditMusicInfoWindowViewModel aEditMusicInfoWindowViewModel = new EditMusicInfoWindowViewModel())
-					{
-						String aPath = PathExLen + "\\" + SelectedPreviewInfo.FileName;
-						aEditMusicInfoWindowViewModel.Environment = Environment;
-						aEditMusicInfoWindowViewModel.PathExLen = aPath;
-						aEditMusicInfoWindowViewModel.DicByFile = YlCommon.DicByFile(aPath);
-						Messenger.Raise(new TransitionMessage(aEditMusicInfoWindowViewModel, "OpenEditMusicInfoWindow"));
-					}
+					return;
 				}
-#endif
+
+				using EditMusicInfoWindowViewModel editMusicInfoWindowViewModel = new();
+				//String aPath = PathExLen + "\\" + SelectedPreviewInfo.FileName;
+				//editMusicInfoWindowViewModel.PathExLen = aPath;
+				//editMusicInfoWindowViewModel.DicByFile = YlCommon.DicByFile(aPath);
+				Messenger.Raise(new TransitionMessage(editMusicInfoWindowViewModel, YlConstants.MESSAGE_KEY_OPEN_EDIT_MUSIC_INFO_WINDOW));
 			}
 			catch (Exception excep)
 			{
