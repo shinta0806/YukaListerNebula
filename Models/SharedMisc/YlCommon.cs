@@ -207,6 +207,16 @@ namespace YukaLister.Models.SharedMisc
 		}
 
 		// --------------------------------------------------------------------
+		// ファイル命名規則とフォルダー固定値を適用した情報を得る
+		// --------------------------------------------------------------------
+		public static Dictionary<String, String?> DicByFile(String filePath)
+		{
+			FolderSettingsInDisk folderSettingsInDisk = LoadFolderSettings2Ex(Path.GetDirectoryName(filePath));
+			FolderSettingsInMemory folderSettingsInMemory = CreateFolderSettingsInMemory(folderSettingsInDisk);
+			return MatchFileNameRulesAndFolderRuleForListContext(Path.GetFileNameWithoutExtension(filePath), folderSettingsInMemory);
+		}
+
+		// --------------------------------------------------------------------
 		// ドライブレターを取得
 		// DeviceChangeInfo と仕様を合わせ、"D:" のようにコロンまで
 		// --------------------------------------------------------------------

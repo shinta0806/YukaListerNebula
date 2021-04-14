@@ -49,11 +49,22 @@ namespace YukaLister.ViewModels
 		// ====================================================================
 
 		// --------------------------------------------------------------------
-		// コンストラクター
+		// プログラマーが使うべき引数付きコンストラクター
+		// --------------------------------------------------------------------
+		public FolderSettingsWindowViewModel(String folderPath)
+		{
+			Debug.Assert(folderPath[^1] != '\\', "FolderSettingsWindowViewModel() folderPath ends '\\'");
+			FolderPath = folderPath;
+			SettingsToProperties();
+			CompositeDisposable.Add(_semaphoreSlim);
+		}
+
+		// --------------------------------------------------------------------
+		// ダミーコンストラクター（TransitionMessage で使われる）
 		// --------------------------------------------------------------------
 		public FolderSettingsWindowViewModel()
 		{
-			CompositeDisposable.Add(_semaphoreSlim);
+			FolderPath = String.Empty;
 		}
 
 		// ====================================================================
@@ -64,19 +75,8 @@ namespace YukaLister.ViewModels
 		// View 通信用のプロパティー
 		// --------------------------------------------------------------------
 
-		// 設定対象フォルダーのパス
-		private String _targetPath = String.Empty;
-		public String TargetPath
-		{
-			get => _targetPath;
-			set
-			{
-				if (RaisePropertyChangedIfSet(ref _targetPath, value))
-				{
-					SettingsToProperties();
-				}
-			}
-		}
+		// 設定対象フォルダーのパス（末尾は '\\' ではない）
+		public String FolderPath { get; }
 
 		// 設定ファイルの状態
 		private FolderSettingsStatus _settingsFileStatus;
@@ -295,10 +295,10 @@ namespace YukaLister.ViewModels
 			{
 				if (RaisePropertyChangedIfSet(ref _isExcluded, value))
 				{
-					if (!String.IsNullOrEmpty(TargetPath))
+					if (!String.IsNullOrEmpty(FolderPath))
 					{
 						// _isExcluded が除外ファイルの状態と異なる場合は変更フラグをセット
-						FolderExcludeSettingsStatus folderExcludeSettingsStatus = YlCommon.DetectFolderExcludeSettingsStatus(TargetPath);
+						FolderExcludeSettingsStatus folderExcludeSettingsStatus = YlCommon.DetectFolderExcludeSettingsStatus(FolderPath);
 						_isDirty |= (folderExcludeSettingsStatus != FolderExcludeSettingsStatus.False) != _isExcluded;
 					}
 
@@ -787,10 +787,8 @@ namespace YukaLister.ViewModels
 					return;
 				}
 
-				using EditMusicInfoWindowViewModel editMusicInfoWindowViewModel = new();
-				//String aPath = PathExLen + "\\" + SelectedPreviewInfo.FileName;
-				//editMusicInfoWindowViewModel.PathExLen = aPath;
-				//editMusicInfoWindowViewModel.DicByFile = YlCommon.DicByFile(aPath);
+				String filePath = FolderPath + "\\" + SelectedPreviewInfo.FileName;
+				using EditMusicInfoWindowViewModel editMusicInfoWindowViewModel = new(filePath, YlCommon.DicByFile(filePath));
 				Messenger.Raise(new TransitionMessage(editMusicInfoWindowViewModel, YlConstants.MESSAGE_KEY_OPEN_EDIT_MUSIC_INFO_WINDOW));
 			}
 			catch (Exception excep)
@@ -937,8 +935,8 @@ namespace YukaLister.ViewModels
 					return;
 				}
 
-				YlCommon.DeleteFileIfExists(TargetPath + "\\" + YlConstants.FILE_NAME_YUKA_LISTER_CONFIG);
-				YlCommon.DeleteFileIfExists(TargetPath + "\\" + YlConstants.FILE_NAME_YUKA_LISTER_EXCLUDE_CONFIG);
+				YlCommon.DeleteFileIfExists(FolderPath + "\\" + YlConstants.FILE_NAME_YUKA_LISTER_CONFIG);
+				YlCommon.DeleteFileIfExists(FolderPath + "\\" + YlConstants.FILE_NAME_YUKA_LISTER_EXCLUDE_CONFIG);
 
 				// UI に反映
 				SettingsToProperties();
@@ -1029,7 +1027,7 @@ namespace YukaLister.ViewModels
 				SelectedFolderNameRuleName = FolderNameRuleNames[0];
 
 				// リスナーに通知
-				RaisePropertyChanged(nameof(TargetPath));
+				//RaisePropertyChanged(nameof(FolderPath));
 				RaisePropertyChanged(nameof(ContextMenuButtonVarItems));
 				RaisePropertyChanged(nameof(FolderNameRuleNames));
 			}
@@ -1140,9 +1138,9 @@ namespace YukaLister.ViewModels
 				PreviewInfo previewInfo = new();
 				previewInfo.FileName = Path.GetFileName(filePath);
 				previewInfo.LastWriteTime = JulianDay.DateTimeToModifiedJulianDate(new FileInfo(filePath).LastWriteTime);
-				if (folderPath.Length > TargetPath.Length)
+				if (folderPath.Length > FolderPath.Length)
 				{
-					previewInfo.SubFolder = folderPath.Substring(TargetPath.Length + 1);
+					previewInfo.SubFolder = folderPath.Substring(FolderPath.Length + 1);
 				}
 
 				// 項目と値
@@ -1397,7 +1395,7 @@ namespace YukaLister.ViewModels
 			}
 
 			// マッチ準備
-			FolderSettingsInDisk folderSettingsInDisk = YlCommon.LoadFolderSettings2Ex(TargetPath);
+			FolderSettingsInDisk folderSettingsInDisk = YlCommon.LoadFolderSettings2Ex(FolderPath);
 			FolderSettingsInMemory folderSettingsInMemory = YlCommon.CreateFolderSettingsInMemory(folderSettingsInDisk);
 			using MusicInfoContext musicInfoContext = MusicInfoContext.CreateContext(out DbSet<TProperty> properties,
 					out DbSet<TSong> songs, out DbSet<TPerson> people, out DbSet<TTieUp> tieUps, out DbSet<TCategory> categories,
@@ -1515,7 +1513,7 @@ namespace YukaLister.ViewModels
 		// --------------------------------------------------------------------
 		private void SaveFolderSettingsInDisk(FolderSettingsInDisk folderSettings)
 		{
-			String yukaListerConfigPath = TargetPath + "\\" + YlConstants.FILE_NAME_YUKA_LISTER_CONFIG;
+			String yukaListerConfigPath = FolderPath + "\\" + YlConstants.FILE_NAME_YUKA_LISTER_CONFIG;
 			FileAttributes prevAttr = YlCommon.DeleteFileIfExists(yukaListerConfigPath);
 			Common.Serialize(yukaListerConfigPath, folderSettings);
 			if (prevAttr != 0)
@@ -1576,7 +1574,7 @@ namespace YukaLister.ViewModels
 			// 保存（タグを環境設定に）
 			List<String> folderNameRulesList = FolderNameRules.ToList();
 			Int32 tagIndex = FindTagRule(folderNameRulesList);
-			String? tagKey = YlCommon.WithoutDriveLetter(TargetPath);
+			String? tagKey = YlCommon.WithoutDriveLetter(FolderPath);
 			if (!String.IsNullOrEmpty(tagKey))
 			{
 				if (tagIndex >= 0)
@@ -1593,7 +1591,7 @@ namespace YukaLister.ViewModels
 			YukaListerModel.Instance.EnvModel.TagSettings.Save();
 
 			// 保存（除外設定）
-			String yukaListerExcludeConfigPath = TargetPath + "\\" + YlConstants.FILE_NAME_YUKA_LISTER_EXCLUDE_CONFIG;
+			String yukaListerExcludeConfigPath = FolderPath + "\\" + YlConstants.FILE_NAME_YUKA_LISTER_EXCLUDE_CONFIG;
 			if (IsExcluded)
 			{
 				if (!File.Exists(yukaListerExcludeConfigPath))
@@ -1607,7 +1605,7 @@ namespace YukaLister.ViewModels
 			}
 
 			// 設定ファイルの状態
-			SettingsFileStatus = YlCommon.DetectFolderSettingsStatus2Ex(TargetPath);
+			SettingsFileStatus = YlCommon.DetectFolderSettingsStatus2Ex(FolderPath);
 
 			_isDirty = false;
 		}
@@ -1700,10 +1698,10 @@ namespace YukaLister.ViewModels
 			try
 			{
 				// 設定ファイルの状態
-				SettingsFileStatus = YlCommon.DetectFolderSettingsStatus2Ex(TargetPath);
+				SettingsFileStatus = YlCommon.DetectFolderSettingsStatus2Ex(FolderPath);
 
 				// 読み込み
-				FolderSettingsInDisk settings = YlCommon.LoadFolderSettings2Ex(TargetPath);
+				FolderSettingsInDisk settings = YlCommon.LoadFolderSettings2Ex(FolderPath);
 
 				// 設定反映
 				FileNameRules.Clear();
@@ -1718,14 +1716,14 @@ namespace YukaLister.ViewModels
 				}
 
 				// タグ設定
-				String tagKey = YlCommon.WithoutDriveLetter(TargetPath);
+				String tagKey = YlCommon.WithoutDriveLetter(FolderPath);
 				if (YukaListerModel.Instance.EnvModel.TagSettings.FolderTags.ContainsKey(tagKey))
 				{
 					FolderNameRules.Add(WrapVarName(YlConstants.RULE_VAR_TAG) + "=" + YukaListerModel.Instance.EnvModel.TagSettings.FolderTags[tagKey]);
 				}
 
 				// 除外設定
-				IsExcluded = YlCommon.DetectFolderExcludeSettingsStatus(TargetPath) == FolderExcludeSettingsStatus.True;
+				IsExcluded = YlCommon.DetectFolderExcludeSettingsStatus(FolderPath) == FolderExcludeSettingsStatus.True;
 			}
 			catch (Exception excep)
 			{
@@ -1804,7 +1802,7 @@ namespace YukaLister.ViewModels
 				ButtonJumpClickedCommand.RaiseCanExecuteChanged();
 
 				// 追加
-				AddPreviewInfos(TargetPath);
+				AddPreviewInfos(FolderPath);
 
 				// 結果
 				if (PreviewInfos.Count == 0)

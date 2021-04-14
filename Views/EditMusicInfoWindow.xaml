@@ -40,7 +40,7 @@
     <StackPanel>
         <StackPanel Margin="20,15,20,0" Orientation="Horizontal">
             <Label Content="ファイル名等から取得した名称が間違っている場合でも楽曲情報データベースを適用できるようにします。" HorizontalAlignment="Left" Margin="0" VerticalAlignment="Center"/>
-            <Label x:Name="LabelHelp" Grid.Column="1" Margin="0" VerticalAlignment="Center" HorizontalAlignment="Left">
+            <Label Grid.Column="1" Margin="0" VerticalAlignment="Center" HorizontalAlignment="Left">
                 <Hyperlink Command="{Binding HelpClickedCommand}" CommandParameter="NamaewoSoroeru" >
                     <TextBlock Text="詳細情報" />
                 </Hyperlink>
@@ -48,7 +48,7 @@
         </StackPanel>
         <StackPanel Orientation="Horizontal" Margin="20,5,20,0">
             <Label Content="ファイル名：" Margin="0" HorizontalAlignment="Left"/>
-            <Label x:Name="LabelPath" Margin="0" HorizontalAlignment="Left">
+            <Label Margin="0" HorizontalAlignment="Left">
                 <ContentPresenter  RecognizesAccessKey="False" Content="{Binding FileName}" ></ContentPresenter>
             </Label>
         </StackPanel>
@@ -68,8 +68,8 @@
                         <ColumnDefinition Width="210"/>
                     </Grid.ColumnDefinitions>
                     <Label Content="タイアップ名：" Margin="0" HorizontalAlignment="Right" Grid.Row="1"/>
-                    <Label x:Name="LabelTieUpName" Content="{Binding DicByFile[program]}" Margin="0" Grid.Row="1" Grid.Column="1"/>
-                    <Label x:Name="LabelTieUpNameRegistered" Margin="0" Grid.Row="2" Grid.Column="1">
+                    <Label Content="{Binding DicByFile[program]}" Margin="0" Grid.Row="1" Grid.Column="1"/>
+                    <Label Margin="0" Grid.Row="2" Grid.Column="1">
                         <Label.Style>
                             <Style TargetType="{x:Type Label}">
                                 <Style.Triggers>
@@ -86,8 +86,8 @@
                         </Label.Style>
                     </Label>
                     <Label Content="楽曲名：" Margin="0" HorizontalAlignment="Right" Grid.Row="4"/>
-                    <Label x:Name="LabelSongName" Content="{Binding DicByFile[title]}" Margin="0" Grid.Row="4" Grid.Column="1"/>
-                    <Label x:Name="LabelSongNameRegistered" Margin="0" Grid.Row="5" Grid.Column="1">
+                    <Label Content="{Binding DicByFile[title]}" Margin="0" Grid.Row="4" Grid.Column="1"/>
+                    <Label Margin="0" Grid.Row="5" Grid.Column="1">
                         <Label.Style>
                             <Style TargetType="{x:Type Label}">
                                 <Style.Triggers>
@@ -120,14 +120,14 @@
                         <ColumnDefinition Width="70"/>
                         <ColumnDefinition Width="210"/>
                     </Grid.ColumnDefinitions>
-                    <CheckBox x:Name="CheckBoxUseTieUpAlias" Content="タイアップ名を揃える" Grid.ColumnSpan="3" IsChecked="{Binding UseTieUpAlias}" />
+                    <CheckBox Content="タイアップ名を揃える" Grid.ColumnSpan="3" IsChecked="{Binding UseTieUpAlias}" />
                     <Label Content="正式名称：" Margin="0" HorizontalAlignment="Right" Grid.Row="1"/>
-                    <Button x:Name="ButtonSearchTieUpOrigin" Content="検索" Grid.Row="1" Grid.Column="1" Height="Auto" FontSize="12" Padding="2" Style="{StaticResource MaterialDesignRaisedLightButton}" Margin="0,5,5,5" Command="{Binding ButtonSearchTieUpOriginClickedCommand}"/>
-                    <Label x:Name="LabelTieUpOrigin" Content="{Binding TieUpOrigin}" Margin="0" Grid.Row="1" Grid.Column="2"/>
-                    <CheckBox x:Name="CheckBoxUseSongAlias" Content="楽曲名を揃える" Grid.Row="3" Grid.ColumnSpan="3" IsChecked="{Binding UseSongAlias}" />
+                    <Button Content="検索" Grid.Row="1" Grid.Column="1" Height="Auto" FontSize="12" Padding="2" Style="{StaticResource MaterialDesignRaisedLightButton}" Margin="0,5,5,5" Command="{Binding ButtonSearchTieUpOriginClickedCommand}"/>
+                    <Label Content="{Binding TieUpOrigin}" Margin="0" Grid.Row="1" Grid.Column="2"/>
+                    <CheckBox Content="楽曲名を揃える" Grid.Row="3" Grid.ColumnSpan="3" IsChecked="{Binding UseSongAlias}" />
                     <Label Content="正式名称：" Margin="0" HorizontalAlignment="Right" Grid.Row="4"/>
-                    <Button x:Name="ButtonSearchSongOrigin" Content="検索" Grid.Row="4" Grid.Column="1" Height="Auto" FontSize="12" Padding="2" Style="{StaticResource MaterialDesignRaisedLightButton}" Margin="0,5,5,5" Command="{Binding ButtonSearchSongOriginClickedCommand}"/>
-                    <Label x:Name="LabelSongOrigin" Content="{Binding SongOrigin}" Margin="0" Grid.Row="4" Grid.Column="2"/>
+                    <Button Content="検索" Grid.Row="4" Grid.Column="1" Height="Auto" FontSize="12" Padding="2" Style="{StaticResource MaterialDesignRaisedLightButton}" Margin="0,5,5,5" Command="{Binding ButtonSearchSongOriginClickedCommand}"/>
+                    <Label Content="{Binding SongOrigin}" Margin="0" Grid.Row="4" Grid.Column="2"/>
                 </Grid>
             </GroupBox>
             <GroupBox Header="データベース編集" Padding="5" Margin="10,0,0,0" materialDesign:ColorZoneAssist.Mode="SecondaryMid" >
@@ -143,8 +143,8 @@
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="130"/>
                     </Grid.ColumnDefinitions>
-                    <Button x:Name="ButtonEditTieUp" Content="タイアップ詳細編集" Grid.Row="1" Height="20" FontSize="12" Padding="2" Margin="5,0" Style="{StaticResource MaterialDesignRaisedLightButton}" Command="{Binding ButtonEditTieUpClickedCommand}"/>
-                    <Button x:Name="ButtonEditSong" Content="楽曲詳細編集" Grid.Row="4" Height="20" FontSize="12" Padding="2" Margin="5,0" Style="{StaticResource MaterialDesignRaisedLightButton}" Command="{Binding ButtonEditSongClickedCommand}"/>
+                    <Button Content="タイアップ詳細編集" Grid.Row="1" Height="20" FontSize="12" Padding="2" Margin="5,0" Style="{StaticResource MaterialDesignRaisedLightButton}" Command="{Binding ButtonEditTieUpClickedCommand}"/>
+                    <Button Content="楽曲詳細編集" Grid.Row="4" Height="20" FontSize="12" Padding="2" Margin="5,0" Style="{StaticResource MaterialDesignRaisedLightButton}" Command="{Binding ButtonEditSongClickedCommand}"/>
                 </Grid>
             </GroupBox>
         </StackPanel>
@@ -171,8 +171,8 @@
             <Label Content="※ファイル名等から取得したタイアップ名と、リスト出力されるタイアップ名が異なる場合、楽曲名に紐付くタイアップ名が優先されています。" Foreground="Gray" />
         </StackPanel>
         <StackPanel Margin="20" Orientation="Horizontal" FlowDirection="RightToLeft">
-            <Button x:Name="ButtonCancel" Content="キャンセル" Margin="0" Height="Auto" Style="{StaticResource MaterialDesignRaisedLightButton}" IsCancel="True" Width="100" DockPanel.Dock="Right" Padding="4"/>
-            <Button x:Name="ButtonOk" Content="OK" Margin="20,0,0,0" Height="Auto" IsDefault="True" Width="100" DockPanel.Dock="Right" Command="{Binding ButtonOkClickedCommand}"/>
+            <Button Content="キャンセル" Margin="0" Height="Auto" Style="{StaticResource MaterialDesignRaisedLightButton}" IsCancel="True" Width="100" DockPanel.Dock="Right" Padding="4"/>
+            <Button Content="OK" Margin="20,0,0,0" Height="Auto" IsDefault="True" Width="100" DockPanel.Dock="Right" Command="{Binding ButtonOkClickedCommand}"/>
         </StackPanel>
     </StackPanel>
 

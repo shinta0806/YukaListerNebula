@@ -9,9 +9,12 @@
 // ----------------------------------------------------------------------------
 
 using System;
+
 using System.Diagnostics;
+using System.IO;
 using System.Threading;
 using System.Windows.Media;
+
 using YukaLister.Models.YukaListerModels;
 
 namespace YukaLister.Models.SharedMisc
@@ -28,11 +31,11 @@ namespace YukaLister.Models.SharedMisc
 		public TargetFolderInfo(String parentPath)
 		{
 			// 引数
-			ParentPath = parentPath;
+			ParentPath = parentPath.TrimEnd('\\');
 
 			// 自動設定
-			Path = ParentPath;
-			PathLabel = ParentPath;
+			TargetPath = ParentPath;
+			TargetPathLabel = ParentPath;
 			Level = 0;
 			FolderTaskKind = FolderTaskKind.Add;
 			_folderTaskDetail = (Int32)FolderTaskDetail.CacheToDisk;
@@ -44,20 +47,22 @@ namespace YukaLister.Models.SharedMisc
 		// --------------------------------------------------------------------
 		// コンストラクター（子フォルダー追加用）
 		// --------------------------------------------------------------------
-		public TargetFolderInfo(String parentPath, String path, Int32 level)
+		public TargetFolderInfo(String parentPath, String targetPath, Int32 level)
 		{
 			Debug.Assert(level > 0, "TargetFolderInfo() bad level");
+			Debug.Assert(parentPath[^1] != '\\', "TargetFolderInfo() parentPath ends '\\'");
+			Debug.Assert(targetPath[^1] != '\\', "TargetFolderInfo() path ends '\\'");
 
 			// 引数
 			//VolumeSerialNumber = volumeSerialNumber;
 			ParentPath = parentPath;
-			Path = path;
+			TargetPath = targetPath;
 			Level = level;
 
 			// 自動設定
 			FolderTaskKind = FolderTaskKind.Add;
 			_folderTaskDetail = (Int32)FolderTaskDetail.AddFileNames;
-			PathLabel = System.IO.Path.GetFileName(Path);
+			TargetPathLabel = Path.GetFileName(TargetPath);
 		}
 
 		// ====================================================================
@@ -71,10 +76,10 @@ namespace YukaLister.Models.SharedMisc
 		// public プロパティー
 		// ====================================================================
 
-		// フォルダーパス
-		public String Path { get; }
+		// 対象フォルダーパス（末尾は '\\' ではない）
+		public String TargetPath { get; }
 
-		// 親フォルダーのパス（ソート用）（親の場合は Path と同じ値にすること）
+		// 親フォルダーのパス（削除用）（親の場合は TargetPath と同じ値にすること）（末尾は '\\' ではない）
 		public String ParentPath { get; }
 
 		// 親フォルダーからの深さ（親フォルダーは 0）
@@ -114,9 +119,6 @@ namespace YukaLister.Models.SharedMisc
 			}
 		}
 
-		// ボリュームシリアル番号とセパレーター
-		//public String VolumeSerialNumber { get; set; }
-
 		// キャッシュ DB からディスク DB へコピーにコピー済かどうか
 		// 親でない場合は、常に親フォルダーの IsCacheUsed と同じ値とする
 		public Boolean IsCacheUsed { get; set; }
@@ -142,7 +144,7 @@ namespace YukaLister.Models.SharedMisc
 			{
 				if (_folderExcludeSettingsStatus == FolderExcludeSettingsStatus.Unchecked)
 				{
-					_folderExcludeSettingsStatus = YlCommon.DetectFolderExcludeSettingsStatus(Path);
+					_folderExcludeSettingsStatus = YlCommon.DetectFolderExcludeSettingsStatus(TargetPath);
 				}
 				return _folderExcludeSettingsStatus;
 			}
@@ -157,7 +159,7 @@ namespace YukaLister.Models.SharedMisc
 			{
 				if (_folderSettingsStatus == FolderSettingsStatus.Unchecked)
 				{
-					_folderSettingsStatus = YlCommon.DetectFolderSettingsStatus2Ex(Path);
+					_folderSettingsStatus = YlCommon.DetectFolderSettingsStatus2Ex(TargetPath);
 				}
 				return _folderSettingsStatus;
 			}
@@ -174,7 +176,7 @@ namespace YukaLister.Models.SharedMisc
 		}
 
 		// 表示用：パス
-		public String PathLabel { get; }
+		public String TargetPathLabel { get; }
 
 		// 表示用：フォルダー設定の状態
 		public String FolderSettingsStatusLabel
@@ -245,7 +247,7 @@ namespace YukaLister.Models.SharedMisc
 				case FolderTaskStatus.Queued:
 					if (IsCacheUsed)
 					{
-						if(FolderTaskDetail == FolderTaskDetail.Remove)
+						if (FolderTaskDetail == FolderTaskDetail.Remove)
 						{
 							label = "削除予定";
 						}

@@ -158,6 +158,28 @@ namespace YukaLister.Models.DatabaseContexts
 		// データベースコンテキスト生成
 		// ＜例外＞ Exception
 		// --------------------------------------------------------------------
+		public static MusicInfoContext CreateContext(out DbSet<TSong> songs)
+		{
+			MusicInfoContext musicInfoContext = new();
+			GetDbSet(musicInfoContext, out songs);
+			return musicInfoContext;
+		}
+
+		// --------------------------------------------------------------------
+		// データベースコンテキスト生成
+		// ＜例外＞ Exception
+		// --------------------------------------------------------------------
+		public static MusicInfoContext CreateContext(out DbSet<TTieUp> tieUps)
+		{
+			MusicInfoContext musicInfoContext = new();
+			GetDbSet(musicInfoContext, out tieUps);
+			return musicInfoContext;
+		}
+
+		// --------------------------------------------------------------------
+		// データベースコンテキスト生成
+		// ＜例外＞ Exception
+		// --------------------------------------------------------------------
 		public static MusicInfoContext CreateContext(out DbSet<TCategory> categories)
 		{
 			MusicInfoContext musicInfoContext = new();

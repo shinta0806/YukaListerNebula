@@ -293,13 +293,12 @@ namespace YukaLister.ViewModels
 					return;
 				}
 
-				using FolderSettingsWindowViewModel folderSettingsWindowViewModel = new();
-				folderSettingsWindowViewModel.TargetPath = SelectedTargetFolderInfo.Path;
+				using FolderSettingsWindowViewModel folderSettingsWindowViewModel = new(SelectedTargetFolderInfo.TargetPath);
 				Messenger.Raise(new TransitionMessage(folderSettingsWindowViewModel, YlConstants.MESSAGE_KEY_OPEN_FOLDER_SETTINGS_WINDOW));
 
 				// フォルダー設定の有無の表示を更新
 				// キャンセルでも実行（設定削除→キャンセルの場合はフォルダー設定の有無が変わる）
-				YukaListerModel.Instance.ProjModel.SetFolderSettingsStatusToUnchecked(SelectedTargetFolderInfo.Path);
+				YukaListerModel.Instance.ProjModel.SetFolderSettingsStatusToUnchecked(SelectedTargetFolderInfo.TargetPath);
 				UpdateDataGrid();
 
 #if false
@@ -880,7 +879,7 @@ namespace YukaLister.ViewModels
 								FolderTaskDetail.AddInfos => YlConstants.RUNNING_ADD_INFOS,
 								FolderTaskDetail.Remove => YlConstants.RUNNING_REMOVE,
 								_ => String.Empty,
-							} + "...\n" + targetFolderInfo.Path;
+							} + "...\n" + targetFolderInfo.TargetPath;
 						}
 					}
 					break;

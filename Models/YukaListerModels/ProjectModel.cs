@@ -91,6 +91,9 @@ namespace YukaLister.Models.YukaListerModels
 				}
 
 				// 親の追加
+#if DEBUGz
+				parentFolder += "\\\\";
+#endif
 				TargetFolderInfo targetFolderInfo = new(parentFolder);
 				lock (_targetFolderInfos)
 				{
@@ -114,7 +117,7 @@ namespace YukaLister.Models.YukaListerModels
 		{
 			lock (_targetFolderInfos)
 			{
-				Int32 parentIndex = IndexOfTargetFolderInfoWithoutLock(parentFolder.Path);
+				Int32 parentIndex = IndexOfTargetFolderInfoWithoutLock(parentFolder.TargetPath);
 				if (parentIndex < 0)
 				{
 					return;
@@ -146,7 +149,7 @@ namespace YukaLister.Models.YukaListerModels
 			{
 				for (Int32 i = 0; i < folders.Count; i++)
 				{
-					if (IndexOfTargetFolderInfoWithoutLock(folders[i].Path) >= 0)
+					if (IndexOfTargetFolderInfoWithoutLock(folders[i].TargetPath) >= 0)
 					{
 						return true;
 					}
@@ -220,13 +223,13 @@ namespace YukaLister.Models.YukaListerModels
 			List<TargetFolderInfo> removeTargets;
 			lock (_targetFolderInfos)
 			{
-				removeTargets = _targetFolderInfos.Where(x => x.IsParent && x.Path.StartsWith(driveLetter, StringComparison.OrdinalIgnoreCase)).ToList();
+				removeTargets = _targetFolderInfos.Where(x => x.IsParent && x.TargetPath.StartsWith(driveLetter, StringComparison.OrdinalIgnoreCase)).ToList();
 			}
 
 			Boolean result = false;
 			foreach (TargetFolderInfo removeTarget in removeTargets)
 			{
-				result |= SetFolderTaskDetailOfFolderToRemove(removeTarget.Path);
+				result |= SetFolderTaskDetailOfFolderToRemove(removeTarget.TargetPath);
 			}
 			return result;
 		}
@@ -297,7 +300,7 @@ namespace YukaLister.Models.YukaListerModels
 		{
 			lock (_targetFolderInfos)
 			{
-				Int32 parentIndex = IndexOfTargetFolderInfoWithoutLock(parentFolder.Path);
+				Int32 parentIndex = IndexOfTargetFolderInfoWithoutLock(parentFolder.TargetPath);
 				if (parentIndex < 0)
 				{
 					return;
@@ -347,10 +350,10 @@ namespace YukaLister.Models.YukaListerModels
 			lock (_targetFolderInfos)
 			{
 				IEnumerable<TargetFolderInfo> targets
-						= _targetFolderInfos.Where(x => x.IsParent && x.FolderTaskKind == FolderTaskKind.Add && x.Path.StartsWith(driveLetter, StringComparison.OrdinalIgnoreCase));
+						= _targetFolderInfos.Where(x => x.IsParent && x.FolderTaskKind == FolderTaskKind.Add && x.TargetPath.StartsWith(driveLetter, StringComparison.OrdinalIgnoreCase));
 				foreach (TargetFolderInfo target in targets)
 				{
-					autoTargetInfo.Folders.Add(YlCommon.WithoutDriveLetter(target.Path));
+					autoTargetInfo.Folders.Add(YlCommon.WithoutDriveLetter(target.TargetPath));
 				}
 			}
 			autoTargetInfo.Folders.Sort();
@@ -378,7 +381,7 @@ namespace YukaLister.Models.YukaListerModels
 			Debug.Assert(Monitor.IsEntered(_targetFolderInfos), "IndexOfTargetFolderInfoWithoutLock() not locked");
 			for (Int32 i = 0; i < _targetFolderInfos.Count; i++)
 			{
-				if (YlCommon.IsSamePath(path, _targetFolderInfos[i].Path))
+				if (YlCommon.IsSamePath(path, _targetFolderInfos[i].TargetPath))
 				{
 					return i;
 				}

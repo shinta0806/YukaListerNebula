@@ -214,7 +214,7 @@ namespace YukaLister.Models.YukaListerCores
 		private void AddFileNamesCore(TargetFolderInfo targetFolderInfo)
 		{
 			// フォルダー除外設定を読み込む
-			if (YlCommon.DetectFolderExcludeSettingsStatus(targetFolderInfo.Path) == FolderExcludeSettingsStatus.True)
+			if (YlCommon.DetectFolderExcludeSettingsStatus(targetFolderInfo.TargetPath) == FolderExcludeSettingsStatus.True)
 			{
 				return;
 			}
@@ -227,7 +227,7 @@ namespace YukaLister.Models.YukaListerCores
 			String[] allPathes;
 			try
 			{
-				allPathes = Directory.GetFiles(targetFolderInfo.Path);
+				allPathes = Directory.GetFiles(targetFolderInfo.TargetPath);
 			}
 			catch (Exception)
 			{
@@ -269,7 +269,7 @@ namespace YukaLister.Models.YukaListerCores
 				using ListContextInDisk listContextInDisk = ListContextInDisk.CreateContext(out DbSet<TFound> diskFounds);
 				diskFounds.AddRange(addRecords);
 				listContextInDisk.SaveChanges();
-				YukaListerModel.Instance.EnvModel.LogWriter.LogMessage(Common.TRACE_EVENT_TYPE_STATUS, "ゆかり用リストデータベースにファイル名を追加しました。" + targetFolderInfo.Path);
+				YukaListerModel.Instance.EnvModel.LogWriter.LogMessage(Common.TRACE_EVENT_TYPE_STATUS, "ゆかり用リストデータベースにファイル名を追加しました。" + targetFolderInfo.TargetPath);
 			}
 		}
 
@@ -280,7 +280,7 @@ namespace YukaLister.Models.YukaListerCores
 		{
 			try
 			{
-				String tagKey = YlCommon.WithoutDriveLetter(targetFolderInfo.Path);
+				String tagKey = YlCommon.WithoutDriveLetter(targetFolderInfo.TargetPath);
 				if (!YukaListerModel.Instance.EnvModel.TagSettings.FolderTags.ContainsKey(tagKey))
 				{
 					return;
@@ -370,7 +370,7 @@ namespace YukaLister.Models.YukaListerCores
 		{
 			// 動作状況設定
 			SetFolderTaskStatus(targetFolderInfo, FolderTaskStatus.Running);
-			YukaListerModel.Instance.EnvModel.LogWriter.LogMessage(Common.TRACE_EVENT_TYPE_STATUS, "属性確認中... " + targetFolderInfo.Path);
+			YukaListerModel.Instance.EnvModel.LogWriter.LogMessage(Common.TRACE_EVENT_TYPE_STATUS, "属性確認中... " + targetFolderInfo.TargetPath);
 
 			// 作業
 			AddInfosCore(targetFolderInfo);
@@ -391,7 +391,7 @@ namespace YukaLister.Models.YukaListerCores
 		private void AddInfosCore(TargetFolderInfo targetFolderInfo)
 		{
 			// フォルダー設定を読み込む
-			FolderSettingsInDisk folderSettingsInDisk = YlCommon.LoadFolderSettings2Ex(targetFolderInfo.Path);
+			FolderSettingsInDisk folderSettingsInDisk = YlCommon.LoadFolderSettings2Ex(targetFolderInfo.TargetPath);
 			FolderSettingsInMemory folderSettingsInMemory = YlCommon.CreateFolderSettingsInMemory(folderSettingsInDisk);
 
 			using ListContextInMemory listContextInMemory = ListContextInMemory.CreateContext(out DbSet<TFound> founds,
@@ -400,7 +400,7 @@ namespace YukaLister.Models.YukaListerCores
 			using TFoundSetter foundSetter = new(listContextInMemory, founds, people, artistSequences, composerSequences, tags, tagSequences);
 
 			// 指定フォルダーの全レコード
-			IQueryable<TFound> targetRecords = founds.Where(x => x.Folder == targetFolderInfo.Path);
+			IQueryable<TFound> targetRecords = founds.Where(x => x.Folder == targetFolderInfo.TargetPath);
 
 			// 情報付与
 			foreach (TFound record in targetRecords)
@@ -441,20 +441,20 @@ namespace YukaLister.Models.YukaListerCores
 		// --------------------------------------------------------------------
 		private void CacheToDiskCore(TargetFolderInfo targetFolderInfo)
 		{
-			using CacheContext cacheContext = CacheContext.CreateContext(YlCommon.DriveLetter(targetFolderInfo.Path), out DbSet<TFound> cacheFounds);
-			IQueryable<TFound> cacheRecords = cacheFounds.Where(x => x.ParentFolder == targetFolderInfo.Path);
+			using CacheContext cacheContext = CacheContext.CreateContext(YlCommon.DriveLetter(targetFolderInfo.TargetPath), out DbSet<TFound> cacheFounds);
+			IQueryable<TFound> cacheRecords = cacheFounds.Where(x => x.ParentFolder == targetFolderInfo.TargetPath);
 			if (!cacheRecords.Any())
 			{
 				// キャッシュが見つからない場合、ドライブレター以外の部分で合致するか再度検索
-				cacheRecords = cacheFounds.Where(x => x.ParentFolder.Contains(targetFolderInfo.Path.Substring(1)));
+				cacheRecords = cacheFounds.Where(x => x.ParentFolder.Contains(targetFolderInfo.TargetPath.Substring(1)));
 				if (!cacheRecords.Any())
 				{
 					return;
 				}
 
-				YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, targetFolderInfo.Path
+				YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, targetFolderInfo.TargetPath
 						+ "\nキャッシュのドライブレターを変換しています...");
-				String drive = targetFolderInfo.Path[0..1];
+				String drive = targetFolderInfo.TargetPath[0..1];
 				foreach (TFound cacheRecord in cacheRecords)
 				{
 					cacheRecord.Path = drive + cacheRecord.Path.Substring(1);
@@ -467,7 +467,7 @@ namespace YukaLister.Models.YukaListerCores
 			diskFounds.AddRange(cacheRecords);
 			listContextInDisk.SaveChanges();
 			targetFolderInfo.IsCacheUsed = true;
-			YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, targetFolderInfo.Path
+			YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, targetFolderInfo.TargetPath
 					+ "\nキャッシュをゆかり用リストデータベースに反映しました。");
 #if DEBUGz
 			Thread.Sleep(30 * 1000);
@@ -487,7 +487,7 @@ namespace YukaLister.Models.YukaListerCores
 				// ごみ箱のようにアクセス権限の無いフォルダーの中も列挙しようとして例外が
 				// 発生し中断してしまう。
 				// 面倒だが 1 フォルダーずつ列挙する
-				String[] subFolderPathes = Directory.GetDirectories(parentFolder.Path, "*", SearchOption.TopDirectoryOnly);
+				String[] subFolderPathes = Directory.GetDirectories(parentFolder.TargetPath, "*", SearchOption.TopDirectoryOnly);
 				foreach (String subFolderPath in subFolderPathes)
 				{
 					// サブフォルダー追加
@@ -542,7 +542,7 @@ namespace YukaLister.Models.YukaListerCores
 			{
 				// 追加済みの親を削除
 				YukaListerModel.Instance.ProjModel.SetFolderTaskDetailOfFolderToRemove(targetFolderInfo.ParentPath);
-				YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(TraceEventType.Error, targetFolderInfo.Path
+				YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(TraceEventType.Error, targetFolderInfo.TargetPath
 						+ "\nのサブフォルダーが既に追加されています。\nサブフォルダーを一旦削除してから追加しなおして下さい。");
 				return;
 			}
@@ -555,7 +555,7 @@ namespace YukaLister.Models.YukaListerCores
 			targetFolderInfo.NumTotalFolders = 1 + subFolders.Count();
 
 			// その他
-			YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, targetFolderInfo.Path
+			YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, targetFolderInfo.TargetPath
 					+ "\n" + targetFolderInfo.NumTotalFolders + " 個のフォルダーをキューに追加しました。");
 		}
 
