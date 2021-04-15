@@ -25,6 +25,7 @@ using System.Linq;
 using System.Text;
 using YukaLister.Models;
 using YukaLister.Models.Database;
+using YukaLister.Models.Database.Aliases;
 using YukaLister.Models.Database.Masters;
 using YukaLister.Models.DatabaseContexts;
 using YukaLister.Models.SharedMisc;
@@ -619,13 +620,9 @@ namespace YukaLister.ViewModels
 		{
 			try
 			{
-#if false
-				String? aSongOriginalId;
-				String? aTieUpOriginalId;
-				CheckInput(out aSongOriginalId, out aTieUpOriginalId);
-				Save(aSongOriginalId, aTieUpOriginalId);
-				Messenger.Raise(new WindowActionMessage("Close"));
-#endif
+				(String? songOriginalId, String? tieUpOriginalId) = CheckInput();
+				Save(songOriginalId, tieUpOriginalId);
+				Messenger.Raise(new WindowActionMessage(YlConstants.MESSAGE_KEY_WINDOW_CLOSE));
 			}
 			catch (Exception excep)
 			{
@@ -659,6 +656,177 @@ namespace YukaLister.ViewModels
 		// ====================================================================
 		// private メンバー関数
 		// ====================================================================
+
+		// --------------------------------------------------------------------
+		// 入力値の確認（別名に関するもののみ）
+		// ＜例外＞ Exception
+		// --------------------------------------------------------------------
+		private (String? songOriginalId, String? tieUpOriginalId) CheckInput()
+		{
+			String? songOriginalId = null;
+			String? tieUpOriginalId = null;
+
+			// 楽曲別名
+			if (UseSongAlias)
+			{
+				if (String.IsNullOrEmpty(SongOrigin))
+				{
+					throw new Exception("楽曲名の正式名称を検索して指定して下さい。");
+				}
+				if (SongOrigin == _dicByFile[YlConstants.RULE_VAR_TITLE])
+				{
+					throw new Exception("ファイル名・フォルダー固定値から取得した楽曲名と正式名称が同じです。\n"
+							+ "楽曲名を揃えるのが不要の場合は、「楽曲名を揃える」のチェックを外して下さい。");
+				}
+				using MusicInfoContext musicInfoContext = MusicInfoContext.CreateContext(out DbSet<TSong> songs);
+				TSong? song = DbCommon.SelectMasterByName(songs, SongOrigin);
+				if (song == null)
+				{
+					throw new Exception("楽曲名の正式名称が正しく検索されていません。");
+				}
+				songOriginalId = song.Id;
+			}
+
+			// タイアップ別名
+			if (UseTieUpAlias)
+			{
+				if (String.IsNullOrEmpty(TieUpOrigin))
+				{
+					throw new Exception("タイアップ名の正式名称を検索して指定して下さい。");
+				}
+				if (TieUpOrigin == _dicByFile[YlConstants.RULE_VAR_PROGRAM])
+				{
+					throw new Exception("ファイル名・フォルダー固定値から取得したタイアップ名と正式名称が同じです。\n"
+							+ "タイアップ名を揃えるのが不要の場合は、「タイアップ名を揃える」のチェックを外して下さい。");
+				}
+				using MusicInfoContext musicInfoContext = MusicInfoContext.CreateContext(out DbSet<TTieUp> tieUps);
+				TTieUp? tieUp = DbCommon.SelectMasterByName(tieUps, TieUpOrigin);
+				if (tieUp == null)
+				{
+					throw new Exception("タイアップ名の正式名称が正しく検索されていません。");
+				}
+				tieUpOriginalId = tieUp.Id;
+			}
+
+			return (songOriginalId, tieUpOriginalId);
+		}
+
+		// --------------------------------------------------------------------
+		// 別名を保存
+		// --------------------------------------------------------------------
+		private void Save(String? songOriginalId, String? tieUpOriginalId)
+		{
+			//using (MusicInfoDatabaseInDisk aMusicInfoDbInDisk = new MusicInfoDatabaseInDisk(Environment!))
+			//using (DataContext aContext = new DataContext(aMusicInfoDbInDisk.Connection))
+
+			// 楽曲別名
+			if (!String.IsNullOrEmpty(_dicByFile[YlConstants.RULE_VAR_TITLE]))
+			{
+				using MusicInfoContext musicInfoContext = MusicInfoContext.CreateContext(out DbSet<TSongAlias> songAliases);
+				if (UseSongAlias && !String.IsNullOrEmpty(songOriginalId))
+				{
+					TSongAlias? songAlias = DbCommon.SelectAliasByAlias(songAliases, _dicByFile[YlConstants.RULE_VAR_TITLE], true);
+					TSongAlias aNewSongAlias = new TSongAlias
+					{
+						// TBase
+						Id = String.Empty,
+						Import = false,
+						Invalid = false,
+						UpdateTime = YlConstants.INVALID_MJD,
+						Dirty = true,
+
+						// TAlias
+						Alias = _dicByFile[YlConstants.RULE_VAR_TITLE]!,
+						OriginalId = songOriginalId,
+					};
+
+#if false
+					if (songAlias == null)
+					{
+						// 新規登録
+						YlCommon.InputIdPrefixIfNeededWithInvoke(this);
+						aNewSongAlias.Id = Environment!.YukaListerSettings.PrepareLastId(aMusicInfoDbInDisk.Connection, MusicInfoDbTables.TSongAlias);
+						aTableSongAlias.InsertOnSubmit(aNewSongAlias);
+						Environment.LogWriter.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, "楽曲別名テーブル新規登録：" + aNewSongAlias.Id + " / " + aNewSongAlias.Alias);
+					}
+					else if (YlCommon.IsRcAliasUpdated(aSongAliases[0], aNewSongAlias))
+					{
+						// 更新（既存のレコードが無効化されている場合は有効化も行う）
+						aNewSongAlias.Id = aSongAliases[0].Id;
+						aNewSongAlias.UpdateTime = aSongAliases[0].UpdateTime;
+						Common.ShallowCopy(aNewSongAlias, aSongAliases[0]);
+						Environment!.LogWriter.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, "楽曲別名テーブル更新：" + aNewSongAlias.Id + " / " + aNewSongAlias.Alias);
+					}
+#endif
+				}
+				else
+				{
+#if false
+					List<TSongAlias> aSongAliases = YlCommon.SelectAliasesByAlias<TSongAlias>(aContext, DicByFile[YlConstants.RULE_VAR_TITLE]!, false);
+					if (aSongAliases.Count > 0)
+					{
+						// 無効化
+						aSongAliases[0].Invalid = true;
+						Environment!.LogWriter.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, "楽曲別名テーブル無効化：" + aSongAliases[0].Id + " / " + aSongAliases[0].Alias);
+					}
+#endif
+				}
+			}
+
+#if false
+				// タイアップ別名
+				if (!String.IsNullOrEmpty(DicByFile[YlConstants.RULE_VAR_PROGRAM]))
+			{
+				Table<TTieUpAlias> aTableTieUpAlias = aContext.GetTable<TTieUpAlias>();
+				if (UseTieUpAlias && !String.IsNullOrEmpty(tieUpOriginalId))
+				{
+					List<TTieUpAlias> aTieUpAliases = YlCommon.SelectAliasesByAlias<TTieUpAlias>(aContext, DicByFile[YlConstants.RULE_VAR_PROGRAM]!, true);
+					TTieUpAlias aNewTieUpAlias = new TTieUpAlias
+					{
+						// TBase
+						Id = null,
+						Import = false,
+						Invalid = false,
+						UpdateTime = YlConstants.INVALID_MJD,
+						Dirty = true,
+
+						// TAlias
+						Alias = DicByFile[YlConstants.RULE_VAR_PROGRAM],
+						OriginalId = tieUpOriginalId,
+					};
+
+					if (aTieUpAliases.Count == 0)
+					{
+						// 新規登録
+						YlCommon.InputIdPrefixIfNeededWithInvoke(this, Environment!);
+						aNewTieUpAlias.Id = Environment!.YukaListerSettings.PrepareLastId(aMusicInfoDbInDisk.Connection, MusicInfoDbTables.TTieUpAlias);
+						aTableTieUpAlias.InsertOnSubmit(aNewTieUpAlias);
+						Environment.LogWriter.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, "タイアップ別名テーブル新規登録：" + aNewTieUpAlias.Id + " / " + aNewTieUpAlias.Alias);
+					}
+					else if (YlCommon.IsRcAliasUpdated(aTieUpAliases[0], aNewTieUpAlias))
+					{
+						// 更新（既存のレコードが無効化されている場合は有効化も行う）
+						aNewTieUpAlias.Id = aTieUpAliases[0].Id;
+						aNewTieUpAlias.UpdateTime = aTieUpAliases[0].UpdateTime;
+						Common.ShallowCopy(aNewTieUpAlias, aTieUpAliases[0]);
+						Environment!.LogWriter.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, "タイアップ別名テーブル更新：" + aNewTieUpAlias.Id + " / " + aNewTieUpAlias.Alias);
+					}
+				}
+				else
+				{
+					List<TTieUpAlias> aTieUpAliases = YlCommon.SelectAliasesByAlias<TTieUpAlias>(aContext, DicByFile[YlConstants.RULE_VAR_PROGRAM]!, false);
+					if (aTieUpAliases.Count > 0)
+					{
+						// 無効化
+						aTieUpAliases[0].Invalid = true;
+						Environment!.LogWriter.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, "タイアップ別名テーブル無効化：" + aTieUpAliases[0].Id + " / " + aTieUpAliases[0].Alias);
+					}
+				}
+			}
+#endif
+
+			//aContext.SubmitChanges();
+		}
 
 		// --------------------------------------------------------------------
 		// リストに表示される項目を更新

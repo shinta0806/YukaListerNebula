@@ -1,0 +1,56 @@
+﻿<Window x:Class="YukaLister.Views.InputIdPrefixWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:behaviors="http://schemas.microsoft.com/xaml/behaviors"
+        xmlns:l="http://schemas.livet-mvvm.net/2011/wpf"
+        xmlns:msm="clr-namespace:YukaLister.Models.SharedMisc"
+        xmlns:sb="clr-namespace:Shinta.Behaviors"
+        xmlns:v="clr-namespace:YukaLister.Views"
+        xmlns:vm="clr-namespace:YukaLister.ViewModels"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="InputIdPrefixWindow" Height="350" Width="525">
+
+    <Window.DataContext>
+        <vm:InputIdPrefixWindowViewModel />
+    </Window.DataContext>
+
+    <behaviors:Interaction.Behaviors>
+        <sb:WindowBindingSupportBehavior IsCascade="True" MinimizeBox="False"/>
+    </behaviors:Interaction.Behaviors>
+
+    <behaviors:Interaction.Triggers>
+        <!-- When ContentRendered event raised, Initialize method of ViewModel would be called. -->
+        <behaviors:EventTrigger EventName="ContentRendered">
+            <l:LivetCallMethodAction MethodTarget="{Binding}" MethodName="Initialize" />
+        </behaviors:EventTrigger>
+
+        <!-- Dispose method is called, when Window closing. -->
+        <behaviors:EventTrigger EventName="Closed">
+            <l:DataContextDisposeAction />
+        </behaviors:EventTrigger>
+
+        <!-- If you make user choose 'OK or Cancel' closing Window, then please use Window Close cancel Behavior. -->
+
+        <l:InteractionMessageTrigger MessageKey="{x:Static msm:YlConstants.MESSAGE_KEY_WINDOW_CLOSE}" Messenger="{Binding Messenger}">
+            <l:WindowInteractionMessageAction InvokeActionOnlyWhenWindowIsActive="False" />
+        </l:InteractionMessageTrigger>
+
+    </behaviors:Interaction.Triggers>
+
+    <StackPanel>
+        <Label Content="各種 ID の先頭に付与する文字列を設定します。" Margin="20,15,0,0" HorizontalAlignment="Left"/>
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Margin="20,0,0,0">
+            <Label Content="お好きな文字列で構いませんが、パソコンごとに異なる文字列を指定してください。" VerticalAlignment="Center"/>
+            <Label x:Name="LabelHelp" Margin="0" HorizontalAlignment="Left">
+                <Hyperlink Command="{Binding HelpClickedCommand}" CommandParameter="IdSettouji" >
+                    <TextBlock Text="詳細情報" />
+                </Hyperlink>
+            </Label>
+        </StackPanel>
+        <TextBox x:Name="TextBoxIdPrefix" Text="{Binding IdPrefix, UpdateSourceTrigger=PropertyChanged}" Margin="20,10,20,0" Width="500" HorizontalAlignment="Left" sb:IsFocusedAttachedBehavior.IsFocused="{Binding IsIdPrefixFocused}"/>
+        <StackPanel Orientation="Horizontal" FlowDirection="RightToLeft" Margin="20">
+            <Button x:Name="ButtonCancel" Content="キャンセル" Height="Auto" Style="{StaticResource MaterialDesignRaisedLightButton}" IsCancel="True" Width="100" Padding="4"/>
+            <Button x:Name="ButtonOK" Content="OK" Margin="20,0,0,0" Height="Auto" IsDefault="True" Width="100" Command="{Binding ButtonOKClickedCommand}"/>
+        </StackPanel>
+    </StackPanel>
+
+</Window>

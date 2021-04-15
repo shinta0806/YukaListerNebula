@@ -8,6 +8,7 @@
 //
 // ----------------------------------------------------------------------------
 
+using Livet;
 using Shinta;
 
 using System;
@@ -41,6 +42,56 @@ namespace YukaLister.Models.SharedMisc
 			menuItem.Header = label;
 			menuItem.Click += click;
 			items.Add(menuItem);
+		}
+
+		// --------------------------------------------------------------------
+		// ID 接頭辞の正当性を確認
+		// ＜返値＞ 正規化後の ID 接頭辞
+		// ＜例外＞ Exception
+		// --------------------------------------------------------------------
+		public static String? CheckIdPrefix(String? idPrefix, Boolean isNullable)
+		{
+			idPrefix = NormalizeDbString(idPrefix);
+
+			if (isNullable && String.IsNullOrEmpty(idPrefix))
+			{
+				return null;
+			}
+
+			if (String.IsNullOrEmpty(idPrefix))
+			{
+				throw new Exception("各種 ID の先頭に付与する接頭辞を入力して下さい。");
+			}
+			if (idPrefix.Length > ID_PREFIX_MAX_LENGTH)
+			{
+				throw new Exception("各種 ID の先頭に付与する接頭辞は " + ID_PREFIX_MAX_LENGTH + "文字以下にして下さい。");
+			}
+			if (idPrefix.Contains('_'))
+			{
+				throw new Exception("各種 ID の先頭に付与する接頭辞に \"_\"（アンダースコア）は使えません。");
+			}
+			if (idPrefix.Contains(','))
+			{
+				throw new Exception("各種 ID の先頭に付与する接頭辞に \",\"（カンマ）は使えません。");
+			}
+			if (idPrefix.Contains(' '))
+			{
+				throw new Exception("各種 ID の先頭に付与する接頭辞に \" \"（スペース）は使えません。");
+			}
+			if (idPrefix.Contains('"'))
+			{
+				throw new Exception("各種 ID の先頭に付与する接頭辞に \"\"\"（ダブルクオート）は使えません。");
+			}
+			if (idPrefix.Contains('\\'))
+			{
+				throw new Exception("各種 ID の先頭に付与する接頭辞に \"\\\"（円マーク）は使えません。");
+			}
+			if (idPrefix.Contains('!'))
+			{
+				throw new Exception("各種 ID の先頭に付与する接頭辞に \"!\"（エクスクラメーション）は使えません。");
+			}
+
+			return idPrefix;
 		}
 
 		// --------------------------------------------------------------------
@@ -290,6 +341,34 @@ namespace YukaLister.Models.SharedMisc
 			}
 
 			return YlConstants.HEAD_MISC;
+		}
+
+		// --------------------------------------------------------------------
+		// ID 接頭辞が未設定ならばユーザーに入力してもらう
+		// ＜例外＞ OperationCanceledException
+		// --------------------------------------------------------------------
+		public static void InputIdPrefixIfNeededWithInvoke(ViewModel oViewModel)
+		{
+			if (!String.IsNullOrEmpty(YukaListerModel.Instance.EnvModel.YlSettings.IdPrefix))
+			{
+				return;
+			}
+
+			DispatcherHelper.UIDispatcher.Invoke(new Action(() =>
+			{
+#if false
+				using (InputIdPrefixWindowViewModel aInputIdPrefixWindowViewModel = new InputIdPrefixWindowViewModel())
+				{
+					aInputIdPrefixWindowViewModel.Environment = oEnvironment;
+					oViewModel.Messenger.Raise(new TransitionMessage(aInputIdPrefixWindowViewModel, "OpenInputIdPrefixWindow"));
+				}
+#endif
+			}));
+
+			if (String.IsNullOrEmpty(YukaListerModel.Instance.EnvModel.YlSettings.IdPrefix))
+			{
+				throw new OperationCanceledException();
+			}
 		}
 
 		// --------------------------------------------------------------------
@@ -572,6 +651,9 @@ namespace YukaLister.Models.SharedMisc
 		// --------------------------------------------------------------------
 		// その他
 		// --------------------------------------------------------------------
+
+		// ID 接頭辞の最大長（同期サーバーデータベースの都合上、ID のトータル長が UTF-8 で 255 バイト以下になるようにする）
+		private const Int32 ID_PREFIX_MAX_LENGTH = 20;
 
 		// 頭文字変換用
 		private const String HEAD_CONVERT_FROM = "ぁぃぅぇぉゕゖゃゅょゎゔがぎぐげござじずぜぞだぢづでどばびぶべぼぱぴぷぺぽゐゑ";

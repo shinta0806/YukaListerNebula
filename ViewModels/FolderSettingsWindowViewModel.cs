@@ -1834,6 +1834,5 @@ namespace YukaLister.ViewModels
 				return YlConstants.RULE_VAR_BEGIN + textInfo.ToTitleCase(varName) + YlConstants.RULE_VAR_END;
 			}
 		}
-
 	}
 }

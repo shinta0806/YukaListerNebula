@@ -37,6 +37,9 @@ namespace YukaLister.Models.SerializableSettings
 		// リムーバブルメディア接続時、前回のフォルダーを自動的に追加する
 		public Boolean AddFolderOnDeviceArrived { get; set; } = true;
 
+		// ID の接頭辞
+		public String? IdPrefix { get; set; }
+
 		// --------------------------------------------------------------------
 		// リスト対象
 		// --------------------------------------------------------------------
