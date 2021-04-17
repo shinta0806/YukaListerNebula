@@ -8,6 +8,7 @@
 // 
 // ----------------------------------------------------------------------------
 
+using Microsoft.EntityFrameworkCore;
 using Shinta;
 
 using System;
@@ -15,7 +16,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Windows;
-
+using YukaLister.Models.Database;
 using YukaLister.Models.SharedMisc;
 using YukaLister.Models.YukaListerModels;
 
@@ -52,6 +53,13 @@ namespace YukaLister.Models.SerializableSettings
 		// --------------------------------------------------------------------
 
 		// --------------------------------------------------------------------
+		// 終了時の状態（ゆかりすたー専用）
+		// --------------------------------------------------------------------
+
+		// 前回発行した ID（次回はインクリメントした番号で発行する）
+		public List<Int32> LastIdNumbers { get; set; } = new();
+
+		// --------------------------------------------------------------------
 		// 終了時の状態（一般）
 		// --------------------------------------------------------------------
 
@@ -80,6 +88,32 @@ namespace YukaLister.Models.SerializableSettings
 		public Boolean IsYukariConfigPathValid()
 		{
 			return File.Exists(YukariConfigPath());
+		}
+
+		// --------------------------------------------------------------------
+		// 前回使った ID 文字列
+		// --------------------------------------------------------------------
+		public String LastId(Int32 tableIndex)
+		{
+			Debug.Assert(!String.IsNullOrEmpty(IdPrefix), "LastId() empty IdPrefix");
+			return IdPrefix + YlConstants.MUSIC_INFO_ID_SECOND_PREFIXES[tableIndex] + LastIdNumbers[tableIndex].ToString();
+		}
+
+		// --------------------------------------------------------------------
+		// LastIdNumbers をこれから使う ID 番号に設定
+		// ＜返値＞ これから使う ID 文字列
+		// --------------------------------------------------------------------
+		public String PrepareLastId<T>(DbSet<T> records) where T : class, IRcBase
+		{
+			Int32 tableIndex = DbCommon.MusicInfoTableIndex(records);
+			for (; ; )
+			{
+				LastIdNumbers[tableIndex]++;
+				if (DbCommon.SelectBaseById(records, LastId(tableIndex)) == null)
+				{
+					return LastId(tableIndex);
+				}
+			}
 		}
 
 		// --------------------------------------------------------------------
@@ -117,15 +151,15 @@ namespace YukaLister.Models.SerializableSettings
 				TargetExts.Add(Common.FILE_EXT_MPG);
 				TargetExts.Add(Common.FILE_EXT_WMV);
 			}
-#if false
-			if (YukaListerSettings.LastIdNumbers.Count < (Int32)MusicInfoDbTables.__End__)
+			if (LastIdNumbers.Count < (Int32)MusicInfoTables.__End__)
 			{
-				YukaListerSettings.LastIdNumbers.Clear();
-				for (Int32 i = 0; i < (Int32)MusicInfoDbTables.__End__; i++)
+				LastIdNumbers.Clear();
+				for (Int32 i = 0; i < (Int32)MusicInfoTables.__End__; i++)
 				{
-					YukaListerSettings.LastIdNumbers.Add(0);
+					LastIdNumbers.Add(0);
 				}
 			}
+#if false
 			YukaListerSettings.AnalyzeYukariEasyAuthConfig(this);
 #endif
 		}

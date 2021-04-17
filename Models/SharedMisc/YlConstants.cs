@@ -83,6 +83,34 @@ namespace YukaLister.Models.SharedMisc
 	}
 
 	// --------------------------------------------------------------------
+	// 楽曲情報データベースのテーブル
+	// 値を増やした場合は、MainWindow.Initialize() でチェックしている定数も併せて増やす
+	// --------------------------------------------------------------------
+	public enum MusicInfoTables
+	{
+		TSong,
+		TPerson,
+		TTieUp,
+		TCategory,
+		TTieUpGroup,
+		TMaker,
+		TTag,
+		TSongAlias,
+		TPersonAlias,
+		TTieUpAlias,
+		TCategoryAlias,
+		TTieUpGroupAlias,
+		TMakerAlias,
+		TArtistSequence,
+		TLyristSequence,
+		TComposerSequence,
+		TArrangerSequence,
+		TTieUpGroupSequence,
+		TTagSequence,
+		__End__,
+	}
+
+	// --------------------------------------------------------------------
 	// ゆかりすたー NEBULA のどのパーツの動作状況を示すか
 	// --------------------------------------------------------------------
 	public enum YukaListerPartsStatusIndex
@@ -147,6 +175,19 @@ namespace YukaLister.Models.SharedMisc
 		public const String FILE_NAME_YUKARI_CONFIG = "config" + Common.FILE_EXT_INI;
 
 		// --------------------------------------------------------------------
+		// 楽曲情報データベース
+		// --------------------------------------------------------------------
+
+		// 楽曲情報データベースの各テーブルの ID 第二接頭辞
+		// この他、報告データベースで "R" を使用する
+		public static readonly String[] MUSIC_INFO_ID_SECOND_PREFIXES =
+		{
+			"_S_", "_P_", "_T_","_C_", "_G_", "_M_", "_Z_",
+			"_SA_", "_PA_", "_TA_","_CA_", "_GA_", "_MA_",
+			String.Empty, String.Empty, String.Empty, String.Empty, String.Empty, String.Empty,
+		};
+
+		// --------------------------------------------------------------------
 		// MessageKey
 		// --------------------------------------------------------------------
 
@@ -156,11 +197,14 @@ namespace YukaLister.Models.SharedMisc
 		// メインウィンドウを開く
 		public const String MESSAGE_KEY_OPEN_MAIN_WINDOW = "OpenMainWindow";
 
+		// 楽曲情報等編集ウィンドウを開く
+		public const String MESSAGE_KEY_OPEN_EDIT_MUSIC_INFO_WINDOW = "OpenEditMusicInfoWindow";
+
 		// フォルダー設定ウィンドウを開く
 		public const String MESSAGE_KEY_OPEN_FOLDER_SETTINGS_WINDOW = "OpenFolderSettingsWindow";
 
-		// 楽曲情報等編集ウィンドウを開く
-		public const String MESSAGE_KEY_OPEN_EDIT_MUSIC_INFO_WINDOW = "OpenEditMusicInfoWindow";
+		// ID 接頭辞入力ウィンドウを開く
+		public const String MESSAGE_KEY_OPEN_INPUT_ID_PREFIX_WINDOW = "OpenInputIdPrefixWindow";
 
 		// --------------------------------------------------------------------
 		// アプリ独自ルールでの変数名（小文字で表記）

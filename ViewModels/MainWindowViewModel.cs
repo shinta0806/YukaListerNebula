@@ -30,6 +30,7 @@ using System.Windows.Media;
 using System.Windows.Threading;
 
 using YukaLister.Models.Database;
+using YukaLister.Models.Database.Masters;
 using YukaLister.Models.DatabaseContexts;
 using YukaLister.Models.SerializableSettings;
 using YukaLister.Models.SharedMisc;
@@ -415,6 +416,7 @@ namespace YukaLister.ViewModels
 
 				// プログラムエラーチェック
 				Debug.Assert(YlConstants.FOLDER_SETTINGS_STATUS_TEXTS.Length == (Int32)FolderSettingsStatus.__End__, "MainWindow.Initialize() bad FOLDER_SETTINGS_STATUS_TEXTS length");
+				Debug.Assert(YlConstants.MUSIC_INFO_ID_SECOND_PREFIXES.Length == (Int32)MusicInfoTables.__End__, "MainWindow.Initialize() bad MUSIC_INFO_ID_SECOND_PREFIXES length");
 
 				// 環境の変化に対応
 				DoVerChangedIfNeeded();
@@ -437,6 +439,15 @@ namespace YukaLister.ViewModels
 				// 時間がかかるかもしれない処理を非同期で実行
 				await AutoTargetAllDrivesAsync();
 
+#if DEBUGz
+				using MusicInfoContext musicInfoContext = MusicInfoContext.CreateContext(out DbSet<TSong> songs);
+				Debug.WriteLine("Initialize() " + songs.EntityType.Name);
+				Debug.WriteLine("Initialize() " + DbCommon.MusicInfoIdSecondPrefix(songs));
+				if (songs.EntityType.ClrType == typeof(TSong))
+				{
+					Debug.WriteLine("Initialize() type TSong");
+				}
+#endif
 #if DEBUGz
 				CacheContext.CreateContext("D:", out _);
 #endif

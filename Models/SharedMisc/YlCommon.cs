@@ -9,6 +9,8 @@
 // ----------------------------------------------------------------------------
 
 using Livet;
+using Livet.Messaging;
+using Microsoft.EntityFrameworkCore;
 using Shinta;
 
 using System;
@@ -22,6 +24,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using YukaLister.Models.YukaListerModels;
+using YukaLister.ViewModels;
 
 namespace YukaLister.Models.SharedMisc
 {
@@ -347,7 +350,7 @@ namespace YukaLister.Models.SharedMisc
 		// ID 接頭辞が未設定ならばユーザーに入力してもらう
 		// ＜例外＞ OperationCanceledException
 		// --------------------------------------------------------------------
-		public static void InputIdPrefixIfNeededWithInvoke(ViewModel oViewModel)
+		public static void InputIdPrefixIfNeededWithInvoke(ViewModel viewModel)
 		{
 			if (!String.IsNullOrEmpty(YukaListerModel.Instance.EnvModel.YlSettings.IdPrefix))
 			{
@@ -356,13 +359,8 @@ namespace YukaLister.Models.SharedMisc
 
 			DispatcherHelper.UIDispatcher.Invoke(new Action(() =>
 			{
-#if false
-				using (InputIdPrefixWindowViewModel aInputIdPrefixWindowViewModel = new InputIdPrefixWindowViewModel())
-				{
-					aInputIdPrefixWindowViewModel.Environment = oEnvironment;
-					oViewModel.Messenger.Raise(new TransitionMessage(aInputIdPrefixWindowViewModel, "OpenInputIdPrefixWindow"));
-				}
-#endif
+				using InputIdPrefixWindowViewModel inputIdPrefixWindowViewModel = new();
+				viewModel.Messenger.Raise(new TransitionMessage(inputIdPrefixWindowViewModel, YlConstants.MESSAGE_KEY_OPEN_INPUT_ID_PREFIX_WINDOW));
 			}));
 
 			if (String.IsNullOrEmpty(YukaListerModel.Instance.EnvModel.YlSettings.IdPrefix))
