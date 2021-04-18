@@ -49,7 +49,7 @@ namespace YukaLister.ViewModels
 		// ====================================================================
 
 		// --------------------------------------------------------------------
-		// プログラマーが使うべき引数付きコンストラクター
+		// プログラム中で使うべき引数付きコンストラクター
 		// --------------------------------------------------------------------
 		public FolderSettingsWindowViewModel(String folderPath)
 		{
@@ -60,7 +60,7 @@ namespace YukaLister.ViewModels
 		}
 
 		// --------------------------------------------------------------------
-		// ダミーコンストラクター（TransitionMessage で使われる）
+		// ダミーコンストラクター（Visual Studio・TransitionMessage 用）
 		// --------------------------------------------------------------------
 		public FolderSettingsWindowViewModel()
 		{
@@ -782,14 +782,7 @@ namespace YukaLister.ViewModels
 		{
 			try
 			{
-				if (IsExcluded || SelectedPreviewInfo == null)
-				{
-					return;
-				}
-
-				String filePath = FolderPath + "\\" + SelectedPreviewInfo.FileName;
-				using EditMusicInfoWindowViewModel editMusicInfoWindowViewModel = new(filePath, YlCommon.DicByFile(filePath));
-				Messenger.Raise(new TransitionMessage(editMusicInfoWindowViewModel, YlConstants.MESSAGE_KEY_OPEN_EDIT_MUSIC_INFO_WINDOW));
+				EditInfo();
 			}
 			catch (Exception excep)
 			{
@@ -905,6 +898,36 @@ namespace YukaLister.ViewModels
 		}
 		#endregion
 
+		#region DataGrid ダブルクリックの制御
+
+		private ViewModelCommand? _dataGridDoubleClickedCommand;
+
+		public ViewModelCommand DataGridDoubleClickedCommand
+		{
+			get
+			{
+				if (_dataGridDoubleClickedCommand == null)
+				{
+					_dataGridDoubleClickedCommand = new ViewModelCommand(dataGridDoubleClickedCommand);
+				}
+				return _dataGridDoubleClickedCommand;
+			}
+		}
+
+		public void dataGridDoubleClickedCommand()
+		{
+			try
+			{
+				EditInfo();
+			}
+			catch (Exception excep)
+			{
+				YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(TraceEventType.Error, "DataGrid ダブルクリック時エラー：\n" + excep.Message);
+				YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, "　スタックトレース：\n" + excep.StackTrace);
+			}
+		}
+		#endregion
+
 		#region 設定削除ボタンの制御
 		private ViewModelCommand? _buttonDeleteSettingsClickedCommand;
 
@@ -988,6 +1011,8 @@ namespace YukaLister.ViewModels
 		// --------------------------------------------------------------------
 		public override void Initialize()
 		{
+			base.Initialize();
+
 			try
 			{
 				Debug.WriteLine("Initialize() CompositeDisposable.Count: " + CompositeDisposable.Count);
@@ -1132,7 +1157,7 @@ namespace YukaLister.ViewModels
 				}
 
 				// ファイル命名規則とフォルダー固定値を適用
-				Dictionary<String, String?> aDic = YlCommon.MatchFileNameRulesAndFolderRuleForListContext(Path.GetFileNameWithoutExtension(filePath), folderSettingsInMemory);
+				Dictionary<String, String?> aDic = YlCommon.MatchFileNameRulesAndFolderRuleForSearch(Path.GetFileNameWithoutExtension(filePath), folderSettingsInMemory);
 
 				// ファイル
 				PreviewInfo previewInfo = new();
@@ -1285,6 +1310,21 @@ namespace YukaLister.ViewModels
 		}
 
 		// --------------------------------------------------------------------
+		// 名称の編集ウィンドウを開く
+		// --------------------------------------------------------------------
+		private void EditInfo()
+		{
+			if (IsExcluded || SelectedPreviewInfo == null)
+			{
+				return;
+			}
+
+			String filePath = FolderPath + "\\" + SelectedPreviewInfo.FileName;
+			using EditMusicInfoWindowViewModel editMusicInfoWindowViewModel = new(filePath, YlCommon.DicByFileForMusicInfo(filePath));
+			Messenger.Raise(new TransitionMessage(editMusicInfoWindowViewModel, YlConstants.MESSAGE_KEY_OPEN_EDIT_MUSIC_INFO_WINDOW));
+		}
+
+		// --------------------------------------------------------------------
 		// <Name>=Value 形式の文字列から Value を返す
 		// --------------------------------------------------------------------
 		private String FindRuleValue(String str)
@@ -1415,7 +1455,7 @@ namespace YukaLister.ViewModels
 				}
 
 				// ファイル命名規則とフォルダー固定値を適用
-				Dictionary<String, String?> dic = YlCommon.MatchFileNameRulesAndFolderRuleForListContext(Path.GetFileNameWithoutExtension(PreviewInfos[rowIndex].FileName), folderSettingsInMemory);
+				Dictionary<String, String?> dic = YlCommon.MatchFileNameRulesAndFolderRuleForSearch(Path.GetFileNameWithoutExtension(PreviewInfos[rowIndex].FileName), folderSettingsInMemory);
 
 				// 楽曲名が空かどうか
 				if (String.IsNullOrEmpty(dic[YlConstants.RULE_VAR_TITLE]))

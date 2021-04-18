@@ -124,7 +124,7 @@ namespace YukaLister.Models.Database
 		public void SetTFoundValues(TFound record, FolderSettingsInMemory folderSettingsInMemory)
 		{
 			// ファイル名・フォルダー固定値と合致する命名規則を探す
-			Dictionary<String, String?> dicByFile = YlCommon.MatchFileNameRulesAndFolderRuleForListContext(Path.GetFileNameWithoutExtension(record.Path), folderSettingsInMemory);
+			Dictionary<String, String?> dicByFile = YlCommon.MatchFileNameRulesAndFolderRuleForSearch(Path.GetFileNameWithoutExtension(record.Path), folderSettingsInMemory);
 			dicByFile[YlConstants.RULE_VAR_PROGRAM] = ProgramOrigin(dicByFile[YlConstants.RULE_VAR_PROGRAM]);
 			dicByFile[YlConstants.RULE_VAR_TITLE] = SongOrigin(dicByFile[YlConstants.RULE_VAR_TITLE]);
 			if (dicByFile[YlConstants.RULE_VAR_CATEGORY] != null)

@@ -163,6 +163,9 @@
             <behaviors:Interaction.Behaviors>
                 <sb:DataGridBindingSupportBehavior SelectedItem="{Binding SelectedPreviewInfo}" SortingCommand="{Binding DataGridPreviewSortingCommand}" />
             </behaviors:Interaction.Behaviors>
+            <DataGrid.InputBindings>
+                <MouseBinding MouseAction="LeftDoubleClick" Command="{Binding DataGridDoubleClickedCommand}" />
+            </DataGrid.InputBindings>
             <DataGrid.Columns>
                 <DataGridTextColumn Header="ファイル" Width="250" Binding="{Binding FileName}" />
                 <DataGridTextColumn Header="項目と値" Width="*" Binding="{Binding Items}" />

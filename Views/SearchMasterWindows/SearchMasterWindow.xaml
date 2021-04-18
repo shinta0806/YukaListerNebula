@@ -1,0 +1,71 @@
+﻿<Window x:Class="YukaLister.Views.SearchMasterWindows.SearchMasterWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:behaviors="http://schemas.microsoft.com/xaml/behaviors"
+        xmlns:l="http://schemas.livet-mvvm.net/2011/wpf"
+        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+        xmlns:msm="clr-namespace:YukaLister.Models.SharedMisc"
+        xmlns:sb="clr-namespace:Shinta.Behaviors"
+        xmlns:v="clr-namespace:YukaLister.Views"
+        xmlns:vm="clr-namespace:YukaLister.ViewModels"
+        xmlns:vmsmw="clr-namespace:YukaLister.ViewModels.SearchMasterWindowViewModels"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        SizeToContent="WidthAndHeight" ResizeMode="NoResize" ShowInTaskbar="False" Title="{Binding Title}" Cursor="{Binding Cursor}" >
+
+    <Window.DataContext>
+        <vmsmw:SearchMasterWindowViewModel />
+    </Window.DataContext>
+
+    <behaviors:Interaction.Behaviors>
+        <sb:WindowBindingSupportBehavior IsCascade="True" MinimizeBox="False"/>
+    </behaviors:Interaction.Behaviors>
+
+    <behaviors:Interaction.Triggers>
+        <!-- When ContentRendered event raised, Initialize method of ViewModel would be called. -->
+        <behaviors:EventTrigger EventName="ContentRendered">
+            <l:LivetCallMethodAction MethodTarget="{Binding}" MethodName="Initialize" />
+        </behaviors:EventTrigger>
+
+        <!-- Dispose method is called, when Window closing. -->
+        <behaviors:EventTrigger EventName="Closed">
+            <l:DataContextDisposeAction />
+        </behaviors:EventTrigger>
+
+        <!-- If you make user choose 'OK or Cancel' closing Window, then please use Window Close cancel Behavior. -->
+
+        <l:InteractionMessageTrigger MessageKey="{x:Static msm:YlConstants.MESSAGE_KEY_WINDOW_CLOSE}" Messenger="{Binding Messenger}">
+            <l:WindowInteractionMessageAction InvokeActionOnlyWhenWindowIsActive="False" />
+        </l:InteractionMessageTrigger>
+
+    </behaviors:Interaction.Triggers>
+
+    <StackPanel>
+        <Label x:Name="LabelDescription" Content="{Binding Description}" Margin="20,15,0,0"/>
+        <DockPanel Margin="20,5,20,0">
+            <Button x:Name="ButtonSearch" Content="検索 (_S)" Style="{StaticResource MaterialDesignRaisedLightButton}" Width="100" Height="Auto" DockPanel.Dock="Right" Command="{Binding ButtonSearchClickedCommand}"/>
+            <TextBox x:Name="TextBoxKeyword" Text="{Binding Keyword, UpdateSourceTrigger=PropertyChanged}" ToolTip="ここに検索したいキーワードを入力して下さい。" ToolTipService.ShowDuration="10000" materialDesign:HintAssist.Hint="{Binding ElementName=TextBoxKeyword, Path=ToolTip}" sb:IsFocusedAttachedBehavior.IsFocused="{Binding IsKeywordFocused}" VerticalAlignment="Center" Margin="0,0,5,0">
+                <TextBox.InputBindings>
+                    <KeyBinding Gesture="Enter" Command="{Binding ButtonSearchClickedCommand}" />
+                </TextBox.InputBindings>
+                <behaviors:Interaction.Behaviors>
+                    <l:TextBoxBindingSupportBehavior SelectedText="{Binding SelectedKeyword}" />
+                </behaviors:Interaction.Behaviors>
+            </TextBox>
+        </DockPanel>
+        <Label x:Name="LabelFounds" Content="{Binding FoundsDescription}" Margin="20,5,0,0"/>
+        <DataGrid x:Name="DataGridFounds" AutoGenerateColumns="False" CanUserReorderColumns="False" CanUserSortColumns="False" CanUserResizeRows="False" SelectionMode="Single" IsReadOnly="True"
+                    Width="380" Margin="20,0,20,0" Height="200" materialDesign:DataGridAssist.ColumnHeaderPadding="3 5 3 5" materialDesign:DataGridAssist.CellPadding="3" ItemsSource="{Binding Founds}" SelectedItem="{Binding SelectedFound}" CanUserAddRows="False" CanUserDeleteRows="False" 
+                  sb:IsFocusedAttachedBehavior.IsFocused="{Binding AreFoundsFocused}">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="検索結果" Width="*" Binding="{Binding DisplayName}" />
+            </DataGrid.Columns>
+            <DataGrid.InputBindings>
+                <MouseBinding MouseAction="LeftDoubleClick" Command="{Binding DataGridDoubleClickedCommand}" />
+            </DataGrid.InputBindings>
+        </DataGrid>
+        <StackPanel Orientation="Horizontal" FlowDirection="RightToLeft" Margin="20">
+            <Button x:Name="ButtonCancel" Content="キャンセル" Height="Auto" Style="{StaticResource MaterialDesignRaisedLightButton}" IsCancel="True" Width="100" Padding="4"/>
+            <Button x:Name="ButtonSelect" Content="選択" Margin="20,0,0,0" Height="Auto" IsDefault="True" Width="100" Command="{Binding ButtonSelectClickedCommand}" />
+        </StackPanel>
+    </StackPanel>
+
+</Window>

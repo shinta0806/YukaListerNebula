@@ -9,6 +9,7 @@
 // ----------------------------------------------------------------------------
 
 using Livet.Commands;
+using Livet.Messaging;
 using Livet.Messaging.Windows;
 
 using Microsoft.EntityFrameworkCore;
@@ -27,6 +28,7 @@ using YukaLister.Models.Database.Sequences;
 using YukaLister.Models.DatabaseContexts;
 using YukaLister.Models.SharedMisc;
 using YukaLister.Models.YukaListerModels;
+using YukaLister.ViewModels.SearchMasterWindowViewModels;
 
 namespace YukaLister.ViewModels
 {
@@ -37,7 +39,7 @@ namespace YukaLister.ViewModels
 		// ====================================================================
 
 		// --------------------------------------------------------------------
-		// プログラマーが使うべき引数付きコンストラクター
+		// プログラム中で使うべき引数付きコンストラクター
 		// --------------------------------------------------------------------
 		public EditMusicInfoWindowViewModel(String filePath, Dictionary<String, String?> dicByFile)
 		{
@@ -50,12 +52,12 @@ namespace YukaLister.ViewModels
 		}
 
 		// --------------------------------------------------------------------
-		// ダミーコンストラクター（TransitionMessage で使われる）
+		// ダミーコンストラクター（Visual Studio・TransitionMessage 用）
 		// --------------------------------------------------------------------
 		public EditMusicInfoWindowViewModel()
 		{
 			_filePath = String.Empty;
-			DicByFile = YlCommon.DicByFile(String.Empty);
+			DicByFile = YlCommon.DicByFileForMusicInfo(String.Empty);
 			FileName = String.Empty;
 		}
 
@@ -227,24 +229,14 @@ namespace YukaLister.ViewModels
 		{
 			try
 			{
-#if false
-				using (SearchMusicInfoWindowViewModel aSearchMusicInfoWindowViewModel = new SearchMusicInfoWindowViewModel())
-				{
-					aSearchMusicInfoWindowViewModel.Environment = Environment!;
-					aSearchMusicInfoWindowViewModel.ItemName = "タイアップ名の正式名称";
-					aSearchMusicInfoWindowViewModel.TableIndex = MusicInfoDbTables.TTieUp;
-					aSearchMusicInfoWindowViewModel.SelectedKeyword = TieUpOrigin;
-					Messenger.Raise(new TransitionMessage(aSearchMusicInfoWindowViewModel, "OpenSearchMusicInfoWindow"));
+				using MusicInfoContext musicInfoContext = MusicInfoContext.CreateContext(out DbSet<TTieUp> tieUps);
+				using SearchMasterWindowViewModel<TTieUp> searchMasterWindowViewModel = new("タイアップ名の正式名称", tieUps);
+				searchMasterWindowViewModel.SelectedKeyword = TieUpOrigin;
+				Messenger.Raise(new TransitionMessage(searchMasterWindowViewModel, YlConstants.MESSAGE_KEY_OPEN_SEARCH_MASTER_WINDOW));
 
-					mIsTieUpSearched = true;
-					if (!String.IsNullOrEmpty(aSearchMusicInfoWindowViewModel.DecidedName))
-					{
-						TieUpOrigin = aSearchMusicInfoWindowViewModel.DecidedName;
-					}
-				}
-
+				_isTieUpSearched = true;
+				TieUpOrigin = searchMasterWindowViewModel.DecidedItem?.Name ?? TieUpOrigin;
 				UpdateListItems();
-#endif
 			}
 			catch (Exception excep)
 			{
@@ -641,6 +633,8 @@ namespace YukaLister.ViewModels
 		// --------------------------------------------------------------------
 		public override void Initialize()
 		{
+			base.Initialize();
+
 			try
 			{
 				// タイトルバー
@@ -672,6 +666,9 @@ namespace YukaLister.ViewModels
 
 		// パス
 		private String _filePath;
+
+		// タイアップを検索したかどうか
+		private Boolean _isTieUpSearched;
 
 		// ====================================================================
 		// private メンバー関数

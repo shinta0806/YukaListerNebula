@@ -263,11 +263,11 @@ namespace YukaLister.Models.SharedMisc
 		// --------------------------------------------------------------------
 		// ファイル命名規則とフォルダー固定値を適用した情報を得る
 		// --------------------------------------------------------------------
-		public static Dictionary<String, String?> DicByFile(String filePath)
+		public static Dictionary<String, String?> DicByFileForMusicInfo(String filePath)
 		{
 			FolderSettingsInDisk folderSettingsInDisk = LoadFolderSettings2Ex(Path.GetDirectoryName(filePath));
 			FolderSettingsInMemory folderSettingsInMemory = CreateFolderSettingsInMemory(folderSettingsInDisk);
-			return MatchFileNameRulesAndFolderRuleForListContext(Path.GetFileNameWithoutExtension(filePath), folderSettingsInMemory);
+			return MatchFileNameRulesAndFolderRuleForMusicInfo(Path.GetFileNameWithoutExtension(filePath), folderSettingsInMemory);
 		}
 
 		// --------------------------------------------------------------------
@@ -464,36 +464,31 @@ namespace YukaLister.Models.SharedMisc
 		}
 
 		// --------------------------------------------------------------------
-		// ファイル名とファイル命名規則がマッチするか確認し、マッチしたマップを返す
+		// ファイル名とファイル命名規則・フォルダー固定値がマッチするか確認し、マッチしたマップを返す（ルビは楽曲情報データベース登録用に正規化）
 		// ＜引数＞ fileNameBody: 拡張子無し
 		// --------------------------------------------------------------------
-		public static Dictionary<String, String?> MatchFileNameRulesForListContext(String fileNameBody, FolderSettingsInMemory folderSettingsInMemory)
+		public static Dictionary<String, String?> MatchFileNameRulesAndFolderRuleForMusicInfo(String fileNameBody, FolderSettingsInMemory folderSettingsInMemory)
 		{
-			Dictionary<String, String?> dic = MatchFileNameRulesCore(fileNameBody, folderSettingsInMemory);
+			// ファイル名命名規則
+			Dictionary<String, String?> dic = MatchFileNameRulesForMusicInfo(fileNameBody, folderSettingsInMemory);
 
-			// 正規化（差異部分のみ）
-			dic[YlConstants.RULE_VAR_TITLE_RUBY] = NormalizeDbRubyForListContext(dic[YlConstants.RULE_VAR_TITLE_RUBY]);
+			// フォルダー固定値をマージ
+			MargeFolderRules(folderSettingsInMemory, dic);
 
 			return dic;
 		}
 
 		// --------------------------------------------------------------------
-		// ファイル名とファイル命名規則・フォルダー固定値がマッチするか確認し、マッチしたマップを返す
+		// ファイル名とファイル命名規則・フォルダー固定値がマッチするか確認し、マッチしたマップを返す（ルビは検索用に正規化）
 		// ＜引数＞ fileNameBody: 拡張子無し
 		// --------------------------------------------------------------------
-		public static Dictionary<String, String?> MatchFileNameRulesAndFolderRuleForListContext(String fileNameBody, FolderSettingsInMemory folderSettingsInMemory)
+		public static Dictionary<String, String?> MatchFileNameRulesAndFolderRuleForSearch(String fileNameBody, FolderSettingsInMemory folderSettingsInMemory)
 		{
 			// ファイル名命名規則
-			Dictionary<String, String?> dic = YlCommon.MatchFileNameRulesForListContext(fileNameBody, folderSettingsInMemory);
+			Dictionary<String, String?> dic = MatchFileNameRulesForSearch(fileNameBody, folderSettingsInMemory);
 
-			// フォルダー命名規則をマージ
-			foreach (KeyValuePair<String, String?> folderRule in folderSettingsInMemory.FolderNameRules)
-			{
-				if (dic.ContainsKey(folderRule.Key) && String.IsNullOrEmpty(dic[folderRule.Key]))
-				{
-					dic[folderRule.Key] = folderRule.Value;
-				}
-			}
+			// フォルダー固定値をマージ
+			MargeFolderRules(folderSettingsInMemory, dic);
 
 			return dic;
 		}
@@ -507,57 +502,27 @@ namespace YukaLister.Models.SharedMisc
 		}
 
 		// --------------------------------------------------------------------
-		// リストデータベースに登録するフリガナの表記揺れを減らす
+		// 楽曲情報データベースに登録するフリガナの表記揺れを減らす
+		// 最低限の表記揺れのみ減らす
 		// ＜返値＞ フリガナ表記 or null（空になる場合）
-		// ※楽曲情報データベースに登録する際は
 		// --------------------------------------------------------------------
-		public static String? NormalizeDbRubyForListContext(String? str)
+		public static String? NormalizeDbRubyForMusicInfo(String? str)
 		{
-			Debug.Assert(NORMALIZE_DB_RUBY_FROM.Length == NORMALIZE_DB_RUBY_TO.Length, "NormalizeDbRubyForListContext() different NORMALIZE_DB_FURIGANA_FROM NORMALIZE_DB_FURIGANA_TO length");
+			Debug.Assert(NORMALIZE_DB_RUBY_FOR_MUSIC_INFO_FROM.Length == NORMALIZE_DB_RUBY_FOR_MUSIC_INFO_TO.Length,
+					"NormalizeDbRubyForMusicInfo() different from/to length");
+			return NormalizeDbRubyCore(str, NORMALIZE_DB_RUBY_FOR_MUSIC_INFO_FROM, NORMALIZE_DB_RUBY_FOR_MUSIC_INFO_TO);
+		}
 
-			if (String.IsNullOrEmpty(str))
-			{
-				return null;
-			}
-
-			StringBuilder katakana = new();
-
-			for (Int32 i = 0; i < str.Length; i++)
-			{
-				Char chara = str[i];
-
-				// 小文字・半角カタカナ等を全角カタカナに変換
-				Int32 pos = NORMALIZE_DB_RUBY_FROM.IndexOf(chara);
-				if (pos >= 0)
-				{
-					katakana.Append(NORMALIZE_DB_RUBY_TO[pos]);
-					continue;
-				}
-
-				// 上記以外の全角カタカナ・音引きはそのまま
-				if ('ア' <= chara && chara <= 'ン' || chara == 'ー')
-				{
-					katakana.Append(chara);
-					continue;
-				}
-
-				// 上記以外のひらがなをカタカナに変換
-				if ('あ' <= chara && chara <= 'ん')
-				{
-					katakana.Append((Char)(chara + 0x60));
-					continue;
-				}
-
-				// その他の文字は無視する
-			}
-
-			String katakanaString = katakana.ToString();
-			if (String.IsNullOrEmpty(katakanaString))
-			{
-				return null;
-			}
-
-			return katakanaString;
+		// --------------------------------------------------------------------
+		// 検索用（検索で使用されるリストデータベース登録用を含む）にフリガナの表記揺れを減らす
+		// NormalizeDbRubyForMusicInfo() よりも強力に揺れを減らす
+		// ＜返値＞ フリガナ表記 or null（空になる場合）
+		// --------------------------------------------------------------------
+		public static String? NormalizeDbRubyForSearch(String? str)
+		{
+			Debug.Assert(NORMALIZE_DB_RUBY_FOR_SEARCH_FROM.Length == NORMALIZE_DB_RUBY_FOR_SEARCH_TO.Length,
+					"NormalizeDbRubyForListContext() different from/to length");
+			return NormalizeDbRubyCore(str, NORMALIZE_DB_RUBY_FOR_SEARCH_FROM, NORMALIZE_DB_RUBY_FOR_SEARCH_TO);
 		}
 
 		// --------------------------------------------------------------------
@@ -633,17 +598,21 @@ namespace YukaLister.Models.SharedMisc
 		// DB 変換
 		// --------------------------------------------------------------------
 
-		// NormalizeDbRuby() 用：フリガナ正規化対象文字（小文字・濁点のカナ等）
-		private const String NORMALIZE_DB_RUBY_FROM = "ァィゥェォッャュョヮヵヶガギグゲゴザジズゼゾダヂヅデドバビブベボパピプペポヰヱヴヷヸヹヺｧｨｩｪｫｯｬｭｮ"
+		// NormalizeDbRubyForSearch() 用：フリガナ正規化対象文字（小文字・濁点→大文字・清音）
+		private const String NORMALIZE_DB_RUBY_FOR_SEARCH_FROM = "ァィゥェォッャュョヮヵヶガギグゲゴザジズゼゾダヂヅデドバビブベボパピプペポヰヱヴヷヸヹヺｧｨｩｪｫｯｬｭｮ"
 				+ "ぁぃぅぇぉっゃゅょゎゕゖがぎぐげござじずぜぞだぢづでどばびぶべぼぱぴぷぺぽゐゑゔ" + NORMALIZE_DB_FORBIDDEN_FROM;
-		private const String NORMALIZE_DB_RUBY_TO = "アイウエオツヤユヨワカケカキクケコサシスセソタチツテトハヒフヘホハヒフヘホイエウワイエヲアイウエオツヤユヨ"
+		private const String NORMALIZE_DB_RUBY_FOR_SEARCH_TO = "アイウエオツヤユヨワカケカキクケコサシスセソタチツテトハヒフヘホハヒフヘホイエウワイエヲアイウエオツヤユヨ"
 				+ "アイウエオツヤユヨワカケカキクケコサシスセソタチツテトハヒフヘホハヒフヘホイエウ" + NORMALIZE_DB_FORBIDDEN_TO;
 
-		// NormalizeDbString() 用：禁則文字（全角スペース、一部の半角文字等）
-		private const String NORMALIZE_DB_STRING_FROM = "　\u2019ｧｨｩｪｫｯｬｭｮﾞﾟ｡｢｣､･~\u301C" + NORMALIZE_DB_FORBIDDEN_FROM;
-		private const String NORMALIZE_DB_STRING_TO = " 'ァィゥェォッャュョ゛゜。「」、・～～" + NORMALIZE_DB_FORBIDDEN_TO;
+		// NormalizeDbRubyForMusicInfo() 用：フリガナ正規化対象文字（半角カタカナ→全角カタカナ）
+		private const String NORMALIZE_DB_RUBY_FOR_MUSIC_INFO_FROM = NORMALIZE_DB_FORBIDDEN_FROM + "ｧｨｩｪｫｯｬｭｮ";
+		private const String NORMALIZE_DB_RUBY_FOR_MUSIC_INFO_TO = NORMALIZE_DB_FORBIDDEN_TO + "ァィゥェォッャュョ";
 
-		// NormalizeDbXXX() 用：変換後がフリガナ対象の禁則文字（半角カタカナ）
+		// NormalizeDbString() 用：禁則文字（全角スペース、一部の半角文字等）
+		private const String NORMALIZE_DB_STRING_FROM = "　\u2019ﾞﾟ｡｢｣､･~\u301C" + NORMALIZE_DB_RUBY_FOR_MUSIC_INFO_FROM;
+		private const String NORMALIZE_DB_STRING_TO = " '゛゜。「」、・～～" + NORMALIZE_DB_RUBY_FOR_MUSIC_INFO_TO;
+
+		// NormalizeDbXXX() 用：変換後がフリガナ対象の禁則文字（半角カタカナ大文字）
 		private const String NORMALIZE_DB_FORBIDDEN_FROM = "ｦｰｱｲｳｴｵｶｷｸｹｺｻｼｽｾｿﾀﾁﾂﾃﾄﾅﾆﾇﾈﾉﾊﾋﾌﾍﾎﾏﾐﾑﾒﾓﾔﾕﾖﾗﾘﾙﾚﾛﾜﾝ";
 		private const String NORMALIZE_DB_FORBIDDEN_TO = "ヲーアイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモヤユヨラリルレロワン";
 
@@ -661,62 +630,6 @@ namespace YukaLister.Models.SharedMisc
 		// ====================================================================
 		// private static メンバー関数
 		// ====================================================================
-
-		// --------------------------------------------------------------------
-		// ファイル名とファイル命名規則がマッチするか確認し、マッチしたマップを返す
-		// ＜引数＞ fileNameBody: 拡張子無し
-		// --------------------------------------------------------------------
-		private static Dictionary<String, String?> MatchFileNameRulesCore(String fileNameBody, FolderSettingsInMemory folderSettingsInMemory)
-		{
-			Dictionary<String, String?> dic = CreateRuleDictionary();
-			Match? match = null;
-			Int32 matchIndex = -1;
-
-			// ファイル名と合致する命名規則を探す
-			for (Int32 i = 0; i < folderSettingsInMemory.FileNameRules.Count; i++)
-			{
-				match = Regex.Match(fileNameBody, folderSettingsInMemory.FileNameRules[i], RegexOptions.None);
-				if (match.Success)
-				{
-					matchIndex = i;
-					break;
-				}
-			}
-			if (matchIndex < 0)
-			{
-				return dic;
-			}
-
-			for (Int32 i = 0; i < folderSettingsInMemory.FileRegexGroups[matchIndex].Count; i++)
-			{
-				// 定義されているキーのみ格納する
-				if (dic.ContainsKey(folderSettingsInMemory.FileRegexGroups[matchIndex][i]))
-				{
-					// match.Groups[0] にはマッチした全体の値が入っているので無視し、[1] から実際の値が入っている
-					if (String.IsNullOrEmpty(dic[folderSettingsInMemory.FileRegexGroups[matchIndex][i]]))
-					{
-						dic[folderSettingsInMemory.FileRegexGroups[matchIndex][i]] = match?.Groups[i + 1].Value.Trim();
-					}
-					else
-					{
-						dic[folderSettingsInMemory.FileRegexGroups[matchIndex][i]] += YlConstants.VAR_VALUE_DELIMITER + match?.Groups[i + 1].Value.Trim();
-					}
-				}
-			}
-
-			// 正規化（共通部分のみ）
-			dic[YlConstants.RULE_VAR_CATEGORY] = NormalizeDbString(dic[YlConstants.RULE_VAR_CATEGORY]);
-			dic[YlConstants.RULE_VAR_PROGRAM] = NormalizeDbString(dic[YlConstants.RULE_VAR_PROGRAM]);
-			dic[YlConstants.RULE_VAR_AGE_LIMIT] = NormalizeDbString(dic[YlConstants.RULE_VAR_AGE_LIMIT]);
-			dic[YlConstants.RULE_VAR_OP_ED] = NormalizeDbString(dic[YlConstants.RULE_VAR_OP_ED]);
-			dic[YlConstants.RULE_VAR_TITLE] = NormalizeDbString(dic[YlConstants.RULE_VAR_TITLE]);
-			dic[YlConstants.RULE_VAR_ARTIST] = NormalizeDbString(dic[YlConstants.RULE_VAR_ARTIST]);
-			dic[YlConstants.RULE_VAR_WORKER] = NormalizeDbString(dic[YlConstants.RULE_VAR_WORKER]);
-			dic[YlConstants.RULE_VAR_TRACK] = NormalizeDbString(dic[YlConstants.RULE_VAR_TRACK]);
-			dic[YlConstants.RULE_VAR_COMMENT] = NormalizeDbString(dic[YlConstants.RULE_VAR_COMMENT]);
-
-			return dic;
-		}
 
 		// --------------------------------------------------------------------
 		// 設定ファイルのルール表記を正規表現に変換
@@ -801,6 +714,153 @@ namespace YukaLister.Models.SharedMisc
 			return -1;
 		}
 
+		// --------------------------------------------------------------------
+		// フォルダー固定値をマージ
+		// --------------------------------------------------------------------
+		private static void MargeFolderRules(FolderSettingsInMemory folderSettingsInMemory, Dictionary<String, String?> dic)
+		{
+			foreach (KeyValuePair<String, String?> folderRule in folderSettingsInMemory.FolderNameRules)
+			{
+				if (dic.ContainsKey(folderRule.Key) && String.IsNullOrEmpty(dic[folderRule.Key]))
+				{
+					dic[folderRule.Key] = folderRule.Value;
+				}
+			}
+		}
 
+		// --------------------------------------------------------------------
+		// ファイル名とファイル命名規則がマッチするか確認し、マッチしたマップを返す
+		// ＜引数＞ fileNameBody: 拡張子無し
+		// --------------------------------------------------------------------
+		private static Dictionary<String, String?> MatchFileNameRulesCore(String fileNameBody, FolderSettingsInMemory folderSettingsInMemory)
+		{
+			Dictionary<String, String?> dic = CreateRuleDictionary();
+			Match? match = null;
+			Int32 matchIndex = -1;
+
+			// ファイル名と合致する命名規則を探す
+			for (Int32 i = 0; i < folderSettingsInMemory.FileNameRules.Count; i++)
+			{
+				match = Regex.Match(fileNameBody, folderSettingsInMemory.FileNameRules[i], RegexOptions.None);
+				if (match.Success)
+				{
+					matchIndex = i;
+					break;
+				}
+			}
+			if (matchIndex < 0)
+			{
+				return dic;
+			}
+
+			for (Int32 i = 0; i < folderSettingsInMemory.FileRegexGroups[matchIndex].Count; i++)
+			{
+				// 定義されているキーのみ格納する
+				if (dic.ContainsKey(folderSettingsInMemory.FileRegexGroups[matchIndex][i]))
+				{
+					// match.Groups[0] にはマッチした全体の値が入っているので無視し、[1] から実際の値が入っている
+					if (String.IsNullOrEmpty(dic[folderSettingsInMemory.FileRegexGroups[matchIndex][i]]))
+					{
+						dic[folderSettingsInMemory.FileRegexGroups[matchIndex][i]] = match?.Groups[i + 1].Value.Trim();
+					}
+					else
+					{
+						dic[folderSettingsInMemory.FileRegexGroups[matchIndex][i]] += YlConstants.VAR_VALUE_DELIMITER + match?.Groups[i + 1].Value.Trim();
+					}
+				}
+			}
+
+			// 正規化（共通部分のみ）
+			dic[YlConstants.RULE_VAR_CATEGORY] = NormalizeDbString(dic[YlConstants.RULE_VAR_CATEGORY]);
+			dic[YlConstants.RULE_VAR_PROGRAM] = NormalizeDbString(dic[YlConstants.RULE_VAR_PROGRAM]);
+			dic[YlConstants.RULE_VAR_AGE_LIMIT] = NormalizeDbString(dic[YlConstants.RULE_VAR_AGE_LIMIT]);
+			dic[YlConstants.RULE_VAR_OP_ED] = NormalizeDbString(dic[YlConstants.RULE_VAR_OP_ED]);
+			dic[YlConstants.RULE_VAR_TITLE] = NormalizeDbString(dic[YlConstants.RULE_VAR_TITLE]);
+			dic[YlConstants.RULE_VAR_ARTIST] = NormalizeDbString(dic[YlConstants.RULE_VAR_ARTIST]);
+			dic[YlConstants.RULE_VAR_WORKER] = NormalizeDbString(dic[YlConstants.RULE_VAR_WORKER]);
+			dic[YlConstants.RULE_VAR_TRACK] = NormalizeDbString(dic[YlConstants.RULE_VAR_TRACK]);
+			dic[YlConstants.RULE_VAR_COMMENT] = NormalizeDbString(dic[YlConstants.RULE_VAR_COMMENT]);
+
+			return dic;
+		}
+
+		// --------------------------------------------------------------------
+		// ファイル名とファイル命名規則がマッチするか確認し、マッチしたマップを返す（ルビは楽曲情報データベース登録用に正規化）
+		// ＜引数＞ fileNameBody: 拡張子無し
+		// --------------------------------------------------------------------
+		private static Dictionary<String, String?> MatchFileNameRulesForMusicInfo(String fileNameBody, FolderSettingsInMemory folderSettingsInMemory)
+		{
+			Dictionary<String, String?> dic = MatchFileNameRulesCore(fileNameBody, folderSettingsInMemory);
+
+			// 正規化（差異部分のみ）
+			dic[YlConstants.RULE_VAR_TITLE_RUBY] = NormalizeDbRubyForMusicInfo(dic[YlConstants.RULE_VAR_TITLE_RUBY]);
+
+			return dic;
+		}
+
+		// --------------------------------------------------------------------
+		// ファイル名とファイル命名規則がマッチするか確認し、マッチしたマップを返す（ルビは検索用に正規化）
+		// ＜引数＞ fileNameBody: 拡張子無し
+		// --------------------------------------------------------------------
+		private static Dictionary<String, String?> MatchFileNameRulesForSearch(String fileNameBody, FolderSettingsInMemory folderSettingsInMemory)
+		{
+			Dictionary<String, String?> dic = MatchFileNameRulesCore(fileNameBody, folderSettingsInMemory);
+
+			// 正規化（差異部分のみ）
+			dic[YlConstants.RULE_VAR_TITLE_RUBY] = NormalizeDbRubyForSearch(dic[YlConstants.RULE_VAR_TITLE_RUBY]);
+
+			return dic;
+		}
+
+		// --------------------------------------------------------------------
+		// フリガナの表記揺れを減らす
+		// ＜返値＞ フリガナ表記 or null（空になる場合）
+		// --------------------------------------------------------------------
+		private static String? NormalizeDbRubyCore(String? str, String from, String to)
+		{
+			if (String.IsNullOrEmpty(str))
+			{
+				return null;
+			}
+
+			StringBuilder katakana = new();
+
+			for (Int32 i = 0; i < str.Length; i++)
+			{
+				Char chara = str[i];
+
+				// 変換テーブルを用いた変換
+				Int32 pos = from.IndexOf(chara);
+				if (pos >= 0)
+				{
+					katakana.Append(to[pos]);
+					continue;
+				}
+
+				// 上記以外の全角カタカナ・音引きはそのまま
+				if ('ア' <= chara && chara <= 'ン' || chara == 'ー')
+				{
+					katakana.Append(chara);
+					continue;
+				}
+
+				// 上記以外のひらがなをカタカナに変換
+				if ('あ' <= chara && chara <= 'ん')
+				{
+					katakana.Append((Char)(chara + 0x60));
+					continue;
+				}
+
+				// その他の文字は無視する
+			}
+
+			String katakanaString = katakana.ToString();
+			if (String.IsNullOrEmpty(katakanaString))
+			{
+				return null;
+			}
+
+			return katakanaString;
+		}
 	}
 }

@@ -120,6 +120,8 @@ namespace YukaLister.ViewModels
 		// --------------------------------------------------------------------
 		public override void Initialize()
 		{
+			base.Initialize();
+
 			try
 			{
 				// タイトルバー

@@ -206,6 +206,9 @@ namespace YukaLister.Models.SharedMisc
 		// ID 接頭辞入力ウィンドウを開く
 		public const String MESSAGE_KEY_OPEN_INPUT_ID_PREFIX_WINDOW = "OpenInputIdPrefixWindow";
 
+		// 楽曲情報データベースマスター検索ウィンドウを開く
+		public const String MESSAGE_KEY_OPEN_SEARCH_MASTER_WINDOW = "OpenSearchMasterWindow";
+
 		// --------------------------------------------------------------------
 		// アプリ独自ルールでの変数名（小文字で表記）
 		// --------------------------------------------------------------------
