@@ -58,6 +58,10 @@ namespace YukaLister.Models.Database.Masters
 		[Column(FIELD_NAME_PERSON_RUBY)]
 		public String? Ruby { get; set; }
 
+		// 人物フリガナ（検索用）
+		[Column(FIELD_NAME_PERSON_RUBY_FOR_SEARCH)]
+		public String? RubyForSearch { get; set; }
+
 		// 検索ワード
 		[Column(FIELD_NAME_PERSON_KEYWORD)]
 		public String? Keyword { get; set; }
@@ -99,6 +103,7 @@ namespace YukaLister.Models.Database.Masters
 		public const String FIELD_NAME_PERSON_DIRTY = "person_dirty";
 		public const String FIELD_NAME_PERSON_NAME = "person_name";
 		public const String FIELD_NAME_PERSON_RUBY = "person_ruby";
+		public const String FIELD_NAME_PERSON_RUBY_FOR_SEARCH = "person_ruby_for_search";
 		public const String FIELD_NAME_PERSON_KEYWORD = "person_keyword";
 	}
 }

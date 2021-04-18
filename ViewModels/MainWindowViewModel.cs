@@ -5,7 +5,7 @@
 // ============================================================================
 
 // ----------------------------------------------------------------------------
-//
+// ToDo: データベースのインデックスは見直す
 // ----------------------------------------------------------------------------
 
 using Livet.Commands;
@@ -216,6 +216,36 @@ namespace YukaLister.ViewModels
 		}
 		#endregion
 
+		#region DataGrid ダブルクリックの制御
+
+		private ViewModelCommand? _dataGridDoubleClickedCommand;
+
+		public ViewModelCommand DataGridDoubleClickedCommand
+		{
+			get
+			{
+				if (_dataGridDoubleClickedCommand == null)
+				{
+					_dataGridDoubleClickedCommand = new ViewModelCommand(dataGridDoubleClickedCommand);
+				}
+				return _dataGridDoubleClickedCommand;
+			}
+		}
+
+		public void dataGridDoubleClickedCommand()
+		{
+			try
+			{
+				FolderSettings();
+			}
+			catch (Exception excep)
+			{
+				YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(TraceEventType.Error, "DataGrid ダブルクリック時エラー：\n" + excep.Message);
+				YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, "　スタックトレース：\n" + excep.StackTrace);
+			}
+		}
+		#endregion
+
 		#region 削除ボタンの制御
 		private ViewModelCommand? _buttonRemoveTargetFolderClickedCommand;
 
@@ -289,63 +319,7 @@ namespace YukaLister.ViewModels
 		{
 			try
 			{
-				if (SelectedTargetFolderInfo == null)
-				{
-					return;
-				}
-
-				using FolderSettingsWindowViewModel folderSettingsWindowViewModel = new(SelectedTargetFolderInfo.TargetPath);
-				Messenger.Raise(new TransitionMessage(folderSettingsWindowViewModel, YlConstants.MESSAGE_KEY_OPEN_FOLDER_SETTINGS_WINDOW));
-
-				// フォルダー設定の有無の表示を更新
-				// キャンセルでも実行（設定削除→キャンセルの場合はフォルダー設定の有無が変わる）
-				YukaListerModel.Instance.ProjModel.SetFolderSettingsStatusToUnchecked(SelectedTargetFolderInfo.TargetPath);
-				UpdateDataGrid();
-
-#if false
-				using (MusicInfoDatabaseInDisk aMusicInfoDbInDisk = new MusicInfoDatabaseInDisk(mEnvironment))
-				{
-					DateTime aMusicInfoDbTimeBak = aMusicInfoDbInDisk.LastWriteTime();
-
-					// ViewModel 経由でフォルダー設定ウィンドウを開く
-					using (FolderSettingsWindowViewModel aFolderSettingsWindowViewModel = new FolderSettingsWindowViewModel())
-					{
-						aFolderSettingsWindowViewModel.Environment = mEnvironment;
-						aFolderSettingsWindowViewModel.PathExLen = aTargetFolderInfo.Path;
-						mMainWindowViewModel.Messenger.Raise(new TransitionMessage(aFolderSettingsWindowViewModel, "OpenFolderSettingsWindow"));
-					}
-
-					// フォルダー設定の有無の表示を更新
-					// キャンセルでも実行（設定削除→キャンセルの場合はフォルダー設定の有無が変わる）
-					lock (mTargetFolderInfos)
-					{
-						Int32 aIndex = mTargetFolderInfos.IndexOf(aTargetFolderInfo);
-						if (aIndex < 0)
-						{
-							throw new Exception("フォルダー設定有無を更新する対象が見つかりません。");
-						}
-						while (aIndex < mTargetFolderInfos.Count)
-						{
-							if (!mTargetFolderInfos[aIndex].Path.StartsWith(aTargetFolderInfo.Path))
-							{
-								break;
-							}
-							mTargetFolderInfos[aIndex].FolderExcludeSettingsStatus = FolderExcludeSettingsStatus.Unchecked;
-							mTargetFolderInfos[aIndex].FolderSettingsStatus = FolderSettingsStatus.Unchecked;
-							mDirtyDg = true;
-							aIndex++;
-						}
-					}
-					UpdateDirtyDgWithInvoke();
-
-					// 楽曲情報データベースが更新された場合は同期を行う
-					DateTime aMusicInfoDbTime = aMusicInfoDbInDisk.LastWriteTime();
-					if (aMusicInfoDbTime != aMusicInfoDbTimeBak)
-					{
-						RunSyncClientIfNeeded();
-					}
-				}
-#endif
+				FolderSettings();
 			}
 			catch (Exception excep)
 			{
@@ -638,6 +612,70 @@ namespace YukaLister.ViewModels
 			{
 				NewVersionLaunched();
 			}
+		}
+
+		// --------------------------------------------------------------------
+		// フォルダー設定
+		// --------------------------------------------------------------------
+		private void FolderSettings()
+		{
+			if (SelectedTargetFolderInfo == null)
+			{
+				return;
+			}
+
+			using FolderSettingsWindowViewModel folderSettingsWindowViewModel = new(SelectedTargetFolderInfo.TargetPath);
+			Messenger.Raise(new TransitionMessage(folderSettingsWindowViewModel, YlConstants.MESSAGE_KEY_OPEN_FOLDER_SETTINGS_WINDOW));
+
+			// フォルダー設定の有無の表示を更新
+			// キャンセルでも実行（設定削除→キャンセルの場合はフォルダー設定の有無が変わる）
+			YukaListerModel.Instance.ProjModel.SetFolderSettingsStatusToUnchecked(SelectedTargetFolderInfo.TargetPath);
+			UpdateDataGrid();
+
+#if false
+				using (MusicInfoDatabaseInDisk aMusicInfoDbInDisk = new MusicInfoDatabaseInDisk(mEnvironment))
+				{
+					DateTime aMusicInfoDbTimeBak = aMusicInfoDbInDisk.LastWriteTime();
+
+					// ViewModel 経由でフォルダー設定ウィンドウを開く
+					using (FolderSettingsWindowViewModel aFolderSettingsWindowViewModel = new FolderSettingsWindowViewModel())
+					{
+						aFolderSettingsWindowViewModel.Environment = mEnvironment;
+						aFolderSettingsWindowViewModel.PathExLen = aTargetFolderInfo.Path;
+						mMainWindowViewModel.Messenger.Raise(new TransitionMessage(aFolderSettingsWindowViewModel, "OpenFolderSettingsWindow"));
+					}
+
+					// フォルダー設定の有無の表示を更新
+					// キャンセルでも実行（設定削除→キャンセルの場合はフォルダー設定の有無が変わる）
+					lock (mTargetFolderInfos)
+					{
+						Int32 aIndex = mTargetFolderInfos.IndexOf(aTargetFolderInfo);
+						if (aIndex < 0)
+						{
+							throw new Exception("フォルダー設定有無を更新する対象が見つかりません。");
+						}
+						while (aIndex < mTargetFolderInfos.Count)
+						{
+							if (!mTargetFolderInfos[aIndex].Path.StartsWith(aTargetFolderInfo.Path))
+							{
+								break;
+							}
+							mTargetFolderInfos[aIndex].FolderExcludeSettingsStatus = FolderExcludeSettingsStatus.Unchecked;
+							mTargetFolderInfos[aIndex].FolderSettingsStatus = FolderSettingsStatus.Unchecked;
+							mDirtyDg = true;
+							aIndex++;
+						}
+					}
+					UpdateDirtyDgWithInvoke();
+
+					// 楽曲情報データベースが更新された場合は同期を行う
+					DateTime aMusicInfoDbTime = aMusicInfoDbInDisk.LastWriteTime();
+					if (aMusicInfoDbTime != aMusicInfoDbTimeBak)
+					{
+						RunSyncClientIfNeeded();
+					}
+				}
+#endif
 		}
 
 		// --------------------------------------------------------------------

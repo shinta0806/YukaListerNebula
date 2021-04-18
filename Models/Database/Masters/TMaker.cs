@@ -58,6 +58,10 @@ namespace YukaLister.Models.Database.Masters
 		[Column(FIELD_NAME_MAKER_RUBY)]
 		public String? Ruby { get; set; }
 
+		// 制作会社フリガナ（検索用）
+		[Column(FIELD_NAME_MAKER_RUBY_FOR_SEARCH)]
+		public String? RubyForSearch { get; set; }
+
 		// 検索ワード
 		[Column(FIELD_NAME_MAKER_KEYWORD)]
 		public String? Keyword { get; set; }
@@ -99,6 +103,7 @@ namespace YukaLister.Models.Database.Masters
 		public const String FIELD_NAME_MAKER_DIRTY = "maker_dirty";
 		public const String FIELD_NAME_MAKER_NAME = "maker_name";
 		public const String FIELD_NAME_MAKER_RUBY = "maker_ruby";
+		public const String FIELD_NAME_MAKER_RUBY_FOR_SEARCH = "maker_ruby_for_search";
 		public const String FIELD_NAME_MAKER_KEYWORD = "maker_keyword";
 	}
 }

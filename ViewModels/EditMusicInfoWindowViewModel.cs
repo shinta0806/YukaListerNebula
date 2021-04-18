@@ -397,24 +397,14 @@ namespace YukaLister.ViewModels
 		{
 			try
 			{
-#if false
-				using (SearchMusicInfoWindowViewModel aSearchMusicInfoWindowViewModel = new SearchMusicInfoWindowViewModel())
-				{
-					aSearchMusicInfoWindowViewModel.Environment = Environment!;
-					aSearchMusicInfoWindowViewModel.ItemName = "楽曲名の正式名称";
-					aSearchMusicInfoWindowViewModel.TableIndex = MusicInfoDbTables.TSong;
-					aSearchMusicInfoWindowViewModel.SelectedKeyword = SongOrigin;
-					Messenger.Raise(new TransitionMessage(aSearchMusicInfoWindowViewModel, "OpenSearchMusicInfoWindow"));
+				using MusicInfoContext musicInfoContext = MusicInfoContext.CreateContext(out DbSet<TSong> songs);
+				using SearchMasterWindowViewModel<TSong> searchMasterWindowViewModel = new("楽曲名の正式名称", songs);
+				searchMasterWindowViewModel.SelectedKeyword = SongOrigin;
+				Messenger.Raise(new TransitionMessage(searchMasterWindowViewModel, YlConstants.MESSAGE_KEY_OPEN_SEARCH_MASTER_WINDOW));
 
-					mIsSongSearched = true;
-					if (!String.IsNullOrEmpty(aSearchMusicInfoWindowViewModel.DecidedName))
-					{
-						SongOrigin = aSearchMusicInfoWindowViewModel.DecidedName;
-					}
-				}
-
+				_isSongSearched = true;
+				SongOrigin = searchMasterWindowViewModel.DecidedItem?.Name ?? SongOrigin;
 				UpdateListItems();
-#endif
 			}
 			catch (Exception excep)
 			{
@@ -669,6 +659,9 @@ namespace YukaLister.ViewModels
 
 		// タイアップを検索したかどうか
 		private Boolean _isTieUpSearched;
+
+		// 楽曲を検索したかどうか
+		private Boolean _isSongSearched;
 
 		// ====================================================================
 		// private メンバー関数

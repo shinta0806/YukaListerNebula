@@ -62,6 +62,10 @@ namespace YukaLister.Models.Database.Masters
 		[Column(FIELD_NAME_TIE_UP_RUBY)]
 		public String? Ruby { get; set; }
 
+		// タイアップフリガナ（検索用）
+		[Column(FIELD_NAME_TIE_UP_RUBY_FOR_SEARCH)]
+		public String? RubyForSearch { get; set; }
+
 		// 検索ワード
 		[Column(FIELD_NAME_TIE_UP_KEYWORD)]
 		public String? Keyword { get; set; }
@@ -131,6 +135,7 @@ namespace YukaLister.Models.Database.Masters
 		public const String FIELD_NAME_TIE_UP_DIRTY = "tie_up_dirty";
 		public const String FIELD_NAME_TIE_UP_NAME = "tie_up_name";
 		public const String FIELD_NAME_TIE_UP_RUBY = "tie_up_ruby";
+		public const String FIELD_NAME_TIE_UP_RUBY_FOR_SEARCH = "tie_up_ruby_for_search";
 		public const String FIELD_NAME_TIE_UP_KEYWORD = "tie_up_keyword";
 		public const String FIELD_NAME_TIE_UP_CATEGORY_ID = "tie_up_category_id";
 		public const String FIELD_NAME_TIE_UP_MAKER_ID = "tie_up_maker_id";

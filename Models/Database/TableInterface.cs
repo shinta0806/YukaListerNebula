@@ -46,6 +46,9 @@ namespace YukaLister.Models.Database
 		// フリガナ
 		String? Ruby { get; set; }
 
+		// フリガナ（検索用）
+		String? RubyForSearch { get; set; }
+
 		// 検索ワード
 		String? Keyword { get; set; }
 

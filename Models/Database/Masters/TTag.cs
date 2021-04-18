@@ -58,6 +58,10 @@ namespace YukaLister.Models.Database.Masters
 		[Column(FIELD_NAME_TAG_RUBY)]
 		public String? Ruby { get; set; }
 
+		// タグフリガナ（検索用）
+		[Column(FIELD_NAME_TAG_RUBY_FOR_SEARCH)]
+		public String? RubyForSearch { get; set; }
+
 		// 検索ワード
 		[Column(FIELD_NAME_TAG_KEYWORD)]
 		public String? Keyword { get; set; }
@@ -99,6 +103,7 @@ namespace YukaLister.Models.Database.Masters
 		public const String FIELD_NAME_TAG_DIRTY = "tag_dirty";
 		public const String FIELD_NAME_TAG_NAME = "tag_name";
 		public const String FIELD_NAME_TAG_RUBY = "tag_ruby";
+		public const String FIELD_NAME_TAG_RUBY_FOR_SEARCH = "tag_ruby_for_search";
 		public const String FIELD_NAME_TAG_KEYWORD = "tag_keyword";
 	}
 }

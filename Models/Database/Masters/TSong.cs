@@ -58,6 +58,10 @@ namespace YukaLister.Models.Database.Masters
 		[Column(FIELD_NAME_SONG_RUBY)]
 		public String? Ruby { get; set; }
 
+		// 楽曲フリガナ（検索用）
+		[Column(FIELD_NAME_SONG_RUBY_FOR_SEARCH)]
+		public String? RubyForSearch { get; set; }
+
 		// 検索ワード
 		[Column(FIELD_NAME_SONG_KEYWORD)]
 		public String? Keyword { get; set; }
@@ -123,6 +127,7 @@ namespace YukaLister.Models.Database.Masters
 		public const String FIELD_NAME_SONG_DIRTY = "song_dirty";
 		public const String FIELD_NAME_SONG_NAME = "song_name";
 		public const String FIELD_NAME_SONG_RUBY = "song_ruby";
+		public const String FIELD_NAME_SONG_RUBY_FOR_SEARCH = "song_ruby_for_search";
 		public const String FIELD_NAME_SONG_KEYWORD = "song_keyword";
 		public const String FIELD_NAME_SONG_RELEASE_DATE = "song_release_date";
 		public const String FIELD_NAME_SONG_TIE_UP_ID = "song_tie_up_id";
