@@ -168,7 +168,7 @@
             <Label Content="{Binding ListArtistName}" />
         </StackPanel>
         <StackPanel Margin="20,0,0,0">
-            <Label Content="※ファイル名等から取得したタイアップ名と、リスト出力されるタイアップ名が異なる場合、楽曲名に紐付くタイアップ名が優先されています。" Foreground="Gray" />
+            <Label Content="※ファイル名等から取得したタイアップ名と、楽曲名に紐付くタイアップ名が異なる場合、楽曲名に紐付くタイアップ名が優先されています。" Foreground="Gray" />
         </StackPanel>
         <StackPanel Margin="20" Orientation="Horizontal" FlowDirection="RightToLeft">
             <Button Content="キャンセル" Margin="0" Height="Auto" Style="{StaticResource MaterialDesignRaisedLightButton}" IsCancel="True" Width="100" DockPanel.Dock="Right" Padding="4"/>
