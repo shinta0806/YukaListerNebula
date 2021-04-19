@@ -200,6 +200,9 @@ namespace YukaLister.Models.SharedMisc
 		// 楽曲情報等編集ウィンドウを開く
 		public const String MESSAGE_KEY_OPEN_EDIT_MUSIC_INFO_WINDOW = "OpenEditMusicInfoWindow";
 
+		// タイアップ詳細情報編集ウィンドウを開く
+		public const String MESSAGE_KEY_OPEN_EDIT_TIE_UP_WINDOW = "OpenEditTieUpWindow";
+
 		// フォルダー設定ウィンドウを開く
 		public const String MESSAGE_KEY_OPEN_FOLDER_SETTINGS_WINDOW = "OpenFolderSettingsWindow";
 
@@ -245,6 +248,15 @@ namespace YukaLister.Models.SharedMisc
 		// 開始終了
 		public const String RULE_VAR_BEGIN = "<";
 		public const String RULE_VAR_END = ">";
+
+		// --------------------------------------------------------------------
+		// 年齢制限
+		// --------------------------------------------------------------------
+
+		public const Int32 AGE_LIMIT_CERO_B = 12;
+		public const Int32 AGE_LIMIT_CERO_C = 15;
+		public const Int32 AGE_LIMIT_CERO_D = 17;
+		public const Int32 AGE_LIMIT_CERO_Z = 18;
 
 		// --------------------------------------------------------------------
 		// 状態色

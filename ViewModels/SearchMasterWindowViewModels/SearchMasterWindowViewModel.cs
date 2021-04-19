@@ -10,19 +10,15 @@
 // プログラム中では本クラスではなく SearchMasterWindowViewModel<T> を使うこと。
 // ----------------------------------------------------------------------------
 
-using Livet;
+// ----------------------------------------------------------------------------
+// IRcMaster に無関係の変数は極力 SearchMasterWindowViewModel で宣言する。
+// IRcMaster の派生で外部との通信をするための変数は派生型の方が便利なので SearchMasterWindowViewModel<T> で宣言する。
+// ----------------------------------------------------------------------------
+
 using Livet.Commands;
-using Livet.EventListeners;
-using Livet.Messaging;
-using Livet.Messaging.IO;
-using Livet.Messaging.Windows;
+
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Linq;
-using System.Text;
-using System.Windows.Input;
-using YukaLister.Models;
+
 using YukaLister.Models.SharedMisc;
 
 namespace YukaLister.ViewModels.SearchMasterWindowViewModels
@@ -233,6 +229,5 @@ namespace YukaLister.ViewModels.SearchMasterWindowViewModels
 			// null にするとラベルの高さが変わってしまうため Empty にする
 			FoundsDescription = String.Empty;
 		}
-
 	}
 }

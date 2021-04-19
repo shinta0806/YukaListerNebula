@@ -17,6 +17,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
@@ -502,6 +503,22 @@ namespace YukaLister.Models.SharedMisc
 		}
 
 		// --------------------------------------------------------------------
+		// 日付に合わせて年月日文字列を設定
+		// --------------------------------------------------------------------
+		public static (String? year, String? month, String? day) MjdToStrings(Double mjd)
+		{
+			if (mjd <= YlConstants.INVALID_MJD)
+			{
+				return (null, null, null);
+			}
+			else
+			{
+				DateTime aReleaseDate = JulianDay.ModifiedJulianDateToDateTime(mjd);
+				return (aReleaseDate.Year.ToString(), aReleaseDate.Month.ToString(), aReleaseDate.Day.ToString());
+			}
+		}
+
+		// --------------------------------------------------------------------
 		// 楽曲情報データベースに登録するフリガナの表記揺れを減らす
 		// 最低限の表記揺れのみ減らす
 		// ＜返値＞ フリガナ表記 or null（空になる場合）
@@ -571,6 +588,104 @@ namespace YukaLister.Models.SharedMisc
 			}
 
 			return normalizedString;
+		}
+
+		// --------------------------------------------------------------------
+		// カンマ区切り ID をリストに分割
+		// 引数が空の場合は null ではなく空リストを返す
+		// --------------------------------------------------------------------
+		public static List<String> SplitIds(String? ids)
+		{
+			return String.IsNullOrEmpty(ids) ? new() : ids.Split(',').ToList();
+		}
+
+		// --------------------------------------------------------------------
+		// 年月日の文字列から日付を生成
+		// ＜例外＞ Exception
+		// --------------------------------------------------------------------
+		public static Double StringsToMjd(String caption, String? yearString, String? monthString, String? dayString)
+		{
+			if (String.IsNullOrEmpty(yearString))
+			{
+				// 年が入力されていない場合は、月日も空欄でなければならない
+				if (!String.IsNullOrEmpty(monthString) || !String.IsNullOrEmpty(dayString))
+				{
+					throw new Exception(caption + "の年が入力されていません。");
+				}
+
+				return YlConstants.INVALID_MJD;
+			}
+
+			// 年の確認
+			Int32 year = Common.StringToInt32(yearString);
+			Int32 nowYear = DateTime.Now.Year;
+			if (year < 0)
+			{
+				throw new Exception(caption + "の年にマイナスの値を入力することはできません。");
+			}
+			if (year < 100)
+			{
+				// 2 桁の西暦を 4 桁に変換する
+				if (year <= nowYear % 100)
+				{
+					year += (nowYear / 100) * 100;
+				}
+				else
+				{
+					year += (nowYear / 100 - 1) * 100;
+				}
+			}
+			if (year < 1000)
+			{
+				throw new Exception(caption + "の年に 3 桁の値を入力することはできません。");
+			}
+			if (year < YlConstants.INVALID_YEAR)
+			{
+				throw new Exception(caption + "の年は " + YlConstants.INVALID_YEAR + " 以上を入力して下さい。");
+			}
+			if (year > nowYear)
+			{
+				throw new Exception(caption + "の年は " + nowYear + " 以下を入力して下さい。");
+			}
+
+			// 月の確認
+			if (String.IsNullOrEmpty(monthString) && !String.IsNullOrEmpty(dayString))
+			{
+				// 年と日が入力されている場合は、月も入力されていなければならない
+				throw new Exception(caption + "の月が入力されていません。");
+			}
+			Int32 month;
+			if (String.IsNullOrEmpty(monthString))
+			{
+				// 月が空欄の場合は 1 とする
+				month = 1;
+			}
+			else
+			{
+				month = Common.StringToInt32(monthString);
+				if (month < 1 || month > 12)
+				{
+					throw new Exception(caption + "の月は 1～12 を入力して下さい。");
+				}
+			}
+
+			// 日の確認
+			Int32 day;
+			if (String.IsNullOrEmpty(dayString))
+			{
+				// 日が空欄の場合は 1 とする
+				day = 1;
+			}
+			else
+			{
+				day = Common.StringToInt32(dayString);
+				if (day < 1 || day > 31)
+				{
+					throw new Exception(caption + "の日は 1～31 を入力して下さい。");
+				}
+			}
+
+			return JulianDay.DateTimeToModifiedJulianDate(new DateTime(year, month, day));
 		}
 
 		// --------------------------------------------------------------------

@@ -1,0 +1,154 @@
+﻿<Window x:Class="YukaLister.Views.EditMasterWindows.EditTieUpWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:behaviors="http://schemas.microsoft.com/xaml/behaviors"
+        xmlns:l="http://schemas.livet-mvvm.net/2011/wpf"
+        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+        xmlns:msm="clr-namespace:YukaLister.Models.SharedMisc"
+        xmlns:sb="clr-namespace:Shinta.Behaviors"
+        xmlns:v="clr-namespace:YukaLister.Views"
+        xmlns:vm="clr-namespace:YukaLister.ViewModels"
+        xmlns:vmemw="clr-namespace:YukaLister.ViewModels.EditMasterWindowViewModels"
+        xmlns:vsm="clr-namespace:YukaLister.Views.SearchMasterWindows"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="{Binding Title}" SizeToContent="WidthAndHeight" ResizeMode="NoResize" ShowInTaskbar="False" >
+
+    <Window.DataContext>
+        <vmemw:EditTieUpWindowViewModel />
+    </Window.DataContext>
+
+    <behaviors:Interaction.Behaviors>
+        <sb:WindowBindingSupportBehavior IsCascade="True" MinimizeBox="False"/>
+    </behaviors:Interaction.Behaviors>
+
+    <behaviors:Interaction.Triggers>
+        <!-- When ContentRendered event raised, Initialize method of ViewModel would be called. -->
+        <behaviors:EventTrigger EventName="ContentRendered">
+            <l:LivetCallMethodAction MethodTarget="{Binding}" MethodName="Initialize" />
+        </behaviors:EventTrigger>
+
+        <!-- Dispose method is called, when Window closing. -->
+        <behaviors:EventTrigger EventName="Closed">
+            <l:DataContextDisposeAction />
+        </behaviors:EventTrigger>
+
+        <!-- If you make user choose 'OK or Cancel' closing Window, then please use Window Close cancel Behavior. -->
+
+        <l:InteractionMessageTrigger MessageKey="{x:Static msm:YlConstants.MESSAGE_KEY_WINDOW_CLOSE}" Messenger="{Binding Messenger}">
+            <l:WindowInteractionMessageAction InvokeActionOnlyWhenWindowIsActive="False" />
+        </l:InteractionMessageTrigger>
+
+        <l:InteractionMessageTrigger MessageKey="{x:Static msm:YlConstants.MESSAGE_KEY_OPEN_SEARCH_MASTER_WINDOW}" Messenger="{Binding Messenger}">
+            <l:TransitionInteractionMessageAction WindowType="{x:Type vsm:SearchMasterWindow}" Mode="Modal" IsOwned="True" />
+        </l:InteractionMessageTrigger>
+
+    </behaviors:Interaction.Triggers>
+
+    <StackPanel>
+        <StackPanel Margin="20,20,20,0" Orientation="Horizontal">
+            <Label Content="タイアップ ID (_I)：" Width="100" HorizontalContentAlignment="Right"/>
+            <ComboBox x:Name="ComboBoxId" ItemsSource="{Binding Masters}" SelectedItem="{Binding SelectedMaster}" DisplayMemberPath="Id" VerticalAlignment="Center" Width="300" materialDesign:ComboBoxAssist.ClassicMode="True" />
+            <Label x:Name="LabelIdInfo" Content="{Binding IdInfo}" Margin="10,0,0,0" Foreground="Red"/>
+        </StackPanel>
+        <Border BorderBrush="{DynamicResource {x:Static SystemColors.ControlLightBrushKey}}" BorderThickness="1" Height="3" Margin="0,20,0,0"/>
+        <Grid Margin="0,20,0,0">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="30"/>
+                <RowDefinition Height="30"/>
+                <RowDefinition Height="30"/>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="120"/>
+                <ColumnDefinition Width="300"/>
+                <ColumnDefinition Width="20"/>
+                <ColumnDefinition Width="120"/>
+                <ColumnDefinition Width="20"/>
+                <ColumnDefinition Width="75"/>
+                <ColumnDefinition Width="200"/>
+                <ColumnDefinition Width="125"/>
+                <ColumnDefinition Width="20"/>
+            </Grid.ColumnDefinitions>
+            <Label Content="フリガナ (_F)：" Margin="0" Grid.Row="0" Grid.Column="0" HorizontalAlignment="Right"/>
+            <TextBox x:Name="TextBoxRuby" Text="{Binding Ruby}" Grid.Column="1" Margin="0" Grid.Row="0" VerticalAlignment="Center"/>
+            <Label Content="タイアップ名 (_N)：" Margin="0" Grid.Row="1" Grid.Column="0" HorizontalAlignment="Right"/>
+            <TextBox x:Name="TextBoxName" Text="{Binding Name}" Grid.Column="1" Margin="0" Grid.Row="1" VerticalAlignment="Center"/>
+            <Label Content="制作会社あり (_C)：" Margin="0" Grid.Row="0" Grid.Column="3" HorizontalAlignment="Right"/>
+            <CheckBox x:Name="CheckBoxMaker" IsChecked="{Binding HasMaker}" Grid.Row="0" Grid.Column="4" />
+            <Button x:Name="ButtonSearchMaker" Content="検索" Grid.Row="0" Grid.Column="5" Height="Auto" FontSize="12" Padding="2" Style="{StaticResource MaterialDesignRaisedLightButton}" Margin="5" Command="{Binding ButtonSearchMakerClickedCommand}" />
+            <Label x:Name="LabelMaker" Content="{Binding MakerName}" Margin="0" Grid.Row="0" Grid.Column="6"/>
+            <Button x:Name="ButtonEditMaker" Content="制作会社詳細編集" Grid.Row="0" Grid.Column="7" Height="Auto" FontSize="12" Padding="2" Style="{StaticResource MaterialDesignRaisedLightButton}" Margin="5,5,0,5" Command="{Binding ButtonEditMakerClickedCommand}"/>
+            <Label Content="シリーズあり (_S)：" Margin="0" Grid.Row="2" Grid.Column="3" HorizontalAlignment="Right"/>
+            <CheckBox x:Name="CheckBoxTieUpGroup" IsChecked="{Binding HasTieUpGroup}" Grid.Row="2" Grid.Column="4" Height="30" VerticalAlignment="Top" />
+            <Button x:Name="ButtonSearchTieUpGroup" Content="検索" Grid.Row="2" Grid.Column="5" Height="Auto" FontSize="12" Padding="2" Style="{StaticResource MaterialDesignRaisedLightButton}" Margin="5" Command="{Binding ButtonSearchTieUpGroupClickedCommand}"/>
+            <Label x:Name="LabelTieUpGroup" Content="{Binding TieUpGroupName}" Margin="0" Grid.Row="2" Grid.Column="6"/>
+            <Button x:Name="ButtonEditTieUpGroup" Content="シリーズ詳細編集" Grid.Row="2" Grid.Column="7" Height="Auto" FontSize="12" Padding="2" Style="{StaticResource MaterialDesignRaisedLightButton}" Margin="5,5,0,5" Command="{Binding ButtonEditTieUpGroupClickedCommand}"/>
+        </Grid>
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="30"/>
+                <RowDefinition Height="30"/>
+                <RowDefinition Height="30"/>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="120"/>
+                <ColumnDefinition Width="20"/>
+                <ColumnDefinition Width="75"/>
+                <ColumnDefinition Width="70"/>
+                <ColumnDefinition Width="135"/>
+                <ColumnDefinition Width="20"/>
+                <ColumnDefinition Width="120"/>
+                <ColumnDefinition Width="70"/>
+                <ColumnDefinition Width="20"/>
+                <ColumnDefinition Width="40"/>
+                <ColumnDefinition Width="20"/>
+                <ColumnDefinition Width="40"/>
+                <ColumnDefinition Width="230"/>
+                <ColumnDefinition Width="20"/>
+            </Grid.ColumnDefinitions>
+            <Label Content="カテゴリーあり (_C)：" Margin="0" Grid.Row="0" Grid.Column="0" HorizontalAlignment="Right"/>
+            <CheckBox x:Name="CheckBoxCategory" IsChecked="{Binding HasCategory}" Grid.Row="0" Grid.Column="1" HorizontalAlignment="Right" Width="20"/>
+            <Button x:Name="ButtonSelectCategory" Content="選択" Grid.Row="0" Grid.Column="2" Height="Auto" FontSize="12" Padding="2" Style="{StaticResource MaterialDesignRaisedLightButton}" Margin="5" Command="{Binding ButtonSelectCategoryClickedCommand}" >
+                <behaviors:Interaction.Triggers>
+                    <behaviors:EventTrigger EventName="Click">
+                        <behaviors:ChangePropertyAction TargetObject="{Binding ContextMenu, ElementName=ButtonSelectCategory}" PropertyName="IsOpen" Value="True"/>
+                        <behaviors:ChangePropertyAction TargetObject="{Binding ContextMenu, ElementName=ButtonSelectCategory}" PropertyName="PlacementTarget" Value="{Binding ElementName=ButtonSelectCategory, Mode=OneWay}"/>
+                    </behaviors:EventTrigger>
+                </behaviors:Interaction.Triggers>
+                <Button.ContextMenu>
+                    <ContextMenu ItemsSource="{Binding ContextMenuButtonSelectCategoryItems}">
+                    </ContextMenu>
+                </Button.ContextMenu>
+            </Button>
+            <Label x:Name="LabelCategory" Content="{Binding CategoryName}" Tag="{Binding CategoryId}" Margin="0" Grid.Row="0" Grid.Column="3" Grid.ColumnSpan="2"/>
+            <Label Content="年齢制限 (_A)：" Margin="0" Grid.Row="1" Grid.Column="0" HorizontalAlignment="Right"/>
+            <Button x:Name="ButtonSelectAgeLimit" Content="選択" Grid.Row="1" Grid.Column="2" Height="Auto" FontSize="12" Padding="2" Style="{StaticResource MaterialDesignRaisedLightButton}" Margin="5" >
+                <behaviors:Interaction.Triggers>
+                    <behaviors:EventTrigger EventName="Click">
+                        <behaviors:ChangePropertyAction TargetObject="{Binding ContextMenu, ElementName=ButtonSelectAgeLimit}" PropertyName="IsOpen" Value="True"/>
+                        <behaviors:ChangePropertyAction TargetObject="{Binding ContextMenu, ElementName=ButtonSelectAgeLimit}" PropertyName="PlacementTarget" Value="{Binding ElementName=ButtonSelectAgeLimit, Mode=OneWay}"/>
+                    </behaviors:EventTrigger>
+                </behaviors:Interaction.Triggers>
+                <Button.ContextMenu>
+                    <ContextMenu ItemsSource="{Binding ContextMenuButtonSelectAgeLimitItems}">
+                    </ContextMenu>
+                </Button.ContextMenu>
+            </Button>
+            <TextBox x:Name="TextBoxAgeLimit" Text="{Binding AgeLimit}" Grid.Column="3" Margin="0" Grid.Row="1" VerticalAlignment="Center" HorizontalContentAlignment="Right"/>
+            <Label Content="才以上対象" Margin="0" Grid.Row="1" Grid.Column="4"/>
+            <Label Content="リリース日 (_R)：" Margin="0" Grid.Row="1" Grid.Column="6" HorizontalAlignment="Right"/>
+            <TextBox x:Name="TextBoxReleaseYear" Text="{Binding ReleaseYear}" Grid.Column="7" Margin="0" Grid.Row="1" VerticalAlignment="Center" HorizontalContentAlignment="Right"/>
+            <Label Content="年" Margin="0" Grid.Row="1" Grid.Column="8"/>
+            <TextBox x:Name="TextBoxReleaseMonth" Text="{Binding ReleaseMonth}" Grid.Column="9" Margin="0" Grid.Row="1" VerticalAlignment="Center" HorizontalContentAlignment="Right"/>
+            <Label Content="月" Margin="0" Grid.Row="1" Grid.Column="10"/>
+            <TextBox x:Name="TextBoxReleaseDay" Text="{Binding ReleaseDay}" Grid.Column="11" Margin="0" Grid.Row="1" VerticalAlignment="Center" HorizontalContentAlignment="Right"/>
+            <Label Content="日" Margin="0" Grid.Row="1" Grid.Column="12"/>
+            <Label Content="検索ワード (_W)：" Margin="0" Grid.Row="2" Grid.Column="6" HorizontalAlignment="Right"/>
+            <TextBox x:Name="TextBoxKeyword" Text="{Binding Keyword}" ToolTip="{Binding KeywordHint}" ToolTipService.ShowDuration="10000" materialDesign:HintAssist.Hint="{Binding ElementName=TextBoxKeyword, Path=ToolTip}" Grid.Column="7" Margin="0" Grid.Row="2" VerticalAlignment="Center" Grid.ColumnSpan="6"/>
+        </Grid>
+        <Border BorderBrush="{DynamicResource {x:Static SystemColors.ControlLightBrushKey}}" BorderThickness="1" Height="3" Margin="0,20,0,0"/>
+        <StackPanel Orientation="Horizontal" FlowDirection="RightToLeft" Margin="20">
+            <Button x:Name="ButtonCancel" Content="キャンセル" Margin="0" Height="Auto" Style="{StaticResource MaterialDesignRaisedLightButton}" IsCancel="True" Width="100" Padding="4"/>
+            <Button x:Name="ButtonOK" Content="OK" Margin="20,0,0,0" Height="Auto" IsDefault="True" Width="100" Command="{Binding ButtonOkClickedCommand}" sb:IsFocusedAttachedBehavior.IsFocused="{Binding IsButtonOkFocused}"/>
+        </StackPanel>
+    </StackPanel>
+
+</Window>

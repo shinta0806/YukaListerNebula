@@ -1085,10 +1085,7 @@ namespace YukaLister.ViewModels
 		// --------------------------------------------------------------------
 		private void AddContextMenuItemToButtonVar(String label)
 		{
-			if (ContextMenuButtonVarItems != null)
-			{
-				YlCommon.AddContextMenuItem(ContextMenuButtonVarItems, label, ContextMenuButtonVarItem_Click);
-			}
+			YlCommon.AddContextMenuItem(ContextMenuButtonVarItems, label, ContextMenuButtonVarItem_Click);
 		}
 
 		// --------------------------------------------------------------------

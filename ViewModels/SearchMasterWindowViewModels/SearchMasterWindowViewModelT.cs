@@ -8,24 +8,19 @@
 //
 // ----------------------------------------------------------------------------
 
-using Livet;
-using Livet.Commands;
-using Livet.EventListeners;
-using Livet.Messaging;
-using Livet.Messaging.IO;
 using Livet.Messaging.Windows;
+
 using Microsoft.EntityFrameworkCore;
+
 using Shinta;
+
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
-using System.Text;
-using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Input;
-using YukaLister.Models;
+
 using YukaLister.Models.Database;
 using YukaLister.Models.SharedMisc;
 using YukaLister.Models.YukaListerModels;
@@ -81,8 +76,8 @@ namespace YukaLister.ViewModels.SearchMasterWindowViewModels
 		// 一般のプロパティー
 		// --------------------------------------------------------------------
 
-		// 選択ボタンで選択された情報
-		public T? DecidedItem { get; private set; }
+		// 選択ボタンで選択されたマスター
+		public T? OkSelectedMaster { get; private set; }
 
 		// ====================================================================
 		// public メンバー関数
@@ -289,7 +284,7 @@ namespace YukaLister.ViewModels.SearchMasterWindowViewModels
 				return;
 			}
 
-			DecidedItem = SelectedFound;
+			OkSelectedMaster = SelectedFound;
 			Messenger.Raise(new WindowActionMessage(YlConstants.MESSAGE_KEY_WINDOW_CLOSE));
 		}
 

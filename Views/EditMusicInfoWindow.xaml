@@ -6,6 +6,7 @@
         xmlns:msm="clr-namespace:YukaLister.Models.SharedMisc"
         xmlns:sb="clr-namespace:Shinta.Behaviors"
         xmlns:v="clr-namespace:YukaLister.Views"
+        xmlns:vem="clr-namespace:YukaLister.Views.EditMasterWindows"
         xmlns:vsm="clr-namespace:YukaLister.Views.SearchMasterWindows"
         xmlns:vm="clr-namespace:YukaLister.ViewModels"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
@@ -42,6 +43,10 @@
 
         <l:InteractionMessageTrigger MessageKey="{x:Static msm:YlConstants.MESSAGE_KEY_OPEN_SEARCH_MASTER_WINDOW}" Messenger="{Binding Messenger}">
             <l:TransitionInteractionMessageAction WindowType="{x:Type vsm:SearchMasterWindow}" Mode="Modal" IsOwned="True" />
+        </l:InteractionMessageTrigger>
+
+        <l:InteractionMessageTrigger MessageKey="{x:Static msm:YlConstants.MESSAGE_KEY_OPEN_EDIT_TIE_UP_WINDOW}" Messenger="{Binding Messenger}">
+            <l:TransitionInteractionMessageAction WindowType="{x:Type vem:EditTieUpWindow}" Mode="Modal" IsOwned="True" />
         </l:InteractionMessageTrigger>
 
     </behaviors:Interaction.Triggers>

@@ -20,7 +20,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
-
+using System.Windows;
 using YukaLister.Models.Database;
 using YukaLister.Models.Database.Aliases;
 using YukaLister.Models.Database.Masters;
@@ -28,6 +28,7 @@ using YukaLister.Models.Database.Sequences;
 using YukaLister.Models.DatabaseContexts;
 using YukaLister.Models.SharedMisc;
 using YukaLister.Models.YukaListerModels;
+using YukaLister.ViewModels.EditMasterWindowViewModels;
 using YukaLister.ViewModels.SearchMasterWindowViewModels;
 
 namespace YukaLister.ViewModels
@@ -235,7 +236,7 @@ namespace YukaLister.ViewModels
 				Messenger.Raise(new TransitionMessage(searchMasterWindowViewModel, YlConstants.MESSAGE_KEY_OPEN_SEARCH_MASTER_WINDOW));
 
 				_isTieUpSearched = true;
-				TieUpOrigin = searchMasterWindowViewModel.DecidedItem?.Name ?? TieUpOrigin;
+				TieUpOrigin = searchMasterWindowViewModel.OkSelectedMaster?.Name ?? TieUpOrigin;
 				UpdateListItems();
 			}
 			catch (Exception excep)
@@ -265,105 +266,98 @@ namespace YukaLister.ViewModels
 		{
 			try
 			{
-#if false
-				using (MusicInfoDatabaseInDisk aMusicInfoDbInDisk = new MusicInfoDatabaseInDisk(Environment!))
-				{
-					// ファイル名から取得したタイアップ名が未登録でかつ未検索は検索を促す
-					if (DicByFile != null
-							&& YlCommon.SelectMastersByName<TTieUp>(aMusicInfoDbInDisk.Connection, DicByFile[YlConstants.RULE_VAR_PROGRAM]).Count == 0 && String.IsNullOrEmpty(TieUpOrigin))
-					{
-						if (!mIsTieUpSearched)
-						{
-							throw new Exception("タイアップの正式名称が選択されていないため新規タイアップ情報作成となりますが、その前に一度、目的のタイアップが未登録かどうか検索して下さい。");
-						}
+				using MusicInfoContext musicInfoContext = MusicInfoContext.CreateContext(out DbSet<TProperty> properties,
+						out DbSet<TSong> songs, out DbSet<TPerson> people, out DbSet<TTieUp> tieUps, out DbSet<TCategory> categories,
+						out DbSet<TTieUpGroup> tieUpGroups, out DbSet<TMaker> makers, out DbSet<TTag> tags,
+						out DbSet<TSongAlias> songAliases, out DbSet<TPersonAlias> personAliases, out DbSet<TTieUpAlias> tieUpAliases,
+						out DbSet<TCategoryAlias> categoryAliases, out DbSet<TTieUpGroupAlias> tieUpGroupAliases, out DbSet<TMakerAlias> makerAliases,
+						out DbSet<TArtistSequence> artistSequences, out DbSet<TLyristSequence> lyristSequences, out DbSet<TComposerSequence> composerSequences, out DbSet<TArrangerSequence> arrangerSequences,
+						out DbSet<TTieUpGroupSequence> tieUpGroupSequences, out DbSet<TTagSequence> tagSequences);
 
-						if (MessageBox.Show("タイアップの正式名称が選択されていません。\n新規にタイアップ情報を作成しますか？\n"
-								+ "（目的のタイアップが未登録の場合（検索してもヒットしない場合）に限り、新規作成を行って下さい）", "確認",
-								MessageBoxButton.YesNo, MessageBoxImage.Exclamation) == MessageBoxResult.No)
-						{
-							return;
-						}
+				// ファイル名から取得したタイアップ名が未登録でかつ未検索は検索を促す
+				if (DbCommon.SelectMasterByName(tieUps, DicByFile[YlConstants.RULE_VAR_PROGRAM]) == null && String.IsNullOrEmpty(TieUpOrigin))
+				{
+					if (!_isTieUpSearched)
+					{
+						throw new Exception("タイアップの正式名称が選択されていないため新規タイアップ情報作成となりますが、その前に一度、目的のタイアップが未登録かどうか検索して下さい。");
+					}
+
+					if (MessageBox.Show("タイアップの正式名称が選択されていません。\n新規にタイアップ情報を作成しますか？\n"
+							+ "（目的のタイアップが未登録の場合（検索してもヒットしない場合）に限り、新規作成を行って下さい）", "確認",
+							MessageBoxButton.YesNo, MessageBoxImage.Exclamation) == MessageBoxResult.No)
+					{
+						return;
 					}
 				}
 
 				// 対象タイアップ名の選択
-				String? aTieUpName;
+				String? tieUpName;
 				if (!String.IsNullOrEmpty(TieUpOrigin))
 				{
-					aTieUpName = TieUpOrigin;
+					tieUpName = TieUpOrigin;
 				}
 				else
 				{
-					aTieUpName = DicByFile?[YlConstants.RULE_VAR_PROGRAM];
+					tieUpName = DicByFile[YlConstants.RULE_VAR_PROGRAM];
 				}
 
 				// 情報準備
-				List<TTieUp> aTieUps;
-				List<TCategory> aCategories;
-				using (MusicInfoDatabaseInDisk aMusicInfoDbInDisk = new MusicInfoDatabaseInDisk(Environment!))
-				{
-					aTieUps = YlCommon.SelectMastersByName<TTieUp>(aMusicInfoDbInDisk.Connection, aTieUpName);
-					aCategories = YlCommon.SelectMastersByName<TCategory>(aMusicInfoDbInDisk.Connection, DicByFile?[YlConstants.RULE_VAR_CATEGORY]);
-				}
+				List<TTieUp> sameNameTieUps = DbCommon.SelectMastersByName(tieUps, tieUpName);
+				TCategory? category = DbCommon.SelectMasterByName(categories, DicByFile[YlConstants.RULE_VAR_CATEGORY]);
 
 				// 新規作成用の追加
-				TTieUp aNewTieUp = new TTieUp
+				TTieUp newTieUp = new()
 				{
 					// IRcBase
-					Id = null,
+					Id = String.Empty,
 					Import = false,
 					Invalid = false,
 					UpdateTime = YlConstants.INVALID_MJD,
 					Dirty = true,
 
 					// IRcMaster
-					Name = aTieUpName,
+					Name = tieUpName,
 					Ruby = null,
 					Keyword = null,
 
 					// TTieUp
-					CategoryId = aCategories.Count > 0 ? aCategories[0].Id : null,
+					CategoryId = category?.Id,
 					MakerId = null,
-					AgeLimit = Common.StringToInt32(DicByFile?[YlConstants.RULE_VAR_AGE_LIMIT]),
+					AgeLimit = Common.StringToInt32(DicByFile[YlConstants.RULE_VAR_AGE_LIMIT]),
 					ReleaseDate = YlConstants.INVALID_MJD,
 				};
-				aTieUps.Insert(0, aNewTieUp);
+				sameNameTieUps.Insert(0, newTieUp);
 
-				using (EditTieUpWindowViewModel aEditTieUpWindowViewModel = new EditTieUpWindowViewModel())
+				// ウィンドウを開く
+				using EditTieUpWindowViewModel editTieUpWindowViewModel = new(musicInfoContext, tieUps);
+				editTieUpWindowViewModel.SetMasters(sameNameTieUps);
+				if (sameNameTieUps.Count > 1)
 				{
-					aEditTieUpWindowViewModel.Environment = Environment;
-					aEditTieUpWindowViewModel.SetMasters(aTieUps);
-					if (aTieUps.Count > 1)
-					{
-						aEditTieUpWindowViewModel.DefaultId = aTieUps[1].Id;
-					}
-					Messenger.Raise(new TransitionMessage(aEditTieUpWindowViewModel, "OpenEditTieUpWindow"));
-
-					if (String.IsNullOrEmpty(aEditTieUpWindowViewModel.OkSelectedId))
-					{
-						return;
-					}
-
-					using (MusicInfoDatabaseInDisk aMusicInfoDbInDisk = new MusicInfoDatabaseInDisk(Environment!))
-					{
-						TTieUp? aTieUp = YlCommon.SelectBaseById<TTieUp>(aMusicInfoDbInDisk.Connection, aEditTieUpWindowViewModel.OkSelectedId);
-						if (aTieUp != null)
-						{
-							if (String.IsNullOrEmpty(DicByFile?[YlConstants.RULE_VAR_PROGRAM]) || aTieUp.Name == DicByFile?[YlConstants.RULE_VAR_PROGRAM])
-							{
-								UseTieUpAlias = false;
-							}
-							else
-							{
-								UseTieUpAlias = true;
-								TieUpOrigin = aTieUp.Name;
-							}
-						}
-						RaisePropertyChanged(nameof(IsTieUpNameRegistered));
-					}
-					UpdateListItems();
+					editTieUpWindowViewModel.DefaultMaster = sameNameTieUps[1];
 				}
-#endif
+				Messenger.Raise(new TransitionMessage(editTieUpWindowViewModel, YlConstants.MESSAGE_KEY_OPEN_EDIT_TIE_UP_WINDOW));
+
+				// 後処理
+				if (editTieUpWindowViewModel.OkSelectedMaster == null)
+				{
+					return;
+				}
+
+				TTieUp? tieUp = DbCommon.SelectBaseById(tieUps, editTieUpWindowViewModel.OkSelectedMaster.Id);
+				if (tieUp != null)
+				{
+					if (String.IsNullOrEmpty(DicByFile[YlConstants.RULE_VAR_PROGRAM]) || tieUp.Name == DicByFile[YlConstants.RULE_VAR_PROGRAM])
+					{
+						UseTieUpAlias = false;
+					}
+					else
+					{
+						UseTieUpAlias = true;
+						TieUpOrigin = tieUp.Name;
+					}
+				}
+				RaisePropertyChanged(nameof(IsTieUpNameRegistered));
+				UpdateListItems();
 			}
 			catch (Exception excep)
 			{
@@ -403,7 +397,7 @@ namespace YukaLister.ViewModels
 				Messenger.Raise(new TransitionMessage(searchMasterWindowViewModel, YlConstants.MESSAGE_KEY_OPEN_SEARCH_MASTER_WINDOW));
 
 				_isSongSearched = true;
-				SongOrigin = searchMasterWindowViewModel.DecidedItem?.Name ?? SongOrigin;
+				SongOrigin = searchMasterWindowViewModel.OkSelectedMaster?.Name ?? SongOrigin;
 				UpdateListItems();
 			}
 			catch (Exception excep)
@@ -928,6 +922,5 @@ namespace YukaLister.ViewModels
 				YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, "　スタックトレース：\n" + excep.StackTrace);
 			}
 		}
-
 	}
 }
