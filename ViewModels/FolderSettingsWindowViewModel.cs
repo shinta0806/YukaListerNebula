@@ -1434,6 +1434,7 @@ namespace YukaLister.ViewModels
 			// マッチ準備
 			FolderSettingsInDisk folderSettingsInDisk = YlCommon.LoadFolderSettings2Ex(FolderPath);
 			FolderSettingsInMemory folderSettingsInMemory = YlCommon.CreateFolderSettingsInMemory(folderSettingsInDisk);
+#if false
 			using MusicInfoContext musicInfoContext = MusicInfoContext.CreateContext(out DbSet<TProperty> properties,
 					out DbSet<TSong> songs, out DbSet<TPerson> people, out DbSet<TTieUp> tieUps, out DbSet<TCategory> categories,
 					out DbSet<TTieUpGroup> tieUpGroups, out DbSet<TMaker> makers, out DbSet<TTag> tags,
@@ -1441,6 +1442,11 @@ namespace YukaLister.ViewModels
 					out DbSet<TCategoryAlias> categoryAliases, out DbSet<TTieUpGroupAlias> tieUpGroupAliases, out DbSet<TMakerAlias> makerAliases,
 					out DbSet<TArtistSequence> artistSequences, out DbSet<TLyristSequence> lyristSequences, out DbSet<TComposerSequence> composerSequences, out DbSet<TArrangerSequence> arrangerSequences,
 					out DbSet<TTieUpGroupSequence> tieUpGroupSequences, out DbSet<TTagSequence> tagSequences);
+#endif
+			using MusicInfoContext musicInfoContext = MusicInfoContext.CreateContext(out DbSet<TSong> songs);
+			MusicInfoContext.GetDbSet(musicInfoContext, out DbSet<TSongAlias> songAliases);
+			MusicInfoContext.GetDbSet(musicInfoContext, out DbSet<TTieUp> tieUps);
+			MusicInfoContext.GetDbSet(musicInfoContext, out DbSet<TTieUpAlias> tieUpAliases);
 
 			for (; ; )
 			{

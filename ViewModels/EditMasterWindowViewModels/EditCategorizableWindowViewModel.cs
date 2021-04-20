@@ -8,24 +8,23 @@
 //
 // ----------------------------------------------------------------------------
 
-using Livet;
 using Livet.Commands;
-using Livet.EventListeners;
-using Livet.Messaging;
-using Livet.Messaging.IO;
-using Livet.Messaging.Windows;
+
 using Microsoft.EntityFrameworkCore;
+
+using Shinta;
+
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Linq;
-using System.Text;
+using System.Diagnostics;
+using System.Windows;
 using System.Windows.Controls;
-using YukaLister.Models;
+
 using YukaLister.Models.Database;
 using YukaLister.Models.Database.Masters;
 using YukaLister.Models.DatabaseContexts;
 using YukaLister.Models.SharedMisc;
+using YukaLister.Models.YukaListerModels;
 
 namespace YukaLister.ViewModels.EditMasterWindowViewModels
 {
@@ -145,6 +144,17 @@ namespace YukaLister.ViewModels.EditMasterWindowViewModels
 		public override void Initialize()
 		{
 			base.Initialize();
+
+			try
+			{
+				// カテゴリー選択ボタンのコンテキストメニュー
+				YlCommon.SetContextMenuItemCategories(ContextMenuButtonSelectCategoryItems, ContextMenuButtonSelectCategoryItem_Click);
+			}
+			catch (Exception excep)
+			{
+				YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(TraceEventType.Error, "カテゴリー持ち詳細編集ウィンドウ初期化時エラー：\n" + excep.Message);
+				YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, "　スタックトレース：\n" + excep.StackTrace);
+			}
 		}
 
 		// ====================================================================
@@ -208,7 +218,7 @@ namespace YukaLister.ViewModels.EditMasterWindowViewModels
 			{
 				HasCategory = true;
 
-				using MusicInfoContext musicInfoContext = MusicInfoContext.CreateContext(out DbSet<TCategory> categories);
+				MusicInfoContext.GetDbSet(_musicInfoContext, out DbSet<TCategory> categories);
 				TCategory? category = DbCommon.SelectBaseById(categories, master.CategoryId);
 				if (category != null)
 				{
@@ -226,6 +236,31 @@ namespace YukaLister.ViewModels.EditMasterWindowViewModels
 			(ReleaseYear, ReleaseMonth, ReleaseDay) = YlCommon.MjdToStrings(master.ReleaseDate);
 		}
 
+		// ====================================================================
+		// private メンバー関数
+		// ====================================================================
 
+		// --------------------------------------------------------------------
+		// イベントハンドラー
+		// --------------------------------------------------------------------
+		private void ContextMenuButtonSelectCategoryItem_Click(Object sender, RoutedEventArgs routedEventArgs)
+		{
+			try
+			{
+				MenuItem item = (MenuItem)sender;
+				MusicInfoContext.GetDbSet(_musicInfoContext, out DbSet<TCategory> categories);
+				TCategory? category = DbCommon.SelectMasterByName(categories, (String)item.Header);
+				if (category != null)
+				{
+					_categoryId = category.Id;
+					CategoryName = category.Name;
+				}
+			}
+			catch (Exception excep)
+			{
+				YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(TraceEventType.Error, "カテゴリー選択メニュークリック時エラー：\n" + excep.Message);
+				YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, "　スタックトレース：\n" + excep.StackTrace);
+			}
+		}
 	}
 }

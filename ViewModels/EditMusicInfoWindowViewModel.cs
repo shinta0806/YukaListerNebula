@@ -266,6 +266,7 @@ namespace YukaLister.ViewModels
 		{
 			try
 			{
+#if false
 				using MusicInfoContext musicInfoContext = MusicInfoContext.CreateContext(out DbSet<TProperty> properties,
 						out DbSet<TSong> songs, out DbSet<TPerson> people, out DbSet<TTieUp> tieUps, out DbSet<TCategory> categories,
 						out DbSet<TTieUpGroup> tieUpGroups, out DbSet<TMaker> makers, out DbSet<TTag> tags,
@@ -273,6 +274,9 @@ namespace YukaLister.ViewModels
 						out DbSet<TCategoryAlias> categoryAliases, out DbSet<TTieUpGroupAlias> tieUpGroupAliases, out DbSet<TMakerAlias> makerAliases,
 						out DbSet<TArtistSequence> artistSequences, out DbSet<TLyristSequence> lyristSequences, out DbSet<TComposerSequence> composerSequences, out DbSet<TArrangerSequence> arrangerSequences,
 						out DbSet<TTieUpGroupSequence> tieUpGroupSequences, out DbSet<TTagSequence> tagSequences);
+#endif
+				using MusicInfoContext musicInfoContext = MusicInfoContext.CreateContext(out DbSet<TTieUp> tieUps);
+				MusicInfoContext.GetDbSet(musicInfoContext, out DbSet<TCategory> categories);
 
 				// ファイル名から取得したタイアップ名が未登録でかつ未検索は検索を促す
 				if (DbCommon.SelectMasterByName(tieUps, DicByFile[YlConstants.RULE_VAR_PROGRAM]) == null && String.IsNullOrEmpty(TieUpOrigin))

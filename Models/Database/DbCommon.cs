@@ -115,6 +115,35 @@ namespace YukaLister.Models.Database
 		}
 
 		// --------------------------------------------------------------------
+		// レコードの内容が更新されたか（IRcSequence）
+		// --------------------------------------------------------------------
+		public static Boolean IsRcSequenceUpdated(IRcSequence existRecord, IRcSequence newRecord)
+		{
+			Boolean? isRcBaseUpdated = IsRcBaseUpdatedCore(existRecord, newRecord);
+			if (isRcBaseUpdated != null)
+			{
+				return isRcBaseUpdated.Value;
+			}
+
+			return existRecord.LinkId != newRecord.LinkId;
+		}
+
+		// --------------------------------------------------------------------
+		// レコードの内容が更新されたか（TTieUp）
+		// --------------------------------------------------------------------
+		public static Boolean IsRcTieUpUpdated(TTieUp existRecord, TTieUp newRecord)
+		{
+			Boolean? isRcCategorizableUpdated = IsRcCategorizableUpdatedCore(existRecord, newRecord);
+			if (isRcCategorizableUpdated != null)
+			{
+				return isRcCategorizableUpdated.Value;
+			}
+
+			return existRecord.MakerId != newRecord.MakerId
+					|| existRecord.AgeLimit != newRecord.AgeLimit;
+		}
+
+		// --------------------------------------------------------------------
 		// 楽曲情報データベースのテーブル番号
 		// データベース自体に付与されている番号ではなく、内部での各種定数利用用
 		// ToDo: いけてなさなんとかならないか
@@ -206,6 +235,68 @@ namespace YukaLister.Models.Database
 			catch (Exception)
 			{
 				return new TProperty();
+			}
+		}
+
+		// --------------------------------------------------------------------
+		// 紐付テーブルに新規登録または更新
+		// --------------------------------------------------------------------
+		public static void RegisterSequence<T>(DbSet<T> records, String id, List<String> linkIds, Boolean isImport = false) where T : class, IRcSequence, new()
+		{
+			// 新規レコード
+			List<T> newSequences = new();
+			for (Int32 i = 0; i < linkIds.Count; i++)
+			{
+				T newSequence = CreateSequenceRecord<T>(id, i, linkIds[i], isImport);
+				newSequences.Add(newSequence);
+			}
+
+			// 既存レコード
+			List<T> existSequences = SelectSequencesById<T>(records, id, true);
+
+			// 既存レコードがインポートではなく新規レコードがインポートの場合は更新しない
+			if (existSequences.Count > 0 && !existSequences[0].Import
+					&& newSequences.Count > 0 && newSequences[0].Import)
+			{
+				return;
+			}
+
+			// 既存レコードがある場合は更新
+			for (Int32 i = 0; i < Math.Min(newSequences.Count, existSequences.Count); i++)
+			{
+				if (IsRcSequenceUpdated(existSequences[i], newSequences[i]))
+				{
+					newSequences[i].UpdateTime = existSequences[i].UpdateTime;
+					Common.ShallowCopy(newSequences[i], existSequences[i]);
+					if (!isImport)
+					{
+						YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, typeof(T).Name + " 紐付テーブル更新：" + id + " / " + i.ToString());
+					}
+				}
+			}
+
+			// 既存レコードがない部分は新規登録
+			for (Int32 i = existSequences.Count; i < newSequences.Count; i++)
+			{
+				records.Add(newSequences[i]);
+				if (!isImport)
+				{
+					YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, typeof(T).Name + " 紐付テーブル新規登録：" + id + " / " + i.ToString());
+				}
+			}
+
+			// 既存レコードが余る部分は無効化
+			for (Int32 i = newSequences.Count; i < existSequences.Count; i++)
+			{
+				if (!existSequences[i].Invalid)
+				{
+					existSequences[i].Invalid = true;
+					existSequences[i].Dirty = true;
+					if (!isImport)
+					{
+						YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, typeof(T).Name + " 紐付テーブル無効化：" + id + " / " + i.ToString());
+					}
+				}
 			}
 		}
 
@@ -408,6 +499,26 @@ namespace YukaLister.Models.Database
 		// ====================================================================
 
 		// --------------------------------------------------------------------
+		// 紐付テーブルのレコードを作成
+		// --------------------------------------------------------------------
+		private static T CreateSequenceRecord<T>(String id, Int32 sequence, String linkId, Boolean isImport = false) where T : IRcSequence, new()
+		{
+			return new T()
+			{
+				// IRcBase
+				Id = id,
+				Import = false,
+				Invalid = false,
+				UpdateTime = YlConstants.INVALID_MJD,
+				Dirty = true,
+
+				// IRcSequence
+				Sequence = sequence,
+				LinkId = linkId,
+			};
+		}
+
+		// --------------------------------------------------------------------
 		// レコードの内容が更新されたか（IRcBase）
 		// より派生型の IsRcXXXUpdated() から呼び出される前提
 		// プライマリーキーは比較しない
@@ -431,6 +542,55 @@ namespace YukaLister.Models.Database
 
 				// 既存レコードが無効の場合は、無効解除されるまでは更新しない、無効解除されたら更新された
 				return !newRecord.Invalid;
+			}
+
+			// 派生型の内容が更新されたかどうかで判断すべき
+			return null;
+		}
+
+		// --------------------------------------------------------------------
+		// レコードの内容が更新されたか（IRcCategorizable）
+		// より派生型の IsRcXXXUpdated() から呼び出される前提
+		// ＜返値＞ true: 更新された, false: 更新されていない, null: より派生型での判断に委ねる
+		// --------------------------------------------------------------------
+		private static Boolean? IsRcCategorizableUpdatedCore(IRcCategorizable existRecord, IRcCategorizable newRecord)
+		{
+			Boolean? isRcMasterUpdated = IsRcMasterUpdatedCore(existRecord, newRecord);
+			if (isRcMasterUpdated != null)
+			{
+				return isRcMasterUpdated.Value;
+			}
+
+			// IRcCategorizable の要素が更新されていれば更新されたことが確定
+			if (existRecord.CategoryId != newRecord.CategoryId
+					|| existRecord.ReleaseDate != newRecord.ReleaseDate)
+			{
+				return true;
+			}
+
+			// 派生型の内容が更新されたかどうかで判断すべき
+			return null;
+		}
+
+		// --------------------------------------------------------------------
+		// レコードの内容が更新されたか（IRcMaster）
+		// より派生型の IsRcXXXUpdated() から呼び出される前提
+		// ＜返値＞ true: 更新された, false: 更新されていない, null: より派生型での判断に委ねる
+		// --------------------------------------------------------------------
+		private static Boolean? IsRcMasterUpdatedCore(IRcMaster existRecord, IRcMaster newRecord)
+		{
+			Boolean? isRcBaseUpdated = IsRcBaseUpdatedCore(existRecord, newRecord);
+			if (isRcBaseUpdated != null)
+			{
+				return isRcBaseUpdated.Value;
+			}
+
+			// IRcMaster の要素が更新されていれば更新されたことが確定
+			if (existRecord.Name != newRecord.Name
+					|| existRecord.Ruby != newRecord.Ruby
+					|| existRecord.Keyword != newRecord.Keyword)
+			{
+				return true;
 			}
 
 			// 派生型の内容が更新されたかどうかで判断すべき

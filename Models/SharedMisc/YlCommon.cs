@@ -24,6 +24,9 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using YukaLister.Models.Database;
+using YukaLister.Models.Database.Masters;
+using YukaLister.Models.DatabaseContexts;
 using YukaLister.Models.YukaListerModels;
 using YukaLister.ViewModels;
 
@@ -588,6 +591,19 @@ namespace YukaLister.Models.SharedMisc
 			}
 
 			return normalizedString;
+		}
+
+		// --------------------------------------------------------------------
+		// カテゴリーメニューに値を設定
+		// --------------------------------------------------------------------
+		public static void SetContextMenuItemCategories(List<MenuItem> menuItems, RoutedEventHandler click)
+		{
+			using MusicInfoContext musicInfoContext = MusicInfoContext.CreateContext(out DbSet<TCategory> categories);
+			List<String> categoryNames = DbCommon.SelectCategoryNames(categories);
+			foreach (String categoryName in categoryNames)
+			{
+				AddContextMenuItem(menuItems, categoryName, click);
+			}
 		}
 
 		// --------------------------------------------------------------------

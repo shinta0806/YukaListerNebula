@@ -154,6 +154,20 @@ namespace YukaLister.Models.DatabaseContexts
 			return musicInfoContext;
 		}
 
+#if false
+		// --------------------------------------------------------------------
+		// データベースコンテキスト生成
+		// ＜例外＞ Exception
+		// --------------------------------------------------------------------
+		public static MusicInfoContext CreateContext(out DbSet<TTieUpGroup> tieUpGroups, out DbSet<TTieUpGroupSequence> tieUpGroupSequences)
+		{
+			MusicInfoContext musicInfoContext = new();
+			GetDbSet(musicInfoContext, out tieUpGroups);
+			GetDbSet(musicInfoContext, out tieUpGroupSequences);
+			return musicInfoContext;
+		}
+#endif
+
 		// --------------------------------------------------------------------
 		// データベースコンテキスト生成
 		// ＜例外＞ Exception
@@ -268,6 +282,253 @@ namespace YukaLister.Models.DatabaseContexts
 			CreateDatabase();
 		}
 
+		// --------------------------------------------------------------------
+		// データベースセット取得
+		// ＜例外＞ Exception
+		// --------------------------------------------------------------------
+		public static void GetDbSet(MusicInfoContext musicInfoContext, out DbSet<TSong> songs)
+		{
+			if (musicInfoContext.Songs == null)
+			{
+				throw new Exception("楽曲マスターテーブルにアクセスできません。");
+			}
+			songs = musicInfoContext.Songs;
+		}
+
+		// --------------------------------------------------------------------
+		// データベースセット取得
+		// ＜例外＞ Exception
+		// --------------------------------------------------------------------
+		public static void GetDbSet(MusicInfoContext musicInfoContext, out DbSet<TPerson> people)
+		{
+			if (musicInfoContext.People == null)
+			{
+				throw new Exception("人物マスターテーブルにアクセスできません。");
+			}
+			people = musicInfoContext.People;
+		}
+
+		// --------------------------------------------------------------------
+		// データベースセット取得
+		// ＜例外＞ Exception
+		// --------------------------------------------------------------------
+		public static void GetDbSet(MusicInfoContext musicInfoContext, out DbSet<TTieUp> tieUps)
+		{
+			if (musicInfoContext.TieUps == null)
+			{
+				throw new Exception("タイアップマスターテーブルにアクセスできません。");
+			}
+			tieUps = musicInfoContext.TieUps;
+		}
+
+		// --------------------------------------------------------------------
+		// データベースセット取得
+		// ＜例外＞ Exception
+		// --------------------------------------------------------------------
+		public static void GetDbSet(MusicInfoContext musicInfoContext, out DbSet<TCategory> categories)
+		{
+			if (musicInfoContext.Categories == null)
+			{
+				throw new Exception("カテゴリーマスターテーブルにアクセスできません。");
+			}
+			categories = musicInfoContext.Categories;
+		}
+
+		// --------------------------------------------------------------------
+		// データベースセット取得
+		// ＜例外＞ Exception
+		// --------------------------------------------------------------------
+		public static void GetDbSet(MusicInfoContext musicInfoContext, out DbSet<TTieUpGroup> tieUpGroups)
+		{
+			if (musicInfoContext.TieUpGroups == null)
+			{
+				throw new Exception("タイアップグループマスターテーブルにアクセスできません。");
+			}
+			tieUpGroups = musicInfoContext.TieUpGroups;
+		}
+
+		// --------------------------------------------------------------------
+		// データベースセット取得
+		// ＜例外＞ Exception
+		// --------------------------------------------------------------------
+		public static void GetDbSet(MusicInfoContext musicInfoContext, out DbSet<TMaker> makers)
+		{
+			if (musicInfoContext.Makers == null)
+			{
+				throw new Exception("制作会社マスターテーブルにアクセスできません。");
+			}
+			makers = musicInfoContext.Makers;
+		}
+
+		// --------------------------------------------------------------------
+		// データベースセット取得
+		// ＜例外＞ Exception
+		// --------------------------------------------------------------------
+		public static void GetDbSet(MusicInfoContext musicInfoContext, out DbSet<TTag> tags)
+		{
+			if (musicInfoContext.Tags == null)
+			{
+				throw new Exception("タグマスターテーブルにアクセスできません。");
+			}
+			tags = musicInfoContext.Tags;
+		}
+
+		// --------------------------------------------------------------------
+		// データベースセット取得
+		// ＜例外＞ Exception
+		// --------------------------------------------------------------------
+		public static void GetDbSet(MusicInfoContext musicInfoContext, out DbSet<TSongAlias> songAliases)
+		{
+			if (musicInfoContext.SongAliases == null)
+			{
+				throw new Exception("楽曲別名テーブルにアクセスできません。");
+			}
+			songAliases = musicInfoContext.SongAliases;
+		}
+
+		// --------------------------------------------------------------------
+		// データベースセット取得
+		// ＜例外＞ Exception
+		// --------------------------------------------------------------------
+		public static void GetDbSet(MusicInfoContext musicInfoContext, out DbSet<TPersonAlias> personAliases)
+		{
+			if (musicInfoContext.PersonAliases == null)
+			{
+				throw new Exception("人物別名テーブルにアクセスできません。");
+			}
+			personAliases = musicInfoContext.PersonAliases;
+		}
+
+		// --------------------------------------------------------------------
+		// データベースセット取得
+		// ＜例外＞ Exception
+		// --------------------------------------------------------------------
+		public static void GetDbSet(MusicInfoContext musicInfoContext, out DbSet<TTieUpAlias> tieUpAliases)
+		{
+			if (musicInfoContext.TieUpAliases == null)
+			{
+				throw new Exception("タイアップ別名テーブルにアクセスできません。");
+			}
+			tieUpAliases = musicInfoContext.TieUpAliases;
+		}
+
+		// --------------------------------------------------------------------
+		// データベースセット取得
+		// ＜例外＞ Exception
+		// --------------------------------------------------------------------
+		public static void GetDbSet(MusicInfoContext musicInfoContext, out DbSet<TCategoryAlias> categoryAliases)
+		{
+			if (musicInfoContext.CategoryAliases == null)
+			{
+				throw new Exception("カテゴリー別名テーブルにアクセスできません。");
+			}
+			categoryAliases = musicInfoContext.CategoryAliases;
+		}
+
+		// --------------------------------------------------------------------
+		// データベースセット取得
+		// ＜例外＞ Exception
+		// --------------------------------------------------------------------
+		public static void GetDbSet(MusicInfoContext musicInfoContext, out DbSet<TTieUpGroupAlias> tieUpGroupAliases)
+		{
+			if (musicInfoContext.TieUpGroupAliases == null)
+			{
+				throw new Exception("タイアップグループ別名テーブルにアクセスできません。");
+			}
+			tieUpGroupAliases = musicInfoContext.TieUpGroupAliases;
+		}
+
+		// --------------------------------------------------------------------
+		// データベースセット取得
+		// ＜例外＞ Exception
+		// --------------------------------------------------------------------
+		public static void GetDbSet(MusicInfoContext musicInfoContext, out DbSet<TMakerAlias> makerAliases)
+		{
+			if (musicInfoContext.MakerAliases == null)
+			{
+				throw new Exception("制作会社別名テーブルにアクセスできません。");
+			}
+			makerAliases = musicInfoContext.MakerAliases;
+		}
+
+		// --------------------------------------------------------------------
+		// データベースセット取得
+		// ＜例外＞ Exception
+		// --------------------------------------------------------------------
+		public static void GetDbSet(MusicInfoContext musicInfoContext, out DbSet<TArtistSequence> artistSequences)
+		{
+			if (musicInfoContext.ArtistSequences == null)
+			{
+				throw new Exception("歌手紐付テーブルにアクセスできません。");
+			}
+			artistSequences = musicInfoContext.ArtistSequences;
+		}
+
+		// --------------------------------------------------------------------
+		// データベースセット取得
+		// ＜例外＞ Exception
+		// --------------------------------------------------------------------
+		public static void GetDbSet(MusicInfoContext musicInfoContext, out DbSet<TLyristSequence> lyristSequences)
+		{
+			if (musicInfoContext.LyristSequences == null)
+			{
+				throw new Exception("作詞者紐付テーブルにアクセスできません。");
+			}
+			lyristSequences = musicInfoContext.LyristSequences;
+		}
+
+		// --------------------------------------------------------------------
+		// データベースセット取得
+		// ＜例外＞ Exception
+		// --------------------------------------------------------------------
+		public static void GetDbSet(MusicInfoContext musicInfoContext, out DbSet<TComposerSequence> composerSequences)
+		{
+			if (musicInfoContext.ComposerSequences == null)
+			{
+				throw new Exception("作曲者紐付テーブルにアクセスできません。");
+			}
+			composerSequences = musicInfoContext.ComposerSequences;
+		}
+
+		// --------------------------------------------------------------------
+		// データベースセット取得
+		// ＜例外＞ Exception
+		// --------------------------------------------------------------------
+		public static void GetDbSet(MusicInfoContext musicInfoContext, out DbSet<TArrangerSequence> arrangerSequences)
+		{
+			if (musicInfoContext.ArrangerSequences == null)
+			{
+				throw new Exception("編曲者紐付テーブルにアクセスできません。");
+			}
+			arrangerSequences = musicInfoContext.ArrangerSequences;
+		}
+
+		// --------------------------------------------------------------------
+		// データベースセット取得
+		// ＜例外＞ Exception
+		// --------------------------------------------------------------------
+		public static void GetDbSet(MusicInfoContext musicInfoContext, out DbSet<TTieUpGroupSequence> tieUpGroupSequences)
+		{
+			if (musicInfoContext.TieUpGroupSequences == null)
+			{
+				throw new Exception("タイアップグループ紐付テーブルにアクセスできません。");
+			}
+			tieUpGroupSequences = musicInfoContext.TieUpGroupSequences;
+		}
+
+		// --------------------------------------------------------------------
+		// データベースセット取得
+		// ＜例外＞ Exception
+		// --------------------------------------------------------------------
+		public static void GetDbSet(MusicInfoContext musicInfoContext, out DbSet<TTagSequence> tagSequences)
+		{
+			if (musicInfoContext.TagSequences == null)
+			{
+				throw new Exception("タグ紐付テーブルにアクセスできません。");
+			}
+			tagSequences = musicInfoContext.TagSequences;
+		}
+
 		// ====================================================================
 		// protected メンバー関数
 		// ====================================================================
@@ -349,253 +610,6 @@ namespace YukaLister.Models.DatabaseContexts
 		private static String DatabasePath()
 		{
 			return DbCommon.YukaListerDatabaseFullFolder() + FILE_NAME_MUSIC_INFO_DATABASE;
-		}
-
-		// --------------------------------------------------------------------
-		// データベースセット取得
-		// ＜例外＞ Exception
-		// --------------------------------------------------------------------
-		private static void GetDbSet(MusicInfoContext musicInfoContext, out DbSet<TSong> songs)
-		{
-			if (musicInfoContext.Songs == null)
-			{
-				throw new Exception("楽曲マスターテーブルにアクセスできません。");
-			}
-			songs = musicInfoContext.Songs;
-		}
-
-		// --------------------------------------------------------------------
-		// データベースセット取得
-		// ＜例外＞ Exception
-		// --------------------------------------------------------------------
-		private static void GetDbSet(MusicInfoContext musicInfoContext, out DbSet<TPerson> people)
-		{
-			if (musicInfoContext.People == null)
-			{
-				throw new Exception("人物マスターテーブルにアクセスできません。");
-			}
-			people = musicInfoContext.People;
-		}
-
-		// --------------------------------------------------------------------
-		// データベースセット取得
-		// ＜例外＞ Exception
-		// --------------------------------------------------------------------
-		private static void GetDbSet(MusicInfoContext musicInfoContext, out DbSet<TTieUp> tieUps)
-		{
-			if (musicInfoContext.TieUps == null)
-			{
-				throw new Exception("タイアップマスターテーブルにアクセスできません。");
-			}
-			tieUps = musicInfoContext.TieUps;
-		}
-
-		// --------------------------------------------------------------------
-		// データベースセット取得
-		// ＜例外＞ Exception
-		// --------------------------------------------------------------------
-		private static void GetDbSet(MusicInfoContext musicInfoContext, out DbSet<TCategory> categories)
-		{
-			if (musicInfoContext.Categories == null)
-			{
-				throw new Exception("カテゴリーマスターテーブルにアクセスできません。");
-			}
-			categories = musicInfoContext.Categories;
-		}
-
-		// --------------------------------------------------------------------
-		// データベースセット取得
-		// ＜例外＞ Exception
-		// --------------------------------------------------------------------
-		private static void GetDbSet(MusicInfoContext musicInfoContext, out DbSet<TTieUpGroup> tieUpGroups)
-		{
-			if (musicInfoContext.TieUpGroups == null)
-			{
-				throw new Exception("タイアップグループマスターテーブルにアクセスできません。");
-			}
-			tieUpGroups = musicInfoContext.TieUpGroups;
-		}
-
-		// --------------------------------------------------------------------
-		// データベースセット取得
-		// ＜例外＞ Exception
-		// --------------------------------------------------------------------
-		private static void GetDbSet(MusicInfoContext musicInfoContext, out DbSet<TMaker> makers)
-		{
-			if (musicInfoContext.Makers == null)
-			{
-				throw new Exception("制作会社マスターテーブルにアクセスできません。");
-			}
-			makers = musicInfoContext.Makers;
-		}
-
-		// --------------------------------------------------------------------
-		// データベースセット取得
-		// ＜例外＞ Exception
-		// --------------------------------------------------------------------
-		private static void GetDbSet(MusicInfoContext musicInfoContext, out DbSet<TTag> tags)
-		{
-			if (musicInfoContext.Tags == null)
-			{
-				throw new Exception("タグマスターテーブルにアクセスできません。");
-			}
-			tags = musicInfoContext.Tags;
-		}
-
-		// --------------------------------------------------------------------
-		// データベースセット取得
-		// ＜例外＞ Exception
-		// --------------------------------------------------------------------
-		private static void GetDbSet(MusicInfoContext musicInfoContext, out DbSet<TSongAlias> songAliases)
-		{
-			if (musicInfoContext.SongAliases == null)
-			{
-				throw new Exception("楽曲別名テーブルにアクセスできません。");
-			}
-			songAliases = musicInfoContext.SongAliases;
-		}
-
-		// --------------------------------------------------------------------
-		// データベースセット取得
-		// ＜例外＞ Exception
-		// --------------------------------------------------------------------
-		private static void GetDbSet(MusicInfoContext musicInfoContext, out DbSet<TPersonAlias> personAliases)
-		{
-			if (musicInfoContext.PersonAliases == null)
-			{
-				throw new Exception("人物別名テーブルにアクセスできません。");
-			}
-			personAliases = musicInfoContext.PersonAliases;
-		}
-
-		// --------------------------------------------------------------------
-		// データベースセット取得
-		// ＜例外＞ Exception
-		// --------------------------------------------------------------------
-		private static void GetDbSet(MusicInfoContext musicInfoContext, out DbSet<TTieUpAlias> tieUpAliases)
-		{
-			if (musicInfoContext.TieUpAliases == null)
-			{
-				throw new Exception("タイアップ別名テーブルにアクセスできません。");
-			}
-			tieUpAliases = musicInfoContext.TieUpAliases;
-		}
-
-		// --------------------------------------------------------------------
-		// データベースセット取得
-		// ＜例外＞ Exception
-		// --------------------------------------------------------------------
-		private static void GetDbSet(MusicInfoContext musicInfoContext, out DbSet<TCategoryAlias> categoryAliases)
-		{
-			if (musicInfoContext.CategoryAliases == null)
-			{
-				throw new Exception("カテゴリー別名テーブルにアクセスできません。");
-			}
-			categoryAliases = musicInfoContext.CategoryAliases;
-		}
-
-		// --------------------------------------------------------------------
-		// データベースセット取得
-		// ＜例外＞ Exception
-		// --------------------------------------------------------------------
-		private static void GetDbSet(MusicInfoContext musicInfoContext, out DbSet<TTieUpGroupAlias> tieUpGroupAliases)
-		{
-			if (musicInfoContext.TieUpGroupAliases == null)
-			{
-				throw new Exception("タイアップグループ別名テーブルにアクセスできません。");
-			}
-			tieUpGroupAliases = musicInfoContext.TieUpGroupAliases;
-		}
-
-		// --------------------------------------------------------------------
-		// データベースセット取得
-		// ＜例外＞ Exception
-		// --------------------------------------------------------------------
-		private static void GetDbSet(MusicInfoContext musicInfoContext, out DbSet<TMakerAlias> makerAliases)
-		{
-			if (musicInfoContext.MakerAliases == null)
-			{
-				throw new Exception("制作会社別名テーブルにアクセスできません。");
-			}
-			makerAliases = musicInfoContext.MakerAliases;
-		}
-
-		// --------------------------------------------------------------------
-		// データベースセット取得
-		// ＜例外＞ Exception
-		// --------------------------------------------------------------------
-		private static void GetDbSet(MusicInfoContext musicInfoContext, out DbSet<TArtistSequence> artistSequences)
-		{
-			if (musicInfoContext.ArtistSequences == null)
-			{
-				throw new Exception("歌手紐付テーブルにアクセスできません。");
-			}
-			artistSequences = musicInfoContext.ArtistSequences;
-		}
-
-		// --------------------------------------------------------------------
-		// データベースセット取得
-		// ＜例外＞ Exception
-		// --------------------------------------------------------------------
-		private static void GetDbSet(MusicInfoContext musicInfoContext, out DbSet<TLyristSequence> lyristSequences)
-		{
-			if (musicInfoContext.LyristSequences == null)
-			{
-				throw new Exception("作詞者紐付テーブルにアクセスできません。");
-			}
-			lyristSequences = musicInfoContext.LyristSequences;
-		}
-
-		// --------------------------------------------------------------------
-		// データベースセット取得
-		// ＜例外＞ Exception
-		// --------------------------------------------------------------------
-		private static void GetDbSet(MusicInfoContext musicInfoContext, out DbSet<TComposerSequence> composerSequences)
-		{
-			if (musicInfoContext.ComposerSequences == null)
-			{
-				throw new Exception("作曲者紐付テーブルにアクセスできません。");
-			}
-			composerSequences = musicInfoContext.ComposerSequences;
-		}
-
-		// --------------------------------------------------------------------
-		// データベースセット取得
-		// ＜例外＞ Exception
-		// --------------------------------------------------------------------
-		private static void GetDbSet(MusicInfoContext musicInfoContext, out DbSet<TArrangerSequence> arrangerSequences)
-		{
-			if (musicInfoContext.ArrangerSequences == null)
-			{
-				throw new Exception("編曲者紐付テーブルにアクセスできません。");
-			}
-			arrangerSequences = musicInfoContext.ArrangerSequences;
-		}
-
-		// --------------------------------------------------------------------
-		// データベースセット取得
-		// ＜例外＞ Exception
-		// --------------------------------------------------------------------
-		private static void GetDbSet(MusicInfoContext musicInfoContext, out DbSet<TTieUpGroupSequence> tieUpGroupSequences)
-		{
-			if (musicInfoContext.TieUpGroupSequences == null)
-			{
-				throw new Exception("タイアップグループ紐付テーブルにアクセスできません。");
-			}
-			tieUpGroupSequences = musicInfoContext.TieUpGroupSequences;
-		}
-
-		// --------------------------------------------------------------------
-		// データベースセット取得
-		// ＜例外＞ Exception
-		// --------------------------------------------------------------------
-		private static void GetDbSet(MusicInfoContext musicInfoContext, out DbSet<TTagSequence> tagSequences)
-		{
-			if (musicInfoContext.TagSequences == null)
-			{
-				throw new Exception("タグ紐付テーブルにアクセスできません。");
-			}
-			tagSequences = musicInfoContext.TagSequences;
 		}
 	}
 }

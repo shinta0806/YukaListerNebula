@@ -25,7 +25,10 @@ using System.Text;
 using System.Windows;
 using System.Windows.Controls;
 using YukaLister.Models;
+using YukaLister.Models.Database;
+using YukaLister.Models.Database.Aliases;
 using YukaLister.Models.Database.Masters;
+using YukaLister.Models.Database.Sequences;
 using YukaLister.Models.DatabaseContexts;
 using YukaLister.Models.SharedMisc;
 using YukaLister.Models.YukaListerModels;
@@ -158,7 +161,7 @@ namespace YukaLister.ViewModels.EditMasterWindowViewModels
 		{
 			try
 			{
-				using MusicInfoContext musicInfoContext = MusicInfoContext.CreateContext(out DbSet<TMaker> makers);
+				MusicInfoContext.GetDbSet(_musicInfoContext, out DbSet<TMaker> makers);
 				using SearchMasterWindowViewModel<TMaker> searchMasterWindowViewModel = new("制作会社", makers);
 				searchMasterWindowViewModel.SelectedKeyword = MakerName;
 				Messenger.Raise(new TransitionMessage(searchMasterWindowViewModel, YlConstants.MESSAGE_KEY_OPEN_SEARCH_MASTER_WINDOW));
@@ -298,39 +301,27 @@ namespace YukaLister.ViewModels.EditMasterWindowViewModels
 
 		public void ButtonSearchTieUpGroupClicked()
 		{
-#if false
 			try
 			{
-				using (SearchMusicInfoWindowViewModel aSearchMusicInfoWindowViewModel = new SearchMusicInfoWindowViewModel())
-				{
-					aSearchMusicInfoWindowViewModel.Environment = Environment;
-					aSearchMusicInfoWindowViewModel.ItemName = "シリーズ";
-					aSearchMusicInfoWindowViewModel.TableIndex = MusicInfoDbTables.TTieUpGroup;
-					aSearchMusicInfoWindowViewModel.SelectedKeyword = TieUpGroupName;
-					Messenger.Raise(new TransitionMessage(aSearchMusicInfoWindowViewModel, "OpenSearchMusicInfoWindow"));
-					_isTieUpGroupSearched = true;
-					if (String.IsNullOrEmpty(aSearchMusicInfoWindowViewModel.DecidedName))
-					{
-						return;
-					}
+				MusicInfoContext.GetDbSet(_musicInfoContext, out DbSet<TTieUpGroup> tieUpGroups);
+				using SearchMasterWindowViewModel<TTieUpGroup> searchMasterWindowViewModel = new("シリーズ", tieUpGroups);
+				searchMasterWindowViewModel.SelectedKeyword = TieUpGroupName;
+				Messenger.Raise(new TransitionMessage(searchMasterWindowViewModel, YlConstants.MESSAGE_KEY_OPEN_SEARCH_MASTER_WINDOW));
 
-					using (MusicInfoDatabaseInDisk aMusicInfoDbInDisk = new MusicInfoDatabaseInDisk(Environment!))
-					{
-						List<TTieUpGroup> aTieUpGroups = YlCommon.SelectMastersByName<TTieUpGroup>(aMusicInfoDbInDisk.Connection, aSearchMusicInfoWindowViewModel.DecidedName);
-						if (aTieUpGroups.Count > 0)
-						{
-							TieUpGroupId = aTieUpGroups[0].Id;
-							TieUpGroupName = aTieUpGroups[0].Name;
-						}
-					}
+				_isTieUpGroupSearched = true;
+				if (searchMasterWindowViewModel.OkSelectedMaster == null)
+				{
+					return;
 				}
+
+				_tieUpGroupId = searchMasterWindowViewModel.OkSelectedMaster.Id;
+				TieUpGroupName = searchMasterWindowViewModel.OkSelectedMaster.Name;
 			}
-			catch (Exception oExcep)
+			catch (Exception excep)
 			{
-				Environment!.LogWriter.ShowLogMessage(TraceEventType.Error, "シリーズ検索ボタンクリック時エラー：\n" + oExcep.Message);
-				Environment.LogWriter.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, "　スタックトレース：\n" + oExcep.StackTrace);
+				YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(TraceEventType.Error, "シリーズ検索ボタンクリック時エラー：\n" + excep.Message);
+				YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, "　スタックトレース：\n" + excep.StackTrace);
 			}
-#endif
 		}
 		#endregion
 
@@ -491,6 +482,93 @@ namespace YukaLister.ViewModels.EditMasterWindowViewModels
 			// TTieUp
 			master.MakerId = _makerId;
 			master.AgeLimit = Common.StringToInt32(AgeLimit);
+		}
+
+		// --------------------------------------------------------------------
+		// Master の内容をプロパティーに反映
+		// --------------------------------------------------------------------
+		protected override void RecordToProperties(TTieUp master)
+		{
+			base.RecordToProperties(master);
+
+			// 年齢制限
+			if (master.AgeLimit == 0)
+			{
+				AgeLimit = null;
+			}
+			else
+			{
+				AgeLimit = master.AgeLimit.ToString();
+			}
+
+			// 制作会社
+			if (String.IsNullOrEmpty(master.MakerId))
+			{
+				HasMaker = false;
+			}
+			else
+			{
+				MusicInfoContext.GetDbSet(_musicInfoContext, out DbSet<TMaker> makers);
+				HasMaker = true;
+				TMaker? maker = DbCommon.SelectBaseById(makers, master.MakerId);
+				if (maker != null)
+				{
+					_makerId = maker.Id;
+					MakerName = maker.Name;
+				}
+				else
+				{
+					_makerId = null;
+					MakerName = null;
+				}
+			}
+
+			// タイアップグループ
+			MusicInfoContext.GetDbSet(_musicInfoContext, out DbSet<TTieUpGroup> tieUpGroups);
+			MusicInfoContext.GetDbSet(_musicInfoContext, out DbSet<TTieUpGroupSequence> tieUpGroupSequences);
+			List<TTieUpGroup> SequencedTieUpGroups = DbCommon.SelectSequencedTieUpGroupsByTieUpId(tieUpGroupSequences, tieUpGroups, master.Id);
+			if (SequencedTieUpGroups.Count == 0)
+			{
+				HasTieUpGroup = false;
+			}
+			else
+			{
+				HasTieUpGroup = true;
+				_tieUpGroupId = String.Join(',', SequencedTieUpGroups.Select(x => x.Id));
+				TieUpGroupName = String.Join(',', SequencedTieUpGroups.Select(x => x.Name));
+			}
+		}
+
+		// --------------------------------------------------------------------
+		// レコード保存
+		// --------------------------------------------------------------------
+		protected override void Save(TTieUp master)
+		{
+			MusicInfoContext.GetDbSet(_musicInfoContext, out DbSet<TTieUp> tieUps);
+			MusicInfoContext.GetDbSet(_musicInfoContext, out DbSet<TTieUpGroupSequence> tieUpGroupSequences);
+			if (master.Id == NewIdForDisplay())
+			{
+				// 新規登録
+				YlCommon.InputIdPrefixIfNeededWithInvoke(this);
+				master.Id = YukaListerModel.Instance.EnvModel.YlSettings.PrepareLastId(tieUps);
+				tieUps.Add(master);
+				YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, "タイアップテーブル新規登録：" + master.Id + " / " + master.Name);
+			}
+			else
+			{
+				TTieUp? existRecord = DbCommon.SelectBaseById(tieUps, master.Id, true);
+				if (existRecord != null && DbCommon.IsRcTieUpUpdated(existRecord, master))
+				{
+					// 更新（既存のレコードが無効化されている場合は有効化も行う）
+					master.UpdateTime = existRecord.UpdateTime;
+					Common.ShallowCopy(master, existRecord);
+					YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, "タイアップテーブル更新：" + master.Id + " / " + master.Name);
+				}
+			}
+
+			// タイアップグループ紐付け
+			DbCommon.RegisterSequence<TTieUpGroupSequence>(tieUpGroupSequences, master.Id, YlCommon.SplitIds(_tieUpGroupId));
+			_musicInfoContext.SaveChanges();
 		}
 
 		// ====================================================================
