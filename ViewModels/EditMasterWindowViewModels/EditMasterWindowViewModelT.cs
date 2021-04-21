@@ -8,6 +8,7 @@
 //
 // ----------------------------------------------------------------------------
 
+using Livet.Commands;
 using Livet.Messaging.Windows;
 
 using Microsoft.EntityFrameworkCore;
@@ -38,8 +39,9 @@ namespace YukaLister.ViewModels.EditMasterWindowViewModels
 		// コンストラクター
 		// --------------------------------------------------------------------
 		public EditMasterWindowViewModel(MusicInfoContext musicInfoContext, DbSet<T> records)
-				: base(YlConstants.MUSIC_INFO_TABLE_NAME_LABELS[DbCommon.MusicInfoTableIndex<T>()], musicInfoContext)
 		{
+			_caption = YlConstants.MUSIC_INFO_TABLE_NAME_LABELS[DbCommon.MusicInfoTableIndex<T>()];
+			_musicInfoContext = musicInfoContext;
 			_records = records;
 		}
 
@@ -50,6 +52,22 @@ namespace YukaLister.ViewModels.EditMasterWindowViewModels
 		// --------------------------------------------------------------------
 		// View 通信用のプロパティー
 		// --------------------------------------------------------------------
+
+		// ID キャプション
+		private String? _idCaption;
+		public String? IdCaption
+		{
+			get => _idCaption;
+			set => RaisePropertyChangedIfSet(ref _idCaption, value);
+		}
+
+		// ID の補足情報
+		private String? _idInfo;
+		public String? IdInfo
+		{
+			get => _idInfo;
+			set => RaisePropertyChangedIfSet(ref _idInfo, value);
+		}
 
 		// 選択可能な Master 群
 		// Masters を設定する際は SetMasters() を使うこと
@@ -69,6 +87,73 @@ namespace YukaLister.ViewModels.EditMasterWindowViewModels
 			}
 		}
 
+		// フリガナ
+		private String? _ruby;
+		public String? Ruby
+		{
+			get => _ruby;
+			set => RaisePropertyChangedIfSet(ref _ruby, value);
+		}
+
+		// 名前キャプション
+		private String? _nameCaption;
+		public String? NameCaption
+		{
+			get => _nameCaption;
+			set => RaisePropertyChangedIfSet(ref _nameCaption, value);
+		}
+
+		// 名前
+		private String? _name;
+		public String? Name
+		{
+			get => _name;
+			set
+			{
+				if (RaisePropertyChangedIfSet(ref _name, value))
+				{
+					NameChanged();
+				}
+			}
+		}
+
+		// 名前のヒント
+		private String? _nameHint;
+		public String? NameHint
+		{
+			get => _nameHint;
+			set => RaisePropertyChangedIfSet(ref _nameHint, value);
+		}
+
+		// 検索ワード
+		private String? _keyword;
+		public String? Keyword
+		{
+			get => _keyword;
+			set => RaisePropertyChangedIfSet(ref _keyword, value);
+		}
+
+		// 検索ワードのヒント
+		private String? _keywordHint;
+		public String? KeywordHint
+		{
+			get => _keywordHint;
+			set => RaisePropertyChangedIfSet(ref _keywordHint, value);
+		}
+
+		// OK ボタンフォーカス
+		private Boolean _isButtonOkFocused;
+		public Boolean IsButtonOkFocused
+		{
+			get => _isButtonOkFocused;
+			set
+			{
+				// 再度フォーカスを当てられるように強制伝播
+				_isButtonOkFocused = value;
+				RaisePropertyChanged(nameof(IsButtonOkFocused));
+			}
+		}
+
 		// --------------------------------------------------------------------
 		// 一般のプロパティー
 		// --------------------------------------------------------------------
@@ -79,14 +164,26 @@ namespace YukaLister.ViewModels.EditMasterWindowViewModels
 		// OK ボタンが押された時に選択されていたマスター
 		public T? OkSelectedMaster { get; private set; }
 
-		// ====================================================================
-		// public メンバー関数
-		// ====================================================================
+		// --------------------------------------------------------------------
+		// コマンド
+		// --------------------------------------------------------------------
 
-		// --------------------------------------------------------------------
-		// イベントハンドラー：OK ボタンがクリックされた
-		// --------------------------------------------------------------------
-		public override void ButtonOKClicked()
+		#region OK ボタンの制御
+		private ViewModelCommand? _buttonOkClickedCommand;
+
+		public ViewModelCommand ButtonOkClickedCommand
+		{
+			get
+			{
+				if (_buttonOkClickedCommand == null)
+				{
+					_buttonOkClickedCommand = new ViewModelCommand(ButtonOKClicked);
+				}
+				return _buttonOkClickedCommand;
+			}
+		}
+
+		public void ButtonOKClicked()
 		{
 			try
 			{
@@ -115,6 +212,11 @@ namespace YukaLister.ViewModels.EditMasterWindowViewModels
 				YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, "　スタックトレース：\n" + excep.StackTrace);
 			}
 		}
+		#endregion
+
+		// ====================================================================
+		// public メンバー関数
+		// ====================================================================
 
 		// --------------------------------------------------------------------
 		// 初期化
@@ -125,6 +227,16 @@ namespace YukaLister.ViewModels.EditMasterWindowViewModels
 
 			try
 			{
+				// タイトルバー
+				Title = _caption + "詳細情報の編集";
+#if DEBUG
+				Title = "［デバッグ］" + Title;
+#endif
+
+				// キャプション
+				IdCaption = _caption + " ID (_I)：";
+				NameCaption = _caption + "名 (_N)：";
+
 				// デフォルト ID を選択
 				if (DefaultMaster != null)
 				{
@@ -142,6 +254,8 @@ namespace YukaLister.ViewModels.EditMasterWindowViewModels
 					}
 				}
 
+				// ヒント
+				KeywordHint = "キーワード、コメント、略称など。複数入力する際は、半角カンマ「 , 」で区切って下さい。";
 			}
 			catch (Exception excep)
 			{
@@ -169,6 +283,9 @@ namespace YukaLister.ViewModels.EditMasterWindowViewModels
 		// ====================================================================
 		// protected メンバー変数
 		// ====================================================================
+
+		// 楽曲情報データベースのコンテキスト
+		protected MusicInfoContext _musicInfoContext;
 
 		// 検索対象データベースレコード
 		protected DbSet<T> _records;
@@ -258,77 +375,11 @@ namespace YukaLister.ViewModels.EditMasterWindowViewModels
 		}
 
 		// --------------------------------------------------------------------
-		// イベントハンドラー：Name が変更された
+		// 表示用新規 ID
 		// --------------------------------------------------------------------
-		protected override void NameChanged()
+		protected String NewIdForDisplay()
 		{
-			base.NameChanged();
-
-			try
-			{
-				if (SelectedMaster == null)
-				{
-					return;
-				}
-				String? normalizedName = YlCommon.NormalizeDbString(Name);
-				if (String.IsNullOrEmpty(normalizedName) || normalizedName == SelectedMaster.Name)
-				{
-					return;
-				}
-
-				// 編集中の ID 以外で同名があるか検索
-				List<T> dups = DbCommon.SelectMastersByName(_records, normalizedName);
-				Int32 numDups = 0;
-				foreach (T dup in dups)
-				{
-					if (dup.Id != SelectedMaster.Id)
-					{
-						numDups++;
-					}
-				}
-
-				// 確認
-				if (String.IsNullOrEmpty(SelectedMaster.Name))
-				{
-					if (numDups > 0)
-					{
-						// 空の名前から変更しようとしている場合は、同名がある場合のみ警告
-						YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(TraceEventType.Warning, "登録しようとしている" + _caption + "名「" + normalizedName
-								+ "」は既にデータベースに登録されています。\n" + _caption + "名は同じでも" + _caption + "自体が異なる場合は、このまま作業を続行して下さい。\n"
-								+ "それ以外の場合は、重複登録を避けるために、" + _caption + " ID コンボボックスから既存の" + _caption + "情報を選択して下さい。");
-					}
-				}
-				else
-				{
-					String? add = null;
-					if (numDups > 0)
-					{
-						add = "\n\n【注意】\n変更後の名前は既にデータベースに登録されています。";
-					}
-					if (MessageBox.Show(_caption + "名を「" + SelectedMaster.Name + "」から「" + normalizedName + "」に変更しますか？" + add, "確認",
-							MessageBoxButton.YesNo, MessageBoxImage.Exclamation) == MessageBoxResult.No)
-					{
-						Name = SelectedMaster.Name;
-						return;
-					}
-				}
-
-				// 同名のレコードが編集対象になっていない場合は追加する
-				foreach (T dup in dups)
-				{
-					if (Masters.FirstOrDefault(x => x.Id == dup.Id) != null)
-					{
-						continue;
-					}
-
-					Masters.Add(dup);
-				}
-			}
-			catch (Exception excep)
-			{
-				YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(TraceEventType.Error, "Name 変更時エラー：\n" + excep.Message);
-				YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, "　スタックトレース：\n" + excep.StackTrace);
-			}
+			return "（新規" + _caption + "）";
 		}
 
 		// --------------------------------------------------------------------
@@ -410,27 +461,84 @@ namespace YukaLister.ViewModels.EditMasterWindowViewModels
 		// private メンバー変数
 		// ====================================================================
 
+		// 編集対象の名称
+		private String _caption;
+
 		// ====================================================================
 		// private メンバー関数
 		// ====================================================================
 
-#if false
 		// --------------------------------------------------------------------
-		// 選択された Master
+		// イベントハンドラー：Name が変更された
 		// --------------------------------------------------------------------
-		private T SelectedMaster()
+		private void NameChanged()
 		{
-			foreach (T master in Masters)
+			try
 			{
-				if (master.Id == SelectedId || String.IsNullOrEmpty(master.Id) && SelectedId == NewIdForDisplay())
+				if (SelectedMaster == null)
 				{
-					return master;
+					return;
+				}
+				String? normalizedName = YlCommon.NormalizeDbString(Name);
+				if (String.IsNullOrEmpty(normalizedName) || normalizedName == SelectedMaster.Name)
+				{
+					return;
+				}
+
+				// 編集中の ID 以外で同名があるか検索
+				List<T> dups = DbCommon.SelectMastersByName(_records, normalizedName);
+				Int32 numDups = 0;
+				foreach (T dup in dups)
+				{
+					if (dup.Id != SelectedMaster.Id)
+					{
+						numDups++;
+					}
+				}
+
+				// 確認
+				if (String.IsNullOrEmpty(SelectedMaster.Name))
+				{
+					if (numDups > 0)
+					{
+						// 空の名前から変更しようとしている場合は、同名がある場合のみ警告
+						YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(TraceEventType.Warning, "登録しようとしている" + _caption + "名「" + normalizedName
+								+ "」は既にデータベースに登録されています。\n" + _caption + "名は同じでも" + _caption + "自体が異なる場合は、このまま作業を続行して下さい。\n"
+								+ "それ以外の場合は、重複登録を避けるために、" + _caption + " ID コンボボックスから既存の" + _caption + "情報を選択して下さい。");
+					}
+				}
+				else
+				{
+					String? add = null;
+					if (numDups > 0)
+					{
+						add = "\n\n【注意】\n変更後の名前は既にデータベースに登録されています。";
+					}
+					if (MessageBox.Show(_caption + "名を「" + SelectedMaster.Name + "」から「" + normalizedName + "」に変更しますか？" + add, "確認",
+							MessageBoxButton.YesNo, MessageBoxImage.Exclamation) == MessageBoxResult.No)
+					{
+						Name = SelectedMaster.Name;
+						return;
+					}
+				}
+
+				// 同名のレコードが編集対象になっていない場合は追加する
+				foreach (T dup in dups)
+				{
+					if (Masters.FirstOrDefault(x => x.Id == dup.Id) != null)
+					{
+						continue;
+					}
+
+					Masters.Add(dup);
 				}
 			}
-
-			throw new Exception("Master が選択されていません。");
+			catch (Exception excep)
+			{
+				YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(TraceEventType.Error, "Name 変更時エラー：\n" + excep.Message);
+				YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, "　スタックトレース：\n" + excep.StackTrace);
+			}
 		}
-#endif
 
 		// --------------------------------------------------------------------
 		// イベントハンドラー：SelectedMaster が変更された
@@ -497,6 +605,5 @@ namespace YukaLister.ViewModels.EditMasterWindowViewModels
 				}
 			}
 		}
-
 	}
 }

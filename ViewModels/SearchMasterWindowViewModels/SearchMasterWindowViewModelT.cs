@@ -305,21 +305,17 @@ namespace YukaLister.ViewModels.SearchMasterWindowViewModels
 		}
 
 		// ====================================================================
-		// protected メンバー変数
-		// ====================================================================
-
-		// 検索項目名
-		protected String _itemName;
-
-		// 検索中
-		protected Boolean _isSearching;
-
-		// ====================================================================
 		// private メンバー変数
 		// ====================================================================
 
 		// 検索対象データベースレコード
 		private DbSet<T> _records;
+
+		// 検索項目名
+		private String _itemName;
+
+		// 検索中
+		private Boolean _isSearching;
 
 		// ====================================================================
 		// private static メンバー関数
