@@ -68,6 +68,7 @@ namespace YukaLister.Models.Database.Masters
 
 		// 検索ワードフリガナ（検索用）
 		// カンマ区切りされた検索ワードの各要素のうち、フリガナとして使用可能かつフリガナと異なる表記のもののみを格納
+		[Column(FIELD_NAME_TAG_KEYWORD_RUBY_FOR_SEARCH)]
 		public String? KeywordRubyForSearch { get; set; }
 
 		// 同名の区別が付くように DisplayName を設定する
@@ -109,5 +110,6 @@ namespace YukaLister.Models.Database.Masters
 		public const String FIELD_NAME_TAG_RUBY = "tag_ruby";
 		public const String FIELD_NAME_TAG_RUBY_FOR_SEARCH = "tag_ruby_for_search";
 		public const String FIELD_NAME_TAG_KEYWORD = "tag_keyword";
+		public const String FIELD_NAME_TAG_KEYWORD_RUBY_FOR_SEARCH = "tag_keyword_ruby_for_search";
 	}
 }

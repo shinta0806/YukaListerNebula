@@ -72,6 +72,7 @@ namespace YukaLister.Models.Database.Masters
 
 		// 検索ワードフリガナ（検索用）
 		// カンマ区切りされた検索ワードの各要素のうち、フリガナとして使用可能かつフリガナと異なる表記のもののみを格納
+		[Column(FIELD_NAME_TIE_UP_KEYWORD_RUBY_FOR_SEARCH)]
 		public String? KeywordRubyForSearch { get; set; }
 
 		// 同名の区別が付くように DisplayName を設定する
@@ -141,6 +142,7 @@ namespace YukaLister.Models.Database.Masters
 		public const String FIELD_NAME_TIE_UP_RUBY = "tie_up_ruby";
 		public const String FIELD_NAME_TIE_UP_RUBY_FOR_SEARCH = "tie_up_ruby_for_search";
 		public const String FIELD_NAME_TIE_UP_KEYWORD = "tie_up_keyword";
+		public const String FIELD_NAME_TIE_UP_KEYWORD_RUBY_FOR_SEARCH = "tie_up_keyword_ruby_for_search";
 		public const String FIELD_NAME_TIE_UP_CATEGORY_ID = "tie_up_category_id";
 		public const String FIELD_NAME_TIE_UP_MAKER_ID = "tie_up_maker_id";
 		public const String FIELD_NAME_TIE_UP_AGE_LIMIT = "tie_up_age_limit";
