@@ -398,6 +398,37 @@ namespace YukaLister.Models.SharedMisc
 		}
 
 		// --------------------------------------------------------------------
+		// 検索ワードフリガナ用の文字列を作成
+		// カンマ区切りされた検索ワードの各要素のうち、フリガナとして使用可能かつフリガナと異なる表記のもののみをカンマ区切りで連結
+		// --------------------------------------------------------------------
+		public static String? KeywordRubyForSearch(String? keyword)
+		{
+			if (String.IsNullOrEmpty(keyword))
+			{
+				return null;
+			}
+
+			String[] elements = keyword.Split(',', StringSplitOptions.RemoveEmptyEntries);
+			List<String> forSearchElements = new();
+			foreach (String element in elements)
+			{
+				String? ruby = NormalizeDbRubyForSearch(element);
+				if (!String.IsNullOrEmpty(ruby) && ruby.Length == element.Length && ruby != element)
+				{
+					forSearchElements.Add(ruby);
+				}
+			}
+
+			String keywordRubyForSearch = String.Join(',', forSearchElements);
+			if (String.IsNullOrEmpty(keywordRubyForSearch))
+			{
+				return null;
+			}
+
+			return keywordRubyForSearch;
+		}
+
+		// --------------------------------------------------------------------
 		// 関数を非同期駆動
 		// --------------------------------------------------------------------
 		public static async Task LaunchTaskAsync<T>(SemaphoreSlim semaphoreSlim, TaskAsyncDelegate<T> deleg, T vari) where T : class?

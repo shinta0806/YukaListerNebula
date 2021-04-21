@@ -346,6 +346,7 @@ namespace YukaLister.ViewModels.EditMasterWindowViewModels
 			master.Ruby = YlCommon.NormalizeDbRubyForMusicInfo(Ruby);
 			master.RubyForSearch = YlCommon.NormalizeDbRubyForSearch(Ruby);
 			master.Keyword = YlCommon.NormalizeDbString(Keyword);
+			master.KeywordRubyForSearch = YlCommon.KeywordRubyForSearch(Keyword);
 		}
 
 		// --------------------------------------------------------------------

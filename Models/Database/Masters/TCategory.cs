@@ -66,6 +66,10 @@ namespace YukaLister.Models.Database.Masters
 		[Column(FIELD_NAME_CATEGORY_KEYWORD)]
 		public String? Keyword { get; set; }
 
+		// 検索ワードフリガナ（検索用）
+		// カンマ区切りされた検索ワードの各要素のうち、フリガナとして使用可能かつフリガナと異なる表記のもののみを格納
+		public String? KeywordRubyForSearch { get; set; }
+
 		// 同名の区別が付くように DisplayName を設定する
 		[NotMapped]
 		public Boolean AvoidSameName { get; set; }

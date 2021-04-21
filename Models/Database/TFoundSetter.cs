@@ -160,7 +160,12 @@ namespace YukaLister.Models.Database
 			record.Track ??= dicByFile[YlConstants.RULE_VAR_TRACK];
 			record.SmartTrackOnVocal = !record.SmartTrackOnVocal ? dicByFile[YlConstants.RULE_VAR_ON_VOCAL] != null : record.SmartTrackOnVocal;
 			record.SmartTrackOffVocal = !record.SmartTrackOffVocal ? dicByFile[YlConstants.RULE_VAR_OFF_VOCAL] != null : record.SmartTrackOffVocal;
-			record.Comment ??= dicByFile[YlConstants.RULE_VAR_COMMENT];
+
+			// コメントについては、楽曲情報データベースのコメントがある場合でも dicByFile のコメントも付与する
+			if (dicByFile[YlConstants.RULE_VAR_COMMENT] != null)
+			{
+				record.Comment += dicByFile[YlConstants.RULE_VAR_COMMENT];
+			}
 
 			// トラック情報からスマートトラック解析
 			(Boolean hasOn, Boolean hasOff) = AnalyzeSmartTrack(record.Track);
@@ -426,12 +431,29 @@ namespace YukaLister.Models.Database
 		// --------------------------------------------------------------------
 		private static (String names, String rubies) ConcatMasterNamesAndRubies(List<IRcMaster> masters)
 		{
-			return (String.Join(YlConstants.VAR_VALUE_DELIMITER[0], masters.Select(x => x.Name)), String.Join(YlConstants.VAR_VALUE_DELIMITER[0], masters.Select(x => x.Ruby)));
+			return (String.Join(YlConstants.VAR_VALUE_DELIMITER[0], masters.Select(x => x.Name)), String.Join(YlConstants.VAR_VALUE_DELIMITER[0], masters.Select(x => x.RubyForSearch)));
 		}
 
 		// ====================================================================
 		// private メンバー関数
 		// ====================================================================
+
+		// --------------------------------------------------------------------
+		// 検索ワードと検索ワードフリガナをコメント用に整形
+		// --------------------------------------------------------------------
+		private String? KeywordToComment(IRcMaster master)
+		{
+			String? comment = null;
+			if (!String.IsNullOrEmpty(master.Keyword))
+			{
+				comment += master.Keyword + ',';
+			}
+			if (!String.IsNullOrEmpty(master.KeywordRubyForSearch))
+			{
+				comment += master.KeywordRubyForSearch + ',';
+			}
+			return comment;
+		}
 
 		// --------------------------------------------------------------------
 		// （dicByFile から取得した）人物情報をゆかり用リストデータベースに登録
@@ -679,7 +701,7 @@ namespace YukaLister.Models.Database
 				{
 					// TMaker 由来項目の設定
 					record.MakerName = makerOfTieUp.Name;
-					record.MakerRuby = makerOfTieUp.Ruby;
+					record.MakerRuby = makerOfTieUp.RubyForSearch;
 				}
 
 				List<TTieUpGroup> tieUpGroups = DbCommon.SelectSequencedTieUpGroupsByTieUpId(_tieUpGroupSequences, _tieUpGroups, tieUpOfSong.Id);
@@ -687,14 +709,15 @@ namespace YukaLister.Models.Database
 				{
 					// TTieUpGroup 由来項目の設定
 					record.TieUpGroupName = tieUpGroups[0].Name;
-					record.TieUpGroupRuby = tieUpGroups[0].Ruby;
+					record.TieUpGroupRuby = tieUpGroups[0].RubyForSearch;
 				}
 
 				// TieUp 由来項目の設定
 				record.TieUpName = tieUpOfSong.Name;
-				record.TieUpRuby = tieUpOfSong.Ruby;
+				record.TieUpRuby = tieUpOfSong.RubyForSearch;
 				record.TieUpAgeLimit = tieUpOfSong.AgeLimit;
 				record.SongReleaseDate = tieUpOfSong.ReleaseDate;
+				record.Comment += KeywordToComment(tieUpOfSong);
 			}
 
 			if (selectedSong == null)
@@ -711,7 +734,7 @@ namespace YukaLister.Models.Database
 			// TSong 由来項目の設定
 			record.SongId = selectedSong.Id;
 			record.SongName = selectedSong.Name;
-			record.SongRuby = selectedSong.Ruby;
+			record.SongRuby = selectedSong.RubyForSearch;
 			record.SongOpEd = selectedSong.OpEd;
 			if (record.SongReleaseDate <= YlConstants.INVALID_MJD && selectedSong.ReleaseDate > YlConstants.INVALID_MJD)
 			{
@@ -725,6 +748,7 @@ namespace YukaLister.Models.Database
 					record.Category = categoryOfSong.Name;
 				}
 			}
+			record.Comment += KeywordToComment(selectedSong);
 
 			// タグ
 			(record.TagName, record.TagRuby) = ConcatMasterNamesAndRubies(DbCommon.SelectSequencedTagsBySongId(_tagSequences, _tags, selectedSong.Id).ToList<IRcMaster>());

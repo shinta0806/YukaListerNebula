@@ -256,9 +256,9 @@ namespace YukaLister.ViewModels.SearchMasterWindowViewModels
 							EF.Functions.Like(x.Name, $"%{normalizedKeyword}%")
 							|| EF.Functions.Like(x.Keyword, $"%{normalizedKeyword}%")
 							// すべてフリガナとして使える文字が入力された場合は、フリガナでも検索
-							// ToDo: 本当は YlCommon.NormalizeDbRubyForSearch(x.Ruby) としたいが実行時エラーとなる
-							|| isKeywordRuby && EF.Functions.Like(x.Ruby, $"%{ruby}%")
+							|| isKeywordRuby && EF.Functions.Like(x.RubyForSearch, $"%{ruby}%")
 							|| isKeywordRuby && EF.Functions.Like(x.Keyword, $"%{ruby}%")
+							|| isKeywordRuby && EF.Functions.Like(x.KeywordRubyForSearch, $"%{ruby}%")
 						)
 						&& !x.Invalid
 				).ToList();
