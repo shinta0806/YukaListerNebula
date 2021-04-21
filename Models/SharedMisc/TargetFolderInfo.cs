@@ -181,7 +181,7 @@ namespace YukaLister.Models.SharedMisc
 		// 表示用：フォルダー設定の状態
 		public String FolderSettingsStatusLabel
 		{
-			get => YlConstants.FOLDER_SETTINGS_STATUS_TEXTS[(Int32)FolderSettingsStatus];
+			get => YlConstants.FOLDER_SETTINGS_STATUS_LABELS[(Int32)FolderSettingsStatus];
 		}
 
 		// 表示用：動作状況

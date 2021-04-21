@@ -8,6 +8,7 @@
         xmlns:v="clr-namespace:YukaLister.Views"
         xmlns:vm="clr-namespace:YukaLister.ViewModels"
         xmlns:vmemw="clr-namespace:YukaLister.ViewModels.EditMasterWindowViewModels"
+        xmlns:vem="clr-namespace:YukaLister.Views.EditMasterWindows"
         xmlns:vsm="clr-namespace:YukaLister.Views.SearchMasterWindows"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         Title="{Binding Title}" SizeToContent="WidthAndHeight" ResizeMode="NoResize" ShowInTaskbar="False" >
@@ -37,6 +38,10 @@
             <l:WindowInteractionMessageAction InvokeActionOnlyWhenWindowIsActive="False" />
         </l:InteractionMessageTrigger>
 
+        <l:InteractionMessageTrigger MessageKey="{x:Static msm:YlConstants.MESSAGE_KEY_OPEN_EDIT_MASTER_WINDOW}" Messenger="{Binding Messenger}">
+            <l:TransitionInteractionMessageAction WindowType="{x:Type vem:EditMasterWindow}" Mode="Modal" IsOwned="True" />
+        </l:InteractionMessageTrigger>
+
         <l:InteractionMessageTrigger MessageKey="{x:Static msm:YlConstants.MESSAGE_KEY_OPEN_INPUT_ID_PREFIX_WINDOW}" Messenger="{Binding Messenger}">
             <l:TransitionInteractionMessageAction WindowType="{x:Type v:InputIdPrefixWindow}" Mode="Modal" IsOwned="True" />
         </l:InteractionMessageTrigger>
@@ -50,7 +55,7 @@
     <StackPanel>
         <StackPanel Margin="20,20,20,0" Orientation="Horizontal">
             <Label Content="タイアップ ID (_I)：" Width="100" HorizontalContentAlignment="Right"/>
-            <ComboBox x:Name="ComboBoxId" ItemsSource="{Binding Masters}" SelectedItem="{Binding SelectedMaster}" DisplayMemberPath="Id" VerticalAlignment="Center" Width="300" materialDesign:ComboBoxAssist.ClassicMode="True" />
+            <ComboBox ItemsSource="{Binding Masters}" SelectedItem="{Binding SelectedMaster}" DisplayMemberPath="Id" VerticalAlignment="Center" Width="300" materialDesign:ComboBoxAssist.ClassicMode="True" />
             <Label x:Name="LabelIdInfo" Content="{Binding IdInfo}" Margin="10,0,0,0" Foreground="Red"/>
         </StackPanel>
         <Border BorderBrush="{DynamicResource {x:Static SystemColors.ControlLightBrushKey}}" BorderThickness="1" Height="3" Margin="0,20,0,0"/>

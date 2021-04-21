@@ -105,7 +105,7 @@ namespace YukaLister.Models.SerializableSettings
 		// --------------------------------------------------------------------
 		public String PrepareLastId<T>(DbSet<T> records) where T : class, IRcBase
 		{
-			Int32 tableIndex = DbCommon.MusicInfoTableIndex(records);
+			Int32 tableIndex = DbCommon.MusicInfoTableIndex<T>();
 			for (; ; )
 			{
 				LastIdNumbers[tableIndex]++;

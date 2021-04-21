@@ -37,8 +37,8 @@ namespace YukaLister.ViewModels.EditMasterWindowViewModels
 		// --------------------------------------------------------------------
 		// コンストラクター
 		// --------------------------------------------------------------------
-		public EditCategorizableWindowViewModel(String caption, MusicInfoContext musicInfoContext, DbSet<T> records)
-				: base(caption, musicInfoContext, records)
+		public EditCategorizableWindowViewModel(MusicInfoContext musicInfoContext, DbSet<T> records)
+				: base(musicInfoContext, records)
 		{
 		}
 

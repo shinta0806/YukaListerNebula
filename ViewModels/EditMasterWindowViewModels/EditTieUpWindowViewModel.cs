@@ -8,25 +8,21 @@
 //
 // ----------------------------------------------------------------------------
 
-using Livet;
 using Livet.Commands;
-using Livet.EventListeners;
 using Livet.Messaging;
-using Livet.Messaging.IO;
-using Livet.Messaging.Windows;
+
 using Microsoft.EntityFrameworkCore;
+
 using Shinta;
+
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
-using System.Text;
 using System.Windows;
 using System.Windows.Controls;
-using YukaLister.Models;
+
 using YukaLister.Models.Database;
-using YukaLister.Models.Database.Aliases;
 using YukaLister.Models.Database.Masters;
 using YukaLister.Models.Database.Sequences;
 using YukaLister.Models.DatabaseContexts;
@@ -46,7 +42,7 @@ namespace YukaLister.ViewModels.EditMasterWindowViewModels
 		// プログラム中で使うべき引数付きコンストラクター
 		// --------------------------------------------------------------------
 		public EditTieUpWindowViewModel(MusicInfoContext musicInfoContext, DbSet<TTieUp> records)
-				: base("タイアップ", musicInfoContext, records)
+				: base(musicInfoContext, records)
 		{
 		}
 
@@ -54,7 +50,7 @@ namespace YukaLister.ViewModels.EditMasterWindowViewModels
 		// ダミーコンストラクター（Visual Studio・TransitionMessage 用）
 		// --------------------------------------------------------------------
 		public EditTieUpWindowViewModel()
-				: base(String.Empty, null!, null!)
+				: base(null!, null!)
 		{
 		}
 
@@ -205,7 +201,6 @@ namespace YukaLister.ViewModels.EditMasterWindowViewModels
 
 		public void ButtonEditMakerClicked()
 		{
-#if false
 			try
 			{
 				if (String.IsNullOrEmpty(MakerName))
@@ -224,17 +219,14 @@ namespace YukaLister.ViewModels.EditMasterWindowViewModels
 				}
 
 				// 既存レコードを用意
-				List<TMaker> aMasters;
-				using (MusicInfoDatabaseInDisk aMusicInfoDbInDisk = new MusicInfoDatabaseInDisk(Environment!))
-				{
-					aMasters = YlCommon.SelectMastersByName<TMaker>(aMusicInfoDbInDisk.Connection, MakerName);
-				}
+				MusicInfoContext.GetDbSet(_musicInfoContext, out DbSet<TMaker> makers);
+				List<TMaker> sameNameMakers = DbCommon.SelectMastersByName(makers, MakerName);
 
 				// 新規作成用を追加
-				TMaker aNewRecord = new TMaker
+				TMaker newRecord = new()
 				{
 					// IRcBase
-					Id = null,
+					Id = String.Empty,
 					Import = false,
 					Invalid = false,
 					UpdateTime = YlConstants.INVALID_MJD,
@@ -245,37 +237,28 @@ namespace YukaLister.ViewModels.EditMasterWindowViewModels
 					Ruby = null,
 					Keyword = null,
 				};
-				aMasters.Insert(0, aNewRecord);
+				sameNameMakers.Insert(0, newRecord);
 
-				using (EditMakerWindowViewModel aEditMakerWindowViewModel = new EditMakerWindowViewModel())
+				// ウィンドウを開く
+				using EditMakerWindowViewModel editMakerWindowViewModel = new(_musicInfoContext, makers);
+				editMakerWindowViewModel.SetMasters(sameNameMakers);
+				editMakerWindowViewModel.DefaultMaster = DbCommon.SelectBaseById(makers, _makerId);
+				Messenger.Raise(new TransitionMessage(editMakerWindowViewModel, YlConstants.MESSAGE_KEY_OPEN_EDIT_MASTER_WINDOW));
+
+				// 後処理
+				if (editMakerWindowViewModel.OkSelectedMaster == null)
 				{
-					aEditMakerWindowViewModel.Environment = Environment;
-					aEditMakerWindowViewModel.SetMasters(aMasters);
-					aEditMakerWindowViewModel.DefaultId = MakerId;
-					Messenger.Raise(new TransitionMessage(aEditMakerWindowViewModel, "OpenEditMakerWindow"));
-
-					if (String.IsNullOrEmpty(aEditMakerWindowViewModel.OkSelectedId))
-					{
-						return;
-					}
-
-					using (MusicInfoDatabaseInDisk aMusicInfoDbInDisk = new MusicInfoDatabaseInDisk(Environment!))
-					{
-						TMaker? aMaster = YlCommon.SelectBaseById<TMaker>(aMusicInfoDbInDisk.Connection, aEditMakerWindowViewModel.OkSelectedId);
-						if (aMaster != null)
-						{
-							MakerId = aMaster.Id;
-							MakerName = aMaster.Name;
-						}
-					}
+					return;
 				}
+
+				_makerId = editMakerWindowViewModel.OkSelectedMaster.Id;
+				MakerName = editMakerWindowViewModel.OkSelectedMaster.Name;
 			}
-			catch (Exception oExcep)
+			catch (Exception excep)
 			{
-				Environment!.LogWriter.ShowLogMessage(TraceEventType.Error, "制作会社詳細編集ボタンクリック時エラー：\n" + oExcep.Message);
-				Environment.LogWriter.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, "　スタックトレース：\n" + oExcep.StackTrace);
+				YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(TraceEventType.Error, "制作会社詳細編集ボタンクリック時エラー：\n" + excep.Message);
+				YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, "　スタックトレース：\n" + excep.StackTrace);
 			}
-#endif
 		}
 		#endregion
 
@@ -544,29 +527,27 @@ namespace YukaLister.ViewModels.EditMasterWindowViewModels
 		// --------------------------------------------------------------------
 		protected override void Save(TTieUp master)
 		{
-			MusicInfoContext.GetDbSet(_musicInfoContext, out DbSet<TTieUp> tieUps);
-			MusicInfoContext.GetDbSet(_musicInfoContext, out DbSet<TTieUpGroupSequence> tieUpGroupSequences);
 			if (master.Id == NewIdForDisplay())
 			{
 				// 新規登録
-				YlCommon.InputIdPrefixIfNeededWithInvoke(this);
-				master.Id = YukaListerModel.Instance.EnvModel.YlSettings.PrepareLastId(tieUps);
-				tieUps.Add(master);
-				YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, "タイアップテーブル新規登録：" + master.Id + " / " + master.Name);
+				AddNewRecord(master);
 			}
 			else
 			{
-				TTieUp? existRecord = DbCommon.SelectBaseById(tieUps, master.Id, true);
-				if (existRecord != null && DbCommon.IsRcTieUpUpdated(existRecord, master))
+				TTieUp? existRecord = DbCommon.SelectBaseById(_records, master.Id, true);
+				if (existRecord == null)
+				{
+					throw new Exception("更新対象のタイアップレコードが見つかりません：" + master.Id);
+				}
+				if (DbCommon.IsRcTieUpUpdated(existRecord, master))
 				{
 					// 更新（既存のレコードが無効化されている場合は有効化も行う）
-					master.UpdateTime = existRecord.UpdateTime;
-					Common.ShallowCopy(master, existRecord);
-					YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, "タイアップテーブル更新：" + master.Id + " / " + master.Name);
+					UpdateExistRecord(existRecord, master);
 				}
 			}
 
 			// タイアップグループ紐付け
+			MusicInfoContext.GetDbSet(_musicInfoContext, out DbSet<TTieUpGroupSequence> tieUpGroupSequences);
 			DbCommon.RegisterSequence<TTieUpGroupSequence>(tieUpGroupSequences, master.Id, YlCommon.SplitIds(_tieUpGroupId));
 			_musicInfoContext.SaveChanges();
 		}

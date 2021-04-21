@@ -115,6 +115,14 @@ namespace YukaLister.Models.Database
 		}
 
 		// --------------------------------------------------------------------
+		// レコードの内容が更新されたか（IRcMaster）
+		// --------------------------------------------------------------------
+		public static Boolean IsRcMasterUpdated(IRcMaster existRecord, IRcMaster newRecord)
+		{
+			return IsRcMasterUpdatedCore(existRecord, newRecord) ?? false;
+		}
+
+		// --------------------------------------------------------------------
 		// レコードの内容が更新されたか（IRcSequence）
 		// --------------------------------------------------------------------
 		public static Boolean IsRcSequenceUpdated(IRcSequence existRecord, IRcSequence newRecord)
@@ -146,61 +154,91 @@ namespace YukaLister.Models.Database
 		// --------------------------------------------------------------------
 		// 楽曲情報データベースのテーブル番号
 		// データベース自体に付与されている番号ではなく、内部での各種定数利用用
-		// ToDo: いけてなさなんとかならないか
 		// --------------------------------------------------------------------
-		public static Int32 MusicInfoTableIndex<T>(DbSet<T> records) where T : class, IRcBase
+		public static Int32 MusicInfoTableIndex<T>() where T : class, IRcBase
 		{
-			return records.EntityType.ClrType.Name switch
+			// case に typeof(hoge) が使えないので switch は使えない
+			if (typeof(T) == typeof(TSong))
 			{
-				nameof(TSong) => (Int32)MusicInfoTables.TSong,
-				nameof(TPerson) => (Int32)MusicInfoTables.TPerson,
-				nameof(TTieUp) => (Int32)MusicInfoTables.TTieUp,
-				nameof(TCategory) => (Int32)MusicInfoTables.TCategory,
-				nameof(TTieUpGroup) => (Int32)MusicInfoTables.TTieUpGroup,
-				nameof(TMaker) => (Int32)MusicInfoTables.TMaker,
-				nameof(TTag) => (Int32)MusicInfoTables.TTag,
-				nameof(TSongAlias) => (Int32)MusicInfoTables.TSongAlias,
-				nameof(TPersonAlias) => (Int32)MusicInfoTables.TPersonAlias,
-				nameof(TTieUpAlias) => (Int32)MusicInfoTables.TTieUpAlias,
-				nameof(TCategoryAlias) => (Int32)MusicInfoTables.TCategoryAlias,
-				nameof(TTieUpGroupAlias) => (Int32)MusicInfoTables.TTieUpGroupAlias,
-				nameof(TMakerAlias) => (Int32)MusicInfoTables.TMakerAlias,
-				nameof(TArtistSequence) => (Int32)MusicInfoTables.TArtistSequence,
-				nameof(TLyristSequence) => (Int32)MusicInfoTables.TLyristSequence,
-				nameof(TComposerSequence) => (Int32)MusicInfoTables.TComposerSequence,
-				nameof(TArrangerSequence) => (Int32)MusicInfoTables.TArrangerSequence,
-				nameof(TTieUpGroupSequence) => (Int32)MusicInfoTables.TTieUpGroupSequence,
-				nameof(TTagSequence) => (Int32)MusicInfoTables.TTagSequence,
-				_ => -1,
-			};
-		}
-
-#if false
-		// --------------------------------------------------------------------
-		// 楽曲情報データベースの各テーブルの ID 第二接頭辞
-		// この他、報告データベースで "R" を使用する
-		// --------------------------------------------------------------------
-		public static String MusicInfoIdSecondPrefix<T>(DbSet<T> records) where T : class, IRcBase
-		{
-			return records.EntityType.ClrType.Name switch
+				return (Int32)MusicInfoTables.TSong;
+			}
+			else if (typeof(T) == typeof(TPerson))
 			{
-				nameof(TSong) => "_S_",
-				nameof(TPerson) => "_P_",
-				nameof(TTieUp) => "_T_",
-				nameof(TCategory) => "_C_",
-				nameof(TTieUpGroup) => "_G_",
-				nameof(TMaker) => "_M_",
-				nameof(TTag) => "_Z_",
-				nameof(TSongAlias) => "_SA_",
-				nameof(TPersonAlias) => "_PA_",
-				nameof(TTieUpAlias) => "_TA_",
-				nameof(TCategoryAlias) => "_CA_",
-				nameof(TTieUpGroupAlias) => "_GA_",
-				nameof(TMakerAlias) => "_MA_",
-				_ => String.Empty,
-			};
+				return (Int32)MusicInfoTables.TPerson;
+			}
+			else if (typeof(T) == typeof(TTieUp))
+			{
+				return (Int32)MusicInfoTables.TTieUp;
+			}
+			else if (typeof(T) == typeof(TCategory))
+			{
+				return (Int32)MusicInfoTables.TCategory;
+			}
+			else if (typeof(T) == typeof(TTieUpGroup))
+			{
+				return (Int32)MusicInfoTables.TTieUpGroup;
+			}
+			else if (typeof(T) == typeof(TMaker))
+			{
+				return (Int32)MusicInfoTables.TMaker;
+			}
+			else if (typeof(T) == typeof(TTag))
+			{
+				return (Int32)MusicInfoTables.TTag;
+			}
+			else if (typeof(T) == typeof(TSongAlias))
+			{
+				return (Int32)MusicInfoTables.TSongAlias;
+			}
+			else if (typeof(T) == typeof(TPersonAlias))
+			{
+				return (Int32)MusicInfoTables.TPersonAlias;
+			}
+			else if (typeof(T) == typeof(TTieUpAlias))
+			{
+				return (Int32)MusicInfoTables.TTieUpAlias;
+			}
+			else if (typeof(T) == typeof(TCategoryAlias))
+			{
+				return (Int32)MusicInfoTables.TCategoryAlias;
+			}
+			else if (typeof(T) == typeof(TTieUpGroupAlias))
+			{
+				return (Int32)MusicInfoTables.TTieUpGroupAlias;
+			}
+			else if (typeof(T) == typeof(TMakerAlias))
+			{
+				return (Int32)MusicInfoTables.TMakerAlias;
+			}
+			else if (typeof(T) == typeof(TArtistSequence))
+			{
+				return (Int32)MusicInfoTables.TArtistSequence;
+			}
+			else if (typeof(T) == typeof(TLyristSequence))
+			{
+				return (Int32)MusicInfoTables.TLyristSequence;
+			}
+			else if (typeof(T) == typeof(TComposerSequence))
+			{
+				return (Int32)MusicInfoTables.TComposerSequence;
+			}
+			else if (typeof(T) == typeof(TArrangerSequence))
+			{
+				return (Int32)MusicInfoTables.TArrangerSequence;
+			}
+			else if (typeof(T) == typeof(TTieUpGroupSequence))
+			{
+				return (Int32)MusicInfoTables.TTieUpGroupSequence;
+			}
+			else if (typeof(T) == typeof(TTagSequence))
+			{
+				return (Int32)MusicInfoTables.TTagSequence;
+			}
+			else
+			{
+				return -1;
+			}
 		}
-#endif
 
 		// --------------------------------------------------------------------
 		// データベースファイルを準備

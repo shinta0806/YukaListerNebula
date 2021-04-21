@@ -389,8 +389,9 @@ namespace YukaLister.ViewModels
 				_splashWindowViewModel.Close();
 
 				// プログラムエラーチェック
-				Debug.Assert(YlConstants.FOLDER_SETTINGS_STATUS_TEXTS.Length == (Int32)FolderSettingsStatus.__End__, "MainWindow.Initialize() bad FOLDER_SETTINGS_STATUS_TEXTS length");
+				Debug.Assert(YlConstants.FOLDER_SETTINGS_STATUS_LABELS.Length == (Int32)FolderSettingsStatus.__End__, "MainWindow.Initialize() bad FOLDER_SETTINGS_STATUS_TEXTS length");
 				Debug.Assert(YlConstants.MUSIC_INFO_ID_SECOND_PREFIXES.Length == (Int32)MusicInfoTables.__End__, "MainWindow.Initialize() bad MUSIC_INFO_ID_SECOND_PREFIXES length");
+				Debug.Assert(YlConstants.MUSIC_INFO_TABLE_NAME_LABELS.Length == (Int32)MusicInfoTables.__End__, "MainWindow.Initialize() bad MUSIC_INFO_TABLE_NAME_LABELS length");
 
 				// 環境の変化に対応
 				DoVerChangedIfNeeded();

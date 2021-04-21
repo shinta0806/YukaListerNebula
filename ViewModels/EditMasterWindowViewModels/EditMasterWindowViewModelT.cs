@@ -37,8 +37,8 @@ namespace YukaLister.ViewModels.EditMasterWindowViewModels
 		// --------------------------------------------------------------------
 		// コンストラクター
 		// --------------------------------------------------------------------
-		public EditMasterWindowViewModel(String caption, MusicInfoContext musicInfoContext, DbSet<T> records)
-				: base(caption, musicInfoContext)
+		public EditMasterWindowViewModel(MusicInfoContext musicInfoContext, DbSet<T> records)
+				: base(YlConstants.MUSIC_INFO_TABLE_NAME_LABELS[DbCommon.MusicInfoTableIndex<T>()], musicInfoContext)
 		{
 			_records = records;
 		}
@@ -160,8 +160,27 @@ namespace YukaLister.ViewModels.EditMasterWindowViewModels
 		}
 
 		// ====================================================================
+		// protected メンバー変数
+		// ====================================================================
+
+		// 検索対象データベースレコード
+		protected DbSet<T> _records;
+
+		// ====================================================================
 		// protected メンバー関数
 		// ====================================================================
+
+		// --------------------------------------------------------------------
+		// テーブルに新規レコードを追加
+		// --------------------------------------------------------------------
+		protected void AddNewRecord(T newRecord)
+		{
+			YlCommon.InputIdPrefixIfNeededWithInvoke(this);
+			newRecord.Id = YukaListerModel.Instance.EnvModel.YlSettings.PrepareLastId(_records);
+			_records.Add(newRecord);
+			YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS,
+					YlConstants.MUSIC_INFO_TABLE_NAME_LABELS[DbCommon.MusicInfoTableIndex<T>()] + "テーブル新規登録：" + newRecord.Id + " / " + newRecord.Name);
+		}
 
 		// --------------------------------------------------------------------
 		// 入力値を確認する
@@ -325,6 +344,7 @@ namespace YukaLister.ViewModels.EditMasterWindowViewModels
 			// IRcMaster
 			master.Name = YlCommon.NormalizeDbString(Name);
 			master.Ruby = YlCommon.NormalizeDbRubyForMusicInfo(Ruby);
+			master.RubyForSearch = YlCommon.NormalizeDbRubyForSearch(Ruby);
 			master.Keyword = YlCommon.NormalizeDbString(Keyword);
 		}
 
@@ -343,15 +363,44 @@ namespace YukaLister.ViewModels.EditMasterWindowViewModels
 		// --------------------------------------------------------------------
 		protected virtual void Save(T master)
 		{
-			Debug.Assert(false, "Save() derived function needed");
+			if (master.Id == NewIdForDisplay())
+			{
+				// 新規登録
+				AddNewRecord(master);
+			}
+			else
+			{
+				T? existRecord = DbCommon.SelectBaseById(_records, master.Id, true);
+				if (existRecord == null)
+				{
+					throw new Exception("更新対象の" + YlConstants.MUSIC_INFO_TABLE_NAME_LABELS[DbCommon.MusicInfoTableIndex<T>()] + "レコードが見つかりません：" + master.Id);
+				}
+				if (DbCommon.IsRcMasterUpdated(existRecord, master))
+				{
+					// 更新（既存のレコードが無効化されている場合は有効化も行う）
+					UpdateExistRecord(existRecord, master);
+				}
+			}
+
+			_musicInfoContext.SaveChanges();
+		}
+
+		// --------------------------------------------------------------------
+		// レコードを更新（既存のレコードが無効化されている場合は有効化も行う前提）
+		// --------------------------------------------------------------------
+		protected void UpdateExistRecord(T existRecord, T newRecord)
+		{
+			Debug.Assert(!newRecord.Invalid, "UpdateExistRecord() invalid");
+
+			newRecord.UpdateTime = existRecord.UpdateTime;
+			Common.ShallowCopy(newRecord, existRecord);
+			YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS,
+					YlConstants.MUSIC_INFO_TABLE_NAME_LABELS[DbCommon.MusicInfoTableIndex<T>()] + "テーブル更新：" + newRecord.Id + " / " + newRecord.Name);
 		}
 
 		// ====================================================================
 		// private メンバー変数
 		// ====================================================================
-
-		// 検索対象データベースレコード
-		private DbSet<T> _records;
 
 		// ====================================================================
 		// private メンバー関数

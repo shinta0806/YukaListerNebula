@@ -305,11 +305,11 @@ namespace YukaLister.ViewModels
 					tieUpName = DicByFile[YlConstants.RULE_VAR_PROGRAM];
 				}
 
-				// 情報準備
+				// 既存レコードを用意
 				List<TTieUp> sameNameTieUps = DbCommon.SelectMastersByName(tieUps, tieUpName);
 				TCategory? category = DbCommon.SelectMasterByName(categories, DicByFile[YlConstants.RULE_VAR_CATEGORY]);
 
-				// 新規作成用の追加
+				// 新規作成用を追加
 				TTieUp newTieUp = new()
 				{
 					// IRcBase

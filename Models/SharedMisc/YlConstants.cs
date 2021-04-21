@@ -187,6 +187,14 @@ namespace YukaLister.Models.SharedMisc
 			String.Empty, String.Empty, String.Empty, String.Empty, String.Empty, String.Empty,
 		};
 
+		// 楽曲情報データベースのテーブル名（表示用）
+		public static readonly String[] MUSIC_INFO_TABLE_NAME_LABELS =
+		{
+			"楽曲", "人物", "タイアップ", "カテゴリー", "タイアップグループ", "制作会社", "タグ",
+			"楽曲別名", "人物別名", "タイアップ別名", "カテゴリー別名", "タイアップグループ別名", "制作会社別名",
+			"歌手紐付", "作詞者紐付", "作曲者紐付", "編曲者紐付", "タイアップグループ紐付", "タグ紐付",
+		};
+
 		// --------------------------------------------------------------------
 		// MessageKey
 		// --------------------------------------------------------------------
@@ -196,6 +204,9 @@ namespace YukaLister.Models.SharedMisc
 
 		// メインウィンドウを開く
 		public const String MESSAGE_KEY_OPEN_MAIN_WINDOW = "OpenMainWindow";
+
+		// マスター詳細編集ウィンドウを開く
+		public const String MESSAGE_KEY_OPEN_EDIT_MASTER_WINDOW = "OpenEditMasterWindow";
 
 		// 楽曲情報等編集ウィンドウを開く
 		public const String MESSAGE_KEY_OPEN_EDIT_MUSIC_INFO_WINDOW = "OpenEditMusicInfoWindow";
@@ -331,7 +342,7 @@ namespace YukaLister.Models.SharedMisc
 		// --------------------------------------------------------------------
 
 		// FolderSettingsStatus に対応する文字列
-		public static readonly String[] FOLDER_SETTINGS_STATUS_TEXTS = { "無", "有", "親に有", "未確認" };
+		public static readonly String[] FOLDER_SETTINGS_STATUS_LABELS = { "無", "有", "親に有", "未確認" };
 
 		// グループの「その他」
 		public const String GROUP_MISC = "その他";

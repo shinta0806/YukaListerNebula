@@ -15,22 +15,13 @@
 // IRcMaster の派生で外部との通信をするための変数は派生型の方が便利なので EditMasterWindowViewModel<T> で宣言する。
 // ----------------------------------------------------------------------------
 
-using Livet;
 using Livet.Commands;
-using Livet.EventListeners;
-using Livet.Messaging;
-using Livet.Messaging.IO;
-using Livet.Messaging.Windows;
+
 using Shinta;
+
 using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.ComponentModel;
 using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using YukaLister.Models;
-using YukaLister.Models.Database;
+
 using YukaLister.Models.DatabaseContexts;
 using YukaLister.Models.YukaListerModels;
 
@@ -75,25 +66,6 @@ namespace YukaLister.ViewModels.EditMasterWindowViewModels
 			get => _idCaption;
 			set => RaisePropertyChangedIfSet(ref _idCaption, value);
 		}
-
-#if false
-		// 選択可能な ID 群
-		public ObservableCollection<String> Ids { get; set; } = new();
-
-		// 選択された ID
-		private String? _selectedId;
-		public String? SelectedId
-		{
-			get => _selectedId;
-			set
-			{
-				if (RaisePropertyChangedIfSet(ref _selectedId, value))
-				{
-					SelectedIdChanged();
-				}
-			}
-		}
-#endif
 
 		// ID の補足情報
 		private String? _idInfo;
@@ -259,18 +231,5 @@ namespace YukaLister.ViewModels.EditMasterWindowViewModels
 		{
 			return "（新規" + _caption + "）";
 		}
-
-#if false
-		// --------------------------------------------------------------------
-		// イベントハンドラー：SelectedId が変更された
-		// --------------------------------------------------------------------
-		protected virtual void SelectedIdChanged()
-		{
-		}
-#endif
-
-
-
-
 	}
 }

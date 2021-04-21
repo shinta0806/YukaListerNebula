@@ -2,15 +2,22 @@
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:behaviors="http://schemas.microsoft.com/xaml/behaviors"
         xmlns:l="http://schemas.livet-mvvm.net/2011/wpf"
+        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+        xmlns:msm="clr-namespace:YukaLister.Models.SharedMisc"
+        xmlns:sb="clr-namespace:Shinta.Behaviors"
         xmlns:v="clr-namespace:YukaLister.Views"
         xmlns:vm="clr-namespace:YukaLister.ViewModels"
         xmlns:vmemw="clr-namespace:YukaLister.ViewModels.EditMasterWindowViewModels"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="EditMasterWindow" Height="350" Width="525">
+        Title="{Binding Title}" ShowInTaskbar="False" ResizeMode="NoResize" SizeToContent="WidthAndHeight" >
 
     <Window.DataContext>
         <vmemw:EditMasterWindowViewModel />
     </Window.DataContext>
+
+    <behaviors:Interaction.Behaviors>
+        <sb:WindowBindingSupportBehavior IsCascade="True" MinimizeBox="False"/>
+    </behaviors:Interaction.Behaviors>
 
     <behaviors:Interaction.Triggers>
         <!-- When ContentRendered event raised, Initialize method of ViewModel would be called. -->
@@ -25,9 +32,38 @@
 
         <!-- If you make user choose 'OK or Cancel' closing Window, then please use Window Close cancel Behavior. -->
 
+        <l:InteractionMessageTrigger MessageKey="{x:Static msm:YlConstants.MESSAGE_KEY_WINDOW_CLOSE}" Messenger="{Binding Messenger}">
+            <l:WindowInteractionMessageAction InvokeActionOnlyWhenWindowIsActive="False" />
+        </l:InteractionMessageTrigger>
+
+        <l:InteractionMessageTrigger MessageKey="{x:Static msm:YlConstants.MESSAGE_KEY_OPEN_INPUT_ID_PREFIX_WINDOW}" Messenger="{Binding Messenger}">
+            <l:TransitionInteractionMessageAction WindowType="{x:Type v:InputIdPrefixWindow}" Mode="Modal" IsOwned="True" />
+        </l:InteractionMessageTrigger>
+
     </behaviors:Interaction.Triggers>
 
-    <Grid>
+    <StackPanel>
+        <StackPanel Orientation="Horizontal" Margin="20,20,20,0">
+            <Label x:Name="LabelId" Content="{Binding IdCaption}" Width="100" HorizontalContentAlignment="Right"/>
+            <ComboBox ItemsSource="{Binding Masters}" SelectedItem="{Binding SelectedMaster}" DisplayMemberPath="Id" VerticalAlignment="Center" Width="300" materialDesign:ComboBoxAssist.ClassicMode="True" />
+            <Label x:Name="LabelIdInfo" Content="{Binding IdInfo}" Margin="10,0,0,0" Foreground="Red"/>
+        </StackPanel>
+        <Border BorderBrush="{DynamicResource {x:Static SystemColors.ControlLightBrushKey}}" BorderThickness="1" Height="3" Margin="0,20,0,0"/>
+        <StackPanel Orientation="Horizontal" Margin="20,20,20,0">
+            <Label Content="フリガナ (_F)：" Width="100" HorizontalContentAlignment="Right"/>
+            <TextBox x:Name="TextBoxRuby" Text="{Binding Ruby}" VerticalAlignment="Center" Width="300"/>
+            <Label Content="検索ワード (_W)：" Width="120" HorizontalContentAlignment="Right"/>
+            <TextBox x:Name="TextBoxKeyword" Text="{Binding Keyword}" ToolTip="{Binding KeywordHint}" ToolTipService.ShowDuration="10000" materialDesign:HintAssist.Hint="{Binding ElementName=TextBoxKeyword, Path=ToolTip}" VerticalAlignment="Center" Width="450"/>
+        </StackPanel>
+        <StackPanel Orientation="Horizontal" Margin="20,20,20,0">
+            <Label x:Name="LabelName" Content="{Binding NameCaption}" Width="100" HorizontalContentAlignment="Right"/>
+            <TextBox x:Name="TextBoxName" Text="{Binding Name}" ToolTip="{Binding NameHint}" ToolTipService.ShowDuration="10000" materialDesign:HintAssist.Hint="{Binding ElementName=TextBoxName, Path=ToolTip}" VerticalAlignment="Center" Width="300"/>
+        </StackPanel>
+        <Border BorderBrush="{DynamicResource {x:Static SystemColors.ControlLightBrushKey}}" BorderThickness="1" Height="3" Margin="0,20,0,0"/>
+        <StackPanel Orientation="Horizontal" FlowDirection="RightToLeft" Margin="20">
+            <Button x:Name="ButtonCancel" Content="キャンセル" Style="{StaticResource MaterialDesignRaisedLightButton}" IsCancel="True" Width="100" Height="Auto" Padding="4"/>
+            <Button x:Name="ButtonOK" Content="OK" Margin="20,0,0,0" Height="Auto" IsDefault="True" Width="100" Command="{Binding ButtonOkClickedCommand}" sb:IsFocusedAttachedBehavior.IsFocused="{Binding IsButtonOkFocused}"/>
+        </StackPanel>
+    </StackPanel>
 
-    </Grid>
 </Window>
