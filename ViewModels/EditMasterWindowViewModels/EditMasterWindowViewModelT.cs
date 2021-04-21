@@ -132,7 +132,14 @@ namespace YukaLister.ViewModels.EditMasterWindowViewModels
 				}
 				else
 				{
-					SelectedMaster = Masters[0];
+					if (Masters.Count > 1)
+					{
+						SelectedMaster = Masters[1];
+					}
+					else
+					{
+						SelectedMaster = Masters[0];
+					}
 				}
 
 			}

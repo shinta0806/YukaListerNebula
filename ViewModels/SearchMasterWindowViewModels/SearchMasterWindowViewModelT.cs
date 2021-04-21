@@ -36,8 +36,8 @@ namespace YukaLister.ViewModels.SearchMasterWindowViewModels
 		// --------------------------------------------------------------------
 		// コンストラクター
 		// --------------------------------------------------------------------
-		public SearchMasterWindowViewModel(String itemName, DbSet<T> records)
-				: base(itemName)
+		public SearchMasterWindowViewModel(DbSet<T> records, String? itemName = null)
+				: base(itemName ?? YlConstants.MUSIC_INFO_TABLE_NAME_LABELS[DbCommon.MusicInfoTableIndex<T>()])
 		{
 			_records = records;
 		}

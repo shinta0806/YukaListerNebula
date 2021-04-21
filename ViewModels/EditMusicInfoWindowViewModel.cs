@@ -231,7 +231,7 @@ namespace YukaLister.ViewModels
 			try
 			{
 				using MusicInfoContext musicInfoContext = MusicInfoContext.CreateContext(out DbSet<TTieUp> tieUps);
-				using SearchMasterWindowViewModel<TTieUp> searchMasterWindowViewModel = new("タイアップ名の正式名称", tieUps);
+				using SearchMasterWindowViewModel<TTieUp> searchMasterWindowViewModel = new(tieUps, "タイアップ名の正式名称");
 				searchMasterWindowViewModel.SelectedKeyword = TieUpOrigin;
 				Messenger.Raise(new TransitionMessage(searchMasterWindowViewModel, YlConstants.MESSAGE_KEY_OPEN_SEARCH_MASTER_WINDOW));
 
@@ -266,15 +266,6 @@ namespace YukaLister.ViewModels
 		{
 			try
 			{
-#if false
-				using MusicInfoContext musicInfoContext = MusicInfoContext.CreateContext(out DbSet<TProperty> properties,
-						out DbSet<TSong> songs, out DbSet<TPerson> people, out DbSet<TTieUp> tieUps, out DbSet<TCategory> categories,
-						out DbSet<TTieUpGroup> tieUpGroups, out DbSet<TMaker> makers, out DbSet<TTag> tags,
-						out DbSet<TSongAlias> songAliases, out DbSet<TPersonAlias> personAliases, out DbSet<TTieUpAlias> tieUpAliases,
-						out DbSet<TCategoryAlias> categoryAliases, out DbSet<TTieUpGroupAlias> tieUpGroupAliases, out DbSet<TMakerAlias> makerAliases,
-						out DbSet<TArtistSequence> artistSequences, out DbSet<TLyristSequence> lyristSequences, out DbSet<TComposerSequence> composerSequences, out DbSet<TArrangerSequence> arrangerSequences,
-						out DbSet<TTieUpGroupSequence> tieUpGroupSequences, out DbSet<TTagSequence> tagSequences);
-#endif
 				using MusicInfoContext musicInfoContext = MusicInfoContext.CreateContext(out DbSet<TTieUp> tieUps);
 				MusicInfoContext.GetDbSet(musicInfoContext, out DbSet<TCategory> categories);
 
@@ -335,10 +326,6 @@ namespace YukaLister.ViewModels
 				// ウィンドウを開く
 				using EditTieUpWindowViewModel editTieUpWindowViewModel = new(musicInfoContext, tieUps);
 				editTieUpWindowViewModel.SetMasters(sameNameTieUps);
-				if (sameNameTieUps.Count > 1)
-				{
-					editTieUpWindowViewModel.DefaultMaster = sameNameTieUps[1];
-				}
 				Messenger.Raise(new TransitionMessage(editTieUpWindowViewModel, YlConstants.MESSAGE_KEY_OPEN_EDIT_TIE_UP_WINDOW));
 
 				// 後処理
@@ -347,18 +334,14 @@ namespace YukaLister.ViewModels
 					return;
 				}
 
-				TTieUp? tieUp = DbCommon.SelectBaseById(tieUps, editTieUpWindowViewModel.OkSelectedMaster.Id);
-				if (tieUp != null)
+				if (String.IsNullOrEmpty(DicByFile[YlConstants.RULE_VAR_PROGRAM]) || editTieUpWindowViewModel.OkSelectedMaster.Name == DicByFile[YlConstants.RULE_VAR_PROGRAM])
 				{
-					if (String.IsNullOrEmpty(DicByFile[YlConstants.RULE_VAR_PROGRAM]) || tieUp.Name == DicByFile[YlConstants.RULE_VAR_PROGRAM])
-					{
-						UseTieUpAlias = false;
-					}
-					else
-					{
-						UseTieUpAlias = true;
-						TieUpOrigin = tieUp.Name;
-					}
+					UseTieUpAlias = false;
+				}
+				else
+				{
+					UseTieUpAlias = true;
+					TieUpOrigin = editTieUpWindowViewModel.OkSelectedMaster.Name;
 				}
 				RaisePropertyChanged(nameof(IsTieUpNameRegistered));
 				UpdateListItems();
@@ -396,7 +379,7 @@ namespace YukaLister.ViewModels
 			try
 			{
 				using MusicInfoContext musicInfoContext = MusicInfoContext.CreateContext(out DbSet<TSong> songs);
-				using SearchMasterWindowViewModel<TSong> searchMasterWindowViewModel = new("楽曲名の正式名称", songs);
+				using SearchMasterWindowViewModel<TSong> searchMasterWindowViewModel = new(songs, "楽曲名の正式名称");
 				searchMasterWindowViewModel.SelectedKeyword = SongOrigin;
 				Messenger.Raise(new TransitionMessage(searchMasterWindowViewModel, YlConstants.MESSAGE_KEY_OPEN_SEARCH_MASTER_WINDOW));
 
@@ -431,140 +414,128 @@ namespace YukaLister.ViewModels
 		{
 			try
 			{
-#if false
-				using (MusicInfoDatabaseInDisk aMusicInfoDbInDisk = new MusicInfoDatabaseInDisk(Environment!))
-				{
-					// ファイル名から取得した楽曲名が未登録でかつ未検索は検索を促す
-					if (YlCommon.SelectMastersByName<TSong>(aMusicInfoDbInDisk.Connection, DicByFile?[YlConstants.RULE_VAR_TITLE]).Count == 0 && String.IsNullOrEmpty(SongOrigin))
-					{
-						if (!mIsSongSearched)
-						{
-							throw new Exception("楽曲の正式名称が選択されていないため新規楽曲情報作成となりますが、その前に一度、目的の楽曲が未登録かどうか検索して下さい。");
-						}
+				using MusicInfoContext musicInfoContext = MusicInfoContext.CreateContext(out DbSet<TSong> songs);
 
-						if (MessageBox.Show("楽曲の正式名称が選択されていません。\n新規に楽曲情報を作成しますか？\n"
-								+ "（目的の楽曲が未登録の場合（検索してもヒットしない場合）に限り、新規作成を行って下さい）", "確認",
-								MessageBoxButton.YesNo, MessageBoxImage.Exclamation) == MessageBoxResult.No)
-						{
-							return;
-						}
+				// ファイル名から取得した楽曲名が未登録でかつ未検索は検索を促す
+				if (DbCommon.SelectMasterByName(songs, DicByFile[YlConstants.RULE_VAR_TITLE]) == null && String.IsNullOrEmpty(SongOrigin))
+				{
+					if (!_isSongSearched)
+					{
+						throw new Exception("楽曲の正式名称が選択されていないため新規楽曲情報作成となりますが、その前に一度、目的の楽曲が未登録かどうか検索して下さい。");
+					}
+
+					if (MessageBox.Show("楽曲の正式名称が選択されていません。\n新規に楽曲情報を作成しますか？\n"
+							+ "（目的の楽曲が未登録の場合（検索してもヒットしない場合）に限り、新規作成を行って下さい）", "確認",
+							MessageBoxButton.YesNo, MessageBoxImage.Exclamation) == MessageBoxResult.No)
+					{
+						return;
 					}
 				}
 
 				// 対象楽曲名の選択
-				String? aSongName;
+				String? songName;
 				if (!String.IsNullOrEmpty(SongOrigin))
 				{
-					aSongName = SongOrigin;
+					songName = SongOrigin;
 				}
 				else
 				{
-					aSongName = DicByFile?[YlConstants.RULE_VAR_TITLE];
+					songName = DicByFile[YlConstants.RULE_VAR_TITLE];
 				}
 
 				// タイアップ名の選択（null もありえる）
-				String? aTieUpName;
+				String? tieUpName;
 				if (!String.IsNullOrEmpty(TieUpOrigin))
 				{
-					aTieUpName = TieUpOrigin;
+					tieUpName = TieUpOrigin;
 				}
 				else
 				{
-					aTieUpName = DicByFile?[YlConstants.RULE_VAR_PROGRAM];
+					tieUpName = DicByFile[YlConstants.RULE_VAR_PROGRAM];
 				}
 
 				// 情報準備
-				List<TSong> aSongs;
-				List<TTieUp> aTieUps;
-				List<TCategory> aCategories;
-				using (MusicInfoDatabaseInDisk aMusicInfoDbInDisk = new MusicInfoDatabaseInDisk(Environment!))
-				{
-					aSongs = YlCommon.SelectMastersByName<TSong>(aMusicInfoDbInDisk.Connection, aSongName);
-					aTieUps = YlCommon.SelectMastersByName<TTieUp>(aMusicInfoDbInDisk.Connection, aTieUpName);
-					aCategories = YlCommon.SelectMastersByName<TCategory>(aMusicInfoDbInDisk.Connection, DicByFile?[YlConstants.RULE_VAR_CATEGORY]);
-				}
+				List<TSong> sameNameSongs = DbCommon.SelectMastersByName(songs, songName);
+				MusicInfoContext.GetDbSet(musicInfoContext, out DbSet<TTieUp> tieUps);
+				TTieUp? tieUp = DbCommon.SelectMasterByName(tieUps, tieUpName);
+				MusicInfoContext.GetDbSet(musicInfoContext, out DbSet<TCategory> categories);
+				TCategory? category = DbCommon.SelectMasterByName(categories, DicByFile[YlConstants.RULE_VAR_CATEGORY]);
 
 				// 新規作成用の追加
-				TSong aNewSong = new TSong
+				TSong newSong = new()
 				{
 					// IRcBase
-					Id = null,
+					Id = String.Empty,
 					Import = false,
 					Invalid = false,
 					UpdateTime = YlConstants.INVALID_MJD,
 					Dirty = true,
 
 					// IRcMaster
-					Name = aSongName,
-					Ruby = DicByFile?[YlConstants.RULE_VAR_TITLE_RUBY],
+					Name = songName,
+					Ruby = DicByFile[YlConstants.RULE_VAR_TITLE_RUBY],
 					Keyword = null,
 
 					// TSong
 					ReleaseDate = YlConstants.INVALID_MJD,
-					TieUpId = aTieUps.Count > 0 ? aTieUps[0].Id : null,
-					CategoryId = aTieUps.Count == 0 && aCategories.Count > 0 ? aCategories[0].Id : null,
-					OpEd = DicByFile?[YlConstants.RULE_VAR_OP_ED],
+					TieUpId = tieUp?.Id,
+					CategoryId = tieUp == null && category != null ? category.Id : null,
+					OpEd = DicByFile[YlConstants.RULE_VAR_OP_ED],
 				};
-				aSongs.Insert(0, aNewSong);
+				sameNameSongs.Insert(0, newSong);
 
-				using (EditSongWindowViewModel aEditSongWindowViewModel = new EditSongWindowViewModel())
+				// ウィンドウの準備
+				using EditSongWindowViewModel editSongWindowViewModel = new EditSongWindowViewModel(musicInfoContext, songs);
+				editSongWindowViewModel.SetMasters(sameNameSongs);
+
+				// デフォルト ID の指定
+				if (sameNameSongs.Count == 1)
 				{
-					aEditSongWindowViewModel.Environment = Environment;
-					aEditSongWindowViewModel.SetMasters(aSongs);
-
-					using (MusicInfoDatabaseInDisk aMusicInfoDbInDisk = new MusicInfoDatabaseInDisk(Environment!))
-					{
-						// デフォルト ID の指定
-						if (aSongs.Count == 1)
-						{
-							// 新規作成のみの場合は指定しない
-						}
-						else if (aSongs.Count == 2 && String.IsNullOrEmpty(aTieUpName))
-						{
-							// 既存楽曲が 1 つのみの場合で、タイアップが指定されていない場合は、既存楽曲のタイアップに関わらずデフォルトに指定する
-							aEditSongWindowViewModel.DefaultId = aSongs[1].Id;
-						}
-						else
-						{
-							// 既存楽曲が 1 つ以上の場合は、タイアップ名が一致するものがあれば優先し、そうでなければ新規をデフォルトにする
-							for (Int32 i = 1; i < aSongs.Count; i++)
-							{
-								TTieUp? aTieUpOfSong = YlCommon.SelectBaseById<TTieUp>(aMusicInfoDbInDisk.Connection, aSongs[i].TieUpId);
-								if (aTieUpOfSong == null && String.IsNullOrEmpty(aTieUpName) || aTieUpOfSong != null && aTieUpOfSong.Name == aTieUpName)
-								{
-									aEditSongWindowViewModel.DefaultId = aSongs[i].Id;
-									break;
-								}
-							}
-						}
-					}
-
-					Messenger.Raise(new TransitionMessage(aEditSongWindowViewModel, "OpenEditSongWindow"));
-					if (String.IsNullOrEmpty(aEditSongWindowViewModel.OkSelectedId))
-					{
-						return;
-					}
-
-					using (MusicInfoDatabaseInDisk aMusicInfoDbInDisk = new MusicInfoDatabaseInDisk(Environment!))
-					{
-						TSong? aSong = YlCommon.SelectBaseById<TSong>(aMusicInfoDbInDisk.Connection, aEditSongWindowViewModel.OkSelectedId);
-						if (aSong != null)
-						{
-							if (aSong.Name == DicByFile?[YlConstants.RULE_VAR_TITLE])
-							{
-								UseSongAlias = false;
-							}
-							else
-							{
-								UseSongAlias = true;
-								SongOrigin = aSong.Name;
-							}
-						}
-						RaisePropertyChanged(nameof(IsSongNameRegistered));
-					}
-					UpdateListItems();
+					// 新規作成のみの場合は指定しない
 				}
-#endif
+				else if (sameNameSongs.Count == 2 && String.IsNullOrEmpty(tieUpName))
+				{
+					// 既存楽曲が 1 つのみの場合で、タイアップが指定されていない場合は、既存楽曲のタイアップに関わらずデフォルトに指定する
+					editSongWindowViewModel.DefaultMaster = sameNameSongs[1];
+				}
+				else
+				{
+					// 既存楽曲が 1 つ以上の場合は、タイアップ名が一致するものがあれば優先し、そうでなければ新規をデフォルトにする
+					for (Int32 i = 1; i < sameNameSongs.Count; i++)
+					{
+						TTieUp? tieUpOfSong = DbCommon.SelectBaseById(tieUps, sameNameSongs[i].TieUpId);
+						if (tieUpOfSong != null && tieUpOfSong.Name == tieUpName)
+						{
+							editSongWindowViewModel.DefaultMaster = sameNameSongs[i];
+							break;
+						}
+					}
+					if (editSongWindowViewModel.DefaultMaster == null)
+					{
+						editSongWindowViewModel.DefaultMaster = sameNameSongs[0];
+					}
+				}
+
+				// ウィンドウを開く
+				Messenger.Raise(new TransitionMessage(editSongWindowViewModel, YlConstants.MESSAGE_KEY_OPEN_EDIT_SONG_WINDOW));
+
+				// 後処理
+				if (editSongWindowViewModel.OkSelectedMaster == null)
+				{
+					return;
+				}
+
+				if (editSongWindowViewModel.OkSelectedMaster.Name == DicByFile[YlConstants.RULE_VAR_TITLE])
+				{
+					UseSongAlias = false;
+				}
+				else
+				{
+					UseSongAlias = true;
+					SongOrigin = editSongWindowViewModel.OkSelectedMaster.Name;
+				}
+				RaisePropertyChanged(nameof(IsSongNameRegistered));
+				UpdateListItems();
 			}
 			catch (Exception excep)
 			{

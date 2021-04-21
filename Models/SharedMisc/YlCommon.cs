@@ -408,7 +408,7 @@ namespace YukaLister.Models.SharedMisc
 				return null;
 			}
 
-			String[] elements = keyword.Split(',', StringSplitOptions.RemoveEmptyEntries);
+			String[] elements = keyword.Split(YlConstants.VAR_VALUE_DELIMITER[0], StringSplitOptions.RemoveEmptyEntries);
 			List<String> forSearchElements = new();
 			foreach (String element in elements)
 			{
@@ -419,7 +419,7 @@ namespace YukaLister.Models.SharedMisc
 				}
 			}
 
-			String keywordRubyForSearch = String.Join(',', forSearchElements);
+			String keywordRubyForSearch = String.Join(YlConstants.VAR_VALUE_DELIMITER[0], forSearchElements);
 			if (String.IsNullOrEmpty(keywordRubyForSearch))
 			{
 				return null;
@@ -643,7 +643,7 @@ namespace YukaLister.Models.SharedMisc
 		// --------------------------------------------------------------------
 		public static List<String> SplitIds(String? ids)
 		{
-			return String.IsNullOrEmpty(ids) ? new() : ids.Split(',').ToList();
+			return String.IsNullOrEmpty(ids) ? new() : ids.Split(YlConstants.VAR_VALUE_DELIMITER[0], StringSplitOptions.RemoveEmptyEntries).ToList();
 		}
 
 		// --------------------------------------------------------------------

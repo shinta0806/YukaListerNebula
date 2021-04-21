@@ -137,6 +137,21 @@ namespace YukaLister.Models.Database
 		}
 
 		// --------------------------------------------------------------------
+		// レコードの内容が更新されたか（TSong）
+		// --------------------------------------------------------------------
+		public static Boolean IsRcSongUpdated(TSong existRecord, TSong newRecord)
+		{
+			Boolean? isRcCategorizableUpdated = IsRcCategorizableUpdatedCore(existRecord, newRecord);
+			if (isRcCategorizableUpdated != null)
+			{
+				return isRcCategorizableUpdated.Value;
+			}
+
+			return existRecord.TieUpId != newRecord.TieUpId
+					|| existRecord.OpEd != newRecord.OpEd;
+		}
+
+		// --------------------------------------------------------------------
 		// レコードの内容が更新されたか（TTieUp）
 		// --------------------------------------------------------------------
 		public static Boolean IsRcTieUpUpdated(TTieUp existRecord, TTieUp newRecord)

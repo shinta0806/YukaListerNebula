@@ -429,9 +429,11 @@ namespace YukaLister.Models.Database
 		// --------------------------------------------------------------------
 		// 複数の IRcMaster の名前とルビをカンマで結合
 		// --------------------------------------------------------------------
-		private static (String names, String rubies) ConcatMasterNamesAndRubies(List<IRcMaster> masters)
+		private static (String? names, String? rubies) ConcatMasterNamesAndRubies(List<IRcMaster> masters)
 		{
-			return (String.Join(YlConstants.VAR_VALUE_DELIMITER[0], masters.Select(x => x.Name)), String.Join(YlConstants.VAR_VALUE_DELIMITER[0], masters.Select(x => x.RubyForSearch)));
+			String names = String.Join(YlConstants.VAR_VALUE_DELIMITER[0], masters.Select(x => x.Name));
+			String rubies = String.Join(YlConstants.VAR_VALUE_DELIMITER[0], masters.Select(x => x.RubyForSearch));
+			return (String.IsNullOrEmpty(names) ? null : names, String.IsNullOrEmpty(rubies) ? null : rubies);
 		}
 
 		// ====================================================================
@@ -446,11 +448,11 @@ namespace YukaLister.Models.Database
 			String? comment = null;
 			if (!String.IsNullOrEmpty(master.Keyword))
 			{
-				comment += master.Keyword + ',';
+				comment += master.Keyword + YlConstants.VAR_VALUE_DELIMITER;
 			}
 			if (!String.IsNullOrEmpty(master.KeywordRubyForSearch))
 			{
-				comment += master.KeywordRubyForSearch + ',';
+				comment += master.KeywordRubyForSearch + YlConstants.VAR_VALUE_DELIMITER;
 			}
 			return comment;
 		}
@@ -653,7 +655,7 @@ namespace YukaLister.Models.Database
 				List<TSong> songsWithArtist = new();
 				foreach (TSong song in songs)
 				{
-					(String artistNames, _) = ConcatMasterNamesAndRubies(DbCommon.SelectSequencedPeopleBySongId(_artistSequences, _people, song.Id).ToList<IRcMaster>());
+					(String? artistNames, _) = ConcatMasterNamesAndRubies(DbCommon.SelectSequencedPeopleBySongId(_artistSequences, _people, song.Id).ToList<IRcMaster>());
 					if (!String.IsNullOrEmpty(artistNames) && artistNames == dicByFile[YlConstants.RULE_VAR_ARTIST])
 					{
 						songsWithArtist.Add(song);
