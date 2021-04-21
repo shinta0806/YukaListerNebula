@@ -8,23 +8,20 @@
 // 
 // ----------------------------------------------------------------------------
 
-using Livet;
 using Livet.Commands;
-using Livet.EventListeners;
 using Livet.Messaging;
-using Livet.Messaging.IO;
-using Livet.Messaging.Windows;
+
 using Microsoft.EntityFrameworkCore;
+
 using Shinta;
+
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
-using System.Text;
 using System.Windows;
 using System.Windows.Controls;
-using YukaLister.Models;
+
 using YukaLister.Models.Database;
 using YukaLister.Models.Database.Masters;
 using YukaLister.Models.Database.Sequences;
@@ -1058,7 +1055,7 @@ namespace YukaLister.ViewModels.EditMasterWindowViewModels
 			(HasComposer, _composerId, ComposerName) = ConcatMasterIdsAndNames(DbCommon.SelectSequencedPeopleBySongId(composerSequences, people, master.Id).ToList<IRcMaster>());
 
 			MusicInfoContext.GetDbSet(_musicInfoContext, out DbSet<TArrangerSequence> arrangerSequences);
-			(HasArranger, _arrangerId, ArrangerName) = ConcatMasterIdsAndNames(DbCommon.SelectSequencedPeopleBySongId(composerSequences, people, master.Id).ToList<IRcMaster>());
+			(HasArranger, _arrangerId, ArrangerName) = ConcatMasterIdsAndNames(DbCommon.SelectSequencedPeopleBySongId(arrangerSequences, people, master.Id).ToList<IRcMaster>());
 
 			SetIsTieUpEnabled();
 			SetIsCategoryEnabled();

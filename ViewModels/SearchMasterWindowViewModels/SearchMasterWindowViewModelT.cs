@@ -8,6 +8,7 @@
 //
 // ----------------------------------------------------------------------------
 
+using Livet.Commands;
 using Livet.Messaging.Windows;
 
 using Microsoft.EntityFrameworkCore;
@@ -37,9 +38,9 @@ namespace YukaLister.ViewModels.SearchMasterWindowViewModels
 		// コンストラクター
 		// --------------------------------------------------------------------
 		public SearchMasterWindowViewModel(DbSet<T> records, String? itemName = null)
-				: base(itemName ?? YlConstants.MUSIC_INFO_TABLE_NAME_LABELS[DbCommon.MusicInfoTableIndex<T>()])
 		{
 			_records = records;
+			_itemName = itemName ?? YlConstants.MUSIC_INFO_TABLE_NAME_LABELS[DbCommon.MusicInfoTableIndex<T>()];
 		}
 
 		// ====================================================================
@@ -50,12 +51,76 @@ namespace YukaLister.ViewModels.SearchMasterWindowViewModels
 		// View 通信用のプロパティー
 		// --------------------------------------------------------------------
 
+		// 説明
+		private String _description = String.Empty;
+		public String Description
+		{
+			get => _description;
+			set => RaisePropertyChangedIfSet(ref _description, value);
+		}
+
+		// 入力されたキーワード
+		private String? _keyword;
+		public String? Keyword
+		{
+			get => _keyword;
+			set
+			{
+				if (RaisePropertyChangedIfSet(ref _keyword, value))
+				{
+					ButtonSearchClickedCommand.RaiseCanExecuteChanged();
+				}
+			}
+		}
+
+		// 選択状態で入力されているキーワード
+		private String? _selectedKeyword;
+		public String? SelectedKeyword
+		{
+			get => _selectedKeyword;
+			set => RaisePropertyChangedIfSet(ref _selectedKeyword, value);
+		}
+
+		// キーワードフォーカス
+		private Boolean _isKeywordFocused;
+		public Boolean IsKeywordFocused
+		{
+			get => _isKeywordFocused;
+			set
+			{
+				// 再度フォーカスを当てられるように強制伝播
+				_isKeywordFocused = value;
+				RaisePropertyChanged(nameof(IsKeywordFocused));
+			}
+		}
+
+		// 検索結果の説明
+		private String _foundsDescription = String.Empty;
+		public String FoundsDescription
+		{
+			get => _foundsDescription;
+			set => RaisePropertyChangedIfSet(ref _foundsDescription, value);
+		}
+
 		// 検索結果
 		private List<T> _founds = new();
 		public List<T> Founds
 		{
 			get => _founds;
 			set => RaisePropertyChangedIfSet(ref _founds, value);
+		}
+
+		// 検索結果フォーカス
+		private Boolean _areFoundsFocused;
+		public Boolean AreFoundsFocused
+		{
+			get => _areFoundsFocused;
+			set
+			{
+				// 再度フォーカスを当てられるように強制伝播
+				_areFoundsFocused = value;
+				RaisePropertyChanged(nameof(AreFoundsFocused));
+			}
 		}
 
 		// 選択された検索結果
@@ -79,14 +144,31 @@ namespace YukaLister.ViewModels.SearchMasterWindowViewModels
 		// 選択ボタンで選択されたマスター
 		public T? OkSelectedMaster { get; private set; }
 
-		// ====================================================================
-		// public メンバー関数
-		// ====================================================================
+		// --------------------------------------------------------------------
+		// コマンド
+		// --------------------------------------------------------------------
 
-		// --------------------------------------------------------------------
-		// イベントハンドラー：検索ボタンがクリックされた
-		// --------------------------------------------------------------------
-		public override async void ButtonSearchClicked()
+		#region 検索ボタンの制御
+		private ViewModelCommand? _buttonSearchClickedCommand;
+
+		public ViewModelCommand ButtonSearchClickedCommand
+		{
+			get
+			{
+				if (_buttonSearchClickedCommand == null)
+				{
+					_buttonSearchClickedCommand = new ViewModelCommand(ButtonSearchClicked, CanButtonSearchClicked);
+				}
+				return _buttonSearchClickedCommand;
+			}
+		}
+
+		public Boolean CanButtonSearchClicked()
+		{
+			return !_isSearching && !String.IsNullOrEmpty(YlCommon.NormalizeDbString(Keyword));
+		}
+
+		public async void ButtonSearchClicked()
 		{
 			try
 			{
@@ -126,35 +208,24 @@ namespace YukaLister.ViewModels.SearchMasterWindowViewModels
 				ButtonSearchClickedCommand.RaiseCanExecuteChanged();
 			}
 		}
+		#endregion
 
-		// --------------------------------------------------------------------
-		// イベントハンドラー：選択ボタンがクリックされた
-		// --------------------------------------------------------------------
-		public override void ButtonSelectClicked()
+		#region DataGrid ダブルクリックの制御
+		private ViewModelCommand? _dataGridDoubleClickedCommand;
+
+		public ViewModelCommand DataGridDoubleClickedCommand
 		{
-			try
+			get
 			{
-				Select();
-			}
-			catch (Exception excep)
-			{
-				YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(TraceEventType.Error, "選択ボタンクリック時エラー：\n" + excep.Message);
-				YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, "　スタックトレース：\n" + excep.StackTrace);
+				if (_dataGridDoubleClickedCommand == null)
+				{
+					_dataGridDoubleClickedCommand = new ViewModelCommand(DataGridDoubleClicked);
+				}
+				return _dataGridDoubleClickedCommand;
 			}
 		}
 
-		// --------------------------------------------------------------------
-		// イベントハンドラー：選択ボタンが有効かどうかの判定
-		// --------------------------------------------------------------------
-		public override Boolean CanButtonSelectClicked()
-		{
-			return SelectedFound != null;
-		}
-
-		// --------------------------------------------------------------------
-		// イベントハンドラー：DataGrid がダブルクリックされた
-		// --------------------------------------------------------------------
-		public override void DataGridDoubleClicked()
+		public void DataGridDoubleClicked()
 		{
 			try
 			{
@@ -166,6 +237,45 @@ namespace YukaLister.ViewModels.SearchMasterWindowViewModels
 				YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, "　スタックトレース：\n" + excep.StackTrace);
 			}
 		}
+		#endregion
+
+		#region 選択ボタンの制御
+		private ViewModelCommand? mButtonSelectClickedCommand;
+
+		public ViewModelCommand ButtonSelectClickedCommand
+		{
+			get
+			{
+				if (mButtonSelectClickedCommand == null)
+				{
+					mButtonSelectClickedCommand = new ViewModelCommand(ButtonSelectClicked, CanButtonSelectClicked);
+				}
+				return mButtonSelectClickedCommand;
+			}
+		}
+
+		public Boolean CanButtonSelectClicked()
+		{
+			return SelectedFound != null;
+		}
+
+		public void ButtonSelectClicked()
+		{
+			try
+			{
+				Select();
+			}
+			catch (Exception excep)
+			{
+				YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(TraceEventType.Error, "選択ボタンクリック時エラー：\n" + excep.Message);
+				YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, "　スタックトレース：\n" + excep.StackTrace);
+			}
+		}
+		#endregion
+
+		// ====================================================================
+		// public メンバー関数
+		// ====================================================================
 
 		// --------------------------------------------------------------------
 		// 初期化
@@ -193,6 +303,16 @@ namespace YukaLister.ViewModels.SearchMasterWindowViewModels
 				YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, "　スタックトレース：\n" + excep.StackTrace);
 			}
 		}
+
+		// ====================================================================
+		// protected メンバー変数
+		// ====================================================================
+
+		// 検索項目名
+		protected String _itemName;
+
+		// 検索中
+		protected Boolean _isSearching;
 
 		// ====================================================================
 		// private メンバー変数
@@ -239,6 +359,15 @@ namespace YukaLister.ViewModels.SearchMasterWindowViewModels
 		// ====================================================================
 		// private メンバー関数
 		// ====================================================================
+
+		// --------------------------------------------------------------------
+		// LabelFounds を空にする
+		// --------------------------------------------------------------------
+		private void ClearLabelFounds()
+		{
+			// null にするとラベルの高さが変わってしまうため Empty にする
+			FoundsDescription = String.Empty;
+		}
 
 		// --------------------------------------------------------------------
 		// 検索
