@@ -1,0 +1,94 @@
+﻿<Window x:Class="YukaLister.Views.EditSequenceWindows.EditSequenceWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:behaviors="http://schemas.microsoft.com/xaml/behaviors"
+        xmlns:l="http://schemas.livet-mvvm.net/2011/wpf"
+        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+        xmlns:msm="clr-namespace:YukaLister.Models.SharedMisc"
+        xmlns:sb="clr-namespace:Shinta.Behaviors"
+        xmlns:v="clr-namespace:YukaLister.Views"
+        xmlns:vem="clr-namespace:YukaLister.Views.EditMasterWindows"
+        xmlns:vm="clr-namespace:YukaLister.ViewModels"
+        xmlns:vmesw="clr-namespace:YukaLister.ViewModels.EditSequenceWindowViewModels"
+        xmlns:vsm="clr-namespace:YukaLister.Views.SearchMasterWindows"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="{Binding Title}" SizeToContent="WidthAndHeight" ResizeMode="NoResize" ShowInTaskbar="False" >
+
+    <Window.DataContext>
+        <vmesw:EditSequenceWindowViewModel />
+    </Window.DataContext>
+
+    <behaviors:Interaction.Behaviors>
+        <sb:WindowBindingSupportBehavior IsCascade="True" MinimizeBox="False"/>
+    </behaviors:Interaction.Behaviors>
+
+    <behaviors:Interaction.Triggers>
+        <!-- When ContentRendered event raised, Initialize method of ViewModel would be called. -->
+        <behaviors:EventTrigger EventName="ContentRendered">
+            <l:LivetCallMethodAction MethodTarget="{Binding}" MethodName="Initialize" />
+        </behaviors:EventTrigger>
+
+        <!-- Dispose method is called, when Window closing. -->
+        <behaviors:EventTrigger EventName="Closed">
+            <l:DataContextDisposeAction />
+        </behaviors:EventTrigger>
+
+        <!-- If you make user choose 'OK or Cancel' closing Window, then please use Window Close cancel Behavior. -->
+
+        <l:InteractionMessageTrigger MessageKey="{x:Static msm:YlConstants.MESSAGE_KEY_WINDOW_CLOSE}" Messenger="{Binding Messenger}">
+            <l:WindowInteractionMessageAction InvokeActionOnlyWhenWindowIsActive="False" />
+        </l:InteractionMessageTrigger>
+
+        <l:InteractionMessageTrigger MessageKey="{x:Static msm:YlConstants.MESSAGE_KEY_OPEN_EDIT_MASTER_WINDOW}" Messenger="{Binding Messenger}">
+            <l:TransitionInteractionMessageAction WindowType="{x:Type vem:EditMasterWindow}" Mode="Modal" IsOwned="True" />
+        </l:InteractionMessageTrigger>
+
+        <l:InteractionMessageTrigger MessageKey="{x:Static msm:YlConstants.MESSAGE_KEY_OPEN_SEARCH_MASTER_WINDOW}" Messenger="{Binding Messenger}">
+            <l:TransitionInteractionMessageAction WindowType="{x:Type vsm:SearchMasterWindow}" Mode="Modal" IsOwned="True" />
+        </l:InteractionMessageTrigger>
+
+    </behaviors:Interaction.Triggers>
+
+    <StackPanel>
+        <StackPanel Margin="20,15,0,0" Orientation="Horizontal">
+            <Label x:Name="LabelDescription" Content="{Binding Description}" VerticalAlignment="Top" Margin="0" FlowDirection="LeftToRight" HorizontalAlignment="Left"/>
+            <Label x:Name="LabelHelp" Margin="0" VerticalAlignment="Top" HorizontalAlignment="Left">
+                <Hyperlink Command="{Binding HelpClickedCommand}" CommandParameter="{Binding HelpCommandParameter}" >
+                    <TextBlock Text="詳細情報" />
+                </Hyperlink>
+            </Label>
+        </StackPanel>
+        <StackPanel Orientation="Horizontal" Margin="20,15,20,0">
+            <StackPanel.Resources>
+                <FrameworkElement x:Key="ProxyElement" />
+            </StackPanel.Resources>
+            <ContentControl Visibility="Collapsed" Content="{StaticResource ProxyElement}" />
+            <DataGrid x:Name="DataGridTargetFolders" AutoGenerateColumns="False" CanUserReorderColumns="False" CanUserSortColumns="False" CanUserResizeRows="False" SelectionMode="Single" IsReadOnly="True"
+                    Width="350" Margin="0,0,10,0" Height="260" materialDesign:DataGridAssist.ColumnHeaderPadding="3 5 3 5" materialDesign:DataGridAssist.CellPadding="3" ItemsSource="{Binding Masters}" SelectedItem="{Binding SelectedMaster}" CanUserAddRows="False" CanUserDeleteRows="False" >
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="{Binding Path=DataContext.DataGridHeader ,Source={StaticResource ProxyElement}}" Width="*" Binding="{Binding DisplayName}" />
+                </DataGrid.Columns>
+                <DataGrid.InputBindings>
+                    <MouseBinding MouseAction="LeftDoubleClick" Command="{Binding DataGridDoubleClickedCommand}" />
+                </DataGrid.InputBindings>
+            </DataGrid>
+            <StackPanel Margin="0" VerticalAlignment="Center">
+                <Button x:Name="ButtonAdd" Height="Auto" VerticalAlignment="Center" Content="検索して追加 (_A)" HorizontalAlignment="Left" Margin="0" Width="140" Padding="4" Command="{Binding ButtonAddClickedCommand}"/>
+                <Button x:Name="ButtonRemove" Height="Auto" VerticalAlignment="Center" Content="削除 (_R)" Style="{StaticResource MaterialDesignRaisedLightButton}" Margin="0,10,0,0" Command="{Binding ButtonRemoveClickedCommand}"/>
+                <Button x:Name="ButtonUp" Style="{StaticResource MaterialDesignRaisedLightButton}" ToolTip="命名規則を上へ" Height="Auto" VerticalAlignment="Bottom" Margin="0,20,0,0" Width="60" HorizontalAlignment="Left" Command="{Binding ButtonUpClickedCommand}">
+                    <materialDesign:PackIcon Kind="ArrowUpThick" Height="18" Width="18" />
+                </Button>
+                <Button x:Name="ButtonDown" Style="{StaticResource MaterialDesignRaisedLightButton}" ToolTip="命名規則を下へ" Height="Auto" VerticalAlignment="Top" Margin="0,10,0,0" Width="60" HorizontalAlignment="Left" Command="{Binding ButtonDownClickedCommand}">
+                    <materialDesign:PackIcon Kind="ArrowDownThick" Height="18" Width="18" />
+                </Button>
+                <Button x:Name="ButtonEdit" Height="Auto" VerticalAlignment="Center" Content="{Binding ButtonEditContent}" Style="{StaticResource MaterialDesignRaisedLightButton}" Margin="0,20,0,0" Command="{Binding ButtonEditClickedCommand}"/>
+                <Button x:Name="ButtonNew" Height="Auto" VerticalAlignment="Center" Content="{Binding ButtonNewContent}" Style="{StaticResource MaterialDesignRaisedLightButton}" Margin="0,10,0,0" Command="{Binding ButtonNewClickedCommand}"/>
+            </StackPanel>
+        </StackPanel>
+        <Border BorderBrush="{DynamicResource {x:Static SystemColors.ControlLightBrushKey}}" BorderThickness="1" Height="3" Margin="0,20,0,0"/>
+        <StackPanel Orientation="Horizontal" FlowDirection="RightToLeft" Margin="20">
+            <Button x:Name="ButtonCancel" Content="キャンセル" Margin="0" Height="Auto" Style="{StaticResource MaterialDesignRaisedLightButton}" IsCancel="True" Width="100" Padding="4"/>
+            <Button x:Name="ButtonOk" Content="OK" Margin="20,0,0,0" Height="Auto" IsDefault="True" Width="100" Command="{Binding ButtonOkClickedCommand}"/>
+        </StackPanel>
+    </StackPanel>
+
+</Window>

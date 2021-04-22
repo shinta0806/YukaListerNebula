@@ -5,7 +5,7 @@
 // ============================================================================
 
 // ----------------------------------------------------------------------------
-//
+// プログラム中では本クラスではなく派生クラスを使うこと。
 // ----------------------------------------------------------------------------
 
 using Livet.Commands;
@@ -29,7 +29,7 @@ using YukaLister.Models.YukaListerModels;
 
 namespace YukaLister.ViewModels.EditMasterWindowViewModels
 {
-	public class EditMasterWindowViewModel<T> : EditMasterWindowViewModel where T : class, IRcMaster, new()
+	public abstract class EditMasterWindowViewModel<T> : EditMasterWindowViewModel where T : class, IRcMaster, new()
 	{
 		// ====================================================================
 		// コンストラクター・デストラクター
