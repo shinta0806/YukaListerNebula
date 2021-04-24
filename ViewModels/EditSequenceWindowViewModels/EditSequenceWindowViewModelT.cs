@@ -48,6 +48,7 @@ namespace YukaLister.ViewModels.EditSequenceWindowViewModels
 			_musicInfoContext = musicInfoContext;
 			_records = records;
 			_caption = caption;
+			_kind = kind;
 		}
 
 		// ====================================================================
@@ -435,23 +436,49 @@ namespace YukaLister.ViewModels.EditSequenceWindowViewModels
 		public override void Initialize()
 		{
 			base.Initialize();
+
+			try
+			{
+				// タイトルバー
+				Title = "複数" + _caption + "の編集";
+#if DEBUG
+				Title = "［デバッグ］" + Title;
+#endif
+
+				// ラベル
+				Description = "「検索して追加」ボタンで" + _kind + "を追加して下さい。複数名の指定も可能です。";
+				DataGridHeader = _kind;
+				ButtonEditContent = _kind + "詳細編集 (_E)";
+				ButtonNewContent = "新規" + _kind + "作成 (_N)";
+			}
+			catch (Exception excep)
+			{
+				YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(TraceEventType.Error, "紐付編集ウィンドウ初期化時エラー：\n" + excep.Message);
+				YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, "　スタックトレース：\n" + excep.StackTrace);
+			}
 		}
+		// ====================================================================
+		// protected メンバー変数
+		// ====================================================================
+
+		// 楽曲情報データベースのコンテキスト
+		protected MusicInfoContext _musicInfoContext;
+
+		// 編集対象データベースレコード
+		protected DbSet<T> _records;
 
 		// ====================================================================
 		// protected メンバー関数
 		// ====================================================================
 
+		// --------------------------------------------------------------------
+		// マスター編集ウィンドウの ViewModel 作成
+		// --------------------------------------------------------------------
 		protected abstract EditMasterWindowViewModel<T> CreateEditMasterWindowViewModel();
 
 		// ====================================================================
 		// private メンバー変数
 		// ====================================================================
-
-		// 楽曲情報データベースのコンテキスト
-		private MusicInfoContext _musicInfoContext;
-
-		// 編集対象データベースレコード
-		private DbSet<T> _records;
 
 		// 編集対象の名称
 		private String _caption;

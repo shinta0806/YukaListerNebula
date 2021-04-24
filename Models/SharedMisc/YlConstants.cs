@@ -211,6 +211,9 @@ namespace YukaLister.Models.SharedMisc
 		// 楽曲情報等編集ウィンドウを開く
 		public const String MESSAGE_KEY_OPEN_EDIT_MUSIC_INFO_WINDOW = "OpenEditMusicInfoWindow";
 
+		// 紐付編集ウィンドウを開く
+		public const String MESSAGE_KEY_OPEN_EDIT_SEQUENCE_WINDOW = "OpenEditSequenceWindow";
+
 		// 楽曲詳細情報編集ウィンドウを開く
 		public const String MESSAGE_KEY_OPEN_EDIT_SONG_WINDOW = "OpenEditSongWindow";
 

@@ -240,7 +240,14 @@ namespace YukaLister.ViewModels.EditMasterWindowViewModels
 				// デフォルト ID を選択
 				if (DefaultMaster != null)
 				{
-					SelectedMaster = DefaultMaster;
+					if (Masters.SingleOrDefault(x => x.Id == DefaultMaster.Id) != null)
+					{
+						SelectedMaster = DefaultMaster;
+					}
+					else
+					{
+						SelectedMaster = Masters[0];
+					}
 				}
 				else
 				{

@@ -9,6 +9,7 @@
         xmlns:vem="clr-namespace:YukaLister.Views.EditMasterWindows"
         xmlns:vm="clr-namespace:YukaLister.ViewModels"
         xmlns:vmemw="clr-namespace:YukaLister.ViewModels.EditMasterWindowViewModels"
+        xmlns:ves="clr-namespace:YukaLister.Views.EditSequenceWindows"
         xmlns:vsm="clr-namespace:YukaLister.Views.SearchMasterWindows"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         Title="{Binding Title}" SizeToContent="WidthAndHeight" ShowInTaskbar="False" ResizeMode="NoResize" >
@@ -36,6 +37,10 @@
 
         <l:InteractionMessageTrigger MessageKey="{x:Static msm:YlConstants.MESSAGE_KEY_WINDOW_CLOSE}" Messenger="{Binding Messenger}">
             <l:WindowInteractionMessageAction InvokeActionOnlyWhenWindowIsActive="False" />
+        </l:InteractionMessageTrigger>
+
+        <l:InteractionMessageTrigger MessageKey="{x:Static msm:YlConstants.MESSAGE_KEY_OPEN_EDIT_SEQUENCE_WINDOW}" Messenger="{Binding Messenger}">
+            <l:TransitionInteractionMessageAction WindowType="{x:Type ves:EditSequenceWindow}" Mode="Modal" IsOwned="True" />
         </l:InteractionMessageTrigger>
 
         <l:InteractionMessageTrigger MessageKey="{x:Static msm:YlConstants.MESSAGE_KEY_OPEN_EDIT_TIE_UP_WINDOW}" Messenger="{Binding Messenger}">
@@ -108,24 +113,24 @@
             <Label Content="歌手あり (_A)：" Margin="0" Grid.Row="0" Grid.Column="6" HorizontalAlignment="Right"/>
             <CheckBox x:Name="CheckBoxArtist" IsChecked="{Binding HasArtist}" Grid.Row="0" Grid.Column="7" />
             <Button x:Name="ButtonSearchArtist" Content="検索" Grid.Row="0" Grid.Column="8" Height="Auto" FontSize="12" Padding="2" Style="{StaticResource MaterialDesignRaisedLightButton}" Margin="5" Command="{Binding ButtonSearchArtistClickedCommand}"/>
-            <Label x:Name="LabelArtist" Content="{Binding ArtistName}" Margin="0" Grid.Row="0" Grid.Column="9"/>
+            <Label x:Name="LabelArtist" Content="{Binding ArtistNames}" Margin="0" Grid.Row="0" Grid.Column="9"/>
             <Button x:Name="ButtonEditArtist" Content="歌手詳細編集" Grid.Row="0" Grid.Column="11" Height="Auto" FontSize="12" Padding="2" Style="{StaticResource MaterialDesignRaisedLightButton}" Margin="0,5" Command="{Binding ButtonEditArtistClickedCommand}"/>
             <Label Content="作詞者あり (_L)：" Margin="0" Grid.Row="1" Grid.Column="6" HorizontalAlignment="Right"/>
             <CheckBox x:Name="CheckBoxLyrist" IsChecked="{Binding HasLyrist}" Grid.Row="1" Grid.Column="7" />
             <Button x:Name="ButtonSearchLyrist" Content="検索" Grid.Row="1" Grid.Column="8" Height="Auto" FontSize="12" Padding="2" Style="{StaticResource MaterialDesignRaisedLightButton}" Margin="5" Command="{Binding ButtonSearchLyristClickedCommand}"/>
-            <Label x:Name="LabelLyrist" Content="{Binding LyristName}" Margin="0" Grid.Row="1" Grid.Column="9"/>
+            <Label x:Name="LabelLyrist" Content="{Binding LyristNames}" Margin="0" Grid.Row="1" Grid.Column="9"/>
             <Button x:Name="ButtonSameLyrist" Content="同上" Grid.Row="1" Grid.Column="10" Height="Auto" FontSize="12" Padding="2" Style="{StaticResource MaterialDesignRaisedLightButton}" Margin="5" Command="{Binding ButtonSameLyristClickedCommand}"/>
             <Button x:Name="ButtonEditLyrist" Content="作詞者詳細編集" Grid.Row="1" Grid.Column="11" Height="Auto" FontSize="12" Padding="2" Style="{StaticResource MaterialDesignRaisedLightButton}" Margin="0,5" Command="{Binding ButtonEditLyristClickedCommand}"/>
             <Label Content="作曲者あり (_C)：" Margin="0" Grid.Row="2" Grid.Column="6" HorizontalAlignment="Right"/>
             <CheckBox x:Name="CheckBoxComposer" IsChecked="{Binding HasComposer}" Grid.Row="2" Grid.Column="7" />
             <Button x:Name="ButtonSearchComposer" Content="検索" Grid.Row="2" Grid.Column="8" Height="Auto" FontSize="12" Padding="2" Style="{StaticResource MaterialDesignRaisedLightButton}" Margin="5" Command="{Binding ButtonSearchComposerClickedCommand}"/>
-            <Label x:Name="LabelComposer" Content="{Binding ComposerName}" Margin="0" Grid.Row="2" Grid.Column="9"/>
+            <Label x:Name="LabelComposer" Content="{Binding ComposerNames}" Margin="0" Grid.Row="2" Grid.Column="9"/>
             <Button x:Name="ButtonSameComposer" Content="同上" Grid.Row="2" Grid.Column="10" Height="Auto" FontSize="12" Padding="2" Style="{StaticResource MaterialDesignRaisedLightButton}" Margin="5" Command="{Binding ButtonSameComposerClickedCommand}" />
             <Button x:Name="ButtonEditComposer" Content="作曲者詳細編集" Grid.Row="2" Grid.Column="11" Height="Auto" FontSize="12" Padding="2" Style="{StaticResource MaterialDesignRaisedLightButton}" Margin="0,5" Command="{Binding ButtonEditComposerClickedCommand}"/>
             <Label Content="編曲者あり (_A)：" Margin="0" Grid.Row="3" Grid.Column="6" HorizontalAlignment="Right"/>
             <CheckBox x:Name="CheckBoxArranger" IsChecked="{Binding HasArranger}" Grid.Row="3" Grid.Column="7" />
             <Button x:Name="ButtonSearchArranger" Content="検索" Grid.Row="3" Grid.Column="8" Height="Auto" FontSize="12" Padding="2" Style="{StaticResource MaterialDesignRaisedLightButton}" Margin="5" Command="{Binding ButtonSearchArrangerClickedCommand}"/>
-            <Label x:Name="LabelArranger" Content="{Binding ArrangerName}" Margin="0" Grid.Row="3" Grid.Column="9"/>
+            <Label x:Name="LabelArranger" Content="{Binding ArrangerNames}" Margin="0" Grid.Row="3" Grid.Column="9"/>
             <Button x:Name="ButtonSameArranger" Content="同上" Grid.Row="3" Grid.Column="10" Height="Auto" FontSize="12" Padding="2" Style="{StaticResource MaterialDesignRaisedLightButton}" Margin="5" Command="{Binding ButtonSameArrangerClickedCommand}"/>
             <Button x:Name="ButtonEditArranger" Content="作曲者詳細編集" Grid.Row="3" Grid.Column="11" Height="Auto" FontSize="12" Padding="2" Style="{StaticResource MaterialDesignRaisedLightButton}" Margin="0,5" Command="{Binding ButtonEditArrangerClickedCommand}"/>
         </Grid>
@@ -168,7 +173,7 @@
             <Label Content="タグあり (_T)：" Margin="0" Grid.Row="2" Grid.Column="0" HorizontalAlignment="Right"/>
             <CheckBox x:Name="CheckBoxTag" IsChecked="{Binding HasTag}" Grid.Row="2" Grid.Column="1" />
             <Button x:Name="ButtonSearchTag" Content="検索" Grid.Row="2" Grid.Column="2" Height="Auto" FontSize="12" Padding="2" Style="{StaticResource MaterialDesignRaisedLightButton}" Margin="5" Command="{Binding ButtonSearchTagClickedCommand}"/>
-            <Label x:Name="LabelTag" Content="{Binding TagName}" Margin="0" Grid.Row="2" Grid.Column="3"/>
+            <Label x:Name="LabelTag" Content="{Binding TagNames}" Margin="0" Grid.Row="2" Grid.Column="3"/>
             <Button x:Name="ButtonEditTag" Content="タグ詳細編集" Grid.Row="2" Grid.Column="4" Height="Auto" FontSize="12" Padding="2" Style="{StaticResource MaterialDesignRaisedLightButton}" Margin="5,5,0,5" Command="{Binding ButtonEditTagClickedCommand}"/>
             <Label Content="リリース日 (_R)：" Margin="0" Grid.Row="0" Grid.Column="5" HorizontalAlignment="Right"/>
             <TextBox x:Name="TextBoxReleaseYear" Text="{Binding ReleaseYear}" Grid.Column="6" Margin="0" Grid.Row="0" VerticalAlignment="Center" HorizontalContentAlignment="Right"/>

@@ -28,6 +28,7 @@ using YukaLister.Models.Database.Sequences;
 using YukaLister.Models.DatabaseContexts;
 using YukaLister.Models.SharedMisc;
 using YukaLister.Models.YukaListerModels;
+using YukaLister.ViewModels.EditSequenceWindowViewModels;
 using YukaLister.ViewModels.SearchMasterWindowViewModels;
 
 namespace YukaLister.ViewModels.EditMasterWindowViewModels
@@ -145,12 +146,12 @@ namespace YukaLister.ViewModels.EditMasterWindowViewModels
 			}
 		}
 
-		// タグ名
-		private String? _tagName;
-		public String? TagName
+		// タグ名（カンマ区切りで複数）
+		private String? _tagNames;
+		public String? TagNames
 		{
-			get => _tagName;
-			set => RaisePropertyChangedIfSet(ref _tagName, value);
+			get => _tagNames;
+			set => RaisePropertyChangedIfSet(ref _tagNames, value);
 		}
 
 		// 歌手あり
@@ -166,19 +167,19 @@ namespace YukaLister.ViewModels.EditMasterWindowViewModels
 					ButtonEditArtistClickedCommand.RaiseCanExecuteChanged();
 					if (!_hasArtist)
 					{
-						_artistId = null;
-						ArtistName = null;
+						_artistIds = null;
+						ArtistNames = null;
 					}
 				}
 			}
 		}
 
-		// 歌手名
-		private String? _artistName;
-		public String? ArtistName
+		// 歌手名（カンマ区切りで複数）
+		private String? _artistNames;
+		public String? ArtistNames
 		{
-			get => _artistName;
-			set => RaisePropertyChangedIfSet(ref _artistName, value);
+			get => _artistNames;
+			set => RaisePropertyChangedIfSet(ref _artistNames, value);
 		}
 
 		// 作詞者あり
@@ -195,19 +196,19 @@ namespace YukaLister.ViewModels.EditMasterWindowViewModels
 					ButtonEditLyristClickedCommand.RaiseCanExecuteChanged();
 					if (!_hasLyrist)
 					{
-						_lyristId = null;
-						LyristName = null;
+						_lyristIds = null;
+						LyristNames = null;
 					}
 				}
 			}
 		}
 
-		// 作詞者名
-		private String? _lyristName;
-		public String? LyristName
+		// 作詞者名（カンマ区切りで複数）
+		private String? _lyristNames;
+		public String? LyristNames
 		{
-			get => _lyristName;
-			set => RaisePropertyChangedIfSet(ref _lyristName, value);
+			get => _lyristNames;
+			set => RaisePropertyChangedIfSet(ref _lyristNames, value);
 		}
 
 		// 作曲者あり
@@ -224,19 +225,19 @@ namespace YukaLister.ViewModels.EditMasterWindowViewModels
 					ButtonEditComposerClickedCommand.RaiseCanExecuteChanged();
 					if (!_hasComposer)
 					{
-						_composerId = null;
-						ComposerName = null;
+						_composerIds = null;
+						ComposerNames = null;
 					}
 				}
 			}
 		}
 
-		// 作曲者名
-		private String? _composerName;
-		public String? ComposerName
+		// 作曲者名（カンマ区切りで複数）
+		private String? _composerNames;
+		public String? ComposerNames
 		{
-			get => _composerName;
-			set => RaisePropertyChangedIfSet(ref _composerName, value);
+			get => _composerNames;
+			set => RaisePropertyChangedIfSet(ref _composerNames, value);
 		}
 
 		// 編曲者あり
@@ -253,19 +254,19 @@ namespace YukaLister.ViewModels.EditMasterWindowViewModels
 					ButtonEditArrangerClickedCommand.RaiseCanExecuteChanged();
 					if (!_hasArranger)
 					{
-						_arrangerId = null;
-						ArrangerName = null;
+						_arrangerIds = null;
+						ArrangerNames = null;
 					}
 				}
 			}
 		}
 
-		// 編曲者名
-		private String? _arrangerName;
-		public String? ArrangerName
+		// 編曲者名（カンマ区切りで複数）
+		private String? _arrangerNames;
+		public String? ArrangerNames
 		{
-			get => _arrangerName;
-			set => RaisePropertyChangedIfSet(ref _arrangerName, value);
+			get => _arrangerNames;
+			set => RaisePropertyChangedIfSet(ref _arrangerNames, value);
 		}
 
 		// --------------------------------------------------------------------
@@ -437,7 +438,7 @@ namespace YukaLister.ViewModels.EditMasterWindowViewModels
 				// タグが複数指定されている場合は先頭のみで検索
 				MusicInfoContext.GetDbSet(_musicInfoContext, out DbSet<TTag> tags);
 				using SearchMasterWindowViewModel<TTag> searchMasterWindowViewModel = new(tags);
-				searchMasterWindowViewModel.SelectedKeyword = HeadName(TagName);
+				searchMasterWindowViewModel.SelectedKeyword = HeadName(TagNames);
 				Messenger.Raise(new TransitionMessage(searchMasterWindowViewModel, YlConstants.MESSAGE_KEY_OPEN_SEARCH_MASTER_WINDOW));
 
 				if (searchMasterWindowViewModel.OkSelectedMaster == null)
@@ -445,8 +446,8 @@ namespace YukaLister.ViewModels.EditMasterWindowViewModels
 					return;
 				}
 
-				_tagId = searchMasterWindowViewModel.OkSelectedMaster.Id;
-				TagName = searchMasterWindowViewModel.OkSelectedMaster.Name;
+				_tagIds = searchMasterWindowViewModel.OkSelectedMaster.Id;
+				TagNames = searchMasterWindowViewModel.OkSelectedMaster.Name;
 			}
 			catch (Exception excep)
 			{
@@ -531,7 +532,7 @@ namespace YukaLister.ViewModels.EditMasterWindowViewModels
 		{
 			try
 			{
-				(_artistId, ArtistName) = SearchPerson("歌手", ArtistName);
+				(_artistIds, ArtistNames) = SearchPerson("歌手", ArtistNames);
 			}
 			catch (Exception excep)
 			{
@@ -563,23 +564,15 @@ namespace YukaLister.ViewModels.EditMasterWindowViewModels
 
 		public void ButtonEditArtistClicked()
 		{
-#if false
 			try
 			{
-				Boolean aHas = HasArtist;
-				String? aId = _artistId;
-				String? aName = ArtistName;
-				EditPeople("歌手", ref aHas, ref aId, ref aName);
-				HasArtist = aHas;
-				_artistId = aId;
-				ArtistName = aName;
+				(HasArtist, _artistIds, ArtistNames) = EditPeople("歌手", _artistIds, ArtistNames);
 			}
-			catch (Exception oExcep)
+			catch (Exception excep)
 			{
-				Environment!.LogWriter.ShowLogMessage(TraceEventType.Error, "歌手詳細編集ボタンクリック時エラー：\n" + oExcep.Message);
-				Environment.LogWriter.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, "　スタックトレース：\n" + oExcep.StackTrace);
+				YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(TraceEventType.Error, "歌手詳細編集ボタンクリック時エラー：\n" + excep.Message);
+				YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, "　スタックトレース：\n" + excep.StackTrace);
 			}
-#endif
 		}
 		#endregion
 
@@ -607,7 +600,7 @@ namespace YukaLister.ViewModels.EditMasterWindowViewModels
 		{
 			try
 			{
-				(_lyristId, LyristName) = SearchPerson("作詞者", LyristName);
+				(_lyristIds, LyristNames) = SearchPerson("作詞者", LyristNames);
 			}
 			catch (Exception excep)
 			{
@@ -641,8 +634,8 @@ namespace YukaLister.ViewModels.EditMasterWindowViewModels
 		{
 			try
 			{
-				_lyristId = _artistId;
-				LyristName = ArtistName;
+				_lyristIds = _artistIds;
+				LyristNames = ArtistNames;
 			}
 			catch (Exception excep)
 			{
@@ -674,23 +667,15 @@ namespace YukaLister.ViewModels.EditMasterWindowViewModels
 
 		public void ButtonEditLyristClicked()
 		{
-#if false
 			try
 			{
-				Boolean aHas = HasLyrist;
-				String? aId = _lyristId;
-				String? aName = LyristName;
-				EditPeople("作詞者", ref aHas, ref aId, ref aName);
-				HasLyrist = aHas;
-				_lyristId = aId;
-				LyristName = aName;
+				(HasLyrist, _lyristIds, LyristNames) = EditPeople("作詞者", _lyristIds, LyristNames);
 			}
-			catch (Exception oExcep)
+			catch (Exception excep)
 			{
-				Environment!.LogWriter.ShowLogMessage(TraceEventType.Error, "作詞者詳細編集ボタンクリック時エラー：\n" + oExcep.Message);
-				Environment.LogWriter.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, "　スタックトレース：\n" + oExcep.StackTrace);
+				YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(TraceEventType.Error, "作曲者詳細編集ボタンクリック時エラー：\n" + excep.Message);
+				YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, "　スタックトレース：\n" + excep.StackTrace);
 			}
-#endif
 		}
 		#endregion
 
@@ -718,7 +703,7 @@ namespace YukaLister.ViewModels.EditMasterWindowViewModels
 		{
 			try
 			{
-				(_composerId, ComposerName) = SearchPerson("作曲者", ComposerName);
+				(_composerIds, ComposerNames) = SearchPerson("作曲者", ComposerNames);
 			}
 			catch (Exception excep)
 			{
@@ -752,8 +737,8 @@ namespace YukaLister.ViewModels.EditMasterWindowViewModels
 		{
 			try
 			{
-				_composerId = _lyristId;
-				ComposerName = LyristName;
+				_composerIds = _lyristIds;
+				ComposerNames = LyristNames;
 			}
 			catch (Exception excep)
 			{
@@ -785,23 +770,15 @@ namespace YukaLister.ViewModels.EditMasterWindowViewModels
 
 		public void ButtonEditComposerClicked()
 		{
-#if false
 			try
 			{
-				Boolean aHas = HasComposer;
-				String? aId = _composerId;
-				String? aName = ComposerName;
-				EditPeople("作曲者", ref aHas, ref aId, ref aName);
-				HasComposer = aHas;
-				_composerId = aId;
-				ComposerName = aName;
+				(HasComposer, _composerIds, ComposerNames) = EditPeople("作曲者", _composerIds, ComposerNames);
 			}
-			catch (Exception oExcep)
+			catch (Exception excep)
 			{
-				Environment!.LogWriter.ShowLogMessage(TraceEventType.Error, "作曲者詳細編集ボタンクリック時エラー：\n" + oExcep.Message);
-				Environment.LogWriter.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, "　スタックトレース：\n" + oExcep.StackTrace);
+				YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(TraceEventType.Error, "作曲者詳細編集ボタンクリック時エラー：\n" + excep.Message);
+				YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, "　スタックトレース：\n" + excep.StackTrace);
 			}
-#endif
 		}
 		#endregion
 
@@ -829,7 +806,7 @@ namespace YukaLister.ViewModels.EditMasterWindowViewModels
 		{
 			try
 			{
-				(_arrangerId, ArrangerName) = SearchPerson("編曲者", ArrangerName);
+				(_arrangerIds, ArrangerNames) = SearchPerson("編曲者", ArrangerNames);
 			}
 			catch (Exception excep)
 			{
@@ -863,8 +840,8 @@ namespace YukaLister.ViewModels.EditMasterWindowViewModels
 		{
 			try
 			{
-				_arrangerId = _composerId;
-				ArrangerName = ComposerName;
+				_arrangerIds = _composerIds;
+				ArrangerNames = ComposerNames;
 			}
 			catch (Exception excep)
 			{
@@ -896,23 +873,15 @@ namespace YukaLister.ViewModels.EditMasterWindowViewModels
 
 		public void ButtonEditArrangerClicked()
 		{
-#if false
 			try
 			{
-				Boolean aHas = HasArranger;
-				String? aId = _arrangerId;
-				String? aName = ArrangerName;
-				EditPeople("編曲者", ref aHas, ref aId, ref aName);
-				HasArranger = aHas;
-				_arrangerId = aId;
-				ArrangerName = aName;
+				(HasArranger, _arrangerIds, ArrangerNames) = EditPeople("編曲者", _arrangerIds, ArrangerNames);
 			}
-			catch (Exception oExcep)
+			catch (Exception excep)
 			{
-				Environment!.LogWriter.ShowLogMessage(TraceEventType.Error, "編曲者詳細編集ボタンクリック時エラー：\n" + oExcep.Message);
-				Environment.LogWriter.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, "　スタックトレース：\n" + oExcep.StackTrace);
+				YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(TraceEventType.Error, "編曲者詳細編集ボタンクリック時エラー：\n" + excep.Message);
+				YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, "　スタックトレース：\n" + excep.StackTrace);
 			}
-#endif
 		}
 		#endregion
 
@@ -960,27 +929,27 @@ namespace YukaLister.ViewModels.EditMasterWindowViewModels
 			{
 				throw new Exception("タイアップが「あり」になっていますが指定されていません。");
 			}
-			List<String> tagIds = YlCommon.SplitIds(_tagId);
+			List<String> tagIds = YlCommon.SplitIds(_tagIds);
 			if (HasTag && tagIds.Count == 0)
 			{
 				throw new Exception("タグが「あり」になっていますが指定されていません。");
 			}
-			List<String> artistIds = YlCommon.SplitIds(_artistId);
+			List<String> artistIds = YlCommon.SplitIds(_artistIds);
 			if (HasArtist && artistIds.Count == 0)
 			{
 				throw new Exception("歌手が「あり」になっていますが指定されていません。");
 			}
-			List<String> lyristIds = YlCommon.SplitIds(_lyristId);
+			List<String> lyristIds = YlCommon.SplitIds(_lyristIds);
 			if (HasLyrist && lyristIds.Count == 0)
 			{
 				throw new Exception("作詞者が「あり」になっていますが指定されていません。");
 			}
-			List<String> composerIds = YlCommon.SplitIds(_composerId);
+			List<String> composerIds = YlCommon.SplitIds(_composerIds);
 			if (HasComposer && composerIds.Count == 0)
 			{
 				throw new Exception("作曲者が「あり」になっていますが指定されていません。");
 			}
-			List<String> arrangerIds = YlCommon.SplitIds(_arrangerId);
+			List<String> arrangerIds = YlCommon.SplitIds(_arrangerIds);
 			if (HasArranger && arrangerIds.Count == 0)
 			{
 				throw new Exception("編曲者が「あり」になっていますが指定されていません。");
@@ -1041,21 +1010,21 @@ namespace YukaLister.ViewModels.EditMasterWindowViewModels
 			// タグ
 			MusicInfoContext.GetDbSet(_musicInfoContext, out DbSet<TTagSequence> tagSequences);
 			MusicInfoContext.GetDbSet(_musicInfoContext, out DbSet<TTag> tags);
-			(HasTag, _tagId, TagName) = ConcatMasterIdsAndNames(DbCommon.SelectSequencedTagsBySongId(tagSequences, tags, master.Id).ToList<IRcMaster>());
+			(HasTag, _tagIds, TagNames) = ConcatMasterIdsAndNames(DbCommon.SelectSequencedTagsBySongId(tagSequences, tags, master.Id));
 
 			// 人物関係
 			MusicInfoContext.GetDbSet(_musicInfoContext, out DbSet<TArtistSequence> artistSequences);
 			MusicInfoContext.GetDbSet(_musicInfoContext, out DbSet<TPerson> people);
-			(HasArtist, _artistId, ArtistName) = ConcatMasterIdsAndNames(DbCommon.SelectSequencedPeopleBySongId(artistSequences, people, master.Id).ToList<IRcMaster>());
+			(HasArtist, _artistIds, ArtistNames) = ConcatMasterIdsAndNames(DbCommon.SelectSequencedPeopleBySongId(artistSequences, people, master.Id));
 
 			MusicInfoContext.GetDbSet(_musicInfoContext, out DbSet<TLyristSequence> lyristSequences);
-			(HasLyrist, _lyristId, LyristName) = ConcatMasterIdsAndNames(DbCommon.SelectSequencedPeopleBySongId(lyristSequences, people, master.Id).ToList<IRcMaster>());
+			(HasLyrist, _lyristIds, LyristNames) = ConcatMasterIdsAndNames(DbCommon.SelectSequencedPeopleBySongId(lyristSequences, people, master.Id));
 
 			MusicInfoContext.GetDbSet(_musicInfoContext, out DbSet<TComposerSequence> composerSequences);
-			(HasComposer, _composerId, ComposerName) = ConcatMasterIdsAndNames(DbCommon.SelectSequencedPeopleBySongId(composerSequences, people, master.Id).ToList<IRcMaster>());
+			(HasComposer, _composerIds, ComposerNames) = ConcatMasterIdsAndNames(DbCommon.SelectSequencedPeopleBySongId(composerSequences, people, master.Id));
 
 			MusicInfoContext.GetDbSet(_musicInfoContext, out DbSet<TArrangerSequence> arrangerSequences);
-			(HasArranger, _arrangerId, ArrangerName) = ConcatMasterIdsAndNames(DbCommon.SelectSequencedPeopleBySongId(arrangerSequences, people, master.Id).ToList<IRcMaster>());
+			(HasArranger, _arrangerIds, ArrangerNames) = ConcatMasterIdsAndNames(DbCommon.SelectSequencedPeopleBySongId(arrangerSequences, people, master.Id));
 
 			SetIsTieUpEnabled();
 			SetIsCategoryEnabled();
@@ -1087,20 +1056,20 @@ namespace YukaLister.ViewModels.EditMasterWindowViewModels
 
 			// タグ紐付け
 			MusicInfoContext.GetDbSet(_musicInfoContext, out DbSet<TTagSequence> tagSequences);
-			DbCommon.RegisterSequence<TTagSequence>(tagSequences, master.Id, YlCommon.SplitIds(_tagId));
+			DbCommon.RegisterSequence<TTagSequence>(tagSequences, master.Id, YlCommon.SplitIds(_tagIds));
 
 			// 人物紐付け
 			MusicInfoContext.GetDbSet(_musicInfoContext, out DbSet<TArtistSequence> artistSequences);
-			DbCommon.RegisterSequence<TArtistSequence>(artistSequences, master.Id, YlCommon.SplitIds(_artistId));
+			DbCommon.RegisterSequence<TArtistSequence>(artistSequences, master.Id, YlCommon.SplitIds(_artistIds));
 
 			MusicInfoContext.GetDbSet(_musicInfoContext, out DbSet<TLyristSequence> lyristSequences);
-			DbCommon.RegisterSequence<TLyristSequence>(lyristSequences, master.Id, YlCommon.SplitIds(_lyristId));
+			DbCommon.RegisterSequence<TLyristSequence>(lyristSequences, master.Id, YlCommon.SplitIds(_lyristIds));
 
 			MusicInfoContext.GetDbSet(_musicInfoContext, out DbSet<TComposerSequence> composerSequences);
-			DbCommon.RegisterSequence<TComposerSequence>(composerSequences, master.Id, YlCommon.SplitIds(_composerId));
+			DbCommon.RegisterSequence<TComposerSequence>(composerSequences, master.Id, YlCommon.SplitIds(_composerIds));
 
 			MusicInfoContext.GetDbSet(_musicInfoContext, out DbSet<TArrangerSequence> arrangerSequences);
-			DbCommon.RegisterSequence<TArrangerSequence>(arrangerSequences, master.Id, YlCommon.SplitIds(_arrangerId));
+			DbCommon.RegisterSequence<TArrangerSequence>(arrangerSequences, master.Id, YlCommon.SplitIds(_arrangerIds));
 
 			_musicInfoContext.SaveChanges();
 		}
@@ -1112,20 +1081,20 @@ namespace YukaLister.ViewModels.EditMasterWindowViewModels
 		// タイアップ ID
 		private String? _tieUpId;
 
-		// タグ ID
-		private String? _tagId;
+		// タグ ID（カンマ区切りで複数）
+		private String? _tagIds;
 
-		// 歌手 ID
-		private String? _artistId;
+		// 歌手 ID（カンマ区切りで複数）
+		private String? _artistIds;
 
-		// 作詞者 ID
-		private String? _lyristId;
+		// 作詞者 ID（カンマ区切りで複数）
+		private String? _lyristIds;
 
-		// 作曲者 ID
-		private String? _composerId;
+		// 作曲者 ID（カンマ区切りで複数）
+		private String? _composerIds;
 
-		// 編曲者 ID
-		private String? _arrangerId;
+		// 編曲者 ID（カンマ区切りで複数）
+		private String? _arrangerIds;
 
 		// タイアップを検索したかどうか
 		private Boolean _isTieUpSearched;
@@ -1145,7 +1114,7 @@ namespace YukaLister.ViewModels.EditMasterWindowViewModels
 		// --------------------------------------------------------------------
 		// 複数の IRcMaster の ID と名前をカンマで結合
 		// --------------------------------------------------------------------
-		private (Boolean has, String? ids, String? names) ConcatMasterIdsAndNames(List<IRcMaster> masters)
+		private (Boolean has, String? ids, String? names) ConcatMasterIdsAndNames<T>(List<T> masters) where T : IRcMaster
 		{
 			String ids = String.Join(YlConstants.VAR_VALUE_DELIMITER[0], masters.Select(x => x.Id));
 			String names = String.Join(YlConstants.VAR_VALUE_DELIMITER[0], masters.Select(x => x.Name));
@@ -1172,29 +1141,6 @@ namespace YukaLister.ViewModels.EditMasterWindowViewModels
 				YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(TraceEventType.Error, "摘要選択メニュークリック時エラー：\n" + excep.Message);
 				YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, "　スタックトレース：\n" + excep.StackTrace);
 			}
-		}
-
-		// --------------------------------------------------------------------
-		// 人物詳細編集
-		// --------------------------------------------------------------------
-		private void EditPeople(String oCaption, ref Boolean oHas, ref String? oId, ref String? oName)
-		{
-#if false
-			using (EditPeopleWindowViewModel aEditPeopleWindowViewModel = new EditPeopleWindowViewModel())
-			{
-				aEditPeopleWindowViewModel.Environment = Environment;
-				aEditPeopleWindowViewModel.PersonKind = oCaption;
-				aEditPeopleWindowViewModel.InitialIds = YlCommon.SplitIds(oId);
-				Messenger.Raise(new TransitionMessage(aEditPeopleWindowViewModel, "OpenEditPeopleWindow"));
-
-				if (aEditPeopleWindowViewModel.OkSelectedMasters == null)
-				{
-					return;
-				}
-
-				GetMastersProperties(aEditPeopleWindowViewModel.OkSelectedMasters, out oHas, out oId, out oName);
-			}
-#endif
 		}
 
 		// --------------------------------------------------------------------
@@ -1231,6 +1177,31 @@ namespace YukaLister.ViewModels.EditMasterWindowViewModels
 			}
 
 			return (searchMasterWindowViewModel.OkSelectedMaster.Id, searchMasterWindowViewModel.OkSelectedMaster.Name);
+		}
+
+		// --------------------------------------------------------------------
+		// 人物詳細編集
+		// --------------------------------------------------------------------
+		private (Boolean has, String? ids, String? names) EditPeople(String caption, String? srcIds, String? srcNames)
+		{
+			MusicInfoContext.GetDbSet(_musicInfoContext, out DbSet<TPerson> people);
+			using EditPeopleWindowViewModel editPeopleWindowViewModel = new(_musicInfoContext, people, caption);
+			List<String> splitIds = YlCommon.SplitIds(srcIds);
+			foreach (String id in splitIds)
+			{
+				TPerson? person = DbCommon.SelectBaseById(people, id);
+				if (person != null)
+				{
+					editPeopleWindowViewModel.Masters.Add(person);
+				}
+			}
+			Messenger.Raise(new TransitionMessage(editPeopleWindowViewModel, YlConstants.MESSAGE_KEY_OPEN_EDIT_SEQUENCE_WINDOW));
+
+			if (!editPeopleWindowViewModel.OkSelectedMasters.Any())
+			{
+				return (!String.IsNullOrEmpty(srcIds), srcIds, srcNames);
+			}
+			return ConcatMasterIdsAndNames(editPeopleWindowViewModel.OkSelectedMasters);
 		}
 
 		// --------------------------------------------------------------------
