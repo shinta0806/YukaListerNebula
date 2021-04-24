@@ -457,7 +457,7 @@ namespace YukaLister.ViewModels.EditMasterWindowViewModels
 		}
 		#endregion
 
-		#region タグ詳細編集ボタンの制御
+		#region 複数タグ検索ボタンの制御
 		private ViewModelCommand? _buttonEditTagClickedCommand;
 
 		public ViewModelCommand ButtonEditTagClickedCommand
@@ -479,32 +479,32 @@ namespace YukaLister.ViewModels.EditMasterWindowViewModels
 
 		public void ButtonEditTagClicked()
 		{
-#if false
 			try
 			{
-				using (EditTagsWindowViewModel aEditTagsWindowViewModel = new EditTagsWindowViewModel())
+				MusicInfoContext.GetDbSet(_musicInfoContext, out DbSet<TTag> tags);
+				using EditTagsWindowViewModel editTagsWindowViewModel = new(_musicInfoContext, tags);
+				List<String> splitIds = YlCommon.SplitIds(_tagIds);
+				foreach (String id in splitIds)
 				{
-					aEditTagsWindowViewModel.Environment = Environment;
-					aEditTagsWindowViewModel.InitialIds = YlCommon.SplitIds(_tagId);
-					Messenger.Raise(new TransitionMessage(aEditTagsWindowViewModel, "OpenEditTagsWindow"));
-
-					if (aEditTagsWindowViewModel.OkSelectedMasters == null)
+					TTag? tag = DbCommon.SelectBaseById(tags, id);
+					if (tag != null)
 					{
-						return;
+						editTagsWindowViewModel.Masters.Add(tag);
 					}
-
-					GetMastersProperties(aEditTagsWindowViewModel.OkSelectedMasters, out Boolean aHas, out String? aId, out String? aName);
-					HasTag = aHas;
-					_tagId = aId;
-					TagName = aName;
 				}
+				Messenger.Raise(new TransitionMessage(editTagsWindowViewModel, YlConstants.MESSAGE_KEY_OPEN_EDIT_SEQUENCE_WINDOW));
+
+				if (!editTagsWindowViewModel.OkSelectedMasters.Any())
+				{
+					return;
+				}
+				(HasTag, _tagIds, TagNames) = ConcatMasterIdsAndNames(editTagsWindowViewModel.OkSelectedMasters);
 			}
-			catch (Exception oExcep)
+			catch (Exception excep)
 			{
-				Environment!.LogWriter.ShowLogMessage(TraceEventType.Error, "タグ詳細編集ボタンクリック時エラー：\n" + oExcep.Message);
-				Environment.LogWriter.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, "　スタックトレース：\n" + oExcep.StackTrace);
+				YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(TraceEventType.Error, "複数タグ検索ボタンクリック時エラー：\n" + excep.Message);
+				YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, "　スタックトレース：\n" + excep.StackTrace);
 			}
-#endif
 		}
 		#endregion
 
@@ -542,7 +542,7 @@ namespace YukaLister.ViewModels.EditMasterWindowViewModels
 		}
 		#endregion
 
-		#region 歌手詳細編集ボタンの制御
+		#region 複数歌手検索ボタンの制御
 		private ViewModelCommand? mButtonEditArtistClickedCommand;
 
 		public ViewModelCommand ButtonEditArtistClickedCommand
@@ -570,7 +570,7 @@ namespace YukaLister.ViewModels.EditMasterWindowViewModels
 			}
 			catch (Exception excep)
 			{
-				YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(TraceEventType.Error, "歌手詳細編集ボタンクリック時エラー：\n" + excep.Message);
+				YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(TraceEventType.Error, "複数歌手検索ボタンクリック時エラー：\n" + excep.Message);
 				YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, "　スタックトレース：\n" + excep.StackTrace);
 			}
 		}
@@ -645,7 +645,7 @@ namespace YukaLister.ViewModels.EditMasterWindowViewModels
 		}
 		#endregion
 
-		#region 作詞者詳細編集ボタンの制御
+		#region 複数作詞者検索ボタンの制御
 		private ViewModelCommand? _buttonEditLyristClickedCommand;
 
 		public ViewModelCommand ButtonEditLyristClickedCommand
@@ -673,7 +673,7 @@ namespace YukaLister.ViewModels.EditMasterWindowViewModels
 			}
 			catch (Exception excep)
 			{
-				YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(TraceEventType.Error, "作曲者詳細編集ボタンクリック時エラー：\n" + excep.Message);
+				YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(TraceEventType.Error, "複数作詞者検索ボタンクリック時エラー：\n" + excep.Message);
 				YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, "　スタックトレース：\n" + excep.StackTrace);
 			}
 		}
@@ -748,7 +748,7 @@ namespace YukaLister.ViewModels.EditMasterWindowViewModels
 		}
 		#endregion
 
-		#region 作曲者詳細編集ボタンの制御
+		#region 複数作曲者検索ボタンの制御
 		private ViewModelCommand? _buttonEditComposerClickedCommand;
 
 		public ViewModelCommand ButtonEditComposerClickedCommand
@@ -776,7 +776,7 @@ namespace YukaLister.ViewModels.EditMasterWindowViewModels
 			}
 			catch (Exception excep)
 			{
-				YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(TraceEventType.Error, "作曲者詳細編集ボタンクリック時エラー：\n" + excep.Message);
+				YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(TraceEventType.Error, "複数作曲者検索ボタンクリック時エラー：\n" + excep.Message);
 				YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, "　スタックトレース：\n" + excep.StackTrace);
 			}
 		}
@@ -851,7 +851,7 @@ namespace YukaLister.ViewModels.EditMasterWindowViewModels
 		}
 		#endregion
 
-		#region 編曲者詳細編集ボタンの制御
+		#region 複数編曲者検索ボタンの制御
 		private ViewModelCommand? _buttonEditArrangerClickedCommand;
 
 		public ViewModelCommand ButtonEditArrangerClickedCommand
@@ -879,7 +879,7 @@ namespace YukaLister.ViewModels.EditMasterWindowViewModels
 			}
 			catch (Exception excep)
 			{
-				YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(TraceEventType.Error, "編曲者詳細編集ボタンクリック時エラー：\n" + excep.Message);
+				YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(TraceEventType.Error, "複数編曲者検索ボタンクリック時エラー：\n" + excep.Message);
 				YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, "　スタックトレース：\n" + excep.StackTrace);
 			}
 		}

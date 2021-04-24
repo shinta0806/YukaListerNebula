@@ -291,6 +291,9 @@ namespace YukaLister.ViewModels.EditMasterWindowViewModels
 		// protected メンバー変数
 		// ====================================================================
 
+		// 編集対象の名称
+		protected String _caption;
+
 		// 楽曲情報データベースのコンテキスト
 		protected MusicInfoContext _musicInfoContext;
 
@@ -463,13 +466,6 @@ namespace YukaLister.ViewModels.EditMasterWindowViewModels
 			YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS,
 					YlConstants.MUSIC_INFO_TABLE_NAME_LABELS[DbCommon.MusicInfoTableIndex<T>()] + "テーブル更新：" + newRecord.Id + " / " + newRecord.Name);
 		}
-
-		// ====================================================================
-		// private メンバー変数
-		// ====================================================================
-
-		// 編集対象の名称
-		private String _caption;
 
 		// ====================================================================
 		// private メンバー関数
