@@ -1112,16 +1112,6 @@ namespace YukaLister.ViewModels.EditMasterWindowViewModels
 		}
 
 		// --------------------------------------------------------------------
-		// 複数の IRcMaster の ID と名前をカンマで結合
-		// --------------------------------------------------------------------
-		private (Boolean has, String? ids, String? names) ConcatMasterIdsAndNames<T>(List<T> masters) where T : IRcMaster
-		{
-			String ids = String.Join(YlConstants.VAR_VALUE_DELIMITER[0], masters.Select(x => x.Id));
-			String names = String.Join(YlConstants.VAR_VALUE_DELIMITER[0], masters.Select(x => x.Name));
-			return (!String.IsNullOrEmpty(ids), String.IsNullOrEmpty(ids) ? null : ids, String.IsNullOrEmpty(names) ? null : names);
-		}
-
-		// --------------------------------------------------------------------
 		// イベントハンドラー
 		// --------------------------------------------------------------------
 		private void ContextMenuButtonSelectOpEd_Click(Object sender, RoutedEventArgs routedEventArgs)
@@ -1182,10 +1172,10 @@ namespace YukaLister.ViewModels.EditMasterWindowViewModels
 		// --------------------------------------------------------------------
 		// 人物詳細編集
 		// --------------------------------------------------------------------
-		private (Boolean has, String? ids, String? names) EditPeople(String caption, String? srcIds, String? srcNames)
+		private (Boolean has, String? ids, String? names) EditPeople(String captionDetail, String? srcIds, String? srcNames)
 		{
 			MusicInfoContext.GetDbSet(_musicInfoContext, out DbSet<TPerson> people);
-			using EditPeopleWindowViewModel editPeopleWindowViewModel = new(_musicInfoContext, people, caption);
+			using EditPeopleWindowViewModel editPeopleWindowViewModel = new(_musicInfoContext, people, captionDetail);
 			List<String> splitIds = YlCommon.SplitIds(srcIds);
 			foreach (String id in splitIds)
 			{

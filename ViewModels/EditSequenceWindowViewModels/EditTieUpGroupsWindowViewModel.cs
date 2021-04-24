@@ -1,6 +1,6 @@
 ﻿// ============================================================================
 // 
-// 複数人物検索ウィンドウの ViewModel
+// 複数タイアップグループ検索ウィンドウの ViewModel
 // 
 // ============================================================================
 
@@ -22,7 +22,7 @@ using YukaLister.ViewModels.EditMasterWindowViewModels;
 
 namespace YukaLister.ViewModels.EditSequenceWindowViewModels
 {
-	public class EditPeopleWindowViewModel : EditSequenceWindowViewModel<TPerson>
+	public class EditTieUpGroupsWindowViewModel : EditSequenceWindowViewModel<TTieUpGroup>
 	{
 		// ====================================================================
 		// コンストラクター・デストラクター
@@ -31,8 +31,8 @@ namespace YukaLister.ViewModels.EditSequenceWindowViewModels
 		// --------------------------------------------------------------------
 		// コンストラクター
 		// --------------------------------------------------------------------
-		public EditPeopleWindowViewModel(MusicInfoContext musicInfoContext, DbSet<TPerson> records, String captionDetail)
-				: base(musicInfoContext, records, captionDetail)
+		public EditTieUpGroupsWindowViewModel(MusicInfoContext musicInfoContext, DbSet<TTieUpGroup> records)
+				: base(musicInfoContext, records)
 		{
 		}
 
@@ -50,12 +50,11 @@ namespace YukaLister.ViewModels.EditSequenceWindowViewModels
 			try
 			{
 				// ヘルプ
-				HelpCommandParameter = "KasyuSakushisyaSakkyokusyaHenkyokusyanoSentaku";
-
+				HelpCommandParameter = String.Empty;
 			}
 			catch (Exception excep)
 			{
-				YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(TraceEventType.Error, "複数人物検索ウィンドウ初期化時エラー：\n" + excep.Message);
+				YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(TraceEventType.Error, "複数タイアップグループ検索ウィンドウ初期化時エラー：\n" + excep.Message);
 				YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, "　スタックトレース：\n" + excep.StackTrace);
 			}
 		}
@@ -67,9 +66,9 @@ namespace YukaLister.ViewModels.EditSequenceWindowViewModels
 		// --------------------------------------------------------------------
 		// マスター編集ウィンドウの ViewModel 作成
 		// --------------------------------------------------------------------
-		protected override EditMasterWindowViewModel<TPerson> CreateEditMasterWindowViewModel()
+		protected override EditMasterWindowViewModel<TTieUpGroup> CreateEditMasterWindowViewModel()
 		{
-			return new EditPersonWindowViewModel(_musicInfoContext, _records);
+			return new EditTieUpGroupWindowViewModel(_musicInfoContext, _records);
 		}
 	}
 }

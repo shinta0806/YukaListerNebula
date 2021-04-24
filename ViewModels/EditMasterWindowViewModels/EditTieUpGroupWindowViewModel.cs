@@ -1,11 +1,11 @@
 ﻿// ============================================================================
 // 
-// 複数人物検索ウィンドウの ViewModel
+// タイアップグループ詳細編集ウィンドウの ViewModel
 // 
 // ============================================================================
 
 // ----------------------------------------------------------------------------
-// ビューは EditSequenceWindow を使う。
+// ビューは EditMasterWindow を使う。
 // ----------------------------------------------------------------------------
 
 using Microsoft.EntityFrameworkCore;
@@ -17,12 +17,12 @@ using System.Diagnostics;
 
 using YukaLister.Models.Database.Masters;
 using YukaLister.Models.DatabaseContexts;
+using YukaLister.Models.SharedMisc;
 using YukaLister.Models.YukaListerModels;
-using YukaLister.ViewModels.EditMasterWindowViewModels;
 
-namespace YukaLister.ViewModels.EditSequenceWindowViewModels
+namespace YukaLister.ViewModels.EditMasterWindowViewModels
 {
-	public class EditPeopleWindowViewModel : EditSequenceWindowViewModel<TPerson>
+	public class EditTieUpGroupWindowViewModel : EditMasterWindowViewModel<TTieUpGroup>
 	{
 		// ====================================================================
 		// コンストラクター・デストラクター
@@ -31,8 +31,8 @@ namespace YukaLister.ViewModels.EditSequenceWindowViewModels
 		// --------------------------------------------------------------------
 		// コンストラクター
 		// --------------------------------------------------------------------
-		public EditPeopleWindowViewModel(MusicInfoContext musicInfoContext, DbSet<TPerson> records, String captionDetail)
-				: base(musicInfoContext, records, captionDetail)
+		public EditTieUpGroupWindowViewModel(MusicInfoContext musicInfoContext, DbSet<TTieUpGroup> records)
+				: base(musicInfoContext, records)
 		{
 		}
 
@@ -49,27 +49,14 @@ namespace YukaLister.ViewModels.EditSequenceWindowViewModels
 
 			try
 			{
-				// ヘルプ
-				HelpCommandParameter = "KasyuSakushisyaSakkyokusyaHenkyokusyanoSentaku";
-
+				// ヒント
+				NameHint = "シリーズ名に「" + YlConstants.TIE_UP_GROUP_SUFFIX + "」は含めないで下さい。";
 			}
 			catch (Exception excep)
 			{
-				YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(TraceEventType.Error, "複数人物検索ウィンドウ初期化時エラー：\n" + excep.Message);
+				YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(TraceEventType.Error, "制作会社詳細情報編集ウィンドウ初期化時エラー：\n" + excep.Message);
 				YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, "　スタックトレース：\n" + excep.StackTrace);
 			}
-		}
-
-		// ====================================================================
-		// protected メンバー関数
-		// ====================================================================
-
-		// --------------------------------------------------------------------
-		// マスター編集ウィンドウの ViewModel 作成
-		// --------------------------------------------------------------------
-		protected override EditMasterWindowViewModel<TPerson> CreateEditMasterWindowViewModel()
-		{
-			return new EditPersonWindowViewModel(_musicInfoContext, _records);
 		}
 	}
 }

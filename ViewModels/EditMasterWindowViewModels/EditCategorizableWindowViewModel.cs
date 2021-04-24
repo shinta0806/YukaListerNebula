@@ -17,6 +17,7 @@ using Shinta;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 
@@ -181,6 +182,16 @@ namespace YukaLister.ViewModels.EditMasterWindowViewModels
 			{
 				throw new Exception("カテゴリーが「あり」になっていますが指定されていません。");
 			}
+		}
+
+		// --------------------------------------------------------------------
+		// 複数の IRcMaster の ID と名前をカンマで結合
+		// --------------------------------------------------------------------
+		protected (Boolean has, String? ids, String? names) ConcatMasterIdsAndNames<U>(List<U> masters) where U : IRcMaster
+		{
+			String ids = String.Join(YlConstants.VAR_VALUE_DELIMITER[0], masters.Select(x => x.Id));
+			String names = String.Join(YlConstants.VAR_VALUE_DELIMITER[0], masters.Select(x => x.Name));
+			return (!String.IsNullOrEmpty(ids), String.IsNullOrEmpty(ids) ? null : ids, String.IsNullOrEmpty(names) ? null : names);
 		}
 
 		// --------------------------------------------------------------------

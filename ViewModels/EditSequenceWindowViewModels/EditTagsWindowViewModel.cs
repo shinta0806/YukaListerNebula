@@ -1,6 +1,6 @@
 ﻿// ============================================================================
 // 
-// 複数タグ編集ウィンドウの ViewModel
+// 複数タグ検索ウィンドウの ViewModel
 // 
 // ============================================================================
 
@@ -8,21 +8,13 @@
 // ビューは EditSequenceWindow を使う。
 // ----------------------------------------------------------------------------
 
-using Livet;
-using Livet.Commands;
-using Livet.EventListeners;
-using Livet.Messaging;
-using Livet.Messaging.IO;
-using Livet.Messaging.Windows;
 using Microsoft.EntityFrameworkCore;
+
 using Shinta;
+
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
 using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using YukaLister.Models;
+
 using YukaLister.Models.Database.Masters;
 using YukaLister.Models.DatabaseContexts;
 using YukaLister.Models.YukaListerModels;
@@ -40,7 +32,7 @@ namespace YukaLister.ViewModels.EditSequenceWindowViewModels
 		// コンストラクター
 		// --------------------------------------------------------------------
 		public EditTagsWindowViewModel(MusicInfoContext musicInfoContext, DbSet<TTag> records)
-				: base(musicInfoContext, records, "タグ", "タグ")
+				: base(musicInfoContext, records)
 		{
 		}
 
@@ -63,7 +55,7 @@ namespace YukaLister.ViewModels.EditSequenceWindowViewModels
 			}
 			catch (Exception excep)
 			{
-				YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(TraceEventType.Error, "複数タグ編集ウィンドウ初期化時エラー：\n" + excep.Message);
+				YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(TraceEventType.Error, "複数タグ検索ウィンドウ初期化時エラー：\n" + excep.Message);
 				YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, "　スタックトレース：\n" + excep.StackTrace);
 			}
 		}

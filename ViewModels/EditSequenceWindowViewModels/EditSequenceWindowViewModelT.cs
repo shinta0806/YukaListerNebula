@@ -1,6 +1,6 @@
 ﻿// ============================================================================
 // 
-// 紐付編集ウィンドウの基底 ViewModel 基底クラス
+// 複数検索ウィンドウの基底 ViewModel 基底クラス
 // 
 // ============================================================================
 
@@ -41,12 +41,19 @@ namespace YukaLister.ViewModels.EditSequenceWindowViewModels
 		// --------------------------------------------------------------------
 		// コンストラクター
 		// --------------------------------------------------------------------
-		public EditSequenceWindowViewModel(MusicInfoContext musicInfoContext, DbSet<T> records, String caption, String kind)
+		public EditSequenceWindowViewModel(MusicInfoContext musicInfoContext, DbSet<T> records, String? captionDetail = null)
 		{
 			_musicInfoContext = musicInfoContext;
 			_records = records;
-			_caption = caption;
-			_kind = kind;
+			_caption2 = YlConstants.MUSIC_INFO_TABLE_NAME_LABELS[DbCommon.MusicInfoTableIndex<T>()];
+			if (String.IsNullOrEmpty(captionDetail))
+			{
+				_captionDetail = _caption2;
+			}
+			else
+			{
+				_captionDetail = captionDetail;
+			}
 		}
 
 		// ====================================================================
@@ -438,16 +445,16 @@ namespace YukaLister.ViewModels.EditSequenceWindowViewModels
 			try
 			{
 				// タイトルバー
-				Title = "複数" + _caption + "の検索";
+				Title = "複数" + _captionDetail + "の検索";
 #if DEBUG
 				Title = "［デバッグ］" + Title;
 #endif
 
 				// ラベル
-				Description = "「検索して追加」ボタンで" + _kind + "を追加して下さい。複数追加も可能です。";
-				DataGridHeader = _kind;
-				ButtonEditContent = _kind + "詳細編集 (_E)";
-				ButtonNewContent = "新規" + _kind + "作成 (_N)";
+				Description = "「検索して追加」ボタンで" + _caption2 + "を追加して下さい。複数追加も可能です。";
+				DataGridHeader = _caption2;
+				ButtonEditContent = _caption2 + "詳細編集 (_E)";
+				ButtonNewContent = "新規" + _caption2 + "作成 (_N)";
 			}
 			catch (Exception excep)
 			{
@@ -479,11 +486,11 @@ namespace YukaLister.ViewModels.EditSequenceWindowViewModels
 		// ====================================================================
 
 		// 編集対象の名称
-		private String _caption;
+		// 例）_captionDetail が "歌手" の場合、_caption は "人物"
+		private String _caption2;
 
-		// 編集対象の種類
-		// 例）_caption が "歌手" の場合、_kind は "人物"
-		private String _kind;
+		// 編集対象の名称詳細
+		private String _captionDetail;
 
 		// 検索したかどうか
 		private Boolean _isMasterSearched;
@@ -497,7 +504,7 @@ namespace YukaLister.ViewModels.EditSequenceWindowViewModels
 		// --------------------------------------------------------------------
 		private void Add()
 		{
-			using SearchMasterWindowViewModel<T> searchMasterWindowViewModel = new(_records, _caption);
+			using SearchMasterWindowViewModel<T> searchMasterWindowViewModel = new(_records, _captionDetail);
 			searchMasterWindowViewModel.SelectedKeyword = SelectedMaster?.Name;
 			Messenger.Raise(new TransitionMessage(searchMasterWindowViewModel, YlConstants.MESSAGE_KEY_OPEN_SEARCH_MASTER_WINDOW));
 
@@ -566,11 +573,11 @@ namespace YukaLister.ViewModels.EditSequenceWindowViewModels
 		{
 			if (!_isMasterSearched)
 			{
-				throw new Exception("新規" + _kind + "作成の前に一度、目的の" + _kind + "が未登録かどうか検索して下さい。");
+				throw new Exception("新規" + _caption2 + "作成の前に一度、目的の" + _caption2 + "が未登録かどうか検索して下さい。");
 			}
 
-			if (MessageBox.Show("目的の" + _kind + "が未登録の場合（検索してもヒットしない場合）に限り、新規" + _kind + "作成を行って下さい。\n"
-					+ "新規" + _kind + "作成を行いますか？", "確認", MessageBoxButton.YesNo, MessageBoxImage.Exclamation) == MessageBoxResult.No)
+			if (MessageBox.Show("目的の" + _caption2 + "が未登録の場合（検索してもヒットしない場合）に限り、新規" + _caption2 + "作成を行って下さい。\n"
+					+ "新規" + _caption2 + "作成を行いますか？", "確認", MessageBoxButton.YesNo, MessageBoxImage.Exclamation) == MessageBoxResult.No)
 			{
 				return;
 			}

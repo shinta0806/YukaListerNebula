@@ -9,6 +9,7 @@
         xmlns:vm="clr-namespace:YukaLister.ViewModels"
         xmlns:vmemw="clr-namespace:YukaLister.ViewModels.EditMasterWindowViewModels"
         xmlns:vem="clr-namespace:YukaLister.Views.EditMasterWindows"
+        xmlns:ves="clr-namespace:YukaLister.Views.EditSequenceWindows"
         xmlns:vsm="clr-namespace:YukaLister.Views.SearchMasterWindows"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         Title="{Binding Title}" SizeToContent="WidthAndHeight" ResizeMode="NoResize" ShowInTaskbar="False" >
@@ -40,6 +41,10 @@
 
         <l:InteractionMessageTrigger MessageKey="{x:Static msm:YlConstants.MESSAGE_KEY_OPEN_EDIT_MASTER_WINDOW}" Messenger="{Binding Messenger}">
             <l:TransitionInteractionMessageAction WindowType="{x:Type vem:EditMasterWindow}" Mode="Modal" IsOwned="True" />
+        </l:InteractionMessageTrigger>
+
+        <l:InteractionMessageTrigger MessageKey="{x:Static msm:YlConstants.MESSAGE_KEY_OPEN_EDIT_SEQUENCE_WINDOW}" Messenger="{Binding Messenger}">
+            <l:TransitionInteractionMessageAction WindowType="{x:Type ves:EditSequenceWindow}" Mode="Modal" IsOwned="True" />
         </l:InteractionMessageTrigger>
 
         <l:InteractionMessageTrigger MessageKey="{x:Static msm:YlConstants.MESSAGE_KEY_OPEN_INPUT_ID_PREFIX_WINDOW}" Messenger="{Binding Messenger}">
@@ -88,8 +93,8 @@
             <Label Content="シリーズあり (_S)：" Margin="0" Grid.Row="2" Grid.Column="3" HorizontalAlignment="Right"/>
             <CheckBox IsChecked="{Binding HasTieUpGroup}" Grid.Row="2" Grid.Column="4" Height="30" VerticalAlignment="Top" />
             <Button Content="検索" Grid.Row="2" Grid.Column="5" Height="Auto" FontSize="12" Padding="2" Style="{StaticResource MaterialDesignRaisedLightButton}" Margin="5" Command="{Binding ButtonSearchTieUpGroupClickedCommand}"/>
-            <Label Content="{Binding TieUpGroupName}" Margin="0" Grid.Row="2" Grid.Column="6"/>
-            <Button Content="シリーズ詳細編集" Grid.Row="2" Grid.Column="7" Height="Auto" FontSize="12" Padding="2" Style="{StaticResource MaterialDesignRaisedLightButton}" Margin="5,5,0,5" Command="{Binding ButtonEditTieUpGroupClickedCommand}"/>
+            <Label Content="{Binding TieUpGroupNames}" Margin="0" Grid.Row="2" Grid.Column="6"/>
+            <Button Content="複数シリーズ検索" Grid.Row="2" Grid.Column="7" Height="Auto" FontSize="12" Padding="2" Style="{StaticResource MaterialDesignRaisedLightButton}" Margin="5,5,0,5" Command="{Binding ButtonEditTieUpGroupClickedCommand}" />
         </Grid>
         <Grid>
             <Grid.RowDefinitions>
