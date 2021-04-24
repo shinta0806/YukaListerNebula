@@ -43,7 +43,7 @@
         <DockPanel DockPanel.Dock="Top" Margin="20,5,20,0" LastChildFill="False">
             <Label Content="検索可能ファイル数：" VerticalAlignment="Center" />
             <Label Content="{Binding NumRecordsLabel}" VerticalAlignment="Center"/>
-            <Button Style="{StaticResource MaterialDesignRaisedLightButton}" ToolTip="ヘルプ" Width="50" Height="25" DockPanel.Dock="Right" VerticalAlignment="Center">
+            <Button Name="ButtonHelp" Style="{StaticResource MaterialDesignRaisedLightButton}" ToolTip="ヘルプ" Width="50" Height="25" DockPanel.Dock="Right" VerticalAlignment="Center">
                 <behaviors:Interaction.Triggers>
                     <behaviors:EventTrigger EventName="Click">
                         <behaviors:ChangePropertyAction TargetObject="{Binding ContextMenu, ElementName=ButtonHelp}" PropertyName="IsOpen" Value="True"/>

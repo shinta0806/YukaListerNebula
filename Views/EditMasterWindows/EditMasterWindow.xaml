@@ -44,25 +44,25 @@
 
     <StackPanel>
         <StackPanel Orientation="Horizontal" Margin="20,20,20,0">
-            <Label x:Name="LabelId" Content="{Binding IdCaption}" Width="100" HorizontalContentAlignment="Right"/>
+            <Label Content="{Binding IdCaption}" Width="100" HorizontalContentAlignment="Right"/>
             <ComboBox ItemsSource="{Binding Masters}" SelectedItem="{Binding SelectedMaster}" DisplayMemberPath="Id" VerticalAlignment="Center" Width="300" materialDesign:ComboBoxAssist.ClassicMode="True" />
-            <Label x:Name="LabelIdInfo" Content="{Binding IdInfo}" Margin="10,0,0,0" Foreground="Red"/>
+            <Label Content="{Binding IdInfo}" Margin="10,0,0,0" Foreground="Red"/>
         </StackPanel>
         <Border BorderBrush="{DynamicResource {x:Static SystemColors.ControlLightBrushKey}}" BorderThickness="1" Height="3" Margin="0,20,0,0"/>
         <StackPanel Orientation="Horizontal" Margin="20,20,20,0">
             <Label Content="フリガナ (_F)：" Width="100" HorizontalContentAlignment="Right"/>
-            <TextBox x:Name="TextBoxRuby" Text="{Binding Ruby}" VerticalAlignment="Center" Width="300"/>
+            <TextBox Text="{Binding Ruby}" VerticalAlignment="Center" Width="300"/>
             <Label Content="検索ワード (_W)：" Width="120" HorizontalContentAlignment="Right"/>
-            <TextBox x:Name="TextBoxKeyword" Text="{Binding Keyword}" ToolTip="{Binding KeywordHint}" ToolTipService.ShowDuration="10000" materialDesign:HintAssist.Hint="{Binding ElementName=TextBoxKeyword, Path=ToolTip}" VerticalAlignment="Center" Width="450"/>
+            <TextBox Name="TextBoxKeyword" Text="{Binding Keyword}" ToolTip="{Binding KeywordHint}" ToolTipService.ShowDuration="10000" materialDesign:HintAssist.Hint="{Binding ElementName=TextBoxKeyword, Path=ToolTip}" VerticalAlignment="Center" Width="450" />
         </StackPanel>
         <StackPanel Orientation="Horizontal" Margin="20,20,20,0">
-            <Label x:Name="LabelName" Content="{Binding NameCaption}" Width="100" HorizontalContentAlignment="Right"/>
-            <TextBox x:Name="TextBoxName" Text="{Binding Name}" ToolTip="{Binding NameHint}" ToolTipService.ShowDuration="10000" materialDesign:HintAssist.Hint="{Binding ElementName=TextBoxName, Path=ToolTip}" VerticalAlignment="Center" Width="300"/>
+            <Label Content="{Binding NameCaption}" Width="100" HorizontalContentAlignment="Right"/>
+            <TextBox Name="TextBoxName" Text="{Binding Name}" ToolTip="{Binding NameHint}" ToolTipService.ShowDuration="10000" materialDesign:HintAssist.Hint="{Binding ElementName=TextBoxName, Path=ToolTip}" VerticalAlignment="Center" Width="300"/>
         </StackPanel>
         <Border BorderBrush="{DynamicResource {x:Static SystemColors.ControlLightBrushKey}}" BorderThickness="1" Height="3" Margin="0,20,0,0"/>
         <StackPanel Orientation="Horizontal" FlowDirection="RightToLeft" Margin="20">
-            <Button x:Name="ButtonCancel" Content="キャンセル" Style="{StaticResource MaterialDesignRaisedLightButton}" IsCancel="True" Width="100" Height="Auto" Padding="4"/>
-            <Button x:Name="ButtonOK" Content="OK" Margin="20,0,0,0" Height="Auto" IsDefault="True" Width="100" Command="{Binding ButtonOkClickedCommand}" sb:IsFocusedAttachedBehavior.IsFocused="{Binding IsButtonOkFocused}"/>
+            <Button Content="キャンセル" Style="{StaticResource MaterialDesignRaisedLightButton}" IsCancel="True" Width="100" Height="Auto" Padding="4"/>
+            <Button Content="OK" Margin="20,0,0,0" Height="Auto" IsDefault="True" Width="100" Command="{Binding ButtonOkClickedCommand}" sb:IsFocusedAttachedBehavior.IsFocused="{Binding IsButtonOkFocused}"/>
         </StackPanel>
     </StackPanel>
 

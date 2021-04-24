@@ -66,7 +66,7 @@
                 <DockPanel>
                     <Label Content="このフォルダー内にあるカラオケ動画ファイルの命名規則 (_R)　※拡張子は除きます" Margin="20,10,0,0" DockPanel.Dock="Top"/>
                     <DockPanel DockPanel.Dock="Top" Margin="20,0">
-                        <Button x:Name="ButtonVar" Style="{StaticResource MaterialDesignRaisedLightButton}" ToolTip="タグ" Width="50" Height="25" DockPanel.Dock="Right" Cursor="Hand" >
+                        <Button Name="ButtonVar" Style="{StaticResource MaterialDesignRaisedLightButton}" ToolTip="タグ" Width="50" Height="25" DockPanel.Dock="Right" >
                             <behaviors:Interaction.Triggers>
                                 <behaviors:EventTrigger EventName="Click">
                                     <behaviors:ChangePropertyAction TargetObject="{Binding ContextMenu, ElementName=ButtonVar}" PropertyName="IsOpen" Value="True"/>

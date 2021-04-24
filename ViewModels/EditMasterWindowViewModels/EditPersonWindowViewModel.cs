@@ -8,21 +8,13 @@
 // ビューは EditMasterWindow を使う。
 // ----------------------------------------------------------------------------
 
-using Livet;
-using Livet.Commands;
-using Livet.EventListeners;
-using Livet.Messaging;
-using Livet.Messaging.IO;
-using Livet.Messaging.Windows;
 using Microsoft.EntityFrameworkCore;
+
 using Shinta;
+
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
 using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using YukaLister.Models;
+
 using YukaLister.Models.Database.Masters;
 using YukaLister.Models.DatabaseContexts;
 using YukaLister.Models.YukaListerModels;

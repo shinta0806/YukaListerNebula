@@ -8,23 +8,21 @@
 // プログラム中では本クラスではなく派生クラスを使うこと。
 // ----------------------------------------------------------------------------
 
-using Livet;
 using Livet.Commands;
-using Livet.EventListeners;
 using Livet.Messaging;
-using Livet.Messaging.IO;
 using Livet.Messaging.Windows;
+
 using Microsoft.EntityFrameworkCore;
+
 using Shinta;
+
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
-using System.Text;
 using System.Windows;
-using YukaLister.Models;
+
 using YukaLister.Models.Database;
 using YukaLister.Models.DatabaseContexts;
 using YukaLister.Models.SharedMisc;
@@ -440,13 +438,13 @@ namespace YukaLister.ViewModels.EditSequenceWindowViewModels
 			try
 			{
 				// タイトルバー
-				Title = "複数" + _caption + "の編集";
+				Title = "複数" + _caption + "の検索";
 #if DEBUG
 				Title = "［デバッグ］" + Title;
 #endif
 
 				// ラベル
-				Description = "「検索して追加」ボタンで" + _kind + "を追加して下さい。複数名の指定も可能です。";
+				Description = "「検索して追加」ボタンで" + _kind + "を追加して下さい。複数追加も可能です。";
 				DataGridHeader = _kind;
 				ButtonEditContent = _kind + "詳細編集 (_E)";
 				ButtonNewContent = "新規" + _kind + "作成 (_N)";
@@ -619,6 +617,5 @@ namespace YukaLister.ViewModels.EditSequenceWindowViewModels
 			Messenger.Raise(new TransitionMessage(editMasterWindowViewModel, YlConstants.MESSAGE_KEY_OPEN_EDIT_MASTER_WINDOW));
 			return editMasterWindowViewModel.OkSelectedMaster;
 		}
-
 	}
 }

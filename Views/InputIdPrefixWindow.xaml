@@ -40,16 +40,16 @@
         <Label Content="各種 ID の先頭に付与する文字列を設定します。" Margin="20,15,0,0" HorizontalAlignment="Left"/>
         <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Margin="20,0,0,0">
             <Label Content="お好きな文字列で構いませんが、パソコンごとに異なる文字列を指定してください。" VerticalAlignment="Center"/>
-            <Label x:Name="LabelHelp" Margin="0" HorizontalAlignment="Left">
+            <Label Margin="0" HorizontalAlignment="Left">
                 <Hyperlink Command="{Binding HelpClickedCommand}" CommandParameter="IdSettouji" >
                     <TextBlock Text="詳細情報" />
                 </Hyperlink>
             </Label>
         </StackPanel>
-        <TextBox x:Name="TextBoxIdPrefix" Text="{Binding IdPrefix, UpdateSourceTrigger=PropertyChanged}" Margin="20,10,20,0" Width="500" HorizontalAlignment="Left" sb:IsFocusedAttachedBehavior.IsFocused="{Binding IsIdPrefixFocused}"/>
+        <TextBox Text="{Binding IdPrefix, UpdateSourceTrigger=PropertyChanged}" Margin="20,10,20,0" Width="500" HorizontalAlignment="Left" sb:IsFocusedAttachedBehavior.IsFocused="{Binding IsIdPrefixFocused}"/>
         <StackPanel Orientation="Horizontal" FlowDirection="RightToLeft" Margin="20">
-            <Button x:Name="ButtonCancel" Content="キャンセル" Height="Auto" Style="{StaticResource MaterialDesignRaisedLightButton}" IsCancel="True" Width="100" Padding="4"/>
-            <Button x:Name="ButtonOK" Content="OK" Margin="20,0,0,0" Height="Auto" IsDefault="True" Width="100" Command="{Binding ButtonOKClickedCommand}"/>
+            <Button Content="キャンセル" Height="Auto" Style="{StaticResource MaterialDesignRaisedLightButton}" IsCancel="True" Width="100" Padding="4" />
+            <Button Content="OK" Margin="20,0,0,0" Height="Auto" IsDefault="True" Width="100" Command="{Binding ButtonOKClickedCommand}"/>
         </StackPanel>
     </StackPanel>
 

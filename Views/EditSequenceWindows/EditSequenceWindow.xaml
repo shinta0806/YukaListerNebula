@@ -50,8 +50,8 @@
 
     <StackPanel>
         <StackPanel Margin="20,15,0,0" Orientation="Horizontal">
-            <Label x:Name="LabelDescription" Content="{Binding Description}" VerticalAlignment="Top" Margin="0" FlowDirection="LeftToRight" HorizontalAlignment="Left"/>
-            <Label x:Name="LabelHelp" Margin="0" VerticalAlignment="Top" HorizontalAlignment="Left">
+            <Label Content="{Binding Description}" VerticalAlignment="Top" Margin="0" FlowDirection="LeftToRight" HorizontalAlignment="Left"/>
+            <Label Margin="0" VerticalAlignment="Top" HorizontalAlignment="Left">
                 <Hyperlink Command="{Binding HelpClickedCommand}" CommandParameter="{Binding HelpCommandParameter}" >
                     <TextBlock Text="詳細情報" />
                 </Hyperlink>
@@ -62,7 +62,7 @@
                 <FrameworkElement x:Key="ProxyElement" />
             </StackPanel.Resources>
             <ContentControl Visibility="Collapsed" Content="{StaticResource ProxyElement}" />
-            <DataGrid x:Name="DataGridTargetFolders" AutoGenerateColumns="False" CanUserReorderColumns="False" CanUserSortColumns="False" CanUserResizeRows="False" SelectionMode="Single" IsReadOnly="True"
+            <DataGrid AutoGenerateColumns="False" CanUserReorderColumns="False" CanUserSortColumns="False" CanUserResizeRows="False" SelectionMode="Single" IsReadOnly="True"
                     Width="350" Margin="0,0,10,0" Height="260" materialDesign:DataGridAssist.ColumnHeaderPadding="3 5 3 5" materialDesign:DataGridAssist.CellPadding="3" ItemsSource="{Binding Masters}" SelectedItem="{Binding SelectedMaster}" CanUserAddRows="False" CanUserDeleteRows="False" >
                 <DataGrid.Columns>
                     <DataGridTextColumn Header="{Binding Path=DataContext.DataGridHeader ,Source={StaticResource ProxyElement}}" Width="*" Binding="{Binding DisplayName}" />
@@ -72,22 +72,22 @@
                 </DataGrid.InputBindings>
             </DataGrid>
             <StackPanel Margin="0" VerticalAlignment="Center">
-                <Button x:Name="ButtonAdd" Height="Auto" VerticalAlignment="Center" Content="検索して追加 (_A)" HorizontalAlignment="Left" Margin="0" Width="140" Padding="4" Command="{Binding ButtonAddClickedCommand}"/>
-                <Button x:Name="ButtonRemove" Height="Auto" VerticalAlignment="Center" Content="削除 (_R)" Style="{StaticResource MaterialDesignRaisedLightButton}" Margin="0,10,0,0" Command="{Binding ButtonRemoveClickedCommand}"/>
-                <Button x:Name="ButtonUp" Style="{StaticResource MaterialDesignRaisedLightButton}" ToolTip="命名規則を上へ" Height="Auto" VerticalAlignment="Bottom" Margin="0,20,0,0" Width="60" HorizontalAlignment="Left" Command="{Binding ButtonUpClickedCommand}">
+                <Button Height="Auto" VerticalAlignment="Center" Content="検索して追加 (_A)" HorizontalAlignment="Left" Margin="0" Width="140" Padding="4" Command="{Binding ButtonAddClickedCommand}"/>
+                <Button Height="Auto" VerticalAlignment="Center" Content="削除 (_R)" Style="{StaticResource MaterialDesignRaisedLightButton}" Margin="0,10,0,0" Command="{Binding ButtonRemoveClickedCommand}"/>
+                <Button Style="{StaticResource MaterialDesignRaisedLightButton}" ToolTip="命名規則を上へ" Height="Auto" VerticalAlignment="Bottom" Margin="0,20,0,0" Width="60" HorizontalAlignment="Left" Command="{Binding ButtonUpClickedCommand}">
                     <materialDesign:PackIcon Kind="ArrowUpThick" Height="18" Width="18" />
                 </Button>
-                <Button x:Name="ButtonDown" Style="{StaticResource MaterialDesignRaisedLightButton}" ToolTip="命名規則を下へ" Height="Auto" VerticalAlignment="Top" Margin="0,10,0,0" Width="60" HorizontalAlignment="Left" Command="{Binding ButtonDownClickedCommand}">
+                <Button Style="{StaticResource MaterialDesignRaisedLightButton}" ToolTip="命名規則を下へ" Height="Auto" VerticalAlignment="Top" Margin="0,10,0,0" Width="60" HorizontalAlignment="Left" Command="{Binding ButtonDownClickedCommand}">
                     <materialDesign:PackIcon Kind="ArrowDownThick" Height="18" Width="18" />
                 </Button>
-                <Button x:Name="ButtonEdit" Height="Auto" VerticalAlignment="Center" Content="{Binding ButtonEditContent}" Style="{StaticResource MaterialDesignRaisedLightButton}" Margin="0,20,0,0" Command="{Binding ButtonEditClickedCommand}"/>
-                <Button x:Name="ButtonNew" Height="Auto" VerticalAlignment="Center" Content="{Binding ButtonNewContent}" Style="{StaticResource MaterialDesignRaisedLightButton}" Margin="0,10,0,0" Command="{Binding ButtonNewClickedCommand}"/>
+                <Button Height="Auto" VerticalAlignment="Center" Content="{Binding ButtonEditContent}" Style="{StaticResource MaterialDesignRaisedLightButton}" Margin="0,20,0,0" Command="{Binding ButtonEditClickedCommand}"/>
+                <Button Height="Auto" VerticalAlignment="Center" Content="{Binding ButtonNewContent}" Style="{StaticResource MaterialDesignRaisedLightButton}" Margin="0,10,0,0" Command="{Binding ButtonNewClickedCommand}"/>
             </StackPanel>
         </StackPanel>
         <Border BorderBrush="{DynamicResource {x:Static SystemColors.ControlLightBrushKey}}" BorderThickness="1" Height="3" Margin="0,20,0,0"/>
         <StackPanel Orientation="Horizontal" FlowDirection="RightToLeft" Margin="20">
-            <Button x:Name="ButtonCancel" Content="キャンセル" Margin="0" Height="Auto" Style="{StaticResource MaterialDesignRaisedLightButton}" IsCancel="True" Width="100" Padding="4"/>
-            <Button x:Name="ButtonOk" Content="OK" Margin="20,0,0,0" Height="Auto" IsDefault="True" Width="100" Command="{Binding ButtonOkClickedCommand}"/>
+            <Button Content="キャンセル" Margin="0" Height="Auto" Style="{StaticResource MaterialDesignRaisedLightButton}" IsCancel="True" Width="100" Padding="4"/>
+            <Button Content="OK" Margin="20,0,0,0" Height="Auto" IsDefault="True" Width="100" Command="{Binding ButtonOkClickedCommand}"/>
         </StackPanel>
     </StackPanel>
 
