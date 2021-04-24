@@ -86,6 +86,91 @@ namespace YukaLister.Models.Database
 		}
 
 		// --------------------------------------------------------------------
+		// dicByFile に合致する楽曲群を、楽曲情報データベースから検索
+		// --------------------------------------------------------------------
+		public List<TSong> FindSongsByMusicInfoDatabase(Dictionary<String, String?> dicByFile)
+		{
+			// 楽曲名で検索
+			List<TSong> songs = DbCommon.SelectMastersByName(_songs, dicByFile[YlConstants.RULE_VAR_TITLE]);
+
+			// タイアップ名で絞り込み
+			if (songs.Count > 1 && dicByFile[YlConstants.RULE_VAR_PROGRAM] != null)
+			{
+				List<TSong> songsWithTieUp = new();
+				foreach (TSong song in songs)
+				{
+					TTieUp? tieUp = DbCommon.SelectBaseById(_tieUps, song.TieUpId);
+					if (tieUp != null && tieUp.Name == dicByFile[YlConstants.RULE_VAR_PROGRAM])
+					{
+						songsWithTieUp.Add(song);
+					}
+				}
+				if (songsWithTieUp.Any())
+				{
+					songs = songsWithTieUp;
+				}
+			}
+
+			// カテゴリーで絞り込み
+			if (songs.Count > 1 && dicByFile[YlConstants.RULE_VAR_CATEGORY] != null)
+			{
+				List<TSong> songsWithCategory = new();
+				foreach (TSong song in songs)
+				{
+					TCategory? category = DbCommon.SelectBaseById(_categories, song.CategoryId);
+					if (category != null && category.Name == dicByFile[YlConstants.RULE_VAR_CATEGORY])
+					{
+						songsWithCategory.Add(song);
+					}
+				}
+				if (songsWithCategory.Any())
+				{
+					songs = songsWithCategory;
+				}
+			}
+
+			// 歌手名で絞り込み
+			if (songs.Count > 1 && dicByFile[YlConstants.RULE_VAR_ARTIST] != null)
+			{
+				List<TSong> songsWithArtist = new();
+				foreach (TSong song in songs)
+				{
+					(String? artistNames, _) = ConcatMasterNamesAndRubies(DbCommon.SelectSequencedPeopleBySongId(_artistSequences, _people, song.Id).ToList<IRcMaster>());
+					if (!String.IsNullOrEmpty(artistNames) && artistNames == dicByFile[YlConstants.RULE_VAR_ARTIST])
+					{
+						songsWithArtist.Add(song);
+					}
+				}
+				if (songsWithArtist.Any())
+				{
+					songs = songsWithArtist;
+				}
+			}
+
+			return songs;
+		}
+
+		// --------------------------------------------------------------------
+		// ファイル名とファイル命名規則・フォルダー固定値がマッチするか確認し、マッチしたマップを返す（ルビは検索用に正規化）
+		// ＜引数＞ fileNameBody: 拡張子無し
+		// --------------------------------------------------------------------
+		public Dictionary<String, String?> MatchFileNameRulesAndFolderRuleForSearch(String fileNameBody, FolderSettingsInMemory folderSettingsInMemory)
+		{
+			// ファイル名・フォルダー固定値と合致する命名規則を探す
+			Dictionary<String, String?> dicByFile = YlCommon.MatchFileNameRulesAndFolderRuleForSearch(Path.GetFileNameWithoutExtension(fileNameBody), folderSettingsInMemory);
+			dicByFile[YlConstants.RULE_VAR_PROGRAM] = ProgramOrigin(dicByFile[YlConstants.RULE_VAR_PROGRAM]);
+			dicByFile[YlConstants.RULE_VAR_TITLE] = SongOrigin(dicByFile[YlConstants.RULE_VAR_TITLE]);
+			if (dicByFile[YlConstants.RULE_VAR_CATEGORY] != null)
+			{
+				if (!_categoryNames.Contains(dicByFile[YlConstants.RULE_VAR_CATEGORY]!))
+				{
+					dicByFile[YlConstants.RULE_VAR_CATEGORY] = null;
+				}
+			}
+			return dicByFile;
+		}
+
+		// --------------------------------------------------------------------
 		// 別名から元のタイアップ名を取得
 		// --------------------------------------------------------------------
 		public virtual String? ProgramOrigin(String? alias)
@@ -123,17 +208,7 @@ namespace YukaLister.Models.Database
 		// --------------------------------------------------------------------
 		public void SetTFoundValues(TFound record, FolderSettingsInMemory folderSettingsInMemory)
 		{
-			// ファイル名・フォルダー固定値と合致する命名規則を探す
-			Dictionary<String, String?> dicByFile = YlCommon.MatchFileNameRulesAndFolderRuleForSearch(Path.GetFileNameWithoutExtension(record.Path), folderSettingsInMemory);
-			dicByFile[YlConstants.RULE_VAR_PROGRAM] = ProgramOrigin(dicByFile[YlConstants.RULE_VAR_PROGRAM]);
-			dicByFile[YlConstants.RULE_VAR_TITLE] = SongOrigin(dicByFile[YlConstants.RULE_VAR_TITLE]);
-			if (dicByFile[YlConstants.RULE_VAR_CATEGORY] != null)
-			{
-				if (!_categoryNames.Contains(dicByFile[YlConstants.RULE_VAR_CATEGORY]!))
-				{
-					dicByFile[YlConstants.RULE_VAR_CATEGORY] = null;
-				}
-			}
+			Dictionary<String, String?> dicByFile = MatchFileNameRulesAndFolderRuleForSearch(Path.GetFileNameWithoutExtension(record.Path), folderSettingsInMemory);
 
 			// 楽曲情報データベースを適用
 			SetTFoundValuesByMusicInfoDatabase(record, dicByFile);
@@ -608,65 +683,7 @@ namespace YukaLister.Models.Database
 				return;
 			}
 
-			List<TSong> songs;
-
-			// 楽曲名で検索
-			songs = DbCommon.SelectMastersByName(_songs, dicByFile[YlConstants.RULE_VAR_TITLE]);
-
-			// タイアップ名で絞り込み
-			if (songs.Count > 1 && dicByFile[YlConstants.RULE_VAR_PROGRAM] != null)
-			{
-				List<TSong> songsWithTieUp = new();
-				foreach (TSong song in songs)
-				{
-					TTieUp? tieUp = DbCommon.SelectBaseById(_tieUps, song.TieUpId);
-					if (tieUp != null && tieUp.Name == dicByFile[YlConstants.RULE_VAR_PROGRAM])
-					{
-						songsWithTieUp.Add(song);
-					}
-				}
-				if (songsWithTieUp.Any())
-				{
-					songs = songsWithTieUp;
-				}
-			}
-
-			// カテゴリーで絞り込み
-			if (songs.Count > 1 && dicByFile[YlConstants.RULE_VAR_CATEGORY] != null)
-			{
-				List<TSong> songsWithCategory = new();
-				foreach (TSong song in songs)
-				{
-					TCategory? category = DbCommon.SelectBaseById(_categories, song.CategoryId);
-					if (category != null && category.Name == dicByFile[YlConstants.RULE_VAR_CATEGORY])
-					{
-						songsWithCategory.Add(song);
-					}
-				}
-				if (songsWithCategory.Any())
-				{
-					songs = songsWithCategory;
-				}
-			}
-
-			// 歌手名で絞り込み
-			if (songs.Count > 1 && dicByFile[YlConstants.RULE_VAR_ARTIST] != null)
-			{
-				List<TSong> songsWithArtist = new();
-				foreach (TSong song in songs)
-				{
-					(String? artistNames, _) = ConcatMasterNamesAndRubies(DbCommon.SelectSequencedPeopleBySongId(_artistSequences, _people, song.Id).ToList<IRcMaster>());
-					if (!String.IsNullOrEmpty(artistNames) && artistNames == dicByFile[YlConstants.RULE_VAR_ARTIST])
-					{
-						songsWithArtist.Add(song);
-					}
-				}
-				if (songsWithArtist.Any())
-				{
-					songs = songsWithArtist;
-				}
-			}
-
+			List<TSong> songs = FindSongsByMusicInfoDatabase(dicByFile);
 			TTieUp? tieUpOfSong = null;
 			TSong? selectedSong = null;
 			if (songs.Any())

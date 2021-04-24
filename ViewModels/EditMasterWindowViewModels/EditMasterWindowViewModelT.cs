@@ -158,8 +158,9 @@ namespace YukaLister.ViewModels.EditMasterWindowViewModels
 		// 一般のプロパティー
 		// --------------------------------------------------------------------
 
-		// 初期表示する Master
-		public T? DefaultMaster { get; set; }
+		// 初期表示する Master の Id
+		// T 型にするとインスタンス違いでコンボボックスに反映されない事故が起こるので Id にする
+		public String? DefaultMasterId { get; set; }
 
 		// OK ボタンが押された時に選択されていたマスター
 		public T? OkSelectedMaster { get; private set; }
@@ -238,11 +239,12 @@ namespace YukaLister.ViewModels.EditMasterWindowViewModels
 				NameCaption = _caption + "名 (_N)：";
 
 				// デフォルト ID を選択
-				if (DefaultMaster != null)
+				if (!String.IsNullOrEmpty(DefaultMasterId))
 				{
-					if (Masters.SingleOrDefault(x => x.Id == DefaultMaster.Id) != null)
+					T? defaultMaster = Masters.SingleOrDefault(x => x.Id == DefaultMasterId);
+					if (defaultMaster != null)
 					{
-						SelectedMaster = DefaultMaster;
+						SelectedMaster = defaultMaster;
 					}
 					else
 					{

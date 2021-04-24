@@ -264,6 +264,7 @@ namespace YukaLister.Models.SharedMisc
 			}
 		}
 
+#if false
 		// --------------------------------------------------------------------
 		// ファイル命名規則とフォルダー固定値を適用した情報を得る
 		// --------------------------------------------------------------------
@@ -273,6 +274,7 @@ namespace YukaLister.Models.SharedMisc
 			FolderSettingsInMemory folderSettingsInMemory = CreateFolderSettingsInMemory(folderSettingsInDisk);
 			return MatchFileNameRulesAndFolderRuleForMusicInfo(Path.GetFileNameWithoutExtension(filePath), folderSettingsInMemory);
 		}
+#endif
 
 		// --------------------------------------------------------------------
 		// ドライブレターを取得
@@ -498,6 +500,7 @@ namespace YukaLister.Models.SharedMisc
 			se.LogEnvironment(YukaListerModel.Instance.EnvModel.LogWriter);
 		}
 
+#if false
 		// --------------------------------------------------------------------
 		// ファイル名とファイル命名規則・フォルダー固定値がマッチするか確認し、マッチしたマップを返す（ルビは楽曲情報データベース登録用に正規化）
 		// ＜引数＞ fileNameBody: 拡張子無し
@@ -512,9 +515,11 @@ namespace YukaLister.Models.SharedMisc
 
 			return dic;
 		}
+#endif
 
 		// --------------------------------------------------------------------
 		// ファイル名とファイル命名規則・フォルダー固定値がマッチするか確認し、マッチしたマップを返す（ルビは検索用に正規化）
+		// エイリアスを解決したい場合は TFoundSetter.MatchFileNameRulesAndFolderRuleForSearch() を使用すること
 		// ＜引数＞ fileNameBody: 拡張子無し
 		// --------------------------------------------------------------------
 		public static Dictionary<String, String?> MatchFileNameRulesAndFolderRuleForSearch(String fileNameBody, FolderSettingsInMemory folderSettingsInMemory)
@@ -946,6 +951,7 @@ namespace YukaLister.Models.SharedMisc
 			return dic;
 		}
 
+#if false
 		// --------------------------------------------------------------------
 		// ファイル名とファイル命名規則がマッチするか確認し、マッチしたマップを返す（ルビは楽曲情報データベース登録用に正規化）
 		// ＜引数＞ fileNameBody: 拡張子無し
@@ -959,6 +965,7 @@ namespace YukaLister.Models.SharedMisc
 
 			return dic;
 		}
+#endif
 
 		// --------------------------------------------------------------------
 		// ファイル名とファイル命名規則がマッチするか確認し、マッチしたマップを返す（ルビは検索用に正規化）

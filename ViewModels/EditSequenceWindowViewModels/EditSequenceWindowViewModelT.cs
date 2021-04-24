@@ -628,7 +628,7 @@ namespace YukaLister.ViewModels.EditSequenceWindowViewModels
 		{
 			using EditMasterWindowViewModel<T> editMasterWindowViewModel = CreateEditMasterWindowViewModel();
 			editMasterWindowViewModel.SetMasters(masters);
-			editMasterWindowViewModel.DefaultMaster = DbCommon.SelectBaseById(_records, SelectedMaster?.Id);
+			editMasterWindowViewModel.DefaultMasterId = DbCommon.SelectBaseById(_records, SelectedMaster?.Id)?.Id;
 			Messenger.Raise(new TransitionMessage(editMasterWindowViewModel, YlConstants.MESSAGE_KEY_OPEN_EDIT_MASTER_WINDOW));
 			return editMasterWindowViewModel.OkSelectedMaster;
 		}

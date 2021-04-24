@@ -86,7 +86,7 @@
                         <ColumnDefinition Width="210"/>
                     </Grid.ColumnDefinitions>
                     <Label Content="タイアップ名：" Margin="0" HorizontalAlignment="Right" Grid.Row="1"/>
-                    <Label Content="{Binding DicByFile[program]}" Margin="0" Grid.Row="1" Grid.Column="1"/>
+                    <Label Content="{Binding TieUpNameByFileName}" Margin="0" Grid.Row="1" Grid.Column="1"/>
                     <Label Margin="0" Grid.Row="2" Grid.Column="1">
                         <Label.Style>
                             <Style TargetType="{x:Type Label}">
@@ -104,7 +104,7 @@
                         </Label.Style>
                     </Label>
                     <Label Content="楽曲名：" Margin="0" HorizontalAlignment="Right" Grid.Row="4"/>
-                    <Label Content="{Binding DicByFile[title]}" Margin="0" Grid.Row="4" Grid.Column="1"/>
+                    <Label Content="{Binding SongNameByFileName}" Margin="0" Grid.Row="4" Grid.Column="1"/>
                     <Label Margin="0" Grid.Row="5" Grid.Column="1">
                         <Label.Style>
                             <Style TargetType="{x:Type Label}">

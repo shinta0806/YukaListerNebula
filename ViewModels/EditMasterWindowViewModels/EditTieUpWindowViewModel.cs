@@ -237,7 +237,7 @@ namespace YukaLister.ViewModels.EditMasterWindowViewModels
 				// ウィンドウを開く
 				using EditMakerWindowViewModel editMakerWindowViewModel = new(_musicInfoContext, makers);
 				editMakerWindowViewModel.SetMasters(sameNameMakers);
-				editMakerWindowViewModel.DefaultMaster = DbCommon.SelectBaseById(makers, _makerId);
+				editMakerWindowViewModel.DefaultMasterId = DbCommon.SelectBaseById(makers, _makerId)?.Id;
 				Messenger.Raise(new TransitionMessage(editMakerWindowViewModel, YlConstants.MESSAGE_KEY_OPEN_EDIT_MASTER_WINDOW));
 
 				// 後処理

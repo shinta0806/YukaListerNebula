@@ -376,7 +376,7 @@ namespace YukaLister.ViewModels.EditMasterWindowViewModels
 				// ウィンドウを開く
 				using EditTieUpWindowViewModel editTieUpWindowViewModel = new(_musicInfoContext, tieUps);
 				editTieUpWindowViewModel.SetMasters(sameNameTieUps);
-				editTieUpWindowViewModel.DefaultMaster = DbCommon.SelectBaseById(tieUps, _tieUpId);
+				editTieUpWindowViewModel.DefaultMasterId = DbCommon.SelectBaseById(tieUps, _tieUpId)?.Id;
 				Messenger.Raise(new TransitionMessage(editTieUpWindowViewModel, YlConstants.MESSAGE_KEY_OPEN_EDIT_TIE_UP_WINDOW));
 
 				// 後処理

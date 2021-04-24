@@ -35,6 +35,7 @@ using System.Windows.Controls;
 using YukaLister.Models.Database;
 using YukaLister.Models.Database.Aliases;
 using YukaLister.Models.Database.Masters;
+using YukaLister.Models.Database.Sequences;
 using YukaLister.Models.DatabaseContexts;
 using YukaLister.Models.SharedMisc;
 using YukaLister.Models.YukaListerModels;
@@ -1144,6 +1145,10 @@ namespace YukaLister.ViewModels
 			// マッチをリストに追加
 			FolderSettingsInDisk folderSettingsInDisk = YlCommon.LoadFolderSettings2Ex(folderPath);
 			FolderSettingsInMemory folderSettingsInMemory = YlCommon.CreateFolderSettingsInMemory(folderSettingsInDisk);
+			using ListContextInMemory listContextInMemory = ListContextInMemory.CreateContext(out DbSet<TFound> founds,
+					out DbSet<TPerson> people, out DbSet<TArtistSequence> artistSequences, out DbSet<TComposerSequence> composerSequences,
+					out DbSet<TTag> tags, out DbSet<TTagSequence> tagSequences);
+			using TFoundSetter foundSetter = new(listContextInMemory, founds, people, artistSequences, composerSequences, tags, tagSequences);
 			Dictionary<String, String> ruleMap = YlCommon.CreateRuleDictionaryWithDescription();
 			foreach (String filePath in filePathes)
 			{
@@ -1153,7 +1158,7 @@ namespace YukaLister.ViewModels
 				}
 
 				// ファイル命名規則とフォルダー固定値を適用
-				Dictionary<String, String?> aDic = YlCommon.MatchFileNameRulesAndFolderRuleForSearch(Path.GetFileNameWithoutExtension(filePath), folderSettingsInMemory);
+				Dictionary<String, String?> dic = foundSetter.MatchFileNameRulesAndFolderRuleForSearch(Path.GetFileNameWithoutExtension(filePath), folderSettingsInMemory);
 
 				// ファイル
 				PreviewInfo previewInfo = new();
@@ -1166,7 +1171,7 @@ namespace YukaLister.ViewModels
 
 				// 項目と値
 				StringBuilder sb = new();
-				foreach (KeyValuePair<String, String?> kvp in aDic)
+				foreach (KeyValuePair<String, String?> kvp in dic)
 				{
 					if (kvp.Key != YlConstants.RULE_VAR_ANY && !String.IsNullOrEmpty(kvp.Value))
 					{
@@ -1316,7 +1321,7 @@ namespace YukaLister.ViewModels
 			}
 
 			String filePath = FolderPath + "\\" + SelectedPreviewInfo.FileName;
-			using EditMusicInfoWindowViewModel editMusicInfoWindowViewModel = new(filePath, YlCommon.DicByFileForMusicInfo(filePath));
+			using EditMusicInfoWindowViewModel editMusicInfoWindowViewModel = new(filePath);
 			Messenger.Raise(new TransitionMessage(editMusicInfoWindowViewModel, YlConstants.MESSAGE_KEY_OPEN_EDIT_MUSIC_INFO_WINDOW));
 		}
 
@@ -1433,15 +1438,10 @@ namespace YukaLister.ViewModels
 			// マッチ準備
 			FolderSettingsInDisk folderSettingsInDisk = YlCommon.LoadFolderSettings2Ex(FolderPath);
 			FolderSettingsInMemory folderSettingsInMemory = YlCommon.CreateFolderSettingsInMemory(folderSettingsInDisk);
-#if false
-			using MusicInfoContext musicInfoContext = MusicInfoContext.CreateContext(out DbSet<TProperty> properties,
-					out DbSet<TSong> songs, out DbSet<TPerson> people, out DbSet<TTieUp> tieUps, out DbSet<TCategory> categories,
-					out DbSet<TTieUpGroup> tieUpGroups, out DbSet<TMaker> makers, out DbSet<TTag> tags,
-					out DbSet<TSongAlias> songAliases, out DbSet<TPersonAlias> personAliases, out DbSet<TTieUpAlias> tieUpAliases,
-					out DbSet<TCategoryAlias> categoryAliases, out DbSet<TTieUpGroupAlias> tieUpGroupAliases, out DbSet<TMakerAlias> makerAliases,
-					out DbSet<TArtistSequence> artistSequences, out DbSet<TLyristSequence> lyristSequences, out DbSet<TComposerSequence> composerSequences, out DbSet<TArrangerSequence> arrangerSequences,
-					out DbSet<TTieUpGroupSequence> tieUpGroupSequences, out DbSet<TTagSequence> tagSequences);
-#endif
+			using ListContextInMemory listContextInMemory = ListContextInMemory.CreateContext(out DbSet<TFound> founds,
+					out DbSet<TPerson> people, out DbSet<TArtistSequence> artistSequences, out DbSet<TComposerSequence> composerSequences,
+					out DbSet<TTag> tags, out DbSet<TTagSequence> tagSequences);
+			using TFoundSetter foundSetter = new(listContextInMemory, founds, people, artistSequences, composerSequences, tags, tagSequences);
 			using MusicInfoContext musicInfoContext = MusicInfoContext.CreateContext(out DbSet<TSong> songs);
 			MusicInfoContext.GetDbSet(musicInfoContext, out DbSet<TSongAlias> songAliases);
 			MusicInfoContext.GetDbSet(musicInfoContext, out DbSet<TTieUp> tieUps);
@@ -1457,7 +1457,7 @@ namespace YukaLister.ViewModels
 				}
 
 				// ファイル命名規則とフォルダー固定値を適用
-				Dictionary<String, String?> dic = YlCommon.MatchFileNameRulesAndFolderRuleForSearch(Path.GetFileNameWithoutExtension(PreviewInfos[rowIndex].FileName), folderSettingsInMemory);
+				Dictionary<String, String?> dic = foundSetter.MatchFileNameRulesAndFolderRuleForSearch(Path.GetFileNameWithoutExtension(PreviewInfos[rowIndex].FileName), folderSettingsInMemory);
 
 				// 楽曲名が空かどうか
 				if (String.IsNullOrEmpty(dic[YlConstants.RULE_VAR_TITLE]))
