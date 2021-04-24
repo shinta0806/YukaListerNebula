@@ -187,11 +187,15 @@ namespace YukaLister.ViewModels.EditMasterWindowViewModels
 		// --------------------------------------------------------------------
 		// 複数の IRcMaster の ID と名前をカンマで結合
 		// --------------------------------------------------------------------
-		protected (Boolean has, String? ids, String? names) ConcatMasterIdsAndNames<U>(List<U> masters) where U : IRcMaster
+		protected (Boolean has, String? ids, String? displayNames) ConcatMasterIdsAndNames<U>(DbSet<U> records, List<U> targetMasters) where U : class, IRcMaster
 		{
-			String ids = String.Join(YlConstants.VAR_VALUE_DELIMITER[0], masters.Select(x => x.Id));
-			String names = String.Join(YlConstants.VAR_VALUE_DELIMITER[0], masters.Select(x => x.Name));
-			return (!String.IsNullOrEmpty(ids), String.IsNullOrEmpty(ids) ? null : ids, String.IsNullOrEmpty(names) ? null : names);
+			String ids = String.Join(YlConstants.VAR_VALUE_DELIMITER[0], targetMasters.Select(x => x.Id));
+			foreach (U master in targetMasters)
+			{
+				DbCommon.SetAvoidSameName(records, master);
+			}
+			String displayNames = String.Join(YlConstants.VAR_VALUE_DELIMITER[0], targetMasters.Select(x => x.DisplayName));
+			return (!String.IsNullOrEmpty(ids), String.IsNullOrEmpty(ids) ? null : ids, String.IsNullOrEmpty(displayNames) ? null : displayNames);
 		}
 
 		// --------------------------------------------------------------------
@@ -199,6 +203,18 @@ namespace YukaLister.ViewModels.EditMasterWindowViewModels
 		// --------------------------------------------------------------------
 		protected virtual void HasCategoryChanged()
 		{
+		}
+
+		// --------------------------------------------------------------------
+		// カンマ区切りで連結されている ids のうち先頭の id から名前を取得
+		// --------------------------------------------------------------------
+		protected String? HeadName<U>(DbSet<U> records, String? ids) where U : class, IRcMaster
+		{
+			if (String.IsNullOrEmpty(ids))
+			{
+				return null;
+			}
+			return DbCommon.SelectBaseById(records, ids.Split(YlConstants.VAR_VALUE_DELIMITER[0], StringSplitOptions.RemoveEmptyEntries).FirstOrDefault())?.Name;
 		}
 
 		// --------------------------------------------------------------------

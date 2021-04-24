@@ -343,17 +343,26 @@ namespace YukaLister.ViewModels.EditMasterWindowViewModels
 					// キーワードがなければ同名の登録は禁止
 					throw new Exception(_caption + "「" + normalizedName + "」は既に登録されています。\n検索ワードを入力して識別できるようにしてください。");
 				}
-				else
+
+				// キーワードが同じものがあると登録は禁止
+				foreach (T dup in dups)
 				{
-					// キーワードが同じものがあると登録は禁止
-					foreach (T dup in dups)
+					if (dup.Id != SelectedMaster?.Id && dup.Keyword == normalizedKeyword)
 					{
-						if (dup.Id != SelectedMaster?.Id && dup.Keyword == normalizedKeyword)
-						{
-							throw new Exception("登録しようとしている" + _caption + "「" + normalizedName + "」は既に登録されており、検索ワードも同じです。\n"
-									+ _caption + " ID を切り替えて登録済みの" + _caption + "を選択してください。\n"
-									+ "同名の別" + _caption + "を登録しようとしている場合は、検索ワードを見分けが付くようにして下さい。");
-						}
+						throw new Exception("登録しようとしている" + _caption + "「" + normalizedName + "」は既に登録されており、検索ワードも同じです。\n"
+								+ _caption + " ID を切り替えて登録済みの" + _caption + "を選択してください。\n"
+								+ "同名の別" + _caption + "を登録しようとしている場合は、検索ワードを見分けが付くようにして下さい。");
+					}
+				}
+
+				// 新規 ID の場合は確認
+				// ID 切替で新規を選んだ場合は、今までに警告が表示されていないため、この確認は必要
+				if (SelectedMaster?.Id == NewIdForDisplay())
+				{
+					if (MessageBox.Show("新規登録しようとしている" + _caption + "「" + normalizedName + "」と同名の" + _caption + "は既に登録されています。\n同名の" + _caption + "を追加で新規登録しますか？",
+							"確認", MessageBoxButton.YesNo, MessageBoxImage.Exclamation) != MessageBoxResult.Yes)
+					{
+						throw new OperationCanceledException();
 					}
 				}
 			}

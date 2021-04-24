@@ -455,6 +455,12 @@ namespace YukaLister.ViewModels.EditSequenceWindowViewModels
 				DataGridHeader = _caption2;
 				ButtonEditContent = _caption2 + "詳細編集 (_E)";
 				ButtonNewContent = "新規" + _caption2 + "作成 (_N)";
+
+				// 表示名
+				foreach (T master in Masters)
+				{
+					DbCommon.SetAvoidSameName(_records, master);
+				}
 			}
 			catch (Exception excep)
 			{
@@ -519,6 +525,7 @@ namespace YukaLister.ViewModels.EditSequenceWindowViewModels
 				throw new Exception(searchMasterWindowViewModel.OkSelectedMaster.Name + "は既に追加されています。");
 			}
 
+			DbCommon.SetAvoidSameName(_records, searchMasterWindowViewModel.OkSelectedMaster);
 			Masters.Add(searchMasterWindowViewModel.OkSelectedMaster);
 			SelectedMaster = searchMasterWindowViewModel.OkSelectedMaster;
 		}
@@ -609,6 +616,7 @@ namespace YukaLister.ViewModels.EditSequenceWindowViewModels
 				return;
 			}
 
+			DbCommon.SetAvoidSameName(_records, result);
 			Masters.Add(result);
 			SelectedMaster = result;
 		}

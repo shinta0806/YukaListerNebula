@@ -88,12 +88,12 @@
             <Label Content="制作会社あり (_C)：" Margin="0" Grid.Row="0" Grid.Column="3" HorizontalAlignment="Right"/>
             <CheckBox IsChecked="{Binding HasMaker}" Grid.Row="0" Grid.Column="4" />
             <Button Content="検索" Grid.Row="0" Grid.Column="5" Height="Auto" FontSize="12" Padding="2" Style="{StaticResource MaterialDesignRaisedLightButton}" Margin="5" Command="{Binding ButtonSearchMakerClickedCommand}" />
-            <Label Content="{Binding MakerName}" Margin="0" Grid.Row="0" Grid.Column="6"/>
+            <Label Content="{Binding MakerDisplayName}" Margin="0" Grid.Row="0" Grid.Column="6"/>
             <Button Content="制作会社詳細編集" Grid.Row="0" Grid.Column="7" Height="Auto" FontSize="12" Padding="2" Style="{StaticResource MaterialDesignRaisedLightButton}" Margin="5,5,0,5" Command="{Binding ButtonEditMakerClickedCommand}"/>
             <Label Content="シリーズあり (_S)：" Margin="0" Grid.Row="2" Grid.Column="3" HorizontalAlignment="Right"/>
             <CheckBox IsChecked="{Binding HasTieUpGroup}" Grid.Row="2" Grid.Column="4" Height="30" VerticalAlignment="Top" />
             <Button Content="検索" Grid.Row="2" Grid.Column="5" Height="Auto" FontSize="12" Padding="2" Style="{StaticResource MaterialDesignRaisedLightButton}" Margin="5" Command="{Binding ButtonSearchTieUpGroupClickedCommand}"/>
-            <Label Content="{Binding TieUpGroupNames}" Margin="0" Grid.Row="2" Grid.Column="6"/>
+            <Label Content="{Binding TieUpGroupDisplayNames}" Margin="0" Grid.Row="2" Grid.Column="6"/>
             <Button Content="複数シリーズ検索" Grid.Row="2" Grid.Column="7" Height="Auto" FontSize="12" Padding="2" Style="{StaticResource MaterialDesignRaisedLightButton}" Margin="5,5,0,5" Command="{Binding ButtonEditTieUpGroupClickedCommand}" />
         </Grid>
         <Grid>

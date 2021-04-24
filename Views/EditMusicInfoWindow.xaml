@@ -175,15 +175,15 @@
         </StackPanel>
         <StackPanel Margin="40,0,20,0" Orientation="Horizontal">
             <Label Content="タイアップ名：" Width="90" HorizontalContentAlignment="Right" />
-            <Label Content="{Binding ListTieUpName}" />
+            <Label Content="{Binding ListTieUpName}" Width="740" />
         </StackPanel>
         <StackPanel Margin="40,0,20,0" Orientation="Horizontal">
             <Label Content="楽曲名：" Width="90" HorizontalContentAlignment="Right" />
-            <Label Content="{Binding ListSongName}" />
+            <Label Content="{Binding ListSongName}" Width="740" />
         </StackPanel>
         <StackPanel Margin="40,0,20,0" Orientation="Horizontal">
             <Label Content="歌手名：" Width="90" HorizontalContentAlignment="Right" />
-            <Label Content="{Binding ListArtistName}" />
+            <Label Content="{Binding ListArtistName}" Width="740" />
         </StackPanel>
         <StackPanel Margin="20,0,0,0">
             <Label Content="※ファイル名等から取得したタイアップ名と、楽曲名に紐付くタイアップ名が異なる場合、楽曲名に紐付くタイアップ名が優先されています。" Foreground="Gray" />

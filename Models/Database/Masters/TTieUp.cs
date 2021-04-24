@@ -80,27 +80,22 @@ namespace YukaLister.Models.Database.Masters
 		public Boolean AvoidSameName { get; set; }
 
 		// 表示名
-		private String? _displayName;
 		public String? DisplayName
 		{
 			get
 			{
-				if (String.IsNullOrEmpty(_displayName))
+				if (AvoidSameName)
 				{
-					if (AvoidSameName)
-					{
-						TCategory? category;
-						using MusicInfoContext musicInfoContext = MusicInfoContext.CreateContext(out DbSet<TCategory> categories);
-						category = DbCommon.SelectBaseById(categories, CategoryId);
-						_displayName = Name + "（" + (String.IsNullOrEmpty(category?.Name) ? "カテゴリー無し" : category?.Name) + ", "
-								+ (String.IsNullOrEmpty(Keyword) ? "キーワード無し" : Keyword) + "）";
-					}
-					else
-					{
-						_displayName = Name;
-					}
+					TCategory? category;
+					using MusicInfoContext musicInfoContext = MusicInfoContext.CreateContext(out DbSet<TCategory> categories);
+					category = DbCommon.SelectBaseById(categories, CategoryId);
+					return Name + "（" + (String.IsNullOrEmpty(category?.Name) ? "カテゴリー無し" : category?.Name) + ", "
+							+ (String.IsNullOrEmpty(Keyword) ? "キーワード無し" : Keyword) + "）";
 				}
-				return _displayName;
+				else
+				{
+					return Name;
+				}
 			}
 		}
 

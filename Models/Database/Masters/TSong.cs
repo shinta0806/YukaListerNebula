@@ -76,24 +76,9 @@ namespace YukaLister.Models.Database.Masters
 		public Boolean AvoidSameName { get; set; }
 
 		// 表示名
-		private String? _displayName;
 		public String? DisplayName
 		{
-			get
-			{
-				if (String.IsNullOrEmpty(_displayName))
-				{
-					if (AvoidSameName)
-					{
-						_displayName = Name + "（" + (String.IsNullOrEmpty(Keyword) ? "キーワード無し" : Keyword) + "）";
-					}
-					else
-					{
-						_displayName = Name;
-					}
-				}
-				return _displayName;
-			}
+			get => DbCommon.DisplayNameByDefaultAlgorithm(this);
 		}
 
 		// --------------------------------------------------------------------

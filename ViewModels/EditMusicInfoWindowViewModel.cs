@@ -297,8 +297,21 @@ namespace YukaLister.ViewModels
 					tieUpName = DicByFile[YlConstants.RULE_VAR_PROGRAM];
 				}
 
-				// 既存レコードを用意
+				// 楽曲名の選択（null もありえる）
+				String? songName;
+				if (!String.IsNullOrEmpty(SongOrigin))
+				{
+					songName = SongOrigin;
+				}
+				else
+				{
+					songName = DicByFile[YlConstants.RULE_VAR_TITLE];
+				}
+
+				// 情報準備
 				List<TTieUp> sameNameTieUps = DbCommon.SelectMastersByName(tieUps, tieUpName);
+				MusicInfoContext.GetDbSet(musicInfoContext, out DbSet<TSong> songs);
+				TSong? song = DbCommon.SelectMasterByName(songs, songName);
 				TCategory? category = DbCommon.SelectMasterByName(categories, DicByFile[YlConstants.RULE_VAR_CATEGORY]);
 
 				// 新規作成用を追加
@@ -324,9 +337,12 @@ namespace YukaLister.ViewModels
 				};
 				sameNameTieUps.Insert(0, newTieUp);
 
-				// ウィンドウを開く
+				// ウィンドウの準備
 				using EditTieUpWindowViewModel editTieUpWindowViewModel = new(musicInfoContext, tieUps);
 				editTieUpWindowViewModel.SetMasters(sameNameTieUps);
+
+				// ToDo: デフォルト ID の指定
+
 				Messenger.Raise(new TransitionMessage(editTieUpWindowViewModel, YlConstants.MESSAGE_KEY_OPEN_EDIT_TIE_UP_WINDOW));
 
 				// 後処理

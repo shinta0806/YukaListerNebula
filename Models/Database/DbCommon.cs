@@ -100,6 +100,21 @@ namespace YukaLister.Models.Database
 		}
 
 		// --------------------------------------------------------------------
+		// 標準的な計算方法で算出される DisplayName
+		// --------------------------------------------------------------------
+		public static String? DisplayNameByDefaultAlgorithm<T>(T master) where T : IRcMaster
+		{
+			if (master.AvoidSameName)
+			{
+				return master.Name + "（" + (String.IsNullOrEmpty(master.Keyword) ? "キーワード無し" : master.Keyword) + "）";
+			}
+			else
+			{
+				return master.Name;
+			}
+		}
+
+		// --------------------------------------------------------------------
 		// レコードの内容が更新されたか（IRcAlias）
 		// --------------------------------------------------------------------
 		public static Boolean IsRcAliasUpdated(IRcAlias existRecord, IRcAlias newRecord)
@@ -498,6 +513,14 @@ namespace YukaLister.Models.Database
 			}
 
 			return records.Where(x => x.Id == id && (includesInvalid || !x.Invalid)).OrderBy(x => x.Sequence).ToList();
+		}
+
+		// --------------------------------------------------------------------
+		// 同名のレコードがあるかどうかによって AvoidSameName を設定する
+		// --------------------------------------------------------------------
+		public static void SetAvoidSameName<T>(DbSet<T> records, T master) where T : class, IRcMaster
+		{
+			master.AvoidSameName = SelectMastersByName(records, master.Name).Count > 1;
 		}
 
 		// --------------------------------------------------------------------

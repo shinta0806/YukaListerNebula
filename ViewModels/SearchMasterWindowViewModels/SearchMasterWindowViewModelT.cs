@@ -388,6 +388,17 @@ namespace YukaLister.ViewModels.SearchMasterWindowViewModels
 						&& !x.Invalid
 				).ToList();
 				results.Sort(SearchResultComparison);
+
+				// 同名検出
+				// ソート済みのため簡単に検出できるため、DbCommon.SetAvoidSameName() よりも高速と思う
+				for (Int32 i = 1; i < results.Count; i++)
+				{
+					if (results[i].Name == results[i - 1].Name)
+					{
+						results[i].AvoidSameName = true;
+						results[i - 1].AvoidSameName = true;
+					}
+				}
 #if DEBUGz
 				Thread.Sleep(2000);
 #endif
