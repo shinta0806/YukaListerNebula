@@ -10,6 +10,7 @@
     xmlns:vcc="clr-namespace:YukaLister.Views.CustomControls"
     xmlns:vdgc="clr-namespace:YukaLister.Views.DataGridControls"
     xmlns:vm="clr-namespace:YukaLister.ViewModels"
+    xmlns:vmw="clr-namespace:YukaLister.Views.MiscWindows"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     Title="{Binding Title}" Left="{Binding Left, Mode=TwoWay}" Top="{Binding Top, Mode=TwoWay}" Width="{Binding Width, Mode=TwoWay}" Height="{Binding Height, Mode=TwoWay}" 
     MinWidth="600" MinHeight="330" ResizeMode="CanResizeWithGrip" Cursor="{Binding Cursor}" 
@@ -33,7 +34,7 @@
         <!--  If you make user choose 'OK or Cancel' closing Window, then please use Window Close cancel Behavior.  -->
 
         <l:InteractionMessageTrigger MessageKey="{x:Static msm:YlConstants.MESSAGE_KEY_OPEN_FOLDER_SETTINGS_WINDOW}" Messenger="{Binding Messenger}">
-            <l:TransitionInteractionMessageAction WindowType="{x:Type v:FolderSettingsWindow}" Mode="Modal" IsOwned="True" />
+            <l:TransitionInteractionMessageAction WindowType="{x:Type vmw:FolderSettingsWindow}" Mode="Modal" IsOwned="True" />
         </l:InteractionMessageTrigger>
 
     </behaviors:Interaction.Triggers>

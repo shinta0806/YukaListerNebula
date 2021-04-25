@@ -29,6 +29,7 @@ using YukaLister.Models.Database.Masters;
 using YukaLister.Models.DatabaseContexts;
 using YukaLister.Models.YukaListerModels;
 using YukaLister.ViewModels;
+using YukaLister.ViewModels.MiscWindowViewModels;
 
 namespace YukaLister.Models.SharedMisc
 {

@@ -1,4 +1,4 @@
-﻿<Window x:Class="YukaLister.Views.EditMusicInfoWindow"
+﻿<Window x:Class="YukaLister.Views.MiscWindows.EditMusicInfoWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:behaviors="http://schemas.microsoft.com/xaml/behaviors"
         xmlns:l="http://schemas.livet-mvvm.net/2011/wpf"
@@ -9,11 +9,13 @@
         xmlns:vem="clr-namespace:YukaLister.Views.EditMasterWindows"
         xmlns:vsm="clr-namespace:YukaLister.Views.SearchMasterWindows"
         xmlns:vm="clr-namespace:YukaLister.ViewModels"
+        xmlns:vmmw="clr-namespace:YukaLister.ViewModels.MiscWindowViewModels"
+        xmlns:vmw="clr-namespace:YukaLister.Views.MiscWindows"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         Title="{Binding Title}" ResizeMode="NoResize" ShowInTaskbar="False" SizeToContent="WidthAndHeight" >
 
     <Window.DataContext>
-        <vm:EditMusicInfoWindowViewModel />
+        <vmmw:EditMusicInfoWindowViewModel />
     </Window.DataContext>
 
     <behaviors:Interaction.Behaviors>
@@ -46,7 +48,7 @@
         </l:InteractionMessageTrigger>
 
         <l:InteractionMessageTrigger MessageKey="{x:Static msm:YlConstants.MESSAGE_KEY_OPEN_INPUT_ID_PREFIX_WINDOW}" Messenger="{Binding Messenger}">
-            <l:TransitionInteractionMessageAction WindowType="{x:Type v:InputIdPrefixWindow}" Mode="Modal" IsOwned="True" />
+            <l:TransitionInteractionMessageAction WindowType="{x:Type vmw:InputIdPrefixWindow}" Mode="Modal" IsOwned="True" />
         </l:InteractionMessageTrigger>
 
         <l:InteractionMessageTrigger MessageKey="{x:Static msm:YlConstants.MESSAGE_KEY_OPEN_SEARCH_MASTER_WINDOW}" Messenger="{Binding Messenger}">

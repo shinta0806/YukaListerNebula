@@ -12,7 +12,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace YukaLister.Views
+namespace YukaLister.Views.MiscWindows
 {
 	/* 
      * If some events were receive from ViewModel, then please use PropertyChangedWeakEventListener and CollectionChangedWeakEventListener.
@@ -21,9 +21,9 @@ namespace YukaLister.Views
      *
      * Those events are managed using WeakEventListener, so it is not occurred memory leak, but you should release explicitly.
      */
-	public partial class EditMusicInfoWindow : Window
+	public partial class InputIdPrefixWindow : Window
 	{
-		public EditMusicInfoWindow()
+		public InputIdPrefixWindow()
 		{
 			InitializeComponent();
 		}

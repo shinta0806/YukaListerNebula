@@ -19,7 +19,7 @@ using System.Diagnostics;
 using YukaLister.Models.SharedMisc;
 using YukaLister.Models.YukaListerModels;
 
-namespace YukaLister.ViewModels
+namespace YukaLister.ViewModels.MiscWindowViewModels
 {
 	public class InputIdPrefixWindowViewModel : YlViewModel
 	{

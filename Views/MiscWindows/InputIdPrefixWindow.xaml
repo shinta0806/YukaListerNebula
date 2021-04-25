@@ -1,4 +1,4 @@
-﻿<Window x:Class="YukaLister.Views.InputIdPrefixWindow"
+﻿<Window x:Class="YukaLister.Views.MiscWindows.InputIdPrefixWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:behaviors="http://schemas.microsoft.com/xaml/behaviors"
         xmlns:l="http://schemas.livet-mvvm.net/2011/wpf"
@@ -6,11 +6,12 @@
         xmlns:sb="clr-namespace:Shinta.Behaviors"
         xmlns:v="clr-namespace:YukaLister.Views"
         xmlns:vm="clr-namespace:YukaLister.ViewModels"
+        xmlns:vmmw="clr-namespace:YukaLister.ViewModels.MiscWindowViewModels"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         Title="{Binding Title}" SizeToContent="WidthAndHeight" ResizeMode="NoResize" >
 
     <Window.DataContext>
-        <vm:InputIdPrefixWindowViewModel />
+        <vmmw:InputIdPrefixWindowViewModel />
     </Window.DataContext>
 
     <behaviors:Interaction.Behaviors>

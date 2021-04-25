@@ -9,6 +9,7 @@
         xmlns:vem="clr-namespace:YukaLister.Views.EditMasterWindows"
         xmlns:vm="clr-namespace:YukaLister.ViewModels"
         xmlns:vmemw="clr-namespace:YukaLister.ViewModels.EditMasterWindowViewModels"
+        xmlns:vmw="clr-namespace:YukaLister.Views.MiscWindows"
         xmlns:ves="clr-namespace:YukaLister.Views.EditSequenceWindows"
         xmlns:vsm="clr-namespace:YukaLister.Views.SearchMasterWindows"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
@@ -48,7 +49,7 @@
         </l:InteractionMessageTrigger>
 
         <l:InteractionMessageTrigger MessageKey="{x:Static msm:YlConstants.MESSAGE_KEY_OPEN_INPUT_ID_PREFIX_WINDOW}" Messenger="{Binding Messenger}">
-            <l:TransitionInteractionMessageAction WindowType="{x:Type v:InputIdPrefixWindow}" Mode="Modal" IsOwned="True" />
+            <l:TransitionInteractionMessageAction WindowType="{x:Type vmw:InputIdPrefixWindow}" Mode="Modal" IsOwned="True" />
         </l:InteractionMessageTrigger>
 
         <l:InteractionMessageTrigger MessageKey="{x:Static msm:YlConstants.MESSAGE_KEY_OPEN_SEARCH_MASTER_WINDOW}" Messenger="{Binding Messenger}">

@@ -39,8 +39,9 @@ using YukaLister.Models.Database.Sequences;
 using YukaLister.Models.DatabaseContexts;
 using YukaLister.Models.SharedMisc;
 using YukaLister.Models.YukaListerModels;
+using YukaLister.ViewModels.MiscWindowViewModels;
 
-namespace YukaLister.ViewModels
+namespace YukaLister.ViewModels.MiscWindowViewModels
 {
 	public class FolderSettingsWindowViewModel : YlViewModel
 	{

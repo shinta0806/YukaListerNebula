@@ -32,7 +32,7 @@ using YukaLister.Models.YukaListerModels;
 using YukaLister.ViewModels.EditMasterWindowViewModels;
 using YukaLister.ViewModels.SearchMasterWindowViewModels;
 
-namespace YukaLister.ViewModels
+namespace YukaLister.ViewModels.MiscWindowViewModels
 {
 	public class EditMusicInfoWindowViewModel : YlViewModel
 	{
@@ -49,7 +49,6 @@ namespace YukaLister.ViewModels
 			_filePath = filePath;
 
 			// 自動設定
-			//_dicByFile = YlCommon.CreateRuleDictionary();
 			FileName = Path.GetFileName(_filePath);
 		}
 
@@ -59,7 +58,6 @@ namespace YukaLister.ViewModels
 		public EditMusicInfoWindowViewModel()
 		{
 			_filePath = String.Empty;
-			//_dicByFile = YlCommon.CreateRuleDictionary();
 			FileName = String.Empty;
 		}
 
