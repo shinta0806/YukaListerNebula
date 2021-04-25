@@ -303,7 +303,7 @@ namespace YukaLister.ViewModels.EditMasterWindowViewModels
 				Messenger.Raise(new TransitionMessage(searchMasterWindowViewModel, YlConstants.MESSAGE_KEY_OPEN_SEARCH_MASTER_WINDOW));
 
 				_isTieUpSearched = true;
-				SetTieUp(tieUps, searchMasterWindowViewModel.OkSelectedMaster);
+				SetTieUp(searchMasterWindowViewModel.IsOk, tieUps, searchMasterWindowViewModel.OkSelectedMaster);
 			}
 			catch (Exception excep)
 			{
@@ -380,7 +380,7 @@ namespace YukaLister.ViewModels.EditMasterWindowViewModels
 				Messenger.Raise(new TransitionMessage(editTieUpWindowViewModel, YlConstants.MESSAGE_KEY_OPEN_EDIT_TIE_UP_WINDOW));
 
 				// 後処理
-				SetTieUp(tieUps, editTieUpWindowViewModel.OkSelectedMaster);
+				SetTieUp(editTieUpWindowViewModel.IsOk, tieUps, editTieUpWindowViewModel.OkSelectedMaster);
 			}
 			catch (Exception excep)
 			{
@@ -495,11 +495,16 @@ namespace YukaLister.ViewModels.EditMasterWindowViewModels
 				}
 				Messenger.Raise(new TransitionMessage(editTagsWindowViewModel, YlConstants.MESSAGE_KEY_OPEN_EDIT_SEQUENCE_WINDOW));
 
-				if (!editTagsWindowViewModel.OkSelectedMasters.Any())
+				if (editTagsWindowViewModel.IsOk)
 				{
-					return;
+					// 指定されたタグを表示
+					(HasTag, _tagIds, TagDisplayNames) = ConcatMasterIdsAndNames(tags, editTagsWindowViewModel.OkSelectedMasters);
 				}
-				(HasTag, _tagIds, TagDisplayNames) = ConcatMasterIdsAndNames(tags, editTagsWindowViewModel.OkSelectedMasters);
+				else
+				{
+					// タグが削除された場合があるので最新化
+					(HasTag, _tagIds, TagDisplayNames) = ConcatMasterIdsAndNames(tags, DbCommon.ExceptInvalid(tags, YlCommon.SplitIds(_tagIds)));
+				}
 			}
 			catch (Exception excep)
 			{
@@ -568,6 +573,7 @@ namespace YukaLister.ViewModels.EditMasterWindowViewModels
 			try
 			{
 				(HasArtist, _artistIds, ArtistDisplayNames) = EditPeople("歌手", _artistIds, ArtistDisplayNames);
+				ExceptInvalidPeople();
 			}
 			catch (Exception excep)
 			{
@@ -671,6 +677,7 @@ namespace YukaLister.ViewModels.EditMasterWindowViewModels
 			try
 			{
 				(HasLyrist, _lyristIds, LyristDisplayNames) = EditPeople("作詞者", _lyristIds, LyristDisplayNames);
+				ExceptInvalidPeople();
 			}
 			catch (Exception excep)
 			{
@@ -774,6 +781,7 @@ namespace YukaLister.ViewModels.EditMasterWindowViewModels
 			try
 			{
 				(HasComposer, _composerIds, ComposerDisplayNames) = EditPeople("作曲者", _composerIds, ComposerDisplayNames);
+				ExceptInvalidPeople();
 			}
 			catch (Exception excep)
 			{
@@ -877,6 +885,7 @@ namespace YukaLister.ViewModels.EditMasterWindowViewModels
 			try
 			{
 				(HasArranger, _arrangerIds, ArrangerDisplayNames) = EditPeople("編曲者", _arrangerIds, ArrangerDisplayNames);
+				ExceptInvalidPeople();
 			}
 			catch (Exception excep)
 			{
@@ -966,6 +975,30 @@ namespace YukaLister.ViewModels.EditMasterWindowViewModels
 		}
 
 		// --------------------------------------------------------------------
+		// レコード無効化
+		// --------------------------------------------------------------------
+		protected override void Invalidate(TSong master)
+		{
+			base.Invalidate(master);
+
+			// タグ紐付け
+			MusicInfoContext.GetDbSet(_musicInfoContext, out DbSet<TTagSequence> tagSequences);
+			DbCommon.RegisterSequence(tagSequences, master.Id, new List<String>());
+
+			// 人物紐付け
+			MusicInfoContext.GetDbSet(_musicInfoContext, out DbSet<TArtistSequence> artistSequences);
+			DbCommon.RegisterSequence(artistSequences, master.Id, new List<String>());
+			MusicInfoContext.GetDbSet(_musicInfoContext, out DbSet<TLyristSequence> lyristSequences);
+			DbCommon.RegisterSequence(lyristSequences, master.Id, new List<String>());
+			MusicInfoContext.GetDbSet(_musicInfoContext, out DbSet<TComposerSequence> composerSequences);
+			DbCommon.RegisterSequence(composerSequences, master.Id, new List<String>());
+			MusicInfoContext.GetDbSet(_musicInfoContext, out DbSet<TArrangerSequence> arrangerSequences);
+			DbCommon.RegisterSequence(arrangerSequences, master.Id, new List<String>());
+
+			_musicInfoContext.SaveChanges();
+		}
+
+		// --------------------------------------------------------------------
 		// プロパティーの内容を Master に格納
 		// --------------------------------------------------------------------
 		protected override void PropertiesToRecord(TSong master)
@@ -985,25 +1018,9 @@ namespace YukaLister.ViewModels.EditMasterWindowViewModels
 			base.RecordToProperties(master);
 
 			// タイアップ関係
-			if (String.IsNullOrEmpty(master.TieUpId))
-			{
-				HasTieUp = false;
-			}
-			else
-			{
-				MusicInfoContext.GetDbSet(_musicInfoContext, out DbSet<TTieUp> tieUps);
-				HasTieUp = true;
-				TTieUp? tieUp = DbCommon.SelectBaseById(tieUps, master.TieUpId);
-				if (tieUp != null)
-				{
-					SetTieUp(tieUps, tieUp);
-				}
-				else
-				{
-					_tieUpId = null;
-					TieUpDisplayName = null;
-				}
-			}
+			MusicInfoContext.GetDbSet(_musicInfoContext, out DbSet<TTieUp> tieUps);
+			TTieUp? tieUp = DbCommon.SelectBaseById(tieUps, master.TieUpId);
+			SetTieUp(true, tieUps, tieUp);
 
 			// 摘要
 			OpEd = master.OpEd;
@@ -1057,20 +1074,20 @@ namespace YukaLister.ViewModels.EditMasterWindowViewModels
 
 			// タグ紐付け
 			MusicInfoContext.GetDbSet(_musicInfoContext, out DbSet<TTagSequence> tagSequences);
-			DbCommon.RegisterSequence<TTagSequence>(tagSequences, master.Id, YlCommon.SplitIds(_tagIds));
+			DbCommon.RegisterSequence(tagSequences, master.Id, YlCommon.SplitIds(_tagIds));
 
 			// 人物紐付け
 			MusicInfoContext.GetDbSet(_musicInfoContext, out DbSet<TArtistSequence> artistSequences);
-			DbCommon.RegisterSequence<TArtistSequence>(artistSequences, master.Id, YlCommon.SplitIds(_artistIds));
+			DbCommon.RegisterSequence(artistSequences, master.Id, YlCommon.SplitIds(_artistIds));
 
 			MusicInfoContext.GetDbSet(_musicInfoContext, out DbSet<TLyristSequence> lyristSequences);
-			DbCommon.RegisterSequence<TLyristSequence>(lyristSequences, master.Id, YlCommon.SplitIds(_lyristIds));
+			DbCommon.RegisterSequence(lyristSequences, master.Id, YlCommon.SplitIds(_lyristIds));
 
 			MusicInfoContext.GetDbSet(_musicInfoContext, out DbSet<TComposerSequence> composerSequences);
-			DbCommon.RegisterSequence<TComposerSequence>(composerSequences, master.Id, YlCommon.SplitIds(_composerIds));
+			DbCommon.RegisterSequence(composerSequences, master.Id, YlCommon.SplitIds(_composerIds));
 
 			MusicInfoContext.GetDbSet(_musicInfoContext, out DbSet<TArrangerSequence> arrangerSequences);
-			DbCommon.RegisterSequence<TArrangerSequence>(arrangerSequences, master.Id, YlCommon.SplitIds(_arrangerIds));
+			DbCommon.RegisterSequence(arrangerSequences, master.Id, YlCommon.SplitIds(_arrangerIds));
 
 			_musicInfoContext.SaveChanges();
 		}
@@ -1152,11 +1169,28 @@ namespace YukaLister.ViewModels.EditMasterWindowViewModels
 			}
 			Messenger.Raise(new TransitionMessage(editPeopleWindowViewModel, YlConstants.MESSAGE_KEY_OPEN_EDIT_SEQUENCE_WINDOW));
 
-			if (!editPeopleWindowViewModel.OkSelectedMasters.Any())
+			if (editPeopleWindowViewModel.IsOk)
 			{
+				// 編集ウィンドウで指定された人物を返す
+				return ConcatMasterIdsAndNames(people, editPeopleWindowViewModel.OkSelectedMasters);
+			}
+			else
+			{
+				// 元の人物を返す
 				return (!String.IsNullOrEmpty(srcIds), srcIds, srcNames);
 			}
-			return ConcatMasterIdsAndNames(people, editPeopleWindowViewModel.OkSelectedMasters);
+		}
+
+		// --------------------------------------------------------------------
+		// 無効化された人物を除外する
+		// --------------------------------------------------------------------
+		private void ExceptInvalidPeople()
+		{
+			MusicInfoContext.GetDbSet(_musicInfoContext, out DbSet<TPerson> people);
+			(HasArtist, _artistIds, ArtistDisplayNames) = ConcatMasterIdsAndNames(people, DbCommon.ExceptInvalid(people, YlCommon.SplitIds(_artistIds)));
+			(HasLyrist, _lyristIds, LyristDisplayNames) = ConcatMasterIdsAndNames(people, DbCommon.ExceptInvalid(people, YlCommon.SplitIds(_lyristIds)));
+			(HasComposer, _composerIds, ComposerDisplayNames) = ConcatMasterIdsAndNames(people, DbCommon.ExceptInvalid(people, YlCommon.SplitIds(_composerIds)));
+			(HasArranger, _arrangerIds, ArrangerDisplayNames) = ConcatMasterIdsAndNames(people, DbCommon.ExceptInvalid(people, YlCommon.SplitIds(_arrangerIds)));
 		}
 
 		// --------------------------------------------------------------------
@@ -1207,19 +1241,30 @@ namespace YukaLister.ViewModels.EditMasterWindowViewModels
 		// --------------------------------------------------------------------
 		// _tieUpId などを refer に合わせて設定
 		// --------------------------------------------------------------------
-		private void SetTieUp(DbSet<TTieUp> tieUps, TTieUp? refer)
+		private void SetTieUp(Boolean isOk, DbSet<TTieUp> tieUps, TTieUp? refer)
 		{
-			if (refer == null)
+			if (!isOk)
 			{
 				return;
 			}
 
-			// ID
-			_tieUpId = refer.Id;
+			if (refer == null)
+			{
+				HasTieUp = false;
+				_tieUpId = null;
+				TieUpDisplayName = null;
+			}
+			else
+			{
+				HasTieUp = true;
 
-			// 名前
-			DbCommon.SetAvoidSameName(tieUps, refer);
-			TieUpDisplayName = refer.DisplayName;
+				// ID
+				_tieUpId = refer.Id;
+
+				// 名前
+				DbCommon.SetAvoidSameName(tieUps, refer);
+				TieUpDisplayName = refer.DisplayName;
+			}
 		}
 	}
 }

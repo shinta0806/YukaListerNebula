@@ -164,7 +164,7 @@ namespace YukaLister.ViewModels.EditMasterWindowViewModels
 				Messenger.Raise(new TransitionMessage(searchMasterWindowViewModel, YlConstants.MESSAGE_KEY_OPEN_SEARCH_MASTER_WINDOW));
 
 				_isMakerSearched = true;
-				SetMaker(makers, searchMasterWindowViewModel.OkSelectedMaster);
+				SetMaker(searchMasterWindowViewModel.IsOk, makers, searchMasterWindowViewModel.OkSelectedMaster);
 			}
 			catch (Exception excep)
 			{
@@ -241,7 +241,7 @@ namespace YukaLister.ViewModels.EditMasterWindowViewModels
 				Messenger.Raise(new TransitionMessage(editMakerWindowViewModel, YlConstants.MESSAGE_KEY_OPEN_EDIT_MASTER_WINDOW));
 
 				// 後処理
-				SetMaker(makers, editMakerWindowViewModel.OkSelectedMaster);
+				SetMaker(editMakerWindowViewModel.IsOk, makers, editMakerWindowViewModel.OkSelectedMaster);
 			}
 			catch (Exception excep)
 			{
@@ -334,11 +334,16 @@ namespace YukaLister.ViewModels.EditMasterWindowViewModels
 				}
 				Messenger.Raise(new TransitionMessage(editTieUpGroupsWindowViewModel, YlConstants.MESSAGE_KEY_OPEN_EDIT_SEQUENCE_WINDOW));
 
-				if (!editTieUpGroupsWindowViewModel.OkSelectedMasters.Any())
+				if (editTieUpGroupsWindowViewModel.IsOk)
 				{
-					return;
+					// 指定されたタイアップグループを表示
+					(HasTieUpGroup, _tieUpGroupIds, TieUpGroupDisplayNames) = ConcatMasterIdsAndNames(tieUpGroups, editTieUpGroupsWindowViewModel.OkSelectedMasters);
 				}
-				(HasTieUpGroup, _tieUpGroupIds, TieUpGroupDisplayNames) = ConcatMasterIdsAndNames(tieUpGroups, editTieUpGroupsWindowViewModel.OkSelectedMasters);
+				else
+				{
+					// タイアップグループが削除された場合があるので最新化
+					(HasTieUpGroup, _tieUpGroupIds, TieUpGroupDisplayNames) = ConcatMasterIdsAndNames(tieUpGroups, DbCommon.ExceptInvalid(tieUpGroups, YlCommon.SplitIds(_tieUpGroupIds)));
+				}
 			}
 			catch (Exception excep)
 			{
@@ -400,6 +405,19 @@ namespace YukaLister.ViewModels.EditMasterWindowViewModels
 		}
 
 		// --------------------------------------------------------------------
+		// レコード無効化
+		// --------------------------------------------------------------------
+		protected override void Invalidate(TTieUp master)
+		{
+			base.Invalidate(master);
+
+			// タイアップグループ紐付け
+			MusicInfoContext.GetDbSet(_musicInfoContext, out DbSet<TTieUpGroupSequence> tieUpGroupSequences);
+			DbCommon.RegisterSequence(tieUpGroupSequences, master.Id, new List<String>());
+			_musicInfoContext.SaveChanges();
+		}
+
+		// --------------------------------------------------------------------
 		// プロパティーの内容を Master に格納
 		// --------------------------------------------------------------------
 		protected override void PropertiesToRecord(TTieUp master)
@@ -429,25 +447,9 @@ namespace YukaLister.ViewModels.EditMasterWindowViewModels
 			}
 
 			// 制作会社
-			if (String.IsNullOrEmpty(master.MakerId))
-			{
-				HasMaker = false;
-			}
-			else
-			{
-				MusicInfoContext.GetDbSet(_musicInfoContext, out DbSet<TMaker> makers);
-				HasMaker = true;
-				TMaker? maker = DbCommon.SelectBaseById(makers, master.MakerId);
-				if (maker != null)
-				{
-					SetMaker(makers, maker);
-				}
-				else
-				{
-					_makerId = null;
-					MakerDisplayName = null;
-				}
-			}
+			MusicInfoContext.GetDbSet(_musicInfoContext, out DbSet<TMaker> makers);
+			TMaker? maker = DbCommon.SelectBaseById(makers, master.MakerId);
+			SetMaker(true, makers, maker);
 
 			// タイアップグループ
 			MusicInfoContext.GetDbSet(_musicInfoContext, out DbSet<TTieUpGroup> tieUpGroups);
@@ -489,7 +491,7 @@ namespace YukaLister.ViewModels.EditMasterWindowViewModels
 
 			// タイアップグループ紐付け
 			MusicInfoContext.GetDbSet(_musicInfoContext, out DbSet<TTieUpGroupSequence> tieUpGroupSequences);
-			DbCommon.RegisterSequence<TTieUpGroupSequence>(tieUpGroupSequences, master.Id, YlCommon.SplitIds(_tieUpGroupIds));
+			DbCommon.RegisterSequence(tieUpGroupSequences, master.Id, YlCommon.SplitIds(_tieUpGroupIds));
 			_musicInfoContext.SaveChanges();
 		}
 
@@ -555,19 +557,30 @@ namespace YukaLister.ViewModels.EditMasterWindowViewModels
 		// --------------------------------------------------------------------
 		// _makerId などを refer に合わせて設定
 		// --------------------------------------------------------------------
-		private void SetMaker(DbSet<TMaker> makers, TMaker? refer)
+		private void SetMaker(Boolean isOk, DbSet<TMaker> makers, TMaker? refer)
 		{
-			if (refer == null)
+			if (!isOk)
 			{
 				return;
 			}
 
-			// ID
-			_makerId = refer.Id;
+			if (refer == null)
+			{
+				HasMaker = false;
+				_makerId = null;
+				MakerDisplayName = null;
+			}
+			else
+			{
+				HasMaker = true;
 
-			// 名前
-			DbCommon.SetAvoidSameName(makers, refer);
-			MakerDisplayName = refer.DisplayName;
+				// ID
+				_makerId = refer.Id;
+
+				// 名前
+				DbCommon.SetAvoidSameName(makers, refer);
+				MakerDisplayName = refer.DisplayName;
+			}
 		}
 	}
 }

@@ -200,7 +200,7 @@ namespace YukaLister.ViewModels.EditSequenceWindowViewModels
 		}
 		#endregion
 
-		#region 削除ボタンの制御
+		#region 除外ボタンの制御
 		private ViewModelCommand? _buttonRemoveClickedCommand;
 
 		public ViewModelCommand ButtonRemoveClickedCommand
@@ -420,6 +420,7 @@ namespace YukaLister.ViewModels.EditSequenceWindowViewModels
 		{
 			try
 			{
+				IsOk = true;
 				OkSelectedMasters = Masters.ToList();
 				Messenger.Raise(new WindowActionMessage(YlConstants.MESSAGE_KEY_WINDOW_CLOSE));
 			}
@@ -561,16 +562,22 @@ namespace YukaLister.ViewModels.EditSequenceWindowViewModels
 			sameNameMasters.Insert(0, newRecord);
 
 			// ウィンドウを開く
-			T? result = OpenEditMasterWindow(sameNameMasters);
+			(Boolean isOk, T? result) = OpenEditMasterWindow(sameNameMasters);
 
 			// 後処理
-			if (result == null)
+			if (!isOk)
 			{
 				return;
 			}
-
-			Masters[Masters.IndexOf(SelectedMaster)] = result;
-			SelectedMaster = result;
+			if (result == null)
+			{
+				Masters.Remove(SelectedMaster);
+			}
+			else
+			{
+				Masters[Masters.IndexOf(SelectedMaster)] = result;
+				SelectedMaster = result;
+			}
 		}
 
 		// --------------------------------------------------------------------
@@ -608,7 +615,7 @@ namespace YukaLister.ViewModels.EditSequenceWindowViewModels
 			masters.Insert(0, newRecord);
 
 			// ウィンドウを開く
-			T? result = OpenEditMasterWindow(masters);
+			(_, T? result) = OpenEditMasterWindow(masters);
 
 			// 後処理
 			if (result == null)
@@ -624,13 +631,13 @@ namespace YukaLister.ViewModels.EditSequenceWindowViewModels
 		// --------------------------------------------------------------------
 		// マスター編集ウィンドウを開く
 		// --------------------------------------------------------------------
-		private T? OpenEditMasterWindow(List<T> masters)
+		private (Boolean, T?) OpenEditMasterWindow(List<T> masters)
 		{
 			using EditMasterWindowViewModel<T> editMasterWindowViewModel = CreateEditMasterWindowViewModel();
 			editMasterWindowViewModel.SetMasters(masters);
 			editMasterWindowViewModel.DefaultMasterId = DbCommon.SelectBaseById(_records, SelectedMaster?.Id)?.Id;
 			Messenger.Raise(new TransitionMessage(editMasterWindowViewModel, YlConstants.MESSAGE_KEY_OPEN_EDIT_MASTER_WINDOW));
-			return editMasterWindowViewModel.OkSelectedMaster;
+			return (editMasterWindowViewModel.IsOk, editMasterWindowViewModel.OkSelectedMaster);
 		}
 	}
 }

@@ -399,20 +399,20 @@ namespace YukaLister.ViewModels
 				Messenger.Raise(new TransitionMessage(editTieUpWindowViewModel, YlConstants.MESSAGE_KEY_OPEN_EDIT_TIE_UP_WINDOW));
 
 				// 後処理
-				if (editTieUpWindowViewModel.OkSelectedMaster == null)
+				if (editTieUpWindowViewModel.OkSelectedMaster != null)
 				{
-					return;
+					if (String.IsNullOrEmpty(dicByFile[YlConstants.RULE_VAR_PROGRAM]) || editTieUpWindowViewModel.OkSelectedMaster.Name == dicByFile[YlConstants.RULE_VAR_PROGRAM])
+					{
+						UseTieUpAlias = false;
+					}
+					else
+					{
+						UseTieUpAlias = true;
+						TieUpOrigin = editTieUpWindowViewModel.OkSelectedMaster.Name;
+					}
 				}
 
-				if (String.IsNullOrEmpty(dicByFile[YlConstants.RULE_VAR_PROGRAM]) || editTieUpWindowViewModel.OkSelectedMaster.Name == dicByFile[YlConstants.RULE_VAR_PROGRAM])
-				{
-					UseTieUpAlias = false;
-				}
-				else
-				{
-					UseTieUpAlias = true;
-					TieUpOrigin = editTieUpWindowViewModel.OkSelectedMaster.Name;
-				}
+				// タイアップが削除された場合もあるので常に更新する
 				RaisePropertyChanged(nameof(IsTieUpNameRegistered));
 				UpdateListItems();
 			}
@@ -572,20 +572,20 @@ namespace YukaLister.ViewModels
 				Messenger.Raise(new TransitionMessage(editSongWindowViewModel, YlConstants.MESSAGE_KEY_OPEN_EDIT_SONG_WINDOW));
 
 				// 後処理
-				if (editSongWindowViewModel.OkSelectedMaster == null)
+				if (editSongWindowViewModel.OkSelectedMaster != null)
 				{
-					return;
+					if (editSongWindowViewModel.OkSelectedMaster.Name == dicByFile[YlConstants.RULE_VAR_TITLE])
+					{
+						UseSongAlias = false;
+					}
+					else
+					{
+						UseSongAlias = true;
+						SongOrigin = editSongWindowViewModel.OkSelectedMaster.Name;
+					}
 				}
 
-				if (editSongWindowViewModel.OkSelectedMaster.Name == dicByFile[YlConstants.RULE_VAR_TITLE])
-				{
-					UseSongAlias = false;
-				}
-				else
-				{
-					UseSongAlias = true;
-					SongOrigin = editSongWindowViewModel.OkSelectedMaster.Name;
-				}
+				// 楽曲が削除された場合もあるので常に更新する
 				RaisePropertyChanged(nameof(IsSongNameRegistered));
 				UpdateListItems();
 			}

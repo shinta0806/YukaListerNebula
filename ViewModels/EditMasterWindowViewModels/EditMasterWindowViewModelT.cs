@@ -169,6 +169,54 @@ namespace YukaLister.ViewModels.EditMasterWindowViewModels
 		// コマンド
 		// --------------------------------------------------------------------
 
+		#region 削除ボタンの制御
+		private ViewModelCommand? _buttonDeleteClickedCommand;
+
+		public ViewModelCommand ButtonDeleteClickedCommand
+		{
+			get
+			{
+				if (_buttonDeleteClickedCommand == null)
+				{
+					_buttonDeleteClickedCommand = new ViewModelCommand(ButtonDeleteClicked);
+				}
+				return _buttonDeleteClickedCommand;
+			}
+		}
+
+		public void ButtonDeleteClicked()
+		{
+			try
+			{
+				if (SelectedMaster?.Id == NewIdForDisplay())
+				{
+					throw new Exception("新規" + _caption + "はまだ登録されていないので、削除の必要はありません。\nキャンセルボタンをクリックして編集をキャンセルしてください。");
+				}
+
+				if (MessageBox.Show("この" + _caption + "を削除しますか？",
+						"確認", MessageBoxButton.YesNo, MessageBoxImage.Exclamation) != MessageBoxResult.Yes)
+				{
+					return;
+				}
+
+				// データベースをバックアップ
+				MusicInfoContext.BackupDatabase();
+
+				// 無効化
+				T master = new();
+				PropertiesToRecord(master);
+				Invalidate(master);
+				IsOk = true;
+				Messenger.Raise(new WindowActionMessage(YlConstants.MESSAGE_KEY_WINDOW_CLOSE));
+			}
+			catch (Exception excep)
+			{
+				YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(TraceEventType.Error, "削除ボタンクリック時エラー：\n" + excep.Message);
+				YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, "　スタックトレース：\n" + excep.StackTrace);
+			}
+		}
+		#endregion
+
 		#region OK ボタンの制御
 		private ViewModelCommand? _buttonOkClickedCommand;
 
@@ -196,9 +244,11 @@ namespace YukaLister.ViewModels.EditMasterWindowViewModels
 				// データベースをバックアップ
 				MusicInfoContext.BackupDatabase();
 
+				// 保存
 				T master = new();
 				PropertiesToRecord(master);
 				Save(master);
+				IsOk = true;
 				OkSelectedMaster = master;
 				Messenger.Raise(new WindowActionMessage(YlConstants.MESSAGE_KEY_WINDOW_CLOSE));
 			}
@@ -393,6 +443,26 @@ namespace YukaLister.ViewModels.EditMasterWindowViewModels
 			}
 
 			return (dups, numDups);
+		}
+
+		// --------------------------------------------------------------------
+		// レコード無効化
+		// --------------------------------------------------------------------
+		protected virtual void Invalidate(T master)
+		{
+			Debug.Assert(master.Id != NewIdForDisplay(), "Invalidate() invalidating new item");
+			T? existRecord = DbCommon.SelectBaseById(_records, master.Id, true);
+			if (existRecord == null)
+			{
+				throw new Exception("削除対象の" + YlConstants.MUSIC_INFO_TABLE_NAME_LABELS[DbCommon.MusicInfoTableIndex<T>()] + "レコードが見つかりません：" + master.Id);
+			}
+
+			// レコード自体を削除するのではなく、無効フラグを立てる
+			existRecord.Invalid = true;
+			existRecord.Dirty = true;
+			_musicInfoContext.SaveChanges();
+			YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS,
+					YlConstants.MUSIC_INFO_TABLE_NAME_LABELS[DbCommon.MusicInfoTableIndex<T>()] + "テーブル無効化：" + existRecord.Id + " / " + existRecord.Name);
 		}
 
 		// --------------------------------------------------------------------

@@ -420,6 +420,7 @@ namespace YukaLister.ViewModels.SearchMasterWindowViewModels
 				return;
 			}
 
+			IsOk = true;
 			OkSelectedMaster = SelectedFound;
 			Messenger.Raise(new WindowActionMessage(YlConstants.MESSAGE_KEY_WINDOW_CLOSE));
 		}

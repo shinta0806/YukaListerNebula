@@ -73,7 +73,7 @@
             </DataGrid>
             <StackPanel Margin="0" VerticalAlignment="Center">
                 <Button Height="Auto" VerticalAlignment="Center" Content="検索して追加 (_A)" HorizontalAlignment="Left" Margin="0" Width="160" Padding="4" Command="{Binding ButtonAddClickedCommand}" Cursor="Hand"/>
-                <Button Height="Auto" VerticalAlignment="Center" Content="削除 (_R)" Style="{StaticResource MaterialDesignRaisedLightButton}" Margin="0,10,0,0" Command="{Binding ButtonRemoveClickedCommand}"/>
+                <Button Height="Auto" VerticalAlignment="Center" Content="除外 (_R)" Style="{StaticResource MaterialDesignRaisedLightButton}" Margin="0,10,0,0" Command="{Binding ButtonRemoveClickedCommand}"/>
                 <Button Style="{StaticResource MaterialDesignRaisedLightButton}" ToolTip="命名規則を上へ" Height="Auto" VerticalAlignment="Bottom" Margin="0,20,0,0" Width="60" HorizontalAlignment="Left" Command="{Binding ButtonUpClickedCommand}">
                     <materialDesign:PackIcon Kind="ArrowUpThick" Height="18" Width="18" />
                 </Button>

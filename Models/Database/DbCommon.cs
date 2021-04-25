@@ -115,6 +115,38 @@ namespace YukaLister.Models.Database
 		}
 
 		// --------------------------------------------------------------------
+		// 有効なレコードのみに絞り込む
+		// --------------------------------------------------------------------
+		public static List<T> ExceptInvalid<T>(DbSet<T> records, List<String> validAndInvalidItemIds) where T : class, IRcBase
+		{
+			List<T> valids = new();
+			foreach (String id in validAndInvalidItemIds)
+			{
+				T? item = SelectBaseById(records, id);
+				if (item != null)
+				{
+					valids.Add(item);
+				}
+			}
+			return valids;
+		}
+
+		// --------------------------------------------------------------------
+		// 指定の参照項目を持つ紐付テーブルを無効化
+		// SaveChanges() は呼び出し元で実施する必要がある
+		// --------------------------------------------------------------------
+		public static void InvalidateSequenceByLinkId<T>(DbSet<T> records, String linkId) where T : class, IRcSequence
+		{
+			List<T> validSequences = records.Where(x => x.LinkId == linkId && !x.Invalid).ToList();
+			for (Int32 i = 0; i < validSequences.Count; i++)
+			{
+				validSequences[i].Invalid = true;
+				validSequences[i].Dirty = true;
+				YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, typeof(T).Name + " 紐付テーブル無効化：" + validSequences[i].Id + " / " + i.ToString());
+			}
+		}
+
+		// --------------------------------------------------------------------
 		// レコードの内容が更新されたか（IRcAlias）
 		// --------------------------------------------------------------------
 		public static Boolean IsRcAliasUpdated(IRcAlias existRecord, IRcAlias newRecord)
@@ -308,6 +340,7 @@ namespace YukaLister.Models.Database
 
 		// --------------------------------------------------------------------
 		// 紐付テーブルに新規登録または更新
+		// SaveChanges() は呼び出し元で実施する必要がある
 		// --------------------------------------------------------------------
 		public static void RegisterSequence<T>(DbSet<T> records, String id, List<String> linkIds, Boolean isImport = false) where T : class, IRcSequence, new()
 		{

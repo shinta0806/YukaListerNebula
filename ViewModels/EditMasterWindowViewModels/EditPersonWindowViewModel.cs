@@ -14,8 +14,9 @@ using Shinta;
 
 using System;
 using System.Diagnostics;
-
+using YukaLister.Models.Database;
 using YukaLister.Models.Database.Masters;
+using YukaLister.Models.Database.Sequences;
 using YukaLister.Models.DatabaseContexts;
 using YukaLister.Models.YukaListerModels;
 
@@ -56,6 +57,29 @@ namespace YukaLister.ViewModels.EditMasterWindowViewModels
 				YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(TraceEventType.Error, "人物詳細情報編集ウィンドウ初期化時エラー：\n" + excep.Message);
 				YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, "　スタックトレース：\n" + excep.StackTrace);
 			}
+		}
+
+		// ====================================================================
+		// protected メンバー関数
+		// ====================================================================
+
+		// --------------------------------------------------------------------
+		// レコード無効化
+		// --------------------------------------------------------------------
+		protected override void Invalidate(TPerson master)
+		{
+			base.Invalidate(master);
+
+			// タイアップグループ紐付け
+			MusicInfoContext.GetDbSet(_musicInfoContext, out DbSet<TArtistSequence> artistSequences);
+			DbCommon.InvalidateSequenceByLinkId(artistSequences, master.Id);
+			MusicInfoContext.GetDbSet(_musicInfoContext, out DbSet<TLyristSequence> lyristSequences);
+			DbCommon.InvalidateSequenceByLinkId(lyristSequences, master.Id);
+			MusicInfoContext.GetDbSet(_musicInfoContext, out DbSet<TComposerSequence> composerSequences);
+			DbCommon.InvalidateSequenceByLinkId(composerSequences, master.Id);
+			MusicInfoContext.GetDbSet(_musicInfoContext, out DbSet<TArrangerSequence> arrangerSequences);
+			DbCommon.InvalidateSequenceByLinkId(arrangerSequences, master.Id);
+			_musicInfoContext.SaveChanges();
 		}
 	}
 }
