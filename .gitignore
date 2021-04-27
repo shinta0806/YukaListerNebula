@@ -342,4 +342,6 @@ healthchecksdb
 # Project
 net5.0-windows/*
 *.xlsx
+DatabaseSettings.php
+
 

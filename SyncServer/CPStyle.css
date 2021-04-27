@@ -1,0 +1,376 @@
+@charset "utf-8";
+
+/* ============================================================================
+** ゆかりすたー同期コントロールパネルスタイルシート **
+============================================================================ */
+
+/* ----------------------------------------------------------------------------
+-- 全体の枠組み（現在、右カラムは使わない設定） --
+---------------------------------------------------------------------------- */
+
+body
+{
+	margin: 0 0 20px 0;
+	padding: 0;
+	font-size: 16px;
+	line-height: 140%;
+	background-color: #FFFFFF;
+}
+
+body.IFrameContents
+{
+	overflow: hidden;
+	position: absolute;
+	width: 180px;
+	top: -90px;
+}
+
+div#MainCol
+, div#LCol
+, div#RCol
+{
+	overflow: hidden;
+}
+
+div#MainCol
+{
+	position: relative;
+	z-index: 13;
+	min-width: 580px;
+	margin: 0 0 20px 210px;
+	background-color: #FFFFFF;
+}
+
+/* 左右カラムは有効幅 180px になるようにする */
+
+div#LCol
+, div#RCol
+{
+	position: absolute;
+	width: 180px;
+	top: 0px;
+/*	top: 90px;*/
+}
+
+div#LCol
+{
+	z-index: 12;
+	left: 0;
+	padding: 15px 10px;
+	border-right: dashed 1px #9999CC;
+/*	background-color: #FFCCCC;*/
+}
+
+div#RCol
+{
+	z-index: 11;
+	right: 0;
+	padding: 15px 10px;
+	border-left: dashed 1px #9999CC;
+/*	background-color: #CCFFCC;*/
+}
+
+/* ----------------------------------------------------------------------------
+-- 全体に影響するスタイル --
+---------------------------------------------------------------------------- */
+
+table
+{
+	border-collapse: collapse;
+	border: none;
+}
+
+th
+{
+	margin: 0;
+	padding: 4px;
+	border: solid 1px #00A8E8;
+	color: #EEEEFF;
+	font-weight: bold;
+	background-color: #00A8E8;
+	background-image: url("image/THBG.png");
+	background-position: left top;
+	background-repeat: repeat-x;
+}
+
+td
+{
+	padding: 4px;
+	border: solid 1px #00A8E8;
+
+}
+
+a
+{
+	text-decoration: underline;
+}
+
+a:link
+, a:hover
+, a:active
+{
+	color: #0099FF;
+}
+
+a:visited
+{
+	color: #0066BB;
+}
+
+/* ----------------------------------------------------------------------------
+-- 個別スタイル --
+---------------------------------------------------------------------------- */
+
+/* --------------------------------------------------------
+-  Hx
+-------------------------------------------------------- */
+
+H1
+{
+	height: 50px;
+	line-height: 50px;
+	white-space: pre;
+	padding-left: 60px;
+	font-size: 200%;
+	font-weight: normal;
+	color: #003399;
+/*	background-color: #E4E4E4;*/ /* H1BG.png の右端がグラデーションしているので背景色は指定しない */
+	background-image: url("image/H1BG.png");
+	background-position: left top;
+	background-repeat: no-repeat;
+}
+
+H2
+{
+	width: 80%;
+	height: 40px;
+	line-height: 40px;
+	white-space: pre;
+	padding-left: 25px;
+	border-bottom: solid 2px #AAEEEE;
+	font-size: 150%;
+	font-weight: normal;
+	color: #003366;
+	background-image: url("image/H2BG.png");
+	background-position: left bottom;
+	background-repeat: no-repeat;
+}
+
+h3
+{
+	height: 30px;
+	line-height: 30px;
+	white-space: pre;
+	margin-left: 15px;
+	padding-left: 15px;
+	border-left: solid 15px #6699DD;
+	font-size: 130%;
+	font-weight: bold;
+	color: #114477;
+}
+
+/* --------------------------------------------------------
+-  サイドメニュー関連
+-------------------------------------------------------- */
+
+div.SideMenuTitle
+{
+	margin: 10px 0;
+	padding: 8px;
+	border: solid 1px #CCFFFF;
+	border-radius: 8px 8px 8px 8px;
+/*	-moz-border-radius: 8px 8px 8px 8px;*/
+	color: #EEEEFF;
+	font-weight: bold;
+/*	background-color: #00A8E8;*/
+	background-color: #0060A8;
+	background-image: url("image/SideMenuTitleBG.png");
+	background-position: left center;
+	background-repeat: repeat-x;
+}
+
+div.SideMenuItem
+{
+	white-space: pre;
+}
+
+div.SideMenuItem a
+{
+	margin-left: 10px;
+}
+
+div.SideMenuItem a:link
+{
+	padding-left: 10px;
+	text-decoration: none;
+}
+
+div.SideMenuItem a:visited
+{
+	padding-left: 10px;
+	text-decoration: none;
+}
+
+div.SideMenuItem a:hover
+, div.SideMenuItem a:active
+{
+	padding-left: 5px;
+	border-left: solid 5px #0099FF;
+	text-decoration: underline;
+}
+
+/* --------------------------------------------------------
+-  スピードバー（DL/UL 速度グラフ）
+-------------------------------------------------------- */
+
+.DLTH
+{
+	width: 150px;
+}
+
+.ULTH
+{
+	width: 82px;
+}
+
+.SpeedBox
+{
+	position: relative;
+	line-height: 120%;
+}
+
+.SpeedBar
+{
+	position: relative;
+	top: 0.6em;
+}
+
+.SpeedNum
+{
+	position: relative;
+	top: -0.6em;
+	text-align: right;
+}
+
+/* --------------------------------------------------------
+-  ナビゲーション
+-------------------------------------------------------- */
+
+.Navi
+{
+	margin: 5px;
+	padding: 5px 20px;
+	border: dotted 1px #669966;
+	border-radius: 8px 8px 8px 8px;
+/*	-moz-border-radius: 8px 8px 8px 8px;*/
+	background-color: #F7FFF7;
+}
+
+.Navi a:link
+{
+	color: #009900;
+}
+
+.Navi a:visited
+{
+	color: #006600;
+}
+
+.Navi a:hover
+, .Navi a:active
+{
+	color: #00CC00;
+	background-color: #EEFFEE;
+}
+
+/* --------------------------------------------------------
+-  その他
+-------------------------------------------------------- */
+
+hr
+{
+	border-width: 1px 0px 0px 0px;
+	border-style: solid;
+	border-color: #999999;
+	height: 1px;
+}
+
+.Explanation
+{
+	color: #999999;
+}
+
+.Err
+{
+	color: #FF0000;
+	font-weight: bold;
+}
+
+.HeadlineErr
+, .HeadlineNotice
+{
+	margin: 23px 0;
+	border-width: 1px;
+	border-style: solid;
+	padding: 5px;
+}
+
+.HeadlineErr
+{
+	border-color: #FF0000;
+	color: #FF0000;
+	background-color: #FFEEEE;
+}
+
+.HeadlineNotice
+{
+	border-color: #00AA00;
+	color: #00AA00;
+	background-color: #EEFFEE;
+}
+
+.Small70
+{
+	font-size: 70%;
+}
+
+.ConnectOK
+, .ConnectNG
+{
+	background-position: right top;
+	background-repeat: no-repeat;
+}
+
+.ConnectOK
+{
+	background-image: url("image/ConnectOKBG.png");
+}
+
+.ConnectNG
+{
+	background-image: url("image/ConnectNGBG.png");
+}
+
+.Centering
+{
+	text-align: center;
+}
+
+.RightAlign
+{
+	text-align: right;
+}
+
+.Invisi
+{
+	Display				:	None;
+	Visibility			:	Hidden;
+	Font-Size			:	2px;
+}
+
+.Size160x30 img
+{
+	width				:	160px;
+	height				:	30px;
+}
+

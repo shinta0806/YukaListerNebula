@@ -1,0 +1,23 @@
+<h1>パスワード変更</h1>
+
+<form method="post" enctype="multipart/form-data" action="CPMain.php">
+
+<table>
+<tr><th>現在のパスワード</th><td><input type="password" name="CurrentPW" size="20"></td></tr>
+</table>
+
+<p>
+</p>
+
+<table>
+<tr><th>新しいパスワード</th><td><input type="password" name="NewPW" size="20"></td></tr>
+<tr><th>新しいパスワード（確認用にもう 1 度）</th><td><input type="password" name="NewPWConfirm" size="20"></td></tr>
+</table>
+
+<p>
+</p>
+
+<input type="hidden" name="Mode" value="ChangeCurrentPW">
+<input type="submit" name="ChangeCurrentPW" value="パスワード変更">
+
+</form>

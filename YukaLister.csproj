@@ -50,6 +50,11 @@
 
   <ItemGroup>
     <Folder Include="Models\ValueConverters\" />
+    <Folder Include="SyncServer\common_lib\" />
+    <Folder Include="SyncServer\data\" />
+    <Folder Include="SyncServer\image\" />
+    <Folder Include="SyncServer\settings\" />
+    <Folder Include="SyncServer\template\" />
     <Folder Include="_Common\Behaviors\" />
   </ItemGroup>
 

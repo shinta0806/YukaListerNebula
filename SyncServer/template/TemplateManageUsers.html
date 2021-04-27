@@ -1,0 +1,141 @@
+<h1>ユーザー管理</h1>
+
+<script language="javascript" type="text/javascript">
+function changeUser(uid) {
+	var userInfo = getUserInfo();
+	document.getElementById("ChangeNameBefore").innerHTML = userInfo[uid]["Name"];
+	document.getElementById("ChangeName").value = userInfo[uid]["Name"];
+	document.getElementById("ChangeAdminBefore").checked = (userInfo[uid]["Admin"] == "1");
+	document.getElementById("ChangeAdmin").checked = (userInfo[uid]["Admin"] == "1");
+	document.getElementById("ChangeUid").value = uid;
+	return false;
+}
+function confirmDelete() {
+	return confirm('ユーザー「'+document.getElementById("DeleteName").innerHTML+'」を削除しますか？\n'
+		+'（削除すると復活できません）');
+}
+function deleteUser(uid) {
+	var userInfo = getUserInfo();
+	document.getElementById("DeleteName").innerHTML = userInfo[uid]["Name"];
+	document.getElementById("DeleteUid").value = uid;
+	return false;
+}
+function getUserInfo() {
+	var userInfo = new Object();
+	<!-- $FunctionGetUserInfo$ -->
+	return userInfo;
+}
+function initUser(uid) {
+	var userInfo = getUserInfo();
+	document.getElementById("InitName").innerHTML = userInfo[uid]["Name"];
+	document.getElementById("InitUid").value = uid;
+	return false;
+}
+</script>
+
+<p>
+ユーザーの<a href="#Add">追加</a>・<a href="#Change">変更</a>・<a href="#Init">パスワード初期化</a>・<a href="#Delete">削除</a>を行えます。
+</p>
+
+<a name="List"></a>
+<h2>ユーザー一覧</h2>
+
+<table>
+<tr><th>番号</th><th>アカウント名</th><th>管理者</th><th>最終ログイン日時</th><th>登録情報変更日時</th><th>変更</th><th>初期化</th><th>削除</th></tr>
+<!-- $UserList$ -->
+</table>
+
+<a name="Add"></a>
+<h2>ユーザー追加</h2>
+
+<p>
+追加したいユーザーの情報を以下に入力し、「ユーザー追加」ボタンをクリックして下さい。<br>
+</p>
+
+<form method="post" enctype="multipart/form-data" action="CPMain.php">
+
+<table>
+<tr><th>アカウント名</th><td><input type="text" name="Name" size="20"></td></tr>
+<tr><th>パスワード</th><td><input type="password" name="NewPW" size="20"></td></tr>
+<tr><th>パスワード（確認用にもう 1 度）</th><td><input type="password" name="NewPWConfirm" size="20"></td></tr>
+<tr><th>管理者にする</th><td><input type="checkbox" name="Admin" value="1" size="20"></td></tr>
+</table>
+
+<p>
+</p>
+
+<input type="hidden" name="Mode" value="NewAccount">
+<input type="submit" name="RegistPW" value="ユーザー追加">
+
+</form>
+
+<a name="Change"></a>
+<h2>ユーザー変更</h2>
+
+<p>
+「<a href="#List">ユーザー一覧</a>」で変更したいユーザーの「変更」リンクをクリックしてから、以下に変更内容を入力し、「ユーザー変更」ボタンをクリックして下さい。<br>
+</p>
+
+<form method="post" enctype="multipart/form-data" action="CPMain.php">
+
+<table>
+<tr><th></th><th>変更前</th><th></th><th>変更後</th></tr>
+<tr><th>アカウント名</th><td id="ChangeNameBefore"></td><td rowspan="2">→</td><td><input type="text" id="ChangeName" name="Name" size="20"></td></tr>
+<tr><th>管理者にする</th><td><input type="checkbox" id="ChangeAdminBefore" size="20" disabled="disabled"></td><td><input type="checkbox" id="ChangeAdmin" name="Admin" value="1" size="20"></td></tr>
+</table>
+
+<p>
+</p>
+
+<input type="hidden" name="Mode" value="ChangeAccount">
+<input type="hidden" id="ChangeUid" name="Uid" value="">
+<input type="submit" name="ChangeAccount" value="ユーザー変更">
+
+</form>
+
+<a name="Init"></a>
+<h2>パスワード初期化</h2>
+
+<p>
+「<a href="#List">ユーザー一覧</a>」でパスワードを初期化したいユーザーの「初期化」リンクをクリックしてから、以下に新しいパスワードを入力し、「パスワード初期化」ボタンをクリックして下さい。<br>
+</p>
+
+<form method="post" enctype="multipart/form-data" action="CPMain.php">
+
+<table>
+<tr><th>アカウント名</th><td id="InitName"></td></tr>
+<tr><th>パスワード</th><td><input type="password" name="NewPW" size="20"></td></tr>
+<tr><th>パスワード（確認用にもう 1 度）</th><td><input type="password" name="NewPWConfirm" size="20"></td></tr>
+</table>
+
+<p>
+</p>
+
+<input type="hidden" name="Mode" value="InitAccount">
+<input type="hidden" id="InitUid" name="Uid" value="">
+<input type="submit" name="InitAccount" value="パスワード初期化">
+
+</form>
+
+<a name="Delete"></a>
+<h2>ユーザー削除</h2>
+
+<p>
+「<a href="#List">ユーザー一覧</a>」で削除したいユーザーの「削除」リンクをクリックしてから、「ユーザー削除」ボタンをクリックして下さい。<br>
+</p>
+
+<form method="post" enctype="multipart/form-data" action="CPMain.php">
+
+<table>
+<tr><th>アカウント名</th><td id="DeleteName"></td></tr>
+</table>
+
+<p>
+</p>
+
+<input type="hidden" name="Mode" value="DeleteAccount">
+<input type="hidden" id="DeleteUid" name="Uid" value="">
+<input type="submit" name="DeleteAccount" value="ユーザー削除" onClick="return confirmDelete();">
+
+</form>
+
