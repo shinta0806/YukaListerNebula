@@ -1133,6 +1133,32 @@ namespace YukaLister.ViewModels.MiscWindowViewModels
 		// --------------------------------------------------------------------
 		public override void Initialize()
 		{
+			base.Initialize();
+
+			try
+			{
+				// タイトルバー
+				Title = "環境設定";
+#if DEBUG
+				Title = "［デバッグ］" + Title;
+#endif
+
+				// リスト出力形式
+				//mOutputWriters = new List<OutputWriter>();
+				//mOutputWriters.Add(new HtmlOutputWriter(Environment!));
+				//mOutputWriters.Add(new CsvOutputWriter(Environment!));
+				//LoadOutputSettings();
+
+				// プログレスバー
+				ProgressBarCheckRssVisibility = Visibility.Hidden;
+
+				SettingsToProperties();
+			}
+			catch (Exception excep)
+			{
+				YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(TraceEventType.Error, "環境設定ウィンドウ初期化時エラー：\n" + excep.Message);
+				YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, "　スタックトレース：\n" + excep.StackTrace);
+			}
 		}
 
 		// --------------------------------------------------------------------
@@ -1161,6 +1187,53 @@ namespace YukaLister.ViewModels.MiscWindowViewModels
 			YukaListerModel.Instance.EnvModel.YlSettings.SyncServer = SyncServer;
 			YukaListerModel.Instance.EnvModel.YlSettings.SyncAccount = SyncAccount;
 			YukaListerModel.Instance.EnvModel.YlSettings.SyncPassword = YlCommon.Encrypt(SyncPassword);
+		}
+
+		// --------------------------------------------------------------------
+		// 設定をプロパティーに反映
+		// --------------------------------------------------------------------
+		private void SettingsToProperties()
+		{
+			// 設定タブ
+			YukariConfigPathSeed = YukaListerModel.Instance.EnvModel.YlSettings.YukariConfigPathSeed;
+			AddFolderOnDeviceArrived = YukaListerModel.Instance.EnvModel.YlSettings.AddFolderOnDeviceArrived;
+			ProvideYukariPreview = YukaListerModel.Instance.EnvModel.YlSettings.ProvideYukariPreview;
+			IdPrefix = YukaListerModel.Instance.EnvModel.YlSettings.IdPrefix;
+
+			// リスト対象タブ
+			foreach (String ext in YukaListerModel.Instance.EnvModel.YlSettings.TargetExts)
+			{
+				TargetExts.Add(ext);
+			}
+
+			// リスト出力タブ
+#if false
+			ConfirmOutputYukariList = Environment.YukaListerSettings.ConfirmOutputYukariList;
+			ClearPrevList = Environment.YukaListerSettings.ClearPrevList;
+			if (mOutputWriters != null)
+			{
+				foreach (OutputWriter aOutputWriter in mOutputWriters)
+				{
+					if (aOutputWriter.FormatName != null)
+					{
+						ListFormats.Add(aOutputWriter.FormatName);
+					}
+				}
+			}
+			SelectedListFormat = ListFormats[0];
+			ListFolder = Environment.YukaListerSettings.ListOutputFolder;
+#endif
+
+			// メンテナンスタブ
+			CheckRss = YukaListerModel.Instance.EnvModel.YlSettings.CheckRss;
+			SyncMusicInfoDb = YukaListerModel.Instance.EnvModel.YlSettings.SyncMusicInfoDb;
+			SyncServer = YukaListerModel.Instance.EnvModel.YlSettings.SyncServer;
+			SyncAccount = YukaListerModel.Instance.EnvModel.YlSettings.SyncAccount;
+			SyncPassword = YlCommon.Decrypt(YukaListerModel.Instance.EnvModel.YlSettings.SyncPassword);
+			Debug.WriteLine("SettingsToProperties() SyncPassword: " + SyncPassword);
+
+			// インポートタブ
+			ImportYukaListerMode = true;
 		}
 
 		// --------------------------------------------------------------------

@@ -233,6 +233,32 @@ namespace YukaLister.Models.SharedMisc
 		}
 
 		// --------------------------------------------------------------------
+		// 暗号化して Base64 になっている文字列を復号化する
+		// --------------------------------------------------------------------
+		public static String? Decrypt(String? base64Text)
+		{
+			if (String.IsNullOrEmpty(base64Text))
+			{
+				return null;
+			}
+
+			Byte[] cipherBytes = Convert.FromBase64String(base64Text);
+
+			// 復号化
+			using AesManaged aes = new();
+			using ICryptoTransform decryptor = aes.CreateDecryptor(ENCRYPT_KEY, ENCRYPT_IV);
+			using MemoryStream writeStream = new MemoryStream();
+			using (CryptoStream cryptoStream = new CryptoStream(writeStream, decryptor, CryptoStreamMode.Write))
+			{
+				cryptoStream.Write(cipherBytes, 0, cipherBytes.Length);
+			}
+
+			// 文字列化
+			Byte[] plainBytes = writeStream.ToArray();
+			return Encoding.Unicode.GetString(plainBytes);
+		}
+
+		// --------------------------------------------------------------------
 		// ファイルが存在していれば削除
 		// ＜返値＞ ファイルが存在していた場合の属性
 		// --------------------------------------------------------------------
@@ -320,8 +346,10 @@ namespace YukaLister.Models.SharedMisc
 			using AesManaged aes = new();
 			using ICryptoTransform encryptor = aes.CreateEncryptor(ENCRYPT_KEY, ENCRYPT_IV);
 			using MemoryStream writeStream = new();
-			using CryptoStream cryptoStream = new CryptoStream(writeStream, encryptor, CryptoStreamMode.Write);
-			cryptoStream.Write(plainBytes, 0, plainBytes.Length);
+			using (CryptoStream cryptoStream = new CryptoStream(writeStream, encryptor, CryptoStreamMode.Write))
+			{
+				cryptoStream.Write(plainBytes, 0, plainBytes.Length);
+			}
 
 			// Base64
 			Byte[] cipherBytes = writeStream.ToArray();
