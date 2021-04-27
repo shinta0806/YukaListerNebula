@@ -175,6 +175,19 @@ namespace YukaLister.Models.SharedMisc
 		public const String FILE_NAME_YUKARI_CONFIG = "config" + Common.FILE_EXT_INI;
 
 		// --------------------------------------------------------------------
+		// 拡張子
+		// --------------------------------------------------------------------
+
+		public const String FILE_EXT_SETTINGS_ARCHIVE = ".sta";
+
+		// --------------------------------------------------------------------
+		// ダイアログのフィルター
+		// --------------------------------------------------------------------
+
+		// 設定ファイル
+		public const String DIALOG_FILTER_SETTINGS_ARCHIVE = "設定ファイル|*" + FILE_EXT_SETTINGS_ARCHIVE;
+
+		// --------------------------------------------------------------------
 		// 楽曲情報データベース
 		// --------------------------------------------------------------------
 
@@ -225,6 +238,15 @@ namespace YukaLister.Models.SharedMisc
 
 		// ID 接頭辞入力ウィンドウを開く
 		public const String MESSAGE_KEY_OPEN_INPUT_ID_PREFIX_WINDOW = "OpenInputIdPrefixWindow";
+
+		// 開くダイアログを開く
+		public const String MESSAGE_KEY_OPEN_OPEN_FILE_DIALOG = "OpenOpenFileDialog";
+
+		// 保存ダイアログを開く
+		public const String MESSAGE_KEY_OPEN_SAVE_FILE_DIALOG = "OpenSaveFileDialog";
+
+		// 環境設定ウィンドウを開く
+		public const String MESSAGE_KEY_OPEN_YL_SETTINGS_WINDOW = "OpenYlSettingsWindow";
 
 		// 楽曲情報データベースマスター検索ウィンドウを開く
 		public const String MESSAGE_KEY_OPEN_SEARCH_MASTER_WINDOW = "OpenSearchMasterWindow";

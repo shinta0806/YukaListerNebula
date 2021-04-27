@@ -75,26 +75,7 @@ namespace YukaLister.Models.DatabaseContexts
 		// --------------------------------------------------------------------
 		protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 		{
-			optionsBuilder.UseSqlite(DbCommon.Connect(DatabasePath()));
-		}
-
-		// ====================================================================
-		// private メンバー定数
-		// ====================================================================
-
-		// データベースファイル名
-		private const String FILE_NAME_LIST_DATABASE_IN_DISK = "List" + Common.FILE_EXT_SQLITE3;
-
-		// ====================================================================
-		// private static メンバー関数
-		// ====================================================================
-
-		// --------------------------------------------------------------------
-		// データベースのフルパス
-		// --------------------------------------------------------------------
-		private static String DatabasePath()
-		{
-			return DbCommon.YukariDatabaseFullFolder() + FILE_NAME_LIST_DATABASE_IN_DISK;
+			optionsBuilder.UseSqlite(DbCommon.Connect(DbCommon.ListDatabasePath(YukaListerModel.Instance.EnvModel.YlSettings)));
 		}
 	}
 }

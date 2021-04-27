@@ -22,6 +22,7 @@ using YukaLister.Models.Database.Aliases;
 using YukaLister.Models.Database.Masters;
 using YukaLister.Models.Database.Sequences;
 using YukaLister.Models.DatabaseContexts;
+using YukaLister.Models.SerializableSettings;
 using YukaLister.Models.SharedMisc;
 using YukaLister.Models.YukaListerModels;
 
@@ -214,6 +215,15 @@ namespace YukaLister.Models.Database
 		}
 
 		// --------------------------------------------------------------------
+		// リストデータベース（ゆかり用：ディスク）のフルパス
+		// --------------------------------------------------------------------
+		public static String ListDatabasePath(YlSettings ylSettings)
+		{
+			return YukariDatabaseFullFolder(ylSettings) + FILE_NAME_LIST_DATABASE_IN_DISK;
+
+		}
+
+		// --------------------------------------------------------------------
 		// 楽曲情報データベースのテーブル番号
 		// データベース自体に付与されている番号ではなく、内部での各種定数利用用
 		// --------------------------------------------------------------------
@@ -310,7 +320,7 @@ namespace YukaLister.Models.Database
 			try
 			{
 				Directory.CreateDirectory(YukaListerDatabaseFullFolder());
-				Directory.CreateDirectory(YukariDatabaseFullFolder());
+				Directory.CreateDirectory(YukariDatabaseFullFolder(YukaListerModel.Instance.EnvModel.YlSettings));
 				MusicInfoContext.CreateDatabaseIfNeeded();
 				ListContextInDisk.CreateDatabase();
 				ListContextInMemory.CreateDatabase();
@@ -588,12 +598,22 @@ namespace YukaLister.Models.Database
 			return YukaListerModel.Instance.EnvModel.ExeFullFolder + YlConstants.FOLDER_NAME_DATABASE;
 		}
 
+#if false
 		// --------------------------------------------------------------------
 		// ゆかり用データベースを保存するフォルダーのフルパス（末尾 '\\'）
 		// --------------------------------------------------------------------
 		public static String YukariDatabaseFullFolder()
 		{
-			return Path.GetDirectoryName(YukaListerModel.Instance.EnvModel.YlSettings.YukariConfigPath()) + "\\" + YlConstants.FOLDER_NAME_LIST;
+			return YukariDatabaseFullFolder(YukaListerModel.Instance.EnvModel.YlSettings);
+		}
+#endif
+
+		// --------------------------------------------------------------------
+		// ゆかり用データベースを保存するフォルダーのフルパス（末尾 '\\'）
+		// --------------------------------------------------------------------
+		public static String YukariDatabaseFullFolder(YlSettings ylSettings)
+		{
+			return Path.GetDirectoryName(ylSettings.YukariConfigPath()) + "\\" + YlConstants.FOLDER_NAME_LIST;
 		}
 
 		// ====================================================================
@@ -602,6 +622,9 @@ namespace YukaLister.Models.Database
 
 		// バックアップ世代数
 		private const Int32 NUM_DB_BACKUP_GENERATIONS = 31;
+
+		// データベースファイル名
+		private const String FILE_NAME_LIST_DATABASE_IN_DISK = "List" + Common.FILE_EXT_SQLITE3;
 
 		// ====================================================================
 		// private メンバー関数

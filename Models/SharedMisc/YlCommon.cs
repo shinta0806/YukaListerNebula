@@ -18,6 +18,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Security.Cryptography;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
@@ -203,6 +204,35 @@ namespace YukaLister.Models.SharedMisc
 		}
 
 		// --------------------------------------------------------------------
+		// ちょちょいと自動更新起動を作成
+		// --------------------------------------------------------------------
+		public static UpdaterLauncher CreateUpdaterLauncher(Boolean checkLatest, Boolean forceShow, Boolean clearUpdateCache, Boolean forceInstall)
+		{
+			// 固定部分
+			UpdaterLauncher updaterLauncher = new();
+			updaterLauncher.ID = YlConstants.APP_ID;
+			updaterLauncher.Name = YlConstants.APP_NAME_J;
+			updaterLauncher.Wait = 3;
+			updaterLauncher.UpdateRss = "http://shinta.coresv.com/soft/YukaListerNebula_AutoUpdate.xml";
+			updaterLauncher.CurrentVer = YlConstants.APP_VER;
+			updaterLauncher.Relaunch = YukaListerModel.Instance.EnvModel.ExeFullPath;
+
+			// 変動部分
+			if (checkLatest)
+			{
+				updaterLauncher.LatestRss = "http://shinta.coresv.com/soft/YukaListerNebula_JPN.xml";
+			}
+			updaterLauncher.LogWriter = YukaListerModel.Instance.EnvModel.LogWriter;
+			updaterLauncher.ForceShow = forceShow;
+			updaterLauncher.NotifyHWnd = IntPtr.Zero;
+			updaterLauncher.ClearUpdateCache = clearUpdateCache;
+			updaterLauncher.ForceInstall = forceInstall;
+
+			// 起動用
+			return updaterLauncher;
+		}
+
+		// --------------------------------------------------------------------
 		// ファイルが存在していれば削除
 		// ＜返値＞ ファイルが存在していた場合の属性
 		// --------------------------------------------------------------------
@@ -265,18 +295,6 @@ namespace YukaLister.Models.SharedMisc
 			}
 		}
 
-#if false
-		// --------------------------------------------------------------------
-		// ファイル命名規則とフォルダー固定値を適用した情報を得る
-		// --------------------------------------------------------------------
-		public static Dictionary<String, String?> DicByFileForMusicInfo(String filePath)
-		{
-			FolderSettingsInDisk folderSettingsInDisk = LoadFolderSettings2Ex(Path.GetDirectoryName(filePath));
-			FolderSettingsInMemory folderSettingsInMemory = CreateFolderSettingsInMemory(folderSettingsInDisk);
-			return MatchFileNameRulesAndFolderRuleForMusicInfo(Path.GetFileNameWithoutExtension(filePath), folderSettingsInMemory);
-		}
-#endif
-
 		// --------------------------------------------------------------------
 		// ドライブレターを取得
 		// DeviceChangeInfo と仕様を合わせ、"D:" のようにコロンまで
@@ -284,6 +302,30 @@ namespace YukaLister.Models.SharedMisc
 		public static String DriveLetter(String path)
 		{
 			return path[0..2];
+		}
+
+		// --------------------------------------------------------------------
+		// 文字列を AES 256 bit 暗号化して Base64 で返す
+		// --------------------------------------------------------------------
+		public static String? Encrypt(String? plainText)
+		{
+			if (String.IsNullOrEmpty(plainText))
+			{
+				return null;
+			}
+
+			Byte[] plainBytes = Encoding.Unicode.GetBytes(plainText);
+
+			// 暗号化
+			using AesManaged aes = new();
+			using ICryptoTransform encryptor = aes.CreateEncryptor(ENCRYPT_KEY, ENCRYPT_IV);
+			using MemoryStream writeStream = new();
+			using CryptoStream cryptoStream = new CryptoStream(writeStream, encryptor, CryptoStreamMode.Write);
+			cryptoStream.Write(plainBytes, 0, plainBytes.Length);
+
+			// Base64
+			Byte[] cipherBytes = writeStream.ToArray();
+			return Convert.ToBase64String(cipherBytes);
 		}
 
 		// --------------------------------------------------------------------
@@ -790,6 +832,19 @@ namespace YukaLister.Models.SharedMisc
 
 		// ID 接頭辞の最大長（同期サーバーデータベースの都合上、ID のトータル長が UTF-8 で 255 バイト以下になるようにする）
 		private const Int32 ID_PREFIX_MAX_LENGTH = 20;
+
+		// 暗号化キー（256 bit = 32 byte）
+		private static readonly Byte[] ENCRYPT_KEY =
+		{
+			0x07, 0xC1, 0x19, 0x4A, 0x99, 0x9A, 0xF0, 0x2D, 0x0C, 0x52, 0xB0, 0x65, 0x48, 0xE6, 0x1F, 0x61,
+			0x9C, 0x37, 0x9C, 0xA1, 0xC2, 0x31, 0xBA, 0xD1, 0x64, 0x1D, 0x85, 0x46, 0xCA, 0xF4, 0xE6, 0x5F,
+		};
+
+		// 暗号化 IV（128 bit = 16 byte）
+		private static readonly Byte[] ENCRYPT_IV =
+		{
+			0x80, 0xB5, 0x40, 0x56, 0x9A, 0xE0, 0x3A, 0x9F, 0xd0, 0x90, 0xC6, 0x7C, 0xAA, 0xCD, 0xE7, 0x53,
+		};
 
 		// 頭文字変換用
 		private const String HEAD_CONVERT_FROM = "ぁぃぅぇぉゕゖゃゅょゎゔがぎぐげござじずぜぞだぢづでどばびぶべぼぱぴぷぺぽゐゑ";

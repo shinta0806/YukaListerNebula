@@ -25,7 +25,9 @@
   <ItemGroup>
     <Compile Include="..\..\_Common\Behaviors\DataGridBindingSupportBehavior.cs" Link="_Common\Behaviors\DataGridBindingSupportBehavior.cs" />
     <Compile Include="..\..\_Common\Behaviors\DeviceChangeAttachedBehavior.cs" Link="_Common\Behaviors\DeviceChangeAttachedBehavior.cs" />
+    <Compile Include="..\..\_Common\Behaviors\FileDropAttachedBehavior.cs" Link="_Common\Behaviors\FileDropAttachedBehavior.cs" />
     <Compile Include="..\..\_Common\Behaviors\IsFocusedAttachedBehavior.cs" Link="_Common\Behaviors\IsFocusedAttachedBehavior.cs" />
+    <Compile Include="..\..\_Common\Behaviors\LaunchUpdaterAttachedBehavior.cs" Link="_Common\Behaviors\LaunchUpdaterAttachedBehavior.cs" />
     <Compile Include="..\..\_Common\Behaviors\WindowBindingSupportBehavior.cs" Link="_Common\Behaviors\WindowBindingSupportBehavior.cs" />
     <Compile Include="..\..\_Common\JulianDay.cs" Link="_Common\JulianDay.cs" />
     <Compile Include="..\..\_Common\LogWriter.cs" Link="_Common\LogWriter.cs" />
@@ -33,6 +35,7 @@
     <Compile Include="..\..\_Common\ShintaCommonWindows.cs" Link="_Common\ShintaCommonWindows.cs" />
     <Compile Include="..\..\_Common\SimpleTraceListener.cs" Link="_Common\SimpleTraceListener.cs" />
     <Compile Include="..\..\_Common\SystemEnvironment.cs" Link="_Common\SystemEnvironment.cs" />
+    <Compile Include="..\..\_Common\UpdaterLauncher.cs" Link="_Common\UpdaterLauncher.cs" />
     <Compile Include="..\..\_Common\WindowsApi.cs" Link="_Common\WindowsApi.cs" />
   </ItemGroup>
 

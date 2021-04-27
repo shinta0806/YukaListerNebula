@@ -215,6 +215,99 @@ namespace YukaLister.ViewModels
 		}
 		#endregion
 
+		#region 環境設定ボタンの制御
+		private ViewModelCommand? _buttonYukaListerSettingsClickedCommand;
+
+		public ViewModelCommand ButtonYukaListerSettingsClickedCommand
+		{
+			get
+			{
+				if (_buttonYukaListerSettingsClickedCommand == null)
+				{
+					_buttonYukaListerSettingsClickedCommand = new ViewModelCommand(ButtonYukaListerSettingsClicked);
+				}
+				return _buttonYukaListerSettingsClickedCommand;
+			}
+		}
+
+		public void ButtonYukaListerSettingsClicked()
+		{
+			try
+			{
+				String yukariConfigPathBak = YukaListerModel.Instance.EnvModel.YlSettings.YukariConfigPath();
+				Boolean provideYukariPreviewBak = YukaListerModel.Instance.EnvModel.YlSettings.ProvideYukariPreview;
+				Boolean syncMusicInfoDbBak = YukaListerModel.Instance.EnvModel.YlSettings.SyncMusicInfoDb;
+				String? syncServerBak = YukaListerModel.Instance.EnvModel.YlSettings.SyncServer;
+				String? syncAccountBak = YukaListerModel.Instance.EnvModel.YlSettings.SyncAccount;
+				String? syncPasswordBak = YukaListerModel.Instance.EnvModel.YlSettings.SyncPassword;
+				DateTime musicInfoDbTimeBak = MusicInfoContext.LastWriteTime();
+				Boolean regetSyncDataNeeded;
+
+				// ViewModel 経由でウィンドウを開く
+				using YlSettingsWindowViewModel ylSettingsWindowViewModel = new();
+				//aYukaListerSettingsWindowViewModel.YukariListDbInMemory = YukariDb.YukariListDbInMemory;
+				Messenger.Raise(new TransitionMessage(ylSettingsWindowViewModel, YlConstants.MESSAGE_KEY_OPEN_YL_SETTINGS_WINDOW));
+
+#if false
+				if (aYukaListerSettingsWindowViewModel.IsOk)
+				{
+					mMainWindowViewModel.SetStatusBarMessageWithInvoke(TraceEventType.Information, "環境設定を変更しました。");
+				}
+				regetSyncDataNeeded = aYukaListerSettingsWindowViewModel.RegetSyncDataNeeded;
+
+				// ゆかり設定ファイルのフルパスが変更された場合は処理を行う
+				if (Environment.YukaListerSettings.YukariConfigPath() != yukariConfigPathBak)
+				{
+					Environment.YukaListerSettings.AnalyzeYukariEasyAuthConfig(Environment);
+					SetFileSystemWatcherYukariConfig();
+					YukariDb.YukariConfigPathChanged();
+				}
+
+				// サーバー設定が変更された場合は起動・終了を行う
+				if (Environment.YukaListerSettings.ProvideYukariPreview != provideYukariPreviewBak)
+				{
+					if (Environment.YukaListerSettings.ProvideYukariPreview)
+					{
+						RunPreviewServerIfNeeded();
+					}
+					else
+					{
+						StopPreviewServerIfNeeded();
+					}
+				}
+
+				if (regetSyncDataNeeded)
+				{
+					// 再取得が指示された場合は再取得
+					YukariDb.RunSyncClientIfNeeded(true);
+				}
+				else
+				{
+					// 同期設定が変更された場合・インポートで楽曲情報データベースが更新された場合は同期を行う
+					DateTime aMusicInfoDbTime;
+					using (MusicInfoDatabaseInDisk aMusicInfoDbInDisk = new MusicInfoDatabaseInDisk(Environment))
+					{
+						aMusicInfoDbTime = aMusicInfoDbInDisk.LastWriteTime();
+					}
+					if (Environment.YukaListerSettings.SyncMusicInfoDb != syncMusicInfoDbBak
+							|| Environment.YukaListerSettings.SyncServer != syncServerBak
+							|| Environment.YukaListerSettings.SyncAccount != syncAccountBak
+							|| Environment.YukaListerSettings.SyncPassword != syncPasswordBak
+							|| aMusicInfoDbTime != musicInfoDbTimeBak)
+					{
+						YukariDb.RunSyncClientIfNeeded();
+					}
+				}
+#endif
+			}
+			catch (Exception excep)
+			{
+				YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(TraceEventType.Error, "環境設定ボタンクリック時エラー：\n" + excep.Message);
+				YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, "　スタックトレース：\n" + excep.StackTrace);
+			}
+		}
+		#endregion
+
 		#region DataGrid ダブルクリックの制御
 
 		private ViewModelCommand? _dataGridDoubleClickedCommand;

@@ -13,7 +13,7 @@ using Microsoft.EntityFrameworkCore;
 using Shinta;
 
 using System;
-
+using System.IO;
 using YukaLister.Models.Database;
 using YukaLister.Models.Database.Aliases;
 using YukaLister.Models.Database.Masters;
@@ -527,6 +527,14 @@ namespace YukaLister.Models.DatabaseContexts
 				throw new Exception("タグ紐付テーブルにアクセスできません。");
 			}
 			tagSequences = musicInfoContext.TagSequences;
+		}
+
+		// --------------------------------------------------------------------
+		// ファイルの最終更新日時 UTC
+		// --------------------------------------------------------------------
+		public static DateTime LastWriteTime()
+		{
+			return new FileInfo(DatabasePath()).LastWriteTimeUtc;
 		}
 
 		// ====================================================================

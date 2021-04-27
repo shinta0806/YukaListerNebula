@@ -38,6 +38,12 @@ namespace YukaLister.Models.SerializableSettings
 		// リムーバブルメディア接続時、前回のフォルダーを自動的に追加する
 		public Boolean AddFolderOnDeviceArrived { get; set; } = true;
 
+		// ゆかりでのプレビューを可能にするか
+		public Boolean ProvideYukariPreview { get; set; } = true;
+
+		// ゆかり用のサーバーポート
+		public Int32 WebServerPort { get; set; } = DEFAULT_WEB_SERVER_PORT;
+
 		// ID の接頭辞
 		public String? IdPrefix { get; set; }
 
@@ -46,11 +52,36 @@ namespace YukaLister.Models.SerializableSettings
 		// --------------------------------------------------------------------
 
 		// リスト化対象ファイルの拡張子
-		public List<String> TargetExts = new();
+		public List<String> TargetExts { get; set; } = new();
+
+		// --------------------------------------------------------------------
+		// リスト出力
+		// --------------------------------------------------------------------
+
+		// リスト出力前に確認
+		public Boolean ConfirmOutputYukariList { get; set; }
+
+		// リスト出力先フォルダー
+		public String? ListOutputFolder { get; set; }
 
 		// --------------------------------------------------------------------
 		// メンテナンス
 		// --------------------------------------------------------------------
+
+		// 新着情報を確認するかどうか
+		public Boolean CheckRss { get; set; } = true;
+
+		// 楽曲情報データベースを同期するかどうか
+		public Boolean SyncMusicInfoDb { get; set; }
+
+		// 楽曲情報データベース同期サーバーアドレス
+		public String? SyncServer { get; set; } = "http://";
+
+		// 楽曲情報データベース同期サーバーアカウント名
+		public String? SyncAccount { get; set; }
+
+		// 楽曲情報データベース同期サーバーパスワード
+		public String? SyncPassword { get; set; }
 
 		// --------------------------------------------------------------------
 		// 終了時の状態（ゆかりすたー専用）
@@ -171,5 +202,12 @@ namespace YukaLister.Models.SerializableSettings
 		{
 			return Common.UserAppDataFolderPath() + nameof(YlSettings) + Common.FILE_EXT_CONFIG;
 		}
+
+		// ====================================================================
+		// protected メンバー関数
+		// ====================================================================
+
+		// ゆかり用のサーバーポート
+		private const Int32 DEFAULT_WEB_SERVER_PORT = 13582;
 	}
 }
