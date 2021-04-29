@@ -20,6 +20,7 @@ using YukaLister.Models.Database.Aliases;
 using YukaLister.Models.Database.Masters;
 using YukaLister.Models.Database.Sequences;
 using YukaLister.Models.DatabaseAssist;
+using YukaLister.Models.SharedMisc;
 using YukaLister.Models.YukaListerModels;
 
 namespace YukaLister.Models.DatabaseContexts
@@ -265,6 +266,7 @@ namespace YukaLister.Models.DatabaseContexts
 
 			// 新規作成
 			musicInfoContext.Database.EnsureCreated();
+			InsertCategoryDefaultRecords(musicInfoContext);
 			DbCommon.UpdateProperty(musicInfoContext, properties);
 
 			YukaListerModel.Instance.EnvModel.LogWriter.LogMessage(Common.TRACE_EVENT_TYPE_STATUS, "楽曲情報データベースを初期化しました。");
@@ -615,11 +617,67 @@ namespace YukaLister.Models.DatabaseContexts
 		// ====================================================================
 
 		// --------------------------------------------------------------------
+		// カテゴリーテーブルのレコードを作成
+		// --------------------------------------------------------------------
+		private static TCategory CreateCategoryRecord(Int32 idNumber, String name, String? ruby = null)
+		{
+			String? normalizedName = YlCommon.NormalizeDbString(name);
+			String? normalizedRubyForMusicInfo = YlCommon.NormalizeDbRubyForMusicInfo(ruby);
+			if (String.IsNullOrEmpty(normalizedRubyForMusicInfo))
+			{
+				normalizedRubyForMusicInfo = normalizedName;
+			}
+			String? normalizedRubyForSearch = YlCommon.NormalizeDbRubyForSearch(normalizedRubyForMusicInfo);
+
+			return new TCategory()
+			{
+				// IRcBase
+				Id = YlConstants.MUSIC_INFO_SYSTEM_ID_PREFIX + YlConstants.MUSIC_INFO_ID_SECOND_PREFIXES[(Int32)MusicInfoTables.TCategory] + idNumber.ToString("D3"),
+				Import = false,
+				Invalid = false,
+				UpdateTime = YlConstants.INVALID_MJD,
+				Dirty = true,
+
+				// IRcMaster
+				Name = normalizedName,
+				Ruby = normalizedRubyForMusicInfo,
+				RubyForSearch = normalizedRubyForSearch,
+				Keyword = null,
+				KeywordRubyForSearch = null,
+			};
+		}
+
+		// --------------------------------------------------------------------
 		// データベースのフルパス
 		// --------------------------------------------------------------------
 		private static String DatabasePath()
 		{
 			return DbCommon.YukaListerDatabaseFullFolder() + FILE_NAME_MUSIC_INFO_DATABASE;
+		}
+
+		// --------------------------------------------------------------------
+		// カテゴリーマスターテーブルの既定レコードを挿入
+		// ニコニコ動画のカテゴリータグおよび anison.info のカテゴリーから主要な物を抽出
+		// --------------------------------------------------------------------
+		private static void InsertCategoryDefaultRecords(MusicInfoContext musicInfoContext)
+		{
+			MusicInfoContext.GetDbSet(musicInfoContext, out DbSet<TCategory> categories);
+
+			// 主にタイアップ用
+			categories.Add(CreateCategoryRecord(1, "アニメ"));
+			categories.Add(CreateCategoryRecord(2, "イベント/舞台/公演", "イベントブタイコウエン"));
+			categories.Add(CreateCategoryRecord(3, "ゲーム"));
+			categories.Add(CreateCategoryRecord(4, "時代劇", "ジダイゲキ"));
+			categories.Add(CreateCategoryRecord(5, "特撮", "トクサツ"));
+			categories.Add(CreateCategoryRecord(6, "ドラマ"));
+			categories.Add(CreateCategoryRecord(7, "ラジオ"));
+
+			// 主にタイアップの無い楽曲用
+			categories.Add(CreateCategoryRecord(101, "VOCALOID", "ボーカロイド"));
+			// 102 は欠番（旧：歌ってみた）
+			categories.Add(CreateCategoryRecord(103, "一般", "イッパン"));
+
+			musicInfoContext.SaveChanges();
 		}
 	}
 }

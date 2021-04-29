@@ -839,7 +839,7 @@ namespace YukaLister.Models.SharedMisc
 		// --------------------------------------------------------------------
 		public static String TempFolderPath()
 		{
-			String path = Path.GetTempPath() + Path.GetDirectoryName(Common.UserAppDataFolderPath()) + "\\" + Process.GetCurrentProcess().Id.ToString() + "\\";
+			String path = Path.GetTempPath() + Path.GetFileNameWithoutExtension(Environment.GetCommandLineArgs()[0]) + "\\" + Process.GetCurrentProcess().Id.ToString() + "\\";
 			if (!Directory.Exists(path))
 			{
 				try

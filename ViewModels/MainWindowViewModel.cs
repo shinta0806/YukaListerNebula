@@ -495,6 +495,9 @@ namespace YukaLister.ViewModels
 				YukaListerModel.Instance.EnvModel.Syclin.MainWindowViewModel = this;
 
 				// 動作状況
+#if DEBUGz
+				SetStatusBarMessageWithInvoke(TraceEventType.Verbose, "動作状況確認開始");
+#endif
 				YukaListerModel.Instance.EnvModel.YukaListerPartsStatus[(Int32)YukaListerPartsStatusIndex.Startup] = YukaListerStatus.Running;
 				YukaListerModel.Instance.EnvModel.YukaListerPartsStatusMessage[(Int32)YukaListerPartsStatusIndex.Startup] = "前回のゆかり検索対象フォルダーを確認中...";
 				UpdateYukaListerEnvironmentStatus();
@@ -509,9 +512,15 @@ namespace YukaLister.ViewModels
 				_timerUpdateUi.Start();
 
 				// 時間がかかるかもしれない処理を非同期で実行
+#if DEBUGz
+				SetStatusBarMessageWithInvoke(TraceEventType.Verbose, "AutoTargetAllDrivesAsync() 呼び出し");
+#endif
 				await AutoTargetAllDrivesAsync();
 
 				// サーバー同期
+#if DEBUGz
+				SetStatusBarMessageWithInvoke(TraceEventType.Verbose, "ActivateSyclinIfNeeded() 呼び出し");
+#endif
 				YlCommon.ActivateSyclinIfNeeded();
 #if DEBUGz
 				using MusicInfoContext musicInfoContext = MusicInfoContext.CreateContext(out DbSet<TSong> songs);

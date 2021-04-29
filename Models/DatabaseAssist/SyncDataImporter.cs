@@ -42,7 +42,7 @@ namespace YukaLister.Models.DatabaseAssist
 		{
 			// 初期化
 			_mainWindowViewModel = mainWindowViewModel;
-			Debug.Assert(extractFolder[^0] == '\\', "SyncDataImporter() bad extractFolder");
+			Debug.Assert(extractFolder[^1] == '\\', "SyncDataImporter() bad extractFolder");
 			_extractFolder = extractFolder;
 
 			// 情報解析

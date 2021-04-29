@@ -81,7 +81,7 @@
         </DockPanel>
         <StatusBar DockPanel.Dock="Bottom">
             <StatusBarItem>
-                <Label Content="{Binding StatusBarMessage}" Foreground="{Binding StatusBarColor}" Padding="0" VerticalContentAlignment="Center" />
+                <Label Content="{Binding StatusBarMessage}" Foreground="{Binding StatusBarForeground}" Padding="0" VerticalContentAlignment="Center" />
             </StatusBarItem>
         </StatusBar>
         <DockPanel DockPanel.Dock="Bottom" Margin="20,0,20,20" LastChildFill="False">

@@ -1066,10 +1066,10 @@ class	CPManager
 	// -------------------------------------------------------------------
 	private function download_post_error()
 	{
-		$error = '0';
+		$error = '0'.SYSTEM_APP_GENERATION;
 		
 		if ( !$this->is_logged_in() ) {
-			$error = '1ログインしていません。';
+			$error = '1ログインエラー。';
 		} else if ( isset($_SESSION[SESSION_INFO_POST_ERROR_EXISTS]) 
 				&& $_SESSION[SESSION_INFO_POST_ERROR_EXISTS] ) {
 			$error = '1'.$_SESSION[SESSION_INFO_POST_ERROR_MESSAGE];
@@ -1610,6 +1610,12 @@ class	CPManager
 		$_SESSION[SESSION_INFO_ACCOUNT_LOGIN_TIME] = $row[FIELD_NAME_ACCOUNT_LOGIN_TIME];
 		$_SESSION[SESSION_INFO_POST_ERROR_EXISTS] = FALSE;
 		
+		// ログイン時刻はログインテーブルから取得する
+		$last_login = $this->select_last_login($row[FIELD_NAME_ACCOUNT_NAME]);
+		if ( $last_login !== FALSE) {
+			$_SESSION[SESSION_INFO_ACCOUNT_LOGIN_TIME] = $last_login[FIELD_NAME_LOGIN_TIME];
+		}
+
 		log_message('ログイン完了'.$this->user_info(), LOG_LEVEL_NOTICE, FALSE);
 	}
 
@@ -1826,6 +1832,27 @@ class	CPManager
 			return FALSE;
 		}
 		
+		return $row;
+	}
+
+	// -------------------------------------------------------------------
+	// 前回ログインに成功した時の情報を返す
+	// -------------------------------------------------------------------
+	private function select_last_login($name)
+	{
+		$pdo = $this->connect_db();
+		$sql = 'SELECT * FROM '.TABLE_NAME_LOGIN
+				.' WHERE '.FIELD_NAME_LOGIN_NAME.' = :name'
+				.' AND '.FIELD_NAME_LOGIN_SUCCESS.' = 1'
+				.' ORDER BY '.FIELD_NAME_LOGIN_TIME.' DESC';
+		$stmt = $pdo->prepare($sql);
+		$stmt->bindValue(':name', $name, PDO::PARAM_STR);
+		$stmt->execute();
+		$row = $stmt->fetch(PDO::FETCH_ASSOC);
+		$stmt->closeCursor();
+		if ( $row === FALSE ) {
+			return FALSE;
+		}
 		return $row;
 	}
 

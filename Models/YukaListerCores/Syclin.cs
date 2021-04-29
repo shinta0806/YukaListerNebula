@@ -74,6 +74,10 @@ namespace YukaLister.Models.YukaListerCores
 					YukaListerModel.Instance.EnvModel.AppCancellationTokenSource.Token.ThrowIfCancellationRequested();
 
 					// ログイン
+					MainWindowViewModel?.SetStatusBarMessageWithInvoke(Common.TRACE_EVENT_TYPE_STATUS, "同期準備中...");
+#if DEBUGz
+					MainWindowViewModel?.SetStatusBarMessageWithInvoke(TraceEventType.Error, "err test");
+#endif
 					LoginToSyncServer();
 
 					// データベースをバックアップ
@@ -225,6 +229,7 @@ namespace YukaLister.Models.YukaListerCores
 
 			// ダウンロード開始時刻の記録
 			DateTime taskBeginDateTime = DateTime.UtcNow;
+			_logWriterSyncDetail.LogMessage(Common.TRACE_EVENT_TYPE_STATUS, "ダウンロード開始");
 
 			if (YukaListerModel.Instance.EnvModel.YlSettings.LastSyncDownloadDate < YlConstants.INVALID_MJD)
 			{
@@ -274,6 +279,7 @@ namespace YukaLister.Models.YukaListerCores
 			}
 
 			YukaListerModel.Instance.EnvModel.YlSettings.LastSyncDownloadDate = JulianDay.DateTimeToModifiedJulianDate(taskBeginDateTime.Date);
+			_logWriterSyncDetail.LogMessage(Common.TRACE_EVENT_TYPE_STATUS, "ダウンロード完了");
 			return (numTotalDownloads, numTotalImports);
 		}
 
@@ -324,9 +330,9 @@ namespace YukaLister.Models.YukaListerCores
 			Post(postParams);
 
 			// ログイン結果確認
-			if (SyncPostErrorExists(out _))
+			if (SyncPostErrorExists(out String? errMessage))
 			{
-				throw new Exception("楽曲情報データベース同期サーバーにログインできませんでした。");
+				throw new Exception("楽曲情報データベース同期サーバーにログインできませんでした。" + errMessage);
 			}
 
 			MainWindowViewModel?.SetStatusBarMessageWithInvoke(Common.TRACE_EVENT_TYPE_STATUS, "楽曲情報データベース同期サーバーにログインしました。同期処理中です...");
@@ -375,6 +381,11 @@ namespace YukaLister.Models.YukaListerCores
 				}
 				if (status[0] == '0')
 				{
+					if (!status.Contains(YlConstants.APP_GENERATION))
+					{
+						errMessage = "サーバーの互換性がありません。";
+						return true;
+					}
 					errMessage = null;
 					return false;
 				}
@@ -403,6 +414,7 @@ namespace YukaLister.Models.YukaListerCores
 		private Int32 UploadSyncData()
 		{
 			Debug.Assert(MainWindowViewModel != null, "UploadSyncData() no main window");
+			_logWriterSyncDetail.LogMessage(Common.TRACE_EVENT_TYPE_STATUS, "アップロード開始");
 			using SyncDataExporter syncDataExporter = new();
 			Int32 numTotalUploads = 0;
 
@@ -456,6 +468,7 @@ namespace YukaLister.Models.YukaListerCores
 				}
 			}
 			DownloadRejectDate();
+			_logWriterSyncDetail.LogMessage(Common.TRACE_EVENT_TYPE_STATUS, "アップロード完了");
 			return numTotalUploads;
 		}
 	}
