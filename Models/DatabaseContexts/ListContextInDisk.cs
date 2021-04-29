@@ -12,10 +12,8 @@ using Microsoft.EntityFrameworkCore;
 
 using Shinta;
 
-using System;
-using System.Diagnostics;
-
 using YukaLister.Models.Database;
+using YukaLister.Models.DatabaseAssist;
 using YukaLister.Models.YukaListerModels;
 
 namespace YukaLister.Models.DatabaseContexts

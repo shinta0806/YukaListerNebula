@@ -27,6 +27,7 @@ using System.Windows;
 using System.Windows.Controls;
 using YukaLister.Models.Database;
 using YukaLister.Models.Database.Masters;
+using YukaLister.Models.DatabaseAssist;
 using YukaLister.Models.DatabaseContexts;
 using YukaLister.Models.YukaListerModels;
 using YukaLister.ViewModels;
@@ -39,6 +40,14 @@ namespace YukaLister.Models.SharedMisc
 		// ====================================================================
 		// public static メンバー関数
 		// ====================================================================
+
+		public static void ActivateSyclinIfNeeded()
+		{
+			if (YukaListerModel.Instance.EnvModel.YlSettings.SyncMusicInfoDb)
+			{
+				YukaListerModel.Instance.EnvModel.Syclin.MainEvent.Set();
+			}
+		}
 
 		// --------------------------------------------------------------------
 		// コンテキストメニューにアイテムを追加
@@ -714,6 +723,19 @@ namespace YukaLister.Models.SharedMisc
 		}
 
 		// --------------------------------------------------------------------
+		// 同期詳細ログの設定
+		// --------------------------------------------------------------------
+		public static void SetLogWriterSyncDetail(LogWriter logWriterSyncDetail)
+		{
+			// 同期詳細ログ初期化
+			// 大量のログが発生するため、世代・サイズともに拡大
+			logWriterSyncDetail.ApplicationQuitToken = YukaListerModel.Instance.EnvModel.AppCancellationTokenSource.Token;
+			logWriterSyncDetail.SimpleTraceListener.MaxSize = 5 * 1024 * 1024;
+			logWriterSyncDetail.SimpleTraceListener.MaxOldGenerations = 5;
+			logWriterSyncDetail.SimpleTraceListener.LogFileName = Path.GetDirectoryName(logWriterSyncDetail.SimpleTraceListener.LogFileName) + "\\" + FILE_NAME_SYNC_DETAIL_LOG;
+		}
+
+		// --------------------------------------------------------------------
 		// カンマ区切り ID をリストに分割
 		// 引数が空の場合は null ではなく空リストを返す
 		// --------------------------------------------------------------------
@@ -812,6 +834,36 @@ namespace YukaLister.Models.SharedMisc
 		}
 
 		// --------------------------------------------------------------------
+		// テンポラリフォルダーのパス（末尾 '\\'）
+		// 存在しない場合は作成する
+		// --------------------------------------------------------------------
+		public static String TempFolderPath()
+		{
+			String path = Path.GetTempPath() + Path.GetDirectoryName(Common.UserAppDataFolderPath()) + "\\" + Process.GetCurrentProcess().Id.ToString() + "\\";
+			if (!Directory.Exists(path))
+			{
+				try
+				{
+					Directory.CreateDirectory(path);
+				}
+				catch
+				{
+				}
+			}
+			return path;
+		}
+
+		// --------------------------------------------------------------------
+		// テンポラリフォルダー配下のファイル・フォルダー名として使えるパス（呼びだす度に異なるファイル、拡張子なし）
+		// --------------------------------------------------------------------
+		public static String TempPath()
+		{
+			// マルチスレッドでも安全にインクリメント
+			Int32 counter = Interlocked.Increment(ref _tempPathCounter);
+			return TempFolderPath() + counter.ToString() + "_" + Thread.CurrentThread.ManagedThreadId.ToString();
+		}
+
+		// --------------------------------------------------------------------
 		// 現在時刻（UTC）の修正ユリウス日
 		// --------------------------------------------------------------------
 		public static Double UtcNowModifiedJulianDate()
@@ -877,6 +929,16 @@ namespace YukaLister.Models.SharedMisc
 		// 頭文字変換用
 		private const String HEAD_CONVERT_FROM = "ぁぃぅぇぉゕゖゃゅょゎゔがぎぐげござじずぜぞだぢづでどばびぶべぼぱぴぷぺぽゐゑ";
 		private const String HEAD_CONVERT_TO = "あいうえおかけやゆよわうかきくけこさしすせそたちつてとはひふへほはひふへほいえ";
+
+		// 同期詳細ログ
+		private const String FILE_NAME_SYNC_DETAIL_LOG = YlConstants.APP_ID + YlConstants.SYNC_DETAIL_ID + Common.FILE_EXT_LOG;
+
+		// ====================================================================
+		// private static メンバー変数
+		// ====================================================================
+
+		// TempPath() 用カウンター（同じスレッドでもファイル名が分かれるようにするため）
+		private static Int32 _tempPathCounter = 0;
 
 		// ====================================================================
 		// private static メンバー関数

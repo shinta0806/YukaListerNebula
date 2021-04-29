@@ -12,6 +12,9 @@ using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
+using YukaLister.Models.DatabaseAssist;
+using YukaLister.Models.SharedMisc;
+
 namespace YukaLister.Models.Database.Masters
 {
 	[Table(TABLE_NAME_SONG)]
@@ -110,19 +113,20 @@ namespace YukaLister.Models.Database.Masters
 		// ====================================================================
 
 		public const String TABLE_NAME_SONG = "t_song";
-		public const String FIELD_NAME_SONG_ID = "song_id";
-		public const String FIELD_NAME_SONG_IMPORT = "song_import";
-		public const String FIELD_NAME_SONG_INVALID = "song_invalid";
-		public const String FIELD_NAME_SONG_UPDATE_TIME = "song_update_time";
-		public const String FIELD_NAME_SONG_DIRTY = "song_dirty";
-		public const String FIELD_NAME_SONG_NAME = "song_name";
-		public const String FIELD_NAME_SONG_RUBY = "song_ruby";
-		public const String FIELD_NAME_SONG_RUBY_FOR_SEARCH = "song_ruby_for_search";
-		public const String FIELD_NAME_SONG_KEYWORD = "song_keyword";
-		public const String FIELD_NAME_SONG_KEYWORD_RUBY_FOR_SEARCH = "song_keyword_ruby_for_search";
-		public const String FIELD_NAME_SONG_RELEASE_DATE = "song_release_date";
-		public const String FIELD_NAME_SONG_TIE_UP_ID = "song_tie_up_id";
-		public const String FIELD_NAME_SONG_CATEGORY_ID = "song_category_id";
-		public const String FIELD_NAME_SONG_OP_ED = "song_op_ed";
+		public const String FIELD_PREFIX_SONG = "song_";
+		public const String FIELD_NAME_SONG_ID = FIELD_PREFIX_SONG + YlConstants.FIELD_SUFFIX_ID;
+		public const String FIELD_NAME_SONG_IMPORT = FIELD_PREFIX_SONG + YlConstants.FIELD_SUFFIX_IMPORT;
+		public const String FIELD_NAME_SONG_INVALID = FIELD_PREFIX_SONG + YlConstants.FIELD_SUFFIX_INVALID;
+		public const String FIELD_NAME_SONG_UPDATE_TIME = FIELD_PREFIX_SONG + YlConstants.FIELD_SUFFIX_UPDATE_TIME;
+		public const String FIELD_NAME_SONG_DIRTY = FIELD_PREFIX_SONG + YlConstants.FIELD_SUFFIX_DIRTY;
+		public const String FIELD_NAME_SONG_NAME = FIELD_PREFIX_SONG + YlConstants.FIELD_SUFFIX_NAME;
+		public const String FIELD_NAME_SONG_RUBY = FIELD_PREFIX_SONG + YlConstants.FIELD_SUFFIX_RUBY;
+		public const String FIELD_NAME_SONG_RUBY_FOR_SEARCH = FIELD_PREFIX_SONG + YlConstants.FIELD_SUFFIX_RUBY_FOR_SEARCH;
+		public const String FIELD_NAME_SONG_KEYWORD = FIELD_PREFIX_SONG + YlConstants.FIELD_SUFFIX_KEYWORD;
+		public const String FIELD_NAME_SONG_KEYWORD_RUBY_FOR_SEARCH = FIELD_PREFIX_SONG + YlConstants.FIELD_SUFFIX_KEYWORD_RUBY_FOR_SEARCH;
+		public const String FIELD_NAME_SONG_CATEGORY_ID = FIELD_PREFIX_SONG + YlConstants.FIELD_SUFFIX_CATEGORY_ID;
+		public const String FIELD_NAME_SONG_RELEASE_DATE = FIELD_PREFIX_SONG + YlConstants.FIELD_SUFFIX_RELEASE_DATE;
+		public const String FIELD_NAME_SONG_TIE_UP_ID = FIELD_PREFIX_SONG + YlConstants.FIELD_SUFFIX_TIE_UP_ID;
+		public const String FIELD_NAME_SONG_OP_ED = FIELD_PREFIX_SONG + YlConstants.FIELD_SUFFIX_OP_ED;
 	}
 }

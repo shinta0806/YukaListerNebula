@@ -12,6 +12,8 @@ using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
+using YukaLister.Models.SharedMisc;
+
 namespace YukaLister.Models.Database.Aliases
 {
 	[Table(TABLE_NAME_PERSON_ALIAS)]
@@ -63,12 +65,13 @@ namespace YukaLister.Models.Database.Aliases
 		// ====================================================================
 
 		public const String TABLE_NAME_PERSON_ALIAS = "t_person_alias";
-		public const String FIELD_NAME_PERSON_ALIAS_ID = "person_alias_id";
-		public const String FIELD_NAME_PERSON_ALIAS_IMPORT = "person_alias_import";
-		public const String FIELD_NAME_PERSON_ALIAS_INVALID = "person_alias_invalid";
-		public const String FIELD_NAME_PERSON_ALIAS_UPDATE_TIME = "person_alias_update_time";
-		public const String FIELD_NAME_PERSON_ALIAS_DIRTY = "person_alias_dirty";
-		public const String FIELD_NAME_PERSON_ALIAS_ALIAS = "person_alias_alias";
-		public const String FIELD_NAME_PERSON_ALIAS_ORIGINAL_ID = "person_alias_original_id";
+		public const String FIELD_PREFIX_PERSON_ALIAS = "person_alias_";
+		public const String FIELD_NAME_PERSON_ALIAS_ID = FIELD_PREFIX_PERSON_ALIAS + YlConstants.FIELD_SUFFIX_ID;
+		public const String FIELD_NAME_PERSON_ALIAS_IMPORT = FIELD_PREFIX_PERSON_ALIAS + YlConstants.FIELD_SUFFIX_IMPORT;
+		public const String FIELD_NAME_PERSON_ALIAS_INVALID = FIELD_PREFIX_PERSON_ALIAS + YlConstants.FIELD_SUFFIX_INVALID;
+		public const String FIELD_NAME_PERSON_ALIAS_UPDATE_TIME = FIELD_PREFIX_PERSON_ALIAS + YlConstants.FIELD_SUFFIX_UPDATE_TIME;
+		public const String FIELD_NAME_PERSON_ALIAS_DIRTY = FIELD_PREFIX_PERSON_ALIAS + YlConstants.FIELD_SUFFIX_DIRTY;
+		public const String FIELD_NAME_PERSON_ALIAS_ALIAS = FIELD_PREFIX_PERSON_ALIAS + YlConstants.FIELD_SUFFIX_ALIAS;
+		public const String FIELD_NAME_PERSON_ALIAS_ORIGINAL_ID = FIELD_PREFIX_PERSON_ALIAS + YlConstants.FIELD_SUFFIX_ORIGINAL_ID;
 	}
 }

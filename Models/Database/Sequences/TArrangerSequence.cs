@@ -11,6 +11,8 @@
 using System;
 using System.ComponentModel.DataAnnotations.Schema;
 
+using YukaLister.Models.SharedMisc;
+
 namespace YukaLister.Models.Database.Sequences
 {
 	[Table(TABLE_NAME_ARRANGER_SEQUENCE)]
@@ -61,12 +63,13 @@ namespace YukaLister.Models.Database.Sequences
 		// ====================================================================
 
 		public const String TABLE_NAME_ARRANGER_SEQUENCE = "t_arranger_sequence";
-		public const String FIELD_NAME_ARRANGER_SEQUENCE_ID = "arranger_sequence_id";
-		public const String FIELD_NAME_ARRANGER_SEQUENCE_SEQUENCE = "arranger_sequence_sequence";
-		public const String FIELD_NAME_ARRANGER_SEQUENCE_LINK_ID = "arranger_sequence_link_id";
-		public const String FIELD_NAME_ARRANGER_SEQUENCE_IMPORT = "arranger_sequence_import";
-		public const String FIELD_NAME_ARRANGER_SEQUENCE_INVALID = "arranger_sequence_invalid";
-		public const String FIELD_NAME_ARRANGER_SEQUENCE_UPDATE_TIME = "arranger_sequence_update_time";
-		public const String FIELD_NAME_ARRANGER_SEQUENCE_DIRTY = "arranger_sequence_dirty";
+		public const String FIELD_PREFIX_ARRANGER_SEQUENCE = "arranger_sequence_";
+		public const String FIELD_NAME_ARRANGER_SEQUENCE_ID = FIELD_PREFIX_ARRANGER_SEQUENCE + YlConstants.FIELD_SUFFIX_ID;
+		public const String FIELD_NAME_ARRANGER_SEQUENCE_IMPORT = FIELD_PREFIX_ARRANGER_SEQUENCE + YlConstants.FIELD_SUFFIX_IMPORT;
+		public const String FIELD_NAME_ARRANGER_SEQUENCE_INVALID = FIELD_PREFIX_ARRANGER_SEQUENCE + YlConstants.FIELD_SUFFIX_INVALID;
+		public const String FIELD_NAME_ARRANGER_SEQUENCE_UPDATE_TIME = FIELD_PREFIX_ARRANGER_SEQUENCE + YlConstants.FIELD_SUFFIX_UPDATE_TIME;
+		public const String FIELD_NAME_ARRANGER_SEQUENCE_DIRTY = FIELD_PREFIX_ARRANGER_SEQUENCE + YlConstants.FIELD_SUFFIX_DIRTY;
+		public const String FIELD_NAME_ARRANGER_SEQUENCE_SEQUENCE = FIELD_PREFIX_ARRANGER_SEQUENCE + YlConstants.FIELD_SUFFIX_SEQUENCE;
+		public const String FIELD_NAME_ARRANGER_SEQUENCE_LINK_ID = FIELD_PREFIX_ARRANGER_SEQUENCE + YlConstants.FIELD_SUFFIX_LINK_ID;
 	}
 }

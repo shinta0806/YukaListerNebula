@@ -12,6 +12,9 @@ using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
+using YukaLister.Models.DatabaseAssist;
+using YukaLister.Models.SharedMisc;
+
 namespace YukaLister.Models.Database.Masters
 {
 	[Table(TABLE_NAME_PERSON)]
@@ -86,15 +89,16 @@ namespace YukaLister.Models.Database.Masters
 		// ====================================================================
 
 		public const String TABLE_NAME_PERSON = "t_person";
-		public const String FIELD_NAME_PERSON_ID = "person_id";
-		public const String FIELD_NAME_PERSON_IMPORT = "person_import";
-		public const String FIELD_NAME_PERSON_INVALID = "person_invalid";
-		public const String FIELD_NAME_PERSON_UPDATE_TIME = "person_update_time";
-		public const String FIELD_NAME_PERSON_DIRTY = "person_dirty";
-		public const String FIELD_NAME_PERSON_NAME = "person_name";
-		public const String FIELD_NAME_PERSON_RUBY = "person_ruby";
-		public const String FIELD_NAME_PERSON_RUBY_FOR_SEARCH = "person_ruby_for_search";
-		public const String FIELD_NAME_PERSON_KEYWORD = "person_keyword";
-		public const String FIELD_NAME_PERSON_KEYWORD_RUBY_FOR_SEARCH = "person_keyword_ruby_for_search";
+		public const String FIELD_PREFIX_PERSON = "person_";
+		public const String FIELD_NAME_PERSON_ID = FIELD_PREFIX_PERSON + YlConstants.FIELD_SUFFIX_ID;
+		public const String FIELD_NAME_PERSON_IMPORT = FIELD_PREFIX_PERSON + YlConstants.FIELD_SUFFIX_IMPORT;
+		public const String FIELD_NAME_PERSON_INVALID = FIELD_PREFIX_PERSON + YlConstants.FIELD_SUFFIX_INVALID;
+		public const String FIELD_NAME_PERSON_UPDATE_TIME = FIELD_PREFIX_PERSON + YlConstants.FIELD_SUFFIX_UPDATE_TIME;
+		public const String FIELD_NAME_PERSON_DIRTY = FIELD_PREFIX_PERSON + YlConstants.FIELD_SUFFIX_DIRTY;
+		public const String FIELD_NAME_PERSON_NAME = FIELD_PREFIX_PERSON + YlConstants.FIELD_SUFFIX_NAME;
+		public const String FIELD_NAME_PERSON_RUBY = FIELD_PREFIX_PERSON + YlConstants.FIELD_SUFFIX_RUBY;
+		public const String FIELD_NAME_PERSON_RUBY_FOR_SEARCH = FIELD_PREFIX_PERSON + YlConstants.FIELD_SUFFIX_RUBY_FOR_SEARCH;
+		public const String FIELD_NAME_PERSON_KEYWORD = FIELD_PREFIX_PERSON + YlConstants.FIELD_SUFFIX_KEYWORD;
+		public const String FIELD_NAME_PERSON_KEYWORD_RUBY_FOR_SEARCH = FIELD_PREFIX_PERSON + YlConstants.FIELD_SUFFIX_KEYWORD_RUBY_FOR_SEARCH;
 	}
 }

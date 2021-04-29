@@ -8,6 +8,7 @@
 // ToDo: データベースのインデックスは見直す
 // ----------------------------------------------------------------------------
 
+using Livet;
 using Livet.Commands;
 using Livet.Messaging;
 using Livet.Messaging.IO;
@@ -198,11 +199,11 @@ namespace YukaLister.ViewModels
 				switch (deviceChangeInfo.Kind)
 				{
 					case DBT.DBT_DEVICEARRIVAL:
-						SetStatusBarMessage(Common.TRACE_EVENT_TYPE_STATUS, "リムーバブルドライブが接続されました：" + deviceChangeInfo.DriveLetter);
+						SetStatusBarMessageWithInvoke(Common.TRACE_EVENT_TYPE_STATUS, "リムーバブルドライブが接続されました：" + deviceChangeInfo.DriveLetter);
 						await DeviceArrivalAsync(deviceChangeInfo.DriveLetter);
 						break;
 					case DBT.DBT_DEVICEREMOVECOMPLETE:
-						SetStatusBarMessage(Common.TRACE_EVENT_TYPE_STATUS, "リムーバブルドライブが切断されました：" + deviceChangeInfo.DriveLetter);
+						SetStatusBarMessageWithInvoke(Common.TRACE_EVENT_TYPE_STATUS, "リムーバブルドライブが切断されました：" + deviceChangeInfo.DriveLetter);
 						DeviceRemoveComplete(deviceChangeInfo.DriveLetter);
 						break;
 				}
@@ -241,7 +242,7 @@ namespace YukaLister.ViewModels
 				String? syncAccountBak = YukaListerModel.Instance.EnvModel.YlSettings.SyncAccount;
 				String? syncPasswordBak = YukaListerModel.Instance.EnvModel.YlSettings.SyncPassword;
 				DateTime musicInfoDbTimeBak = MusicInfoContext.LastWriteTime();
-				Boolean regetSyncDataNeeded;
+				//Boolean regetSyncDataNeeded;
 
 				// ViewModel 経由でウィンドウを開く
 				using YlSettingsWindowViewModel ylSettingsWindowViewModel = new();
@@ -489,6 +490,9 @@ namespace YukaLister.ViewModels
 				DoVerChangedIfNeeded();
 				//LaunchUpdaterIfNeeded();
 
+				// 参照設定
+				YukaListerModel.Instance.EnvModel.Syclin.MainWindowViewModel = this;
+
 				// 動作状況
 				YukaListerModel.Instance.EnvModel.YukaListerPartsStatus[(Int32)YukaListerPartsStatusIndex.Startup] = YukaListerStatus.Running;
 				YukaListerModel.Instance.EnvModel.YukaListerPartsStatusMessage[(Int32)YukaListerPartsStatusIndex.Startup] = "前回のゆかり検索対象フォルダーを確認中...";
@@ -506,6 +510,8 @@ namespace YukaLister.ViewModels
 				// 時間がかかるかもしれない処理を非同期で実行
 				await AutoTargetAllDrivesAsync();
 
+				// サーバー同期
+				YlCommon.ActivateSyclinIfNeeded();
 #if DEBUGz
 				using MusicInfoContext musicInfoContext = MusicInfoContext.CreateContext(out DbSet<TSong> songs);
 				Debug.WriteLine("Initialize() " + songs.EntityType.Name);
@@ -853,18 +859,21 @@ namespace YukaLister.ViewModels
 		// --------------------------------------------------------------------
 		// ステータスバーにメッセージを表示
 		// --------------------------------------------------------------------
-		public void SetStatusBarMessage(TraceEventType traceEventType, String msg)
+		public void SetStatusBarMessageWithInvoke(TraceEventType traceEventType, String msg)
 		{
-			StatusBarMessage = msg;
-			if (traceEventType == TraceEventType.Error)
+			DispatcherHelper.UIDispatcher.Invoke(new Action(() =>
 			{
-				StatusBarForeground = YlConstants.BRUSH_ERROR_STRING;
-			}
-			else
-			{
-				StatusBarForeground = YlConstants.BRUSH_NORMAL_STRING;
-			}
-			YukaListerModel.Instance.EnvModel.LogWriter.LogMessage(traceEventType, msg);
+				StatusBarMessage = msg;
+				if (traceEventType == TraceEventType.Error)
+				{
+					StatusBarForeground = YlConstants.BRUSH_ERROR_STRING;
+				}
+				else
+				{
+					StatusBarForeground = YlConstants.BRUSH_NORMAL_STRING;
+				}
+				YukaListerModel.Instance.EnvModel.LogWriter.LogMessage(traceEventType, msg);
+			}));
 		}
 
 		// --------------------------------------------------------------------

@@ -430,6 +430,16 @@ class	CPManager
 		// POST されたパラメーター取得
 		$posted_name = $this->get_posted_parameter(PARAM_NAME_NAME);
 		$posted_pw = $this->get_posted_parameter(PARAM_NAME_PASSWORD);
+		$posted_app_generation = $this->get_posted_parameter(PARAM_NAME_APP_GENERATION);
+
+		if ( $posted_app_generation != SYSTEM_APP_GENERATION ) {
+			// クライアントの世代がサーバーと異なる
+			$this->insert_login(FALSE);
+
+			// ログインできないのでログイン画面に戻る
+			header('Location:'.FILE_NAME_CP_LOGIN.'?'.PARAM_NAME_ERROR_MESSAGE.'='.urlencode('クライアントの互換性がありません。'));
+			return;
+		}
 
 		$row = $this->select_account_by_name_and_password($posted_name, $posted_pw);
 		if ( $row === FALSE ) {

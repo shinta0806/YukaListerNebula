@@ -11,6 +11,8 @@
 using System;
 using System.ComponentModel.DataAnnotations.Schema;
 
+using YukaLister.Models.SharedMisc;
+
 namespace YukaLister.Models.Database.Sequences
 {
 	[Table(TABLE_NAME_ARTIST_SEQUENCE)]
@@ -61,12 +63,13 @@ namespace YukaLister.Models.Database.Sequences
 		// ====================================================================
 
 		public const String TABLE_NAME_ARTIST_SEQUENCE = "t_artist_sequence";
-		public const String FIELD_NAME_ARTIST_SEQUENCE_ID = "artist_sequence_id";
-		public const String FIELD_NAME_ARTIST_SEQUENCE_SEQUENCE = "artist_sequence_sequence";
-		public const String FIELD_NAME_ARTIST_SEQUENCE_LINK_ID = "artist_sequence_link_id";
-		public const String FIELD_NAME_ARTIST_SEQUENCE_IMPORT = "artist_sequence_import";
-		public const String FIELD_NAME_ARTIST_SEQUENCE_INVALID = "artist_sequence_invalid";
-		public const String FIELD_NAME_ARTIST_SEQUENCE_UPDATE_TIME = "artist_sequence_update_time";
-		public const String FIELD_NAME_ARTIST_SEQUENCE_DIRTY = "artist_sequence_dirty";
+		public const String FIELD_PREFIX_ARTIST_SEQUENCE = "artist_sequence_";
+		public const String FIELD_NAME_ARTIST_SEQUENCE_ID = FIELD_PREFIX_ARTIST_SEQUENCE + YlConstants.FIELD_SUFFIX_ID;
+		public const String FIELD_NAME_ARTIST_SEQUENCE_IMPORT = FIELD_PREFIX_ARTIST_SEQUENCE + YlConstants.FIELD_SUFFIX_IMPORT;
+		public const String FIELD_NAME_ARTIST_SEQUENCE_INVALID = FIELD_PREFIX_ARTIST_SEQUENCE + YlConstants.FIELD_SUFFIX_INVALID;
+		public const String FIELD_NAME_ARTIST_SEQUENCE_UPDATE_TIME = FIELD_PREFIX_ARTIST_SEQUENCE + YlConstants.FIELD_SUFFIX_UPDATE_TIME;
+		public const String FIELD_NAME_ARTIST_SEQUENCE_DIRTY = FIELD_PREFIX_ARTIST_SEQUENCE + YlConstants.FIELD_SUFFIX_DIRTY;
+		public const String FIELD_NAME_ARTIST_SEQUENCE_SEQUENCE = FIELD_PREFIX_ARTIST_SEQUENCE + YlConstants.FIELD_SUFFIX_SEQUENCE;
+		public const String FIELD_NAME_ARTIST_SEQUENCE_LINK_ID = FIELD_PREFIX_ARTIST_SEQUENCE + YlConstants.FIELD_SUFFIX_LINK_ID;
 	}
 }

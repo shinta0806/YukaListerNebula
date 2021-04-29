@@ -29,6 +29,8 @@
     <Compile Include="..\..\_Common\Behaviors\IsFocusedAttachedBehavior.cs" Link="_Common\Behaviors\IsFocusedAttachedBehavior.cs" />
     <Compile Include="..\..\_Common\Behaviors\LaunchUpdaterAttachedBehavior.cs" Link="_Common\Behaviors\LaunchUpdaterAttachedBehavior.cs" />
     <Compile Include="..\..\_Common\Behaviors\WindowBindingSupportBehavior.cs" Link="_Common\Behaviors\WindowBindingSupportBehavior.cs" />
+    <Compile Include="..\..\_Common\CsvManager.cs" Link="_Common\CsvManager.cs" />
+    <Compile Include="..\..\_Common\Downloader.cs" Link="_Common\Downloader.cs" />
     <Compile Include="..\..\_Common\JulianDay.cs" Link="_Common\JulianDay.cs" />
     <Compile Include="..\..\_Common\LogWriter.cs" Link="_Common\LogWriter.cs" />
     <Compile Include="..\..\_Common\ShintaCommon.cs" Link="_Common\ShintaCommon.cs" />

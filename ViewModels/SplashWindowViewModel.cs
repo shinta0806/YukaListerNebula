@@ -23,7 +23,7 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Threading;
 
-using YukaLister.Models.Database;
+using YukaLister.Models.DatabaseAssist;
 using YukaLister.Models.SharedMisc;
 using YukaLister.Models.YukaListerModels;
 

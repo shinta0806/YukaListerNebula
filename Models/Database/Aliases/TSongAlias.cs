@@ -12,6 +12,8 @@ using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
+using YukaLister.Models.SharedMisc;
+
 namespace YukaLister.Models.Database.Aliases
 {
 	[Table(TABLE_NAME_SONG_ALIAS)]
@@ -63,13 +65,13 @@ namespace YukaLister.Models.Database.Aliases
 		// ====================================================================
 
 		public const String TABLE_NAME_SONG_ALIAS = "t_song_alias";
-		public const String FIELD_NAME_SONG_ALIAS_ID = "song_alias_id";
-		public const String FIELD_NAME_SONG_ALIAS_IMPORT = "song_alias_import";
-		public const String FIELD_NAME_SONG_ALIAS_INVALID = "song_alias_invalid";
-		public const String FIELD_NAME_SONG_ALIAS_UPDATE_TIME = "song_alias_update_time";
-		public const String FIELD_NAME_SONG_ALIAS_SYNC_TIME = "song_alias_sync_time";
-		public const String FIELD_NAME_SONG_ALIAS_DIRTY = "song_alias_dirty";
-		public const String FIELD_NAME_SONG_ALIAS_ALIAS = "song_alias_alias";
-		public const String FIELD_NAME_SONG_ALIAS_ORIGINAL_ID = "song_alias_original_id";
+		public const String FIELD_PREFIX_SONG_ALIAS = "song_alias_";
+		public const String FIELD_NAME_SONG_ALIAS_ID = FIELD_PREFIX_SONG_ALIAS + YlConstants.FIELD_SUFFIX_ID;
+		public const String FIELD_NAME_SONG_ALIAS_IMPORT = FIELD_PREFIX_SONG_ALIAS + YlConstants.FIELD_SUFFIX_IMPORT;
+		public const String FIELD_NAME_SONG_ALIAS_INVALID = FIELD_PREFIX_SONG_ALIAS + YlConstants.FIELD_SUFFIX_INVALID;
+		public const String FIELD_NAME_SONG_ALIAS_UPDATE_TIME = FIELD_PREFIX_SONG_ALIAS + YlConstants.FIELD_SUFFIX_UPDATE_TIME;
+		public const String FIELD_NAME_SONG_ALIAS_DIRTY = FIELD_PREFIX_SONG_ALIAS + YlConstants.FIELD_SUFFIX_DIRTY;
+		public const String FIELD_NAME_SONG_ALIAS_ALIAS = FIELD_PREFIX_SONG_ALIAS + YlConstants.FIELD_SUFFIX_ALIAS;
+		public const String FIELD_NAME_SONG_ALIAS_ORIGINAL_ID = FIELD_PREFIX_SONG_ALIAS + YlConstants.FIELD_SUFFIX_ORIGINAL_ID;
 	}
 }

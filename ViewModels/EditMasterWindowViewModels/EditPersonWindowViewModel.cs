@@ -14,9 +14,10 @@ using Shinta;
 
 using System;
 using System.Diagnostics;
-using YukaLister.Models.Database;
+
 using YukaLister.Models.Database.Masters;
 using YukaLister.Models.Database.Sequences;
+using YukaLister.Models.DatabaseAssist;
 using YukaLister.Models.DatabaseContexts;
 using YukaLister.Models.YukaListerModels;
 

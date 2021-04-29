@@ -18,6 +18,8 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+
+using YukaLister.Models.Database;
 using YukaLister.Models.Database.Aliases;
 using YukaLister.Models.Database.Masters;
 using YukaLister.Models.Database.Sequences;
@@ -26,7 +28,7 @@ using YukaLister.Models.SerializableSettings;
 using YukaLister.Models.SharedMisc;
 using YukaLister.Models.YukaListerModels;
 
-namespace YukaLister.Models.Database
+namespace YukaLister.Models.DatabaseAssist
 {
 	public class DbCommon
 	{
@@ -94,8 +96,8 @@ namespace YukaLister.Models.Database
 			SqliteConnectionStringBuilder stringBuilder = new()
 			{
 				DataSource = path,
-				//BusyTimeout = 100, // default = 0
-				//PrepareRetries = 10, // default = 0
+				//BusyTimeout = 100, // default = 0?
+				//PrepareRetries = 10, // default = 0?
 			};
 			return new SqliteConnection(stringBuilder.ToString());
 		}

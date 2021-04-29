@@ -154,6 +154,7 @@ define('SESSION_INFO_POST_ERROR_EXISTS', 'PostErrorExists');
 define('SESSION_INFO_POST_ERROR_MESSAGE', 'PostErrorMessage');
 define('SESSION_INFO_REJECT_UPDATE_TIME', 'RejectUpdateTime');
 define('SYSTEM_NAME', 'ゆかりすたー NEBULA 同期');
+define('SYSTEM_APP_GENERATION', 'NEBULA');
 define('SYSTEM_VER', 'Ver 0.01 α');
 define('SYSTEM_COPYRIGHT', 'Copyright (C) 2021 by SHINTA');
 define('TABLE_NAME_SONG', 't_song');

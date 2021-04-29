@@ -12,6 +12,9 @@ using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
+using YukaLister.Models.DatabaseAssist;
+using YukaLister.Models.SharedMisc;
+
 namespace YukaLister.Models.Database.Masters
 {
 	[Table(TABLE_NAME_TIE_UP_GROUP)]
@@ -86,15 +89,16 @@ namespace YukaLister.Models.Database.Masters
 		// ====================================================================
 
 		public const String TABLE_NAME_TIE_UP_GROUP = "t_tie_up_group";
-		public const String FIELD_NAME_TIE_UP_GROUP_ID = "tie_up_group_id";
-		public const String FIELD_NAME_TIE_UP_GROUP_IMPORT = "tie_up_group_import";
-		public const String FIELD_NAME_TIE_UP_GROUP_INVALID = "tie_up_group_invalid";
-		public const String FIELD_NAME_TIE_UP_GROUP_UPDATE_TIME = "tie_up_group_update_time";
-		public const String FIELD_NAME_TIE_UP_GROUP_DIRTY = "tie_up_group_dirty";
-		public const String FIELD_NAME_TIE_UP_GROUP_NAME = "tie_up_group_name";
-		public const String FIELD_NAME_TIE_UP_GROUP_RUBY = "tie_up_group_ruby";
-		public const String FIELD_NAME_TIE_UP_GROUP_RUBY_FOR_SEARCH = "tie_up_group_ruby_for_search";
-		public const String FIELD_NAME_TIE_UP_GROUP_KEYWORD = "tie_up_group_keyword";
-		public const String FIELD_NAME_TIE_UP_GROUP_KEYWORD_RUBY_FOR_SEARCH = "tie_up_group_keyword_ruby_for_search";
+		public const String FIELD_PREFIX_TIE_UP_GROUP = "tie_up_group_";
+		public const String FIELD_NAME_TIE_UP_GROUP_ID = FIELD_PREFIX_TIE_UP_GROUP + YlConstants.FIELD_SUFFIX_ID;
+		public const String FIELD_NAME_TIE_UP_GROUP_IMPORT = FIELD_PREFIX_TIE_UP_GROUP + YlConstants.FIELD_SUFFIX_IMPORT;
+		public const String FIELD_NAME_TIE_UP_GROUP_INVALID = FIELD_PREFIX_TIE_UP_GROUP + YlConstants.FIELD_SUFFIX_INVALID;
+		public const String FIELD_NAME_TIE_UP_GROUP_UPDATE_TIME = FIELD_PREFIX_TIE_UP_GROUP + YlConstants.FIELD_SUFFIX_UPDATE_TIME;
+		public const String FIELD_NAME_TIE_UP_GROUP_DIRTY = FIELD_PREFIX_TIE_UP_GROUP + YlConstants.FIELD_SUFFIX_DIRTY;
+		public const String FIELD_NAME_TIE_UP_GROUP_NAME = FIELD_PREFIX_TIE_UP_GROUP + YlConstants.FIELD_SUFFIX_NAME;
+		public const String FIELD_NAME_TIE_UP_GROUP_RUBY = FIELD_PREFIX_TIE_UP_GROUP + YlConstants.FIELD_SUFFIX_RUBY;
+		public const String FIELD_NAME_TIE_UP_GROUP_RUBY_FOR_SEARCH = FIELD_PREFIX_TIE_UP_GROUP + YlConstants.FIELD_SUFFIX_RUBY_FOR_SEARCH;
+		public const String FIELD_NAME_TIE_UP_GROUP_KEYWORD = FIELD_PREFIX_TIE_UP_GROUP + YlConstants.FIELD_SUFFIX_KEYWORD;
+		public const String FIELD_NAME_TIE_UP_GROUP_KEYWORD_RUBY_FOR_SEARCH = FIELD_PREFIX_TIE_UP_GROUP + YlConstants.FIELD_SUFFIX_KEYWORD_RUBY_FOR_SEARCH;
 	}
 }

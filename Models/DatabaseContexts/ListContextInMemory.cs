@@ -18,6 +18,7 @@ using System;
 using YukaLister.Models.Database;
 using YukaLister.Models.Database.Masters;
 using YukaLister.Models.Database.Sequences;
+using YukaLister.Models.DatabaseAssist;
 using YukaLister.Models.YukaListerModels;
 
 namespace YukaLister.Models.DatabaseContexts

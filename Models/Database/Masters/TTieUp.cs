@@ -14,7 +14,9 @@ using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
+using YukaLister.Models.DatabaseAssist;
 using YukaLister.Models.DatabaseContexts;
+using YukaLister.Models.SharedMisc;
 
 namespace YukaLister.Models.Database.Masters
 {
@@ -128,19 +130,20 @@ namespace YukaLister.Models.Database.Masters
 		// ====================================================================
 
 		public const String TABLE_NAME_TIE_UP = "t_tie_up";
-		public const String FIELD_NAME_TIE_UP_ID = "tie_up_id";
-		public const String FIELD_NAME_TIE_UP_IMPORT = "tie_up_import";
-		public const String FIELD_NAME_TIE_UP_INVALID = "tie_up_invalid";
-		public const String FIELD_NAME_TIE_UP_UPDATE_TIME = "tie_up_update_time";
-		public const String FIELD_NAME_TIE_UP_DIRTY = "tie_up_dirty";
-		public const String FIELD_NAME_TIE_UP_NAME = "tie_up_name";
-		public const String FIELD_NAME_TIE_UP_RUBY = "tie_up_ruby";
-		public const String FIELD_NAME_TIE_UP_RUBY_FOR_SEARCH = "tie_up_ruby_for_search";
-		public const String FIELD_NAME_TIE_UP_KEYWORD = "tie_up_keyword";
-		public const String FIELD_NAME_TIE_UP_KEYWORD_RUBY_FOR_SEARCH = "tie_up_keyword_ruby_for_search";
-		public const String FIELD_NAME_TIE_UP_CATEGORY_ID = "tie_up_category_id";
-		public const String FIELD_NAME_TIE_UP_MAKER_ID = "tie_up_maker_id";
-		public const String FIELD_NAME_TIE_UP_AGE_LIMIT = "tie_up_age_limit";
-		public const String FIELD_NAME_TIE_UP_RELEASE_DATE = "tie_up_release_date";
+		public const String FIELD_PREFIX_TIE_UP = "tie_up_";
+		public const String FIELD_NAME_TIE_UP_ID = FIELD_PREFIX_TIE_UP + YlConstants.FIELD_SUFFIX_ID;
+		public const String FIELD_NAME_TIE_UP_IMPORT = FIELD_PREFIX_TIE_UP + YlConstants.FIELD_SUFFIX_IMPORT;
+		public const String FIELD_NAME_TIE_UP_INVALID = FIELD_PREFIX_TIE_UP + YlConstants.FIELD_SUFFIX_INVALID;
+		public const String FIELD_NAME_TIE_UP_UPDATE_TIME = FIELD_PREFIX_TIE_UP + YlConstants.FIELD_SUFFIX_UPDATE_TIME;
+		public const String FIELD_NAME_TIE_UP_DIRTY = FIELD_PREFIX_TIE_UP + YlConstants.FIELD_SUFFIX_DIRTY;
+		public const String FIELD_NAME_TIE_UP_NAME = FIELD_PREFIX_TIE_UP + YlConstants.FIELD_SUFFIX_NAME;
+		public const String FIELD_NAME_TIE_UP_RUBY = FIELD_PREFIX_TIE_UP + YlConstants.FIELD_SUFFIX_RUBY;
+		public const String FIELD_NAME_TIE_UP_RUBY_FOR_SEARCH = FIELD_PREFIX_TIE_UP + YlConstants.FIELD_SUFFIX_RUBY_FOR_SEARCH;
+		public const String FIELD_NAME_TIE_UP_KEYWORD = FIELD_PREFIX_TIE_UP + YlConstants.FIELD_SUFFIX_KEYWORD;
+		public const String FIELD_NAME_TIE_UP_KEYWORD_RUBY_FOR_SEARCH = FIELD_PREFIX_TIE_UP + YlConstants.FIELD_SUFFIX_KEYWORD_RUBY_FOR_SEARCH;
+		public const String FIELD_NAME_TIE_UP_CATEGORY_ID = FIELD_PREFIX_TIE_UP + YlConstants.FIELD_SUFFIX_CATEGORY_ID;
+		public const String FIELD_NAME_TIE_UP_RELEASE_DATE = FIELD_PREFIX_TIE_UP + YlConstants.FIELD_SUFFIX_RELEASE_DATE;
+		public const String FIELD_NAME_TIE_UP_MAKER_ID = FIELD_PREFIX_TIE_UP + YlConstants.FIELD_SUFFIX_MAKER_ID;
+		public const String FIELD_NAME_TIE_UP_AGE_LIMIT = FIELD_PREFIX_TIE_UP + YlConstants.FIELD_SUFFIX_AGE_LIMIT;
 	}
 }

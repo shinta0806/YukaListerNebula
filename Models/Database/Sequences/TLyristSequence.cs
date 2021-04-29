@@ -11,6 +11,8 @@
 using System;
 using System.ComponentModel.DataAnnotations.Schema;
 
+using YukaLister.Models.SharedMisc;
+
 namespace YukaLister.Models.Database.Sequences
 {
 	[Table(TABLE_NAME_LYRIST_SEQUENCE)]
@@ -61,12 +63,13 @@ namespace YukaLister.Models.Database.Sequences
 		// ====================================================================
 
 		public const String TABLE_NAME_LYRIST_SEQUENCE = "t_lyrist_sequence";
-		public const String FIELD_NAME_LYRIST_SEQUENCE_ID = "lyrist_sequence_id";
-		public const String FIELD_NAME_LYRIST_SEQUENCE_SEQUENCE = "lyrist_sequence_sequence";
-		public const String FIELD_NAME_LYRIST_SEQUENCE_LINK_ID = "lyrist_sequence_link_id";
-		public const String FIELD_NAME_LYRIST_SEQUENCE_IMPORT = "lyrist_sequence_import";
-		public const String FIELD_NAME_LYRIST_SEQUENCE_INVALID = "lyrist_sequence_invalid";
-		public const String FIELD_NAME_LYRIST_SEQUENCE_UPDATE_TIME = "lyrist_sequence_update_time";
-		public const String FIELD_NAME_LYRIST_SEQUENCE_DIRTY = "lyrist_sequence_dirty";
+		public const String FIELD_PREFIX_LYRIST_SEQUENCE = "lyrist_sequence_";
+		public const String FIELD_NAME_LYRIST_SEQUENCE_ID = FIELD_PREFIX_LYRIST_SEQUENCE + YlConstants.FIELD_SUFFIX_ID;
+		public const String FIELD_NAME_LYRIST_SEQUENCE_IMPORT = FIELD_PREFIX_LYRIST_SEQUENCE + YlConstants.FIELD_SUFFIX_IMPORT;
+		public const String FIELD_NAME_LYRIST_SEQUENCE_INVALID = FIELD_PREFIX_LYRIST_SEQUENCE + YlConstants.FIELD_SUFFIX_INVALID;
+		public const String FIELD_NAME_LYRIST_SEQUENCE_UPDATE_TIME = FIELD_PREFIX_LYRIST_SEQUENCE + YlConstants.FIELD_SUFFIX_UPDATE_TIME;
+		public const String FIELD_NAME_LYRIST_SEQUENCE_DIRTY = FIELD_PREFIX_LYRIST_SEQUENCE + YlConstants.FIELD_SUFFIX_DIRTY;
+		public const String FIELD_NAME_LYRIST_SEQUENCE_SEQUENCE = FIELD_PREFIX_LYRIST_SEQUENCE + YlConstants.FIELD_SUFFIX_SEQUENCE;
+		public const String FIELD_NAME_LYRIST_SEQUENCE_LINK_ID = FIELD_PREFIX_LYRIST_SEQUENCE + YlConstants.FIELD_SUFFIX_LINK_ID;
 	}
 }

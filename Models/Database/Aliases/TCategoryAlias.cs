@@ -12,6 +12,8 @@ using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
+using YukaLister.Models.SharedMisc;
+
 namespace YukaLister.Models.Database.Aliases
 {
 	[Table(TABLE_NAME_CATEGORY_ALIAS)]
@@ -63,12 +65,13 @@ namespace YukaLister.Models.Database.Aliases
 		// ====================================================================
 
 		public const String TABLE_NAME_CATEGORY_ALIAS = "t_category_alias";
-		public const String FIELD_NAME_CATEGORY_ALIAS_ID = "category_alias_id";
-		public const String FIELD_NAME_CATEGORY_ALIAS_IMPORT = "category_alias_import";
-		public const String FIELD_NAME_CATEGORY_ALIAS_INVALID = "category_alias_invalid";
-		public const String FIELD_NAME_CATEGORY_ALIAS_UPDATE_TIME = "category_alias_update_time";
-		public const String FIELD_NAME_CATEGORY_ALIAS_DIRTY = "category_alias_dirty";
-		public const String FIELD_NAME_CATEGORY_ALIAS_ALIAS = "category_alias_alias";
-		public const String FIELD_NAME_CATEGORY_ALIAS_ORIGINAL_ID = "category_alias_original_id";
+		public const String FIELD_PREFIX_CATEGORY_ALIAS = "category_alias_";
+		public const String FIELD_NAME_CATEGORY_ALIAS_ID = FIELD_PREFIX_CATEGORY_ALIAS + YlConstants.FIELD_SUFFIX_ID;
+		public const String FIELD_NAME_CATEGORY_ALIAS_IMPORT = FIELD_PREFIX_CATEGORY_ALIAS + YlConstants.FIELD_SUFFIX_IMPORT;
+		public const String FIELD_NAME_CATEGORY_ALIAS_INVALID = FIELD_PREFIX_CATEGORY_ALIAS + YlConstants.FIELD_SUFFIX_INVALID;
+		public const String FIELD_NAME_CATEGORY_ALIAS_UPDATE_TIME = FIELD_PREFIX_CATEGORY_ALIAS + YlConstants.FIELD_SUFFIX_UPDATE_TIME;
+		public const String FIELD_NAME_CATEGORY_ALIAS_DIRTY = FIELD_PREFIX_CATEGORY_ALIAS + YlConstants.FIELD_SUFFIX_DIRTY;
+		public const String FIELD_NAME_CATEGORY_ALIAS_ALIAS = FIELD_PREFIX_CATEGORY_ALIAS + YlConstants.FIELD_SUFFIX_ALIAS;
+		public const String FIELD_NAME_CATEGORY_ALIAS_ORIGINAL_ID = FIELD_PREFIX_CATEGORY_ALIAS + YlConstants.FIELD_SUFFIX_ORIGINAL_ID;
 	}
 }

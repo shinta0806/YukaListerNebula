@@ -12,11 +12,12 @@ using Microsoft.EntityFrameworkCore;
 
 using System;
 
+using YukaLister.Models.Database;
 using YukaLister.Models.Database.Masters;
 using YukaLister.Models.Database.Sequences;
 using YukaLister.Models.DatabaseContexts;
 
-namespace YukaLister.Models.Database
+namespace YukaLister.Models.DatabaseAssist
 {
 	public class TFoundSetterAliasSpecify : TFoundSetter
 	{

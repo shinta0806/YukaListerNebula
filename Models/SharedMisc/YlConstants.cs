@@ -209,6 +209,44 @@ namespace YukaLister.Models.SharedMisc
 		};
 
 		// --------------------------------------------------------------------
+		// 楽曲情報データベースカラム名
+		// --------------------------------------------------------------------
+
+		// IRcBase
+		public const String FIELD_SUFFIX_ID = "id";
+		public const String FIELD_SUFFIX_IMPORT = "import";
+		public const String FIELD_SUFFIX_INVALID = "invalid";
+		public const String FIELD_SUFFIX_UPDATE_TIME = "update_time";
+		public const String FIELD_SUFFIX_DIRTY = "dirty";
+
+		// IRcMaster
+		public const String FIELD_SUFFIX_NAME = "name";
+		public const String FIELD_SUFFIX_RUBY = "ruby";
+		public const String FIELD_SUFFIX_RUBY_FOR_SEARCH = "ruby_for_search";
+		public const String FIELD_SUFFIX_KEYWORD = "keyword";
+		public const String FIELD_SUFFIX_KEYWORD_RUBY_FOR_SEARCH = "keyword_ruby_for_search";
+
+		// IRcCategorizable
+		public const String FIELD_SUFFIX_CATEGORY_ID = "category_id";
+		public const String FIELD_SUFFIX_RELEASE_DATE = "release_date";
+
+		// IRcAlias
+		public const String FIELD_SUFFIX_ALIAS = "alias";
+		public const String FIELD_SUFFIX_ORIGINAL_ID = "original_id";
+
+		// IRcSequence
+		public const String FIELD_SUFFIX_SEQUENCE = "sequence";
+		public const String FIELD_SUFFIX_LINK_ID = "link_id";
+
+		// TSong 独自項目
+		public const String FIELD_SUFFIX_TIE_UP_ID = "tie_up_id";
+		public const String FIELD_SUFFIX_OP_ED = "op_ed";
+
+		// TTieUp 独自項目
+		public const String FIELD_SUFFIX_MAKER_ID = "maker_id";
+		public const String FIELD_SUFFIX_AGE_LIMIT = "age_limit";
+
+		// --------------------------------------------------------------------
 		// MessageKey
 		// --------------------------------------------------------------------
 
@@ -395,5 +433,8 @@ namespace YukaLister.Models.SharedMisc
 
 		// DPI
 		public const Single DPI = 96.0f;
+
+		// 同期詳細ログ ID
+		public const String SYNC_DETAIL_ID = "SyncDetail";
 	}
 }

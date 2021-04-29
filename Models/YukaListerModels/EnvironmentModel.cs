@@ -13,6 +13,7 @@ using Livet.Commands;
 using Shinta;
 
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -59,8 +60,11 @@ namespace YukaLister.Models.YukaListerModels
 		// ログ
 		public LogWriter LogWriter { get; } = new(YlConstants.APP_ID);
 
-		// ネビュラコア
+		// ネビュラコア：検索データ作成担当
 		public Sifolin Sifolin { get; } = new();
+
+		// ネビュラコア：同期担当
+		public Syclin Syclin { get; } = new();
 
 		// ゆかりすたー NEBULA パーツごとの動作状況
 		private volatile YukaListerStatus[] _yukaListerPartsStatus = new YukaListerStatus[(Int32)YukaListerPartsStatusIndex.__End__];
@@ -190,11 +194,18 @@ namespace YukaLister.Models.YukaListerModels
 		{
 			Debug.Assert(AppCancellationTokenSource.Token.IsCancellationRequested, "QuitAllCores() not cancelled");
 			Debug.WriteLine("QuitAllCoresAsync()");
+			List<Task> tasks = new();
 			if (Sifolin.MainTask != null)
 			{
 				Sifolin.MainEvent.Set();
-				await Sifolin.MainTask;
+				tasks.Add(Sifolin.MainTask);
 			}
+			if (Syclin.MainTask != null)
+			{
+				Syclin.MainEvent.Set();
+				tasks.Add(Syclin.MainTask);
+			}
+			await Task.WhenAll(tasks);
 		}
 
 		// --------------------------------------------------------------------
@@ -203,6 +214,7 @@ namespace YukaLister.Models.YukaListerModels
 		public void StartAllCores()
 		{
 			Sifolin.Start();
+			Syclin.Start();
 		}
 
 		// ====================================================================

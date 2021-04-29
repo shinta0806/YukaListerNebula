@@ -23,6 +23,7 @@ using System.Windows.Controls;
 
 using YukaLister.Models.Database;
 using YukaLister.Models.Database.Masters;
+using YukaLister.Models.DatabaseAssist;
 using YukaLister.Models.DatabaseContexts;
 using YukaLister.Models.SharedMisc;
 using YukaLister.Models.YukaListerModels;

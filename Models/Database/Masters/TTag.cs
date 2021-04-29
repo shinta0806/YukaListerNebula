@@ -12,6 +12,9 @@ using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
+using YukaLister.Models.DatabaseAssist;
+using YukaLister.Models.SharedMisc;
+
 namespace YukaLister.Models.Database.Masters
 {
 	[Table(TABLE_NAME_TAG)]
@@ -86,15 +89,16 @@ namespace YukaLister.Models.Database.Masters
 		// ====================================================================
 
 		public const String TABLE_NAME_TAG = "t_tag";
-		public const String FIELD_NAME_TAG_ID = "tag_id";
-		public const String FIELD_NAME_TAG_IMPORT = "tag_import";
-		public const String FIELD_NAME_TAG_INVALID = "tag_invalid";
-		public const String FIELD_NAME_TAG_UPDATE_TIME = "tag_update_time";
-		public const String FIELD_NAME_TAG_DIRTY = "tag_dirty";
-		public const String FIELD_NAME_TAG_NAME = "tag_name";
-		public const String FIELD_NAME_TAG_RUBY = "tag_ruby";
-		public const String FIELD_NAME_TAG_RUBY_FOR_SEARCH = "tag_ruby_for_search";
-		public const String FIELD_NAME_TAG_KEYWORD = "tag_keyword";
-		public const String FIELD_NAME_TAG_KEYWORD_RUBY_FOR_SEARCH = "tag_keyword_ruby_for_search";
+		public const String FIELD_PREFIX_TAG = "tag_";
+		public const String FIELD_NAME_TAG_ID = FIELD_PREFIX_TAG + YlConstants.FIELD_SUFFIX_ID;
+		public const String FIELD_NAME_TAG_IMPORT = FIELD_PREFIX_TAG + YlConstants.FIELD_SUFFIX_IMPORT;
+		public const String FIELD_NAME_TAG_INVALID = FIELD_PREFIX_TAG + YlConstants.FIELD_SUFFIX_INVALID;
+		public const String FIELD_NAME_TAG_UPDATE_TIME = FIELD_PREFIX_TAG + YlConstants.FIELD_SUFFIX_UPDATE_TIME;
+		public const String FIELD_NAME_TAG_DIRTY = FIELD_PREFIX_TAG + YlConstants.FIELD_SUFFIX_DIRTY;
+		public const String FIELD_NAME_TAG_NAME = FIELD_PREFIX_TAG + YlConstants.FIELD_SUFFIX_NAME;
+		public const String FIELD_NAME_TAG_RUBY = FIELD_PREFIX_TAG + YlConstants.FIELD_SUFFIX_RUBY;
+		public const String FIELD_NAME_TAG_RUBY_FOR_SEARCH = FIELD_PREFIX_TAG + YlConstants.FIELD_SUFFIX_RUBY_FOR_SEARCH;
+		public const String FIELD_NAME_TAG_KEYWORD = FIELD_PREFIX_TAG + YlConstants.FIELD_SUFFIX_KEYWORD;
+		public const String FIELD_NAME_TAG_KEYWORD_RUBY_FOR_SEARCH = FIELD_PREFIX_TAG + YlConstants.FIELD_SUFFIX_KEYWORD_RUBY_FOR_SEARCH;
 	}
 }

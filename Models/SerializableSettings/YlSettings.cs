@@ -9,6 +9,7 @@
 // ----------------------------------------------------------------------------
 
 using Microsoft.EntityFrameworkCore;
+
 using Shinta;
 
 using System;
@@ -16,7 +17,9 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Windows;
+
 using YukaLister.Models.Database;
+using YukaLister.Models.DatabaseAssist;
 using YukaLister.Models.SharedMisc;
 using YukaLister.Models.YukaListerModels;
 
@@ -89,6 +92,9 @@ namespace YukaLister.Models.SerializableSettings
 
 		// 前回発行した ID（次回はインクリメントした番号で発行する）
 		public List<Int32> LastIdNumbers { get; set; } = new();
+
+		// 前回楽曲情報データベースを同期ダウンロードした日（修正ユリウス日 UTC）
+		public Double LastSyncDownloadDate { get; set; }
 
 		// --------------------------------------------------------------------
 		// 終了時の状態（一般）

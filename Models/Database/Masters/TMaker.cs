@@ -12,6 +12,9 @@ using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
+using YukaLister.Models.DatabaseAssist;
+using YukaLister.Models.SharedMisc;
+
 namespace YukaLister.Models.Database.Masters
 {
 	[Table(TABLE_NAME_MAKER)]
@@ -86,15 +89,16 @@ namespace YukaLister.Models.Database.Masters
 		// ====================================================================
 
 		public const String TABLE_NAME_MAKER = "t_maker";
-		public const String FIELD_NAME_MAKER_ID = "maker_id";
-		public const String FIELD_NAME_MAKER_IMPORT = "maker_import";
-		public const String FIELD_NAME_MAKER_INVALID = "maker_invalid";
-		public const String FIELD_NAME_MAKER_UPDATE_TIME = "maker_update_time";
-		public const String FIELD_NAME_MAKER_DIRTY = "maker_dirty";
-		public const String FIELD_NAME_MAKER_NAME = "maker_name";
-		public const String FIELD_NAME_MAKER_RUBY = "maker_ruby";
-		public const String FIELD_NAME_MAKER_RUBY_FOR_SEARCH = "maker_ruby_for_search";
-		public const String FIELD_NAME_MAKER_KEYWORD = "maker_keyword";
-		public const String FIELD_NAME_MAKER_KEYWORD_RUBY_FOR_SEARCH = "maker_keyword_ruby_for_search";
+		public const String FIELD_PREFIX_MAKER = "maker_";
+		public const String FIELD_NAME_MAKER_ID = FIELD_PREFIX_MAKER + YlConstants.FIELD_SUFFIX_ID;
+		public const String FIELD_NAME_MAKER_IMPORT = FIELD_PREFIX_MAKER + YlConstants.FIELD_SUFFIX_IMPORT;
+		public const String FIELD_NAME_MAKER_INVALID = FIELD_PREFIX_MAKER + YlConstants.FIELD_SUFFIX_INVALID;
+		public const String FIELD_NAME_MAKER_UPDATE_TIME = FIELD_PREFIX_MAKER + YlConstants.FIELD_SUFFIX_UPDATE_TIME;
+		public const String FIELD_NAME_MAKER_DIRTY = FIELD_PREFIX_MAKER + YlConstants.FIELD_SUFFIX_DIRTY;
+		public const String FIELD_NAME_MAKER_NAME = FIELD_PREFIX_MAKER + YlConstants.FIELD_SUFFIX_NAME;
+		public const String FIELD_NAME_MAKER_RUBY = FIELD_PREFIX_MAKER + YlConstants.FIELD_SUFFIX_RUBY;
+		public const String FIELD_NAME_MAKER_RUBY_FOR_SEARCH = FIELD_PREFIX_MAKER + YlConstants.FIELD_SUFFIX_RUBY_FOR_SEARCH;
+		public const String FIELD_NAME_MAKER_KEYWORD = FIELD_PREFIX_MAKER + YlConstants.FIELD_SUFFIX_KEYWORD;
+		public const String FIELD_NAME_MAKER_KEYWORD_RUBY_FOR_SEARCH = FIELD_PREFIX_MAKER + YlConstants.FIELD_SUFFIX_KEYWORD_RUBY_FOR_SEARCH;
 	}
 }

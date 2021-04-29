@@ -12,6 +12,8 @@ using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
+using YukaLister.Models.SharedMisc;
+
 namespace YukaLister.Models.Database.Aliases
 {
 	[Table(TABLE_NAME_TIE_UP_ALIAS)]
@@ -63,12 +65,13 @@ namespace YukaLister.Models.Database.Aliases
 		// ====================================================================
 
 		public const String TABLE_NAME_TIE_UP_ALIAS = "t_tie_up_alias";
-		public const String FIELD_NAME_TIE_UP_ALIAS_ID = "tie_up_alias_id";
-		public const String FIELD_NAME_TIE_UP_ALIAS_IMPORT = "tie_up_alias_import";
-		public const String FIELD_NAME_TIE_UP_ALIAS_INVALID = "tie_up_alias_invalid";
-		public const String FIELD_NAME_TIE_UP_ALIAS_UPDATE_TIME = "tie_up_alias_update_time";
-		public const String FIELD_NAME_TIE_UP_ALIAS_DIRTY = "tie_up_alias_dirty";
-		public const String FIELD_NAME_TIE_UP_ALIAS_ALIAS = "tie_up_alias_alias";
-		public const String FIELD_NAME_TIE_UP_ALIAS_ORIGINAL_ID = "tie_up_alias_original_id";
+		public const String FIELD_PREFIX_TIE_UP_ALIAS = "tie_up_alias_";
+		public const String FIELD_NAME_TIE_UP_ALIAS_ID = FIELD_PREFIX_TIE_UP_ALIAS + YlConstants.FIELD_SUFFIX_ID;
+		public const String FIELD_NAME_TIE_UP_ALIAS_IMPORT = FIELD_PREFIX_TIE_UP_ALIAS + YlConstants.FIELD_SUFFIX_IMPORT;
+		public const String FIELD_NAME_TIE_UP_ALIAS_INVALID = FIELD_PREFIX_TIE_UP_ALIAS + YlConstants.FIELD_SUFFIX_INVALID;
+		public const String FIELD_NAME_TIE_UP_ALIAS_UPDATE_TIME = FIELD_PREFIX_TIE_UP_ALIAS + YlConstants.FIELD_SUFFIX_UPDATE_TIME;
+		public const String FIELD_NAME_TIE_UP_ALIAS_DIRTY = FIELD_PREFIX_TIE_UP_ALIAS + YlConstants.FIELD_SUFFIX_DIRTY;
+		public const String FIELD_NAME_TIE_UP_ALIAS_ALIAS = FIELD_PREFIX_TIE_UP_ALIAS + YlConstants.FIELD_SUFFIX_ALIAS;
+		public const String FIELD_NAME_TIE_UP_ALIAS_ORIGINAL_ID = FIELD_PREFIX_TIE_UP_ALIAS + YlConstants.FIELD_SUFFIX_ORIGINAL_ID;
 	}
 }

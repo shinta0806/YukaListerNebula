@@ -18,13 +18,14 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 
+using YukaLister.Models.Database;
 using YukaLister.Models.Database.Aliases;
 using YukaLister.Models.Database.Masters;
 using YukaLister.Models.Database.Sequences;
 using YukaLister.Models.DatabaseContexts;
 using YukaLister.Models.SharedMisc;
 
-namespace YukaLister.Models.Database
+namespace YukaLister.Models.DatabaseAssist
 {
 	public class TFoundSetter : IDisposable
 	{
