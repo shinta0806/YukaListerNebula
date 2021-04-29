@@ -56,6 +56,8 @@ namespace YukaLister.Models.YukaListerCores
 		// --------------------------------------------------------------------
 		protected override void CoreMain()
 		{
+			YlCommon.SetLogWriterSyncDetail(_logWriterSyncDetail);
+
 			while (true)
 			{
 				MainEvent.WaitOne();
@@ -80,24 +82,21 @@ namespace YukaLister.Models.YukaListerCores
 					// 再取得の場合は楽曲情報データベース初期化
 					//CreateMusicInfoDbIfNeeded();
 
-#if false
 					// ダウンロード
 					(Int32 numTotalDownloads, Int32 numTotalImports) = DownloadSyncData();
 
 					// アップロード
-					Int32 aNumTotalUploads;
-					UploadSyncData(out aNumTotalUploads);
-					if (aNumTotalUploads > 0)
+					Int32 numTotalUploads = UploadSyncData();
+					if (numTotalUploads > 0)
 					{
 						// アップロードを行った場合は、自身がアップロードしたデータの更新日・Dirty を更新するために再ダウンロードが必要
-						DownloadSyncData(out numTotalDownloads, out numTotalImports);
+						(numTotalDownloads, numTotalImports) = DownloadSyncData();
 					}
 
 					// 完了表示
-					mMainWindowViewModel.SetStatusBarMessageWithInvoke(Common.TRACE_EVENT_TYPE_STATUS, "楽曲情報データベース同期完了（ダウンロード"
+					MainWindowViewModel?.SetStatusBarMessageWithInvoke(Common.TRACE_EVENT_TYPE_STATUS, "楽曲情報データベース同期完了（ダウンロード"
 							+ (numTotalDownloads == 0 ? "無" : " " + numTotalDownloads.ToString("#,0") + " 件、うち " + numTotalImports.ToString("#,0") + " 件インポート")
-							+ "、アップロード" + (aNumTotalUploads == 0 ? "無" : " " + aNumTotalUploads.ToString("#,0") + " 件") + "）");
-#endif
+							+ "、アップロード" + (numTotalUploads == 0 ? "無" : " " + numTotalUploads.ToString("#,0") + " 件") + "）");
 				}
 				catch (OperationCanceledException)
 				{
@@ -154,20 +153,16 @@ namespace YukaLister.Models.YukaListerCores
 
 		// 同期モード
 		private const String SYNC_MODE_NAME_DOWNLOAD_POST_ERROR = "DownloadPostError";
-		//private const String SYNC_MODE_NAME_DOWNLOAD_REJECT_DATE = "DownloadRejectDate";
+		private const String SYNC_MODE_NAME_DOWNLOAD_REJECT_DATE = "DownloadRejectDate";
 		private const String SYNC_MODE_NAME_DOWNLOAD_SYNC_DATA = "DownloadSyncData";
 		private const String SYNC_MODE_NAME_LOGIN = "Login";
-		//private const String SYNC_MODE_NAME_UPLOAD_SYNC_DATA = "UploadSyncData";
-
-		// FILE_NAME_SYNC_INFO の中のパラメーター
-		//private const String SYNC_INFO_PARAM_DATE = "Date";
+		private const String SYNC_MODE_NAME_UPLOAD_SYNC_DATA = "UploadSyncData";
 
 		// その他
 		//private const Int32 IMPORT_PROGRESS_BLOCK = 1000;
 		private const Int32 SYNC_INTERVAL = 200;
 		private const String SYNC_NO_DATA = "NoData";
-		//private const Int32 SYNC_UPLOAD_BLOCK = 100;
-		private const String SYNC_URL_DATE_FORMAT = "yyyyMMdd";
+		private const Int32 SYNC_UPLOAD_BLOCK = 100;
 
 		// ====================================================================
 		// private メンバー変数
@@ -177,13 +172,13 @@ namespace YukaLister.Models.YukaListerCores
 		private Downloader _downloader = new();
 
 		// サーバーデータ再取得
-		private Boolean _isReget;
+		//private Boolean _isReget;
 
 		// ログ（同期専用）
 		//private LogWriter _logWriterSync = new(YlConstants.APP_ID + "Sync");
 
 		// 詳細ログ（同期専用）
-		//private LogWriter _logWriterSyncDetail = new(YlConstants.APP_ID + "SyncDetail");
+		private LogWriter _logWriterSyncDetail = new(YlConstants.APP_ID + YlConstants.SYNC_DETAIL_ID);
 
 		// Dispose フラグ
 		private Boolean _isDisposed;
@@ -192,7 +187,33 @@ namespace YukaLister.Models.YukaListerCores
 		// private メンバー関数
 		// ====================================================================
 
-#if false
+		// --------------------------------------------------------------------
+		// アップロードを拒否されたレコードの更新日をサーバーからダウンロード
+		// YukaListerModel.Instance.EnvModel.YlSettings.LastSyncDownloadDate を更新し、次回ダウンロード時に拒否レコードが上書きされるようにする
+		// --------------------------------------------------------------------
+		private void DownloadRejectDate()
+		{
+			try
+			{
+				String? rejectDateString = _downloader.Download(SyncUrl(SYNC_MODE_NAME_DOWNLOAD_REJECT_DATE), Encoding.UTF8);
+				if (String.IsNullOrEmpty(rejectDateString))
+				{
+					throw new Exception("サーバーからの確認結果が空です。");
+				}
+
+				DateTime rejectDate = DateTime.ParseExact(rejectDateString, YlConstants.SYNC_URL_DATE_FORMAT, null);
+				Double rejectMjd = JulianDay.DateTimeToModifiedJulianDate(rejectDate);
+				if (rejectMjd < YukaListerModel.Instance.EnvModel.YlSettings.LastSyncDownloadDate)
+				{
+					YukaListerModel.Instance.EnvModel.YlSettings.LastSyncDownloadDate = rejectMjd;
+				}
+			}
+			catch (Exception excep)
+			{
+				throw new Exception("アップロード拒否日付を確認できませんでした。\n" + excep.Message);
+			}
+		}
+
 		// --------------------------------------------------------------------
 		// 同期データをサーバーからダウンロード
 		// LastSyncDownloadDate も再度ダウンロードする（同日にデータが追加されている可能性があるため）
@@ -219,7 +240,7 @@ namespace YukaLister.Models.YukaListerCores
 
 				// ダウンロード
 				String downloadPath = YlCommon.TempPath();
-				_downloader.Download(SyncUrl(SYNC_MODE_NAME_DOWNLOAD_SYNC_DATA) + "&Date=" + targetDate.ToString(SYNC_URL_DATE_FORMAT), downloadPath);
+				_downloader.Download(SyncUrl(SYNC_MODE_NAME_DOWNLOAD_SYNC_DATA) + "&Date=" + targetDate.ToString(YlConstants.SYNC_URL_DATE_FORMAT), downloadPath);
 
 				FileInfo fileInfo = new FileInfo(downloadPath);
 				if (fileInfo.Length == 0)
@@ -241,20 +262,20 @@ namespace YukaLister.Models.YukaListerCores
 				syncDataImporter.Import(ref numTotalDownloads, ref numTotalImports);
 
 				// 日付更新
-				targetDate = DateTime.ParseExact(syncInfos[SYNC_INFO_PARAM_DATE], SYNC_URL_DATE_FORMAT, null).AddDays(1);
+				targetDate = syncDataImporter.Date().AddDays(1);
 				if (targetDate > DateTime.UtcNow.Date)
 				{
-					// 今日を超えたら抜ける（mEnvironment.YukaListerSettings.LastSyncDownloadDate は今日の日付のままにしておく）
+					// 今日を超えたら抜ける
 					break;
 				}
 
 				Thread.Sleep(SYNC_INTERVAL);
-				mEnvironment.AppCancellationTokenSource.Token.ThrowIfCancellationRequested();
+				YukaListerModel.Instance.EnvModel.AppCancellationTokenSource.Token.ThrowIfCancellationRequested();
 			}
 
-			mEnvironment.YukaListerSettings.LastSyncDownloadDate = JulianDay.DateTimeToModifiedJulianDate(taskBeginDateTime.Date);
+			YukaListerModel.Instance.EnvModel.YlSettings.LastSyncDownloadDate = JulianDay.DateTimeToModifiedJulianDate(taskBeginDateTime.Date);
+			return (numTotalDownloads, numTotalImports);
 		}
-#endif
 
 		// --------------------------------------------------------------------
 		// ネットワークが利用可能かどうか（簡易判定）
@@ -375,6 +396,67 @@ namespace YukaLister.Models.YukaListerCores
 			return YukaListerModel.Instance.EnvModel.YlSettings.SyncServer + FILE_NAME_CP_MAIN + "?Mode=" + mode;
 		}
 
+		// --------------------------------------------------------------------
+		// 同期データをサーバーへアップロード
+		// ＜返値＞ アップロード件数合計
+		// --------------------------------------------------------------------
+		private Int32 UploadSyncData()
+		{
+			Debug.Assert(MainWindowViewModel != null, "UploadSyncData() no main window");
+			using SyncDataExporter syncDataExporter = new();
+			Int32 numTotalUploads = 0;
 
+			for (MusicInfoTables i = 0; i < MusicInfoTables.__End__; i++)
+			{
+				// アップロードデータ準備
+				(List<String> csvHead, List<List<String>> csvContents) = syncDataExporter.Export(i);
+				if (csvContents.Count == 0)
+				{
+					continue;
+				}
+
+				// 一定数ずつアップロード
+				_logWriterSyncDetail.LogMessage(Common.TRACE_EVENT_TYPE_STATUS, "アップロード中... " + YlConstants.MUSIC_INFO_TABLE_NAME_LABELS[(Int32)i]);
+				for (Int32 j = 0; j < (csvContents.Count + SYNC_UPLOAD_BLOCK - 1) / SYNC_UPLOAD_BLOCK; j++)
+				{
+					List<List<String>> uploadContents = new();
+					uploadContents.Add(csvHead);
+					uploadContents.AddRange(csvContents.GetRange(j * SYNC_UPLOAD_BLOCK, Math.Min(SYNC_UPLOAD_BLOCK, csvContents.Count - j * SYNC_UPLOAD_BLOCK)));
+					String uploadFolder = YlCommon.TempPath();
+					Directory.CreateDirectory(uploadFolder);
+					String uploadPath = uploadFolder + "\\" + YlConstants.MUSIC_INFO_DB_TABLE_NAMES[(Int32)i];
+					CsvManager.SaveCsv(uploadPath, uploadContents, "\n", Encoding.UTF8);
+					Dictionary<String, String> uploadFiles = new()
+					{
+						{ "File", uploadPath },
+					};
+					Dictionary<String, String?> postParams = new()
+					{
+						// HTML Name 属性
+						{ "Mode", SYNC_MODE_NAME_UPLOAD_SYNC_DATA },
+					};
+					for (Int32 k = 1; k < uploadContents.Count; k++)
+					{
+						_logWriterSyncDetail.LogMessage(Common.TRACE_EVENT_TYPE_STATUS, "データ：" + uploadContents[k][0]);
+					}
+					Post(postParams, uploadFiles);
+
+					// アップロード結果確認
+					String? errMessage;
+					if (SyncPostErrorExists(out errMessage))
+					{
+						throw new Exception("同期データをアップロードできませんでした：" + errMessage);
+					}
+
+					// 状況
+					numTotalUploads += uploadContents.Count - 1;
+					MainWindowViewModel.SetStatusBarMessageWithInvoke(Common.TRACE_EVENT_TYPE_STATUS, "同期データをアップロード中... 合計 " + numTotalUploads.ToString("#,0") + " 件");
+					Thread.Sleep(SYNC_INTERVAL);
+					YukaListerModel.Instance.EnvModel.AppCancellationTokenSource.Token.ThrowIfCancellationRequested();
+				}
+			}
+			DownloadRejectDate();
+			return numTotalUploads;
+		}
 	}
 }

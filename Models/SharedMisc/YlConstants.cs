@@ -13,6 +13,9 @@ using Shinta;
 using System;
 using System.Threading.Tasks;
 using System.Windows.Media;
+using YukaLister.Models.Database.Aliases;
+using YukaLister.Models.Database.Masters;
+using YukaLister.Models.Database.Sequences;
 
 namespace YukaLister.Models.SharedMisc
 {
@@ -198,6 +201,17 @@ namespace YukaLister.Models.SharedMisc
 			"_S_", "_P_", "_T_","_C_", "_G_", "_M_", "_Z_",
 			"_SA_", "_PA_", "_TA_","_CA_", "_GA_", "_MA_",
 			String.Empty, String.Empty, String.Empty, String.Empty, String.Empty, String.Empty,
+		};
+
+		// 楽曲情報データベースのテーブル名
+		public static readonly String[] MUSIC_INFO_DB_TABLE_NAMES =
+		{
+			TSong.TABLE_NAME_SONG, TPerson.TABLE_NAME_PERSON, TTieUp.TABLE_NAME_TIE_UP,
+			TCategory.TABLE_NAME_CATEGORY, TTieUpGroup.TABLE_NAME_TIE_UP_GROUP, TMaker.TABLE_NAME_MAKER, TTag.TABLE_NAME_TAG,
+			TSongAlias.TABLE_NAME_SONG_ALIAS, TPersonAlias.TABLE_NAME_PERSON_ALIAS, TTieUpAlias.TABLE_NAME_TIE_UP_ALIAS,
+			TCategoryAlias.TABLE_NAME_CATEGORY_ALIAS, TTieUpGroupAlias.TABLE_NAME_TIE_UP_GROUP_ALIAS, TMakerAlias.TABLE_NAME_MAKER_ALIAS,
+			TArtistSequence.TABLE_NAME_ARTIST_SEQUENCE, TLyristSequence.TABLE_NAME_LYRIST_SEQUENCE, TComposerSequence.TABLE_NAME_COMPOSER_SEQUENCE,
+			TArrangerSequence.TABLE_NAME_ARRANGER_SEQUENCE, TTieUpGroupSequence.TABLE_NAME_TIE_UP_GROUP_SEQUENCE, TTagSequence.TABLE_NAME_TAG_SEQUENCE,
 		};
 
 		// 楽曲情報データベースのテーブル名（表示用）
@@ -421,6 +435,9 @@ namespace YukaLister.Models.SharedMisc
 
 		// 日付の書式指定子
 		public const String DATE_FORMAT = "yyyy/MM/dd";
+
+		// SYNC_INFO_PARAM_DATE の日付フォーマット
+		public const String SYNC_URL_DATE_FORMAT = "yyyyMMdd";
 
 		// RULE_VAR_ON_VOCAL / RULE_VAR_OFF_VOCAL のデフォルト値
 		public const Int32 RULE_VALUE_VOCAL_DEFAULT = 1;
