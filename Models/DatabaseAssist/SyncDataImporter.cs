@@ -441,8 +441,8 @@ namespace YukaLister.Models.DatabaseAssist
 		{
 			SetBaseBySyncData(sequence, fieldPrefix, syncOneData);
 
-			sequence.Sequence = SyncDataToInt32(syncOneData[TArrangerSequence.FIELD_NAME_ARRANGER_SEQUENCE_SEQUENCE]);
-			String? linkId = YlCommon.NormalizeDbString(syncOneData[TArrangerSequence.FIELD_NAME_ARRANGER_SEQUENCE_LINK_ID]);
+			sequence.Sequence = SyncDataToInt32(syncOneData[fieldPrefix + YlConstants.FIELD_SUFFIX_SEQUENCE]);
+			String? linkId = YlCommon.NormalizeDbString(syncOneData[fieldPrefix + YlConstants.FIELD_SUFFIX_LINK_ID]);
 			if (String.IsNullOrEmpty(linkId))
 			{
 				throw new Exception("同期データのリンク ID が空です：" + sequence.Id);

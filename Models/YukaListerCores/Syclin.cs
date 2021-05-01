@@ -260,6 +260,7 @@ namespace YukaLister.Models.YukaListerCores
 
 				// 解凍
 				String extractFolder = downloadPath + "_Extract\\";
+				Debug.WriteLine("DownloadSyncData() extractFolder: " + extractFolder);
 				ZipFile.ExtractToDirectory(downloadPath, extractFolder);
 
 				// インポート
