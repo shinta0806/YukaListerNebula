@@ -63,6 +63,9 @@ namespace YukaLister.Models.YukaListerModels
 		// ネビュラコア：検索データ作成担当
 		public Sifolin Sifolin { get; } = new();
 
+		// ネビュラコア：動画リスト作成担当
+		public Kamlin Kamlin { get; } = new();
+
 		// ネビュラコア：同期担当
 		public Syclin Syclin { get; } = new();
 
@@ -200,6 +203,11 @@ namespace YukaLister.Models.YukaListerModels
 				Sifolin.MainEvent.Set();
 				tasks.Add(Sifolin.MainTask);
 			}
+			if (Kamlin.MainTask != null)
+			{
+				Kamlin.MainEvent.Set();
+				tasks.Add(Kamlin.MainTask);
+			}
 			if (Syclin.MainTask != null)
 			{
 				Syclin.MainEvent.Set();
@@ -214,6 +222,7 @@ namespace YukaLister.Models.YukaListerModels
 		public void StartAllCores()
 		{
 			Sifolin.Start();
+			Kamlin.Start();
 			Syclin.Start();
 		}
 

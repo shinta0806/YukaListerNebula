@@ -9,16 +9,16 @@
 // ----------------------------------------------------------------------------
 
 using Shinta;
+
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.DirectoryServices.AccountManagement;
 using System.IO;
 using System.IO.Compression;
-using System.Linq;
 using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
+
 using YukaLister.Models.DatabaseAssist;
 using YukaLister.Models.DatabaseContexts;
 using YukaLister.Models.SharedMisc;
@@ -158,11 +158,7 @@ namespace YukaLister.Models.YukaListerCores
 		// ====================================================================
 
 		// ファイル名
-		//private const String FILE_NAME_CP_LOGIN = "CPLogin" + Common.FILE_EXT_PHP;
 		private const String FILE_NAME_CP_MAIN = "CPMain" + Common.FILE_EXT_PHP;
-		//private const String FILE_NAME_SYNC_DETAIL_LOG = YlConstants.APP_ID + "SyncDetail" + Common.FILE_EXT_LOG;
-		//private const String FILE_NAME_SYNC_INFO = "SyncInfo" + Common.FILE_EXT_TXT;
-		//private const String FILE_NAME_SYNC_LOG = YlConstants.APP_ID + "Sync" + Common.FILE_EXT_LOG;
 
 		// 同期モード
 		private const String SYNC_MODE_NAME_DOWNLOAD_POST_ERROR = "DownloadPostError";
@@ -172,7 +168,6 @@ namespace YukaLister.Models.YukaListerCores
 		private const String SYNC_MODE_NAME_UPLOAD_SYNC_DATA = "UploadSyncData";
 
 		// その他
-		//private const Int32 IMPORT_PROGRESS_BLOCK = 1000;
 		private const Int32 SYNC_INTERVAL = 200;
 		private const String SYNC_NO_DATA = "NoData";
 		private const Int32 SYNC_UPLOAD_BLOCK = 100;
@@ -183,12 +178,6 @@ namespace YukaLister.Models.YukaListerCores
 
 		// ダウンローダー
 		private Downloader _downloader = new();
-
-		// サーバーデータ再取得
-		//private Boolean _isReget;
-
-		// ログ（同期専用）
-		//private LogWriter _logWriterSync = new(YlConstants.APP_ID + "Sync");
 
 		// 詳細ログ（同期専用）
 		private LogWriter _logWriterSyncDetail = new(YlConstants.APP_ID + YlConstants.SYNC_DETAIL_ID);

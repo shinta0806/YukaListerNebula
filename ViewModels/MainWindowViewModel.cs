@@ -1015,8 +1015,9 @@ namespace YukaLister.ViewModels
 						// 起動時処理
 						YukaListerStatusLabel = YukaListerModel.Instance.EnvModel.YukaListerPartsStatusMessage[(Int32)YukaListerPartsStatusIndex.Startup];
 					}
-					else
+					else if (YukaListerModel.Instance.EnvModel.YukaListerPartsStatus[(Int32)YukaListerPartsStatusIndex.Sifolin] == YukaListerStatus.Running)
 					{
+						// Sifolin
 						TargetFolderInfo? targetFolderInfo = YukaListerModel.Instance.ProjModel.RunningTargetFolderInfo();
 						if (targetFolderInfo == null)
 						{
@@ -1034,6 +1035,14 @@ namespace YukaLister.ViewModels
 								_ => String.Empty,
 							} + "...\n" + targetFolderInfo.TargetPath;
 						}
+					}
+					else if (YukaListerModel.Instance.EnvModel.YukaListerPartsStatus[(Int32)YukaListerPartsStatusIndex.Kamlin] == YukaListerStatus.Running)
+					{
+						YukaListerStatusLabel = "リスト更新中...";
+					}
+					else
+					{
+						// 残り香の状態なので表示は更新しない
 					}
 					break;
 				case YukaListerStatus.Error:

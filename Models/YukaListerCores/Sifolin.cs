@@ -59,24 +59,21 @@ namespace YukaLister.Models.YukaListerCores
 			while (true)
 			{
 				MainEvent.WaitOne();
-				if (YukaListerModel.Instance.EnvModel.YukaListerWholeStatus == YukaListerStatus.Error)
-				{
-					continue;
-				}
-
 				Int32 startTick = Environment.TickCount;
-				YukaListerModel.Instance.EnvModel.YukaListerPartsStatus[(Int32)YukaListerPartsStatusIndex.Sifolin] = YukaListerStatus.Running;
-				YukaListerModel.Instance.EnvModel.LogWriter.LogMessage(Common.TRACE_EVENT_TYPE_STATUS, GetType().Name + " アクティブ化。");
 
 				try
 				{
+					YukaListerModel.Instance.EnvModel.AppCancellationTokenSource.Token.ThrowIfCancellationRequested();
+					if (YukaListerModel.Instance.EnvModel.YukaListerWholeStatus == YukaListerStatus.Error)
+					{
+						continue;
+					}
+
+					YukaListerModel.Instance.EnvModel.YukaListerPartsStatus[(Int32)YukaListerPartsStatusIndex.Sifolin] = YukaListerStatus.Running;
+					YukaListerModel.Instance.EnvModel.LogWriter.LogMessage(Common.TRACE_EVENT_TYPE_STATUS, GetType().Name + " アクティブ化。");
+
 					while (true)
 					{
-#if DEBUGz
-						Thread.Sleep(1000);
-#endif
-						YukaListerModel.Instance.EnvModel.AppCancellationTokenSource.Token.ThrowIfCancellationRequested();
-
 						TargetFolderInfo? targetFolderInfo;
 
 						// 削除
@@ -124,6 +121,10 @@ namespace YukaLister.Models.YukaListerCores
 						{
 							MemoryToDisk();
 							MemoryToCache();
+
+							// Kamlin アクティブ化
+							YukaListerModel.Instance.EnvModel.Kamlin.MainEvent.Set();
+
 							continue;
 						}
 

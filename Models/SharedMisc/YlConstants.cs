@@ -121,6 +121,7 @@ namespace YukaLister.Models.SharedMisc
 		Environment,    // 環境系
 		Startup,        // 起動時処理
 		Sifolin,        // Sifolin
+		Kamlin,         // Kamlin
 		__End__,
 	}
 
