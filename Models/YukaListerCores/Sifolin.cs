@@ -128,9 +128,6 @@ namespace YukaLister.Models.YukaListerCores
 						}
 
 						// やることが無くなったのでループを抜けて待機へ向かう
-						// 念のため最後に表示を更新
-						YukaListerModel.Instance.EnvModel.YukaListerPartsStatus[(Int32)YukaListerPartsStatusIndex.Sifolin] = YukaListerStatus.Ready;
-						YukaListerModel.Instance.EnvModel.IsMainWindowDataGridCountChanged = true;
 						break;
 					}
 				}
@@ -143,6 +140,10 @@ namespace YukaLister.Models.YukaListerCores
 					YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(TraceEventType.Error, GetType().Name + " ループ稼働時エラー：\n" + excep.Message);
 					YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, "　スタックトレース：\n" + excep.StackTrace);
 				}
+
+				// 念のため最後に表示を更新
+				YukaListerModel.Instance.EnvModel.YukaListerPartsStatus[(Int32)YukaListerPartsStatusIndex.Sifolin] = YukaListerStatus.Ready;
+				YukaListerModel.Instance.EnvModel.IsMainWindowDataGridCountChanged = true;
 
 				TimeSpan timeSpan = new(YlCommon.MiliToHNano(Environment.TickCount - startTick));
 				YukaListerModel.Instance.EnvModel.LogWriter.LogMessage(Common.TRACE_EVENT_TYPE_STATUS, GetType().Name + " スリープ化：アクティブ時間：" + timeSpan.ToString(@"hh\:mm\:ss"));

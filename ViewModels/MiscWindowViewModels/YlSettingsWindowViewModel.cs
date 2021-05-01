@@ -877,10 +877,9 @@ namespace YukaLister.ViewModels.MiscWindowViewModels
 
 		public void ButtonRegetClicked()
 		{
-#if false
 			try
 			{
-				if (SyncClient.RunningInstanceExists())
+				if (YukaListerModel.Instance.EnvModel.Syclin.IsActive)
 				{
 					throw new Exception("現在、同期処理を実行中のため、合わせられません。\n同期処理が終了してから合わせてください。");
 				}
@@ -893,16 +892,15 @@ namespace YukaLister.ViewModels.MiscWindowViewModels
 					return;
 				}
 
-				Environment!.YukaListerSettings.LastSyncDownloadDate = 0.0;
+				YukaListerModel.Instance.EnvModel.YlSettings.LastSyncDownloadDate = 0.0;
 				RegetSyncDataNeeded = true;
-				Environment.LogWriter.ShowLogMessage(TraceEventType.Information, "環境設定ウィンドウを閉じると処理を開始します。");
+				YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(TraceEventType.Information, "環境設定ウィンドウを閉じると処理を開始します。");
 			}
-			catch (Exception oExcep)
+			catch (Exception excep)
 			{
-				Environment!.LogWriter.ShowLogMessage(TraceEventType.Error, "強制的に合わせる時エラー：\n" + oExcep.Message);
-				Environment.LogWriter.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, "　スタックトレース：\n" + oExcep.StackTrace);
+				YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(TraceEventType.Error, "強制的に合わせる時エラー：\n" + excep.Message);
+				YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, "　スタックトレース：\n" + excep.StackTrace);
 			}
-#endif
 		}
 		#endregion
 

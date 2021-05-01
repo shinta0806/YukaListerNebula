@@ -145,7 +145,7 @@
                     </StackPanel>
                     <StackPanel Margin="0,10,20,0">
                         <Button Height="Auto" Content="設定のバックアップ(_B)" Style="{StaticResource MaterialDesignRaisedLightButton}" Margin="0" Width="210" DockPanel.Dock="Right" HorizontalAlignment="Right" Command="{Binding ButtonBackupClickedCommand}"/>
-                        <Button Height="Auto" Content="設定の復元(_R)" Style="{StaticResource MaterialDesignRaisedLightButton}" Margin="0" Width="210" DockPanel.Dock="Right" HorizontalAlignment="Right" Command="{Binding ButtonRestoreClickedCommand}"/>
+                        <Button Height="Auto" Content="設定の復元(_R)" Style="{StaticResource MaterialDesignRaisedLightButton}" Margin="0,10,0,0" Width="210" DockPanel.Dock="Right" HorizontalAlignment="Right" Command="{Binding ButtonRestoreClickedCommand}"/>
                     </StackPanel>
                     <StackPanel Margin="20,10,0,0">
                         <CheckBox x:Name="CheckBoxSyncMusicInfoDb" Content="楽曲情報データベースを同期する (_S)" IsChecked="{Binding SyncMusicInfoDb}" />

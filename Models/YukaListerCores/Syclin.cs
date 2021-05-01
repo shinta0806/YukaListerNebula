@@ -47,6 +47,12 @@ namespace YukaLister.Models.YukaListerCores
 		// メインウィンドウ
 		public MainWindowViewModel? MainWindowViewModel { get; set; }
 
+		// 現在アクティブに動作しているか
+		public Boolean IsActive { get; set; }
+
+		// サーバーデータ再取得
+		public Boolean IsReget { get; set; }
+
 		// ====================================================================
 		// protected メンバー関数
 		// ====================================================================
@@ -61,30 +67,32 @@ namespace YukaLister.Models.YukaListerCores
 			while (true)
 			{
 				MainEvent.WaitOne();
-				if (YukaListerModel.Instance.EnvModel.YukaListerWholeStatus == YukaListerStatus.Error)
-				{
-					continue;
-				}
-
 				Int32 startTick = Environment.TickCount;
-				YukaListerModel.Instance.EnvModel.LogWriter.LogMessage(Common.TRACE_EVENT_TYPE_STATUS, GetType().Name + " アクティブ化。");
 
 				try
 				{
 					YukaListerModel.Instance.EnvModel.AppCancellationTokenSource.Token.ThrowIfCancellationRequested();
+					if (YukaListerModel.Instance.EnvModel.YukaListerWholeStatus == YukaListerStatus.Error)
+					{
+						continue;
+					}
+					if (!YukaListerModel.Instance.EnvModel.YlSettings.SyncMusicInfoDb)
+					{
+						continue;
+					}
+
+					IsActive = true;
+					YukaListerModel.Instance.EnvModel.LogWriter.LogMessage(Common.TRACE_EVENT_TYPE_STATUS, GetType().Name + " アクティブ化。");
 
 					// ログイン
 					MainWindowViewModel?.SetStatusBarMessageWithInvoke(Common.TRACE_EVENT_TYPE_STATUS, "同期準備中...");
-#if DEBUGz
-					MainWindowViewModel?.SetStatusBarMessageWithInvoke(TraceEventType.Error, "err test");
-#endif
 					LoginToSyncServer();
 
 					// データベースをバックアップ
 					MusicInfoContext.BackupDatabase();
 
 					// 再取得の場合は楽曲情報データベース初期化
-					//CreateMusicInfoDbIfNeeded();
+					CreateMusicInfoDbIfNeeded();
 
 					// ダウンロード
 					(Int32 numTotalDownloads, Int32 numTotalImports) = DownloadSyncData();
@@ -113,6 +121,7 @@ namespace YukaLister.Models.YukaListerCores
 					YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, "　スタックトレース：\n" + excep.StackTrace);
 				}
 
+				IsActive = false;
 				TimeSpan timeSpan = new(YlCommon.MiliToHNano(Environment.TickCount - startTick));
 				YukaListerModel.Instance.EnvModel.LogWriter.LogMessage(Common.TRACE_EVENT_TYPE_STATUS, GetType().Name + " スリープ化：アクティブ時間：" + timeSpan.ToString(@"hh\:mm\:ss"));
 			}
@@ -190,6 +199,21 @@ namespace YukaLister.Models.YukaListerCores
 		// ====================================================================
 		// private メンバー関数
 		// ====================================================================
+
+		// --------------------------------------------------------------------
+		// 再取得の場合は楽曲情報データベースを初期化
+		// --------------------------------------------------------------------
+		private void CreateMusicInfoDbIfNeeded()
+		{
+			if (!IsReget)
+			{
+				return;
+			}
+
+			YukaListerModel.Instance.EnvModel.LogWriter.LogMessage(Common.TRACE_EVENT_TYPE_STATUS, "サーバーデータ再取得のため楽曲情報データベースを初期化。");
+			MusicInfoContext.CreateDatabase();
+			IsReget = false;
+		}
 
 		// --------------------------------------------------------------------
 		// アップロードを拒否されたレコードの更新日をサーバーからダウンロード

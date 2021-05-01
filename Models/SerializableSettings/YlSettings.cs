@@ -16,6 +16,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Text;
 using System.Windows;
 
 using YukaLister.Models.Database;
@@ -87,6 +88,16 @@ namespace YukaLister.Models.SerializableSettings
 		public String? SyncPassword { get; set; }
 
 		// --------------------------------------------------------------------
+		// ゆかりの設定
+		// --------------------------------------------------------------------
+
+		// 簡易認証を使用するかどうか
+		public Boolean YukariUseEasyAuth { get; set; }
+
+		// 簡易認証キーワード
+		public String YukariEasyAuthKeyword { get; set; } = String.Empty;
+
+		// --------------------------------------------------------------------
 		// 終了時の状態（ゆかりすたー専用）
 		// --------------------------------------------------------------------
 
@@ -118,6 +129,35 @@ namespace YukaLister.Models.SerializableSettings
 		// ====================================================================
 		// public メンバー関数
 		// ====================================================================
+
+		// --------------------------------------------------------------------
+		// ゆかり設定ファイルを解析して簡易認証の設定を取得
+		// --------------------------------------------------------------------
+		public void AnalyzeYukariEasyAuthConfig()
+		{
+			try
+			{
+				if (!IsYukariConfigPathValid())
+				{
+					throw new Exception("ゆかり設定ファイルが正しく指定されていません。");
+				}
+
+				String[] config = File.ReadAllLines(YukariConfigPath(), Encoding.UTF8);
+
+				// 簡易認証を使用するかどうか
+				String useEasyAuth = YukariConfigValue(config, YUKARI_CONFIG_KEY_NAME_USE_EASY_AUTH);
+				YukariUseEasyAuth = (useEasyAuth == "1");
+
+				// 簡易認証キーワード
+				YukariEasyAuthKeyword = YukariConfigValue(config, YUKARI_CONFIG_KEY_NAME_EASY_AUTH_KEYWORD);
+			}
+			catch (Exception excep)
+			{
+				// エラーの場合は情報をクリア
+				YukariUseEasyAuth = false;
+				YukaListerModel.Instance.EnvModel.LogWriter.LogMessage(TraceEventType.Error, excep.Message + "サーバーに簡易認証を適用しません。");
+			}
+		}
 
 		// --------------------------------------------------------------------
 		// ゆかり設定ファイルが正しく指定されているかどうか
@@ -196,9 +236,7 @@ namespace YukaLister.Models.SerializableSettings
 					LastIdNumbers.Add(0);
 				}
 			}
-#if false
-			YukaListerSettings.AnalyzeYukariEasyAuthConfig(this);
-#endif
+			AnalyzeYukariEasyAuthConfig();
 		}
 
 		// --------------------------------------------------------------------
@@ -210,10 +248,50 @@ namespace YukaLister.Models.SerializableSettings
 		}
 
 		// ====================================================================
-		// protected メンバー関数
+		// private メンバー定数
 		// ====================================================================
 
 		// ゆかり用のサーバーポート
 		private const Int32 DEFAULT_WEB_SERVER_PORT = 13582;
+
+		// ゆかりの config.ini の項目
+		private const String YUKARI_CONFIG_KEY_NAME_USE_EASY_AUTH = "useeasyauth";
+		private const String YUKARI_CONFIG_KEY_NAME_EASY_AUTH_KEYWORD = "useeasyauth_word";
+
+		// ====================================================================
+		// private メンバー関数
+		// ====================================================================
+
+		// --------------------------------------------------------------------
+		// ゆかり設定を config.ini の内容から取得
+		// --------------------------------------------------------------------
+		private String YukariConfigValue(String[] config, String keyName)
+		{
+			// キーを検索
+			Int32 line = -1;
+			for (Int32 i = 0; i < config.Length; i++)
+			{
+				if (config[i].StartsWith(keyName + "="))
+				{
+					line = i;
+					break;
+				}
+			}
+			if (line < 0)
+			{
+				// キーがない
+				return String.Empty;
+			}
+
+			// 値を検索
+			Int32 pos = config[line].IndexOf('=');
+			if (pos == config[line].Length - 1)
+			{
+				// 値がない
+				return String.Empty;
+			}
+
+			return config[line].Substring(pos + 1);
+		}
 	}
 }

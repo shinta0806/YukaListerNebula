@@ -242,28 +242,27 @@ namespace YukaLister.ViewModels
 				String? syncAccountBak = YukaListerModel.Instance.EnvModel.YlSettings.SyncAccount;
 				String? syncPasswordBak = YukaListerModel.Instance.EnvModel.YlSettings.SyncPassword;
 				DateTime musicInfoDbTimeBak = MusicInfoContext.LastWriteTime();
-				//Boolean regetSyncDataNeeded;
+				Boolean regetSyncDataNeeded;
 
 				// ViewModel 経由でウィンドウを開く
 				using YlSettingsWindowViewModel ylSettingsWindowViewModel = new();
-				//aYukaListerSettingsWindowViewModel.YukariListDbInMemory = YukariDb.YukariListDbInMemory;
 				Messenger.Raise(new TransitionMessage(ylSettingsWindowViewModel, YlConstants.MESSAGE_KEY_OPEN_YL_SETTINGS_WINDOW));
 
-#if false
-				if (aYukaListerSettingsWindowViewModel.IsOk)
+				if (ylSettingsWindowViewModel.IsOk)
 				{
-					mMainWindowViewModel.SetStatusBarMessageWithInvoke(TraceEventType.Information, "環境設定を変更しました。");
+					SetStatusBarMessageWithInvoke(TraceEventType.Information, "環境設定を変更しました。");
 				}
-				regetSyncDataNeeded = aYukaListerSettingsWindowViewModel.RegetSyncDataNeeded;
+				regetSyncDataNeeded = ylSettingsWindowViewModel.RegetSyncDataNeeded;
 
 				// ゆかり設定ファイルのフルパスが変更された場合は処理を行う
-				if (Environment.YukaListerSettings.YukariConfigPath() != yukariConfigPathBak)
+				if (YukaListerModel.Instance.EnvModel.YlSettings.YukariConfigPath() != yukariConfigPathBak)
 				{
-					Environment.YukaListerSettings.AnalyzeYukariEasyAuthConfig(Environment);
+					UpdateYukaListerEnvironmentStatus();
+					YukaListerModel.Instance.EnvModel.YlSettings.AnalyzeYukariEasyAuthConfig();
 					SetFileSystemWatcherYukariConfig();
-					YukariDb.YukariConfigPathChanged();
 				}
 
+#if false
 				// サーバー設定が変更された場合は起動・終了を行う
 				if (Environment.YukaListerSettings.ProvideYukariPreview != provideYukariPreviewBak)
 				{
@@ -276,30 +275,27 @@ namespace YukaLister.ViewModels
 						StopPreviewServerIfNeeded();
 					}
 				}
+#endif
 
 				if (regetSyncDataNeeded)
 				{
 					// 再取得が指示された場合は再取得
-					YukariDb.RunSyncClientIfNeeded(true);
+					YukaListerModel.Instance.EnvModel.Syclin.IsReget = true;
+					YlCommon.ActivateSyclinIfNeeded();
 				}
 				else
 				{
 					// 同期設定が変更された場合・インポートで楽曲情報データベースが更新された場合は同期を行う
-					DateTime aMusicInfoDbTime;
-					using (MusicInfoDatabaseInDisk aMusicInfoDbInDisk = new MusicInfoDatabaseInDisk(Environment))
+					DateTime musicInfoDbTime = MusicInfoContext.LastWriteTime();
+					if (YukaListerModel.Instance.EnvModel.YlSettings.SyncMusicInfoDb != syncMusicInfoDbBak
+							|| YukaListerModel.Instance.EnvModel.YlSettings.SyncServer != syncServerBak
+							|| YukaListerModel.Instance.EnvModel.YlSettings.SyncAccount != syncAccountBak
+							|| YukaListerModel.Instance.EnvModel.YlSettings.SyncPassword != syncPasswordBak
+							|| musicInfoDbTime != musicInfoDbTimeBak)
 					{
-						aMusicInfoDbTime = aMusicInfoDbInDisk.LastWriteTime();
-					}
-					if (Environment.YukaListerSettings.SyncMusicInfoDb != syncMusicInfoDbBak
-							|| Environment.YukaListerSettings.SyncServer != syncServerBak
-							|| Environment.YukaListerSettings.SyncAccount != syncAccountBak
-							|| Environment.YukaListerSettings.SyncPassword != syncPasswordBak
-							|| aMusicInfoDbTime != musicInfoDbTimeBak)
-					{
-						YukariDb.RunSyncClientIfNeeded();
+						YlCommon.ActivateSyclinIfNeeded();
 					}
 				}
-#endif
 			}
 			catch (Exception excep)
 			{
@@ -475,9 +471,6 @@ namespace YukaLister.ViewModels
 				// イベントハンドラー
 				TargetFolderInfo.IsOpenChanged = TargetFolderInfoIsOpenChanged;
 
-				// ステータスバー
-				//ClearStatusBarMessage();
-
 				// スプラッシュウィンドウを閉じる
 				_splashWindowViewModel.Close();
 
@@ -495,33 +488,28 @@ namespace YukaLister.ViewModels
 				YukaListerModel.Instance.EnvModel.Syclin.MainWindowViewModel = this;
 
 				// 動作状況
-#if DEBUGz
-				SetStatusBarMessageWithInvoke(TraceEventType.Verbose, "動作状況確認開始");
-#endif
 				YukaListerModel.Instance.EnvModel.YukaListerPartsStatus[(Int32)YukaListerPartsStatusIndex.Startup] = YukaListerStatus.Running;
 				YukaListerModel.Instance.EnvModel.YukaListerPartsStatusMessage[(Int32)YukaListerPartsStatusIndex.Startup] = "前回のゆかり検索対象フォルダーを確認中...";
 				UpdateYukaListerEnvironmentStatus();
-				UpdateUi(YukaListerModel.Instance.EnvModel.YukaListerWholeStatus);
+
+				// ゆかり設定ファイル監視
+				CompositeDisposable.Add(_fileSystemWatcherYukariConfig);
+				_fileSystemWatcherYukariConfig.Created += new FileSystemEventHandler(FileSystemWatcherYukariConfig_Changed);
+				_fileSystemWatcherYukariConfig.Deleted += new FileSystemEventHandler(FileSystemWatcherYukariConfig_Changed);
+				_fileSystemWatcherYukariConfig.Changed += new FileSystemEventHandler(FileSystemWatcherYukariConfig_Changed);
+				SetFileSystemWatcherYukariConfig();
 
 				// UI 更新タイマー
 				_timerUpdateUi.Interval = TimeSpan.FromSeconds(1.0);
-#if DEBUGz
-				_timerUpdateUi.Interval = TimeSpan.FromSeconds(5.0);
-#endif
 				_timerUpdateUi.Tick += new EventHandler(TimerUpdateUi_Tick);
 				_timerUpdateUi.Start();
 
 				// 時間がかかるかもしれない処理を非同期で実行
-#if DEBUGz
-				SetStatusBarMessageWithInvoke(TraceEventType.Verbose, "AutoTargetAllDrivesAsync() 呼び出し");
-#endif
 				await AutoTargetAllDrivesAsync();
 
 				// サーバー同期
-#if DEBUGz
-				SetStatusBarMessageWithInvoke(TraceEventType.Verbose, "ActivateSyclinIfNeeded() 呼び出し");
-#endif
 				YlCommon.ActivateSyclinIfNeeded();
+
 #if DEBUGz
 				using MusicInfoContext musicInfoContext = MusicInfoContext.CreateContext(out DbSet<TSong> songs);
 				Debug.WriteLine("Initialize() " + songs.EntityType.Name);
@@ -574,6 +562,26 @@ namespace YukaLister.ViewModels
 			}
 		}
 
+		// --------------------------------------------------------------------
+		// ステータスバーにメッセージを表示
+		// --------------------------------------------------------------------
+		public void SetStatusBarMessageWithInvoke(TraceEventType traceEventType, String msg)
+		{
+			DispatcherHelper.UIDispatcher.Invoke(new Action(() =>
+			{
+				StatusBarMessage = msg;
+				if (traceEventType == TraceEventType.Error)
+				{
+					StatusBarForeground = YlConstants.BRUSH_ERROR_STRING;
+				}
+				else
+				{
+					StatusBarForeground = YlConstants.BRUSH_NORMAL_STRING;
+				}
+				YukaListerModel.Instance.EnvModel.LogWriter.LogMessage(traceEventType, msg);
+			}));
+		}
+
 		// ====================================================================
 		// protected メンバー関数
 		// ====================================================================
@@ -619,6 +627,9 @@ namespace YukaLister.ViewModels
 
 		// 前回 UI 更新時のゆかりすたー NEBULA 全体の動作状況
 		private YukaListerStatus _prevYukaListerWholeStatus = YukaListerStatus.__End__;
+
+		// config.ini 監視用
+		private FileSystemWatcher _fileSystemWatcherYukariConfig = new();
 
 		// Dispose フラグ
 		private Boolean _isDisposed = false;
@@ -724,6 +735,15 @@ namespace YukaLister.ViewModels
 		}
 
 		// --------------------------------------------------------------------
+		// イベントハンドラー
+		// --------------------------------------------------------------------
+		private void FileSystemWatcherYukariConfig_Changed(Object sender, FileSystemEventArgs fileSystemEventArgs)
+		{
+			SetStatusBarMessageWithInvoke(TraceEventType.Information, "ゆかり設定ファイルが更新されました。");
+			YukaListerModel.Instance.EnvModel.YlSettings.AnalyzeYukariEasyAuthConfig();
+		}
+
+		// --------------------------------------------------------------------
 		// フォルダー設定
 		// --------------------------------------------------------------------
 		private void FolderSettings()
@@ -733,6 +753,9 @@ namespace YukaLister.ViewModels
 				return;
 			}
 
+			DateTime musicInfoDbTimeBak = MusicInfoContext.LastWriteTime();
+
+			// ViewModel 経由でフォルダー設定ウィンドウを開く
 			using FolderSettingsWindowViewModel folderSettingsWindowViewModel = new(SelectedTargetFolderInfo.TargetPath);
 			Messenger.Raise(new TransitionMessage(folderSettingsWindowViewModel, YlConstants.MESSAGE_KEY_OPEN_FOLDER_SETTINGS_WINDOW));
 
@@ -741,50 +764,11 @@ namespace YukaLister.ViewModels
 			YukaListerModel.Instance.ProjModel.SetFolderSettingsStatusToUnchecked(SelectedTargetFolderInfo.TargetPath);
 			UpdateDataGrid();
 
-#if false
-				using (MusicInfoDatabaseInDisk aMusicInfoDbInDisk = new MusicInfoDatabaseInDisk(mEnvironment))
-				{
-					DateTime aMusicInfoDbTimeBak = aMusicInfoDbInDisk.LastWriteTime();
-
-					// ViewModel 経由でフォルダー設定ウィンドウを開く
-					using (FolderSettingsWindowViewModel aFolderSettingsWindowViewModel = new FolderSettingsWindowViewModel())
-					{
-						aFolderSettingsWindowViewModel.Environment = mEnvironment;
-						aFolderSettingsWindowViewModel.PathExLen = aTargetFolderInfo.Path;
-						mMainWindowViewModel.Messenger.Raise(new TransitionMessage(aFolderSettingsWindowViewModel, "OpenFolderSettingsWindow"));
-					}
-
-					// フォルダー設定の有無の表示を更新
-					// キャンセルでも実行（設定削除→キャンセルの場合はフォルダー設定の有無が変わる）
-					lock (mTargetFolderInfos)
-					{
-						Int32 aIndex = mTargetFolderInfos.IndexOf(aTargetFolderInfo);
-						if (aIndex < 0)
-						{
-							throw new Exception("フォルダー設定有無を更新する対象が見つかりません。");
-						}
-						while (aIndex < mTargetFolderInfos.Count)
-						{
-							if (!mTargetFolderInfos[aIndex].Path.StartsWith(aTargetFolderInfo.Path))
-							{
-								break;
-							}
-							mTargetFolderInfos[aIndex].FolderExcludeSettingsStatus = FolderExcludeSettingsStatus.Unchecked;
-							mTargetFolderInfos[aIndex].FolderSettingsStatus = FolderSettingsStatus.Unchecked;
-							mDirtyDg = true;
-							aIndex++;
-						}
-					}
-					UpdateDirtyDgWithInvoke();
-
-					// 楽曲情報データベースが更新された場合は同期を行う
-					DateTime aMusicInfoDbTime = aMusicInfoDbInDisk.LastWriteTime();
-					if (aMusicInfoDbTime != aMusicInfoDbTimeBak)
-					{
-						RunSyncClientIfNeeded();
-					}
-				}
-#endif
+			// 楽曲情報データベースが更新された場合は同期を行う
+			if (MusicInfoContext.LastWriteTime() != musicInfoDbTimeBak)
+			{
+				YlCommon.ActivateSyclinIfNeeded();
+			}
 		}
 
 		// --------------------------------------------------------------------
@@ -867,23 +851,24 @@ namespace YukaLister.ViewModels
 		}
 
 		// --------------------------------------------------------------------
-		// ステータスバーにメッセージを表示
+		// ゆかり設定ファイルの監視設定
 		// --------------------------------------------------------------------
-		public void SetStatusBarMessageWithInvoke(TraceEventType traceEventType, String msg)
+		private void SetFileSystemWatcherYukariConfig()
 		{
-			DispatcherHelper.UIDispatcher.Invoke(new Action(() =>
+			if (YukaListerModel.Instance.EnvModel.YlSettings.IsYukariConfigPathValid())
 			{
-				StatusBarMessage = msg;
-				if (traceEventType == TraceEventType.Error)
+				String? path = Path.GetDirectoryName(YukaListerModel.Instance.EnvModel.YlSettings.YukariConfigPath());
+				String filter = Path.GetFileName(YukaListerModel.Instance.EnvModel.YlSettings.YukariConfigPath());
+				if (!String.IsNullOrEmpty(path) && !String.IsNullOrEmpty(filter))
 				{
-					StatusBarForeground = YlConstants.BRUSH_ERROR_STRING;
+					_fileSystemWatcherYukariConfig.Path = path;
+					_fileSystemWatcherYukariConfig.Filter = filter;
+					_fileSystemWatcherYukariConfig.EnableRaisingEvents = true;
+					return;
 				}
-				else
-				{
-					StatusBarForeground = YlConstants.BRUSH_NORMAL_STRING;
-				}
-				YukaListerModel.Instance.EnvModel.LogWriter.LogMessage(traceEventType, msg);
-			}));
+			}
+
+			_fileSystemWatcherYukariConfig!.EnableRaisingEvents = false;
 		}
 
 		// --------------------------------------------------------------------
@@ -1004,7 +989,14 @@ namespace YukaLister.ViewModels
 				YukaListerModel.Instance.EnvModel.YukaListerPartsStatus[(Int32)YukaListerPartsStatusIndex.Environment] = YukaListerStatus.Ready;
 				YukaListerModel.Instance.EnvModel.YukaListerPartsStatusMessage[(Int32)YukaListerPartsStatusIndex.Environment]
 						= YlConstants.APP_NAME_J + "は正常に動作しています。";
+
+				// Sifolin アクティブ化
+				YukaListerModel.Instance.EnvModel.Sifolin.MainEvent.Set();
 			}
+
+			// 表示を強制更新
+			_prevYukaListerWholeStatus = YukaListerStatus.__End__;
+			UpdateUi(YukaListerModel.Instance.EnvModel.YukaListerWholeStatus);
 		}
 
 		// --------------------------------------------------------------------
