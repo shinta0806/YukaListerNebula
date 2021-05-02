@@ -17,6 +17,7 @@ using System.Text;
 using System.Web;
 
 using YukaLister.Models.Database;
+using YukaLister.Models.DatabaseAssist;
 using YukaLister.Models.SharedMisc;
 using YukaLister.Models.YukaListerModels;
 
@@ -88,8 +89,8 @@ namespace YukaLister.Models.OutputWriters
 		// --------------------------------------------------------------------
 		protected override void DeleteMisc()
 		{
-			Debug.Assert(!String.IsNullOrEmpty(FolderPath), "DeleteMisc() bad FolderPath");
-			String[] reportPathes = Directory.GetFiles(FolderPath, "Report_*" + Common.FILE_EXT_PHP);
+			Debug.Assert(!String.IsNullOrEmpty(_folderPath), "DeleteMisc() bad FolderPath");
+			String[] reportPathes = Directory.GetFiles(_folderPath, "Report_*" + Common.FILE_EXT_PHP);
 
 			foreach (String path in reportPathes)
 			{
@@ -138,6 +139,17 @@ namespace YukaLister.Models.OutputWriters
 			CopySyncServerPhp();
 		}
 
+		// --------------------------------------------------------------------
+		// コンストラクターでは行えない準備などを実施
+		// --------------------------------------------------------------------
+		protected override void PrepareOutput()
+		{
+			base.PrepareOutput();
+
+			// 出力先フォルダー
+			_folderPath = Path.GetDirectoryName(DbCommon.ListDatabasePath(YukaListerModel.Instance.EnvModel.YlSettings)) + '\\';
+		}
+
 		// ====================================================================
 		// private 定数
 		// ====================================================================
@@ -170,7 +182,7 @@ namespace YukaLister.Models.OutputWriters
 		private void CopySyncServerPhp()
 		{
 			String srcFilder = YukaListerModel.Instance.EnvModel.ExeFullFolder + FOLDER_NAME_SYNC_SERVER + FOLDER_NAME_COMMON_LIB;
-			File.Copy(srcFilder + "JulianDay.php", FolderPath + "Report_JulianDay.php");
+			File.Copy(srcFilder + "JulianDay.php", _folderPath + "Report_JulianDay.php");
 		}
 
 		// --------------------------------------------------------------------
@@ -195,7 +207,7 @@ namespace YukaLister.Models.OutputWriters
 
 			String template = LoadTemplate("YukariReportCommon");
 			template = template.Replace(HTML_VAR_ID_PREFIX, YukaListerModel.Instance.EnvModel.YlSettings.IdPrefix);
-			File.WriteAllText(FolderPath + FILE_NAME_REPORT_COMMON, template, Encoding.UTF8);
+			File.WriteAllText(_folderPath + FILE_NAME_REPORT_COMMON, template, Encoding.UTF8);
 		}
 
 		// --------------------------------------------------------------------
@@ -205,7 +217,7 @@ namespace YukaLister.Models.OutputWriters
 		{
 			String template = LoadTemplate("YukariReportEntry");
 			template = ReplacePhpContents(template);
-			File.WriteAllText(FolderPath + FILE_NAME_REPORT_ENTRY, template, Encoding.UTF8);
+			File.WriteAllText(_folderPath + FILE_NAME_REPORT_ENTRY, template, Encoding.UTF8);
 		}
 
 		// --------------------------------------------------------------------
@@ -215,7 +227,7 @@ namespace YukaLister.Models.OutputWriters
 		{
 			String template = LoadTemplate("YukariReportRegist");
 			template = ReplacePhpContents(template);
-			File.WriteAllText(FolderPath + FILE_NAME_REPORT_REGIST, template, Encoding.UTF8);
+			File.WriteAllText(_folderPath + FILE_NAME_REPORT_REGIST, template, Encoding.UTF8);
 		}
 
 		// --------------------------------------------------------------------

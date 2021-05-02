@@ -536,8 +536,8 @@ namespace YukaLister.Models.OutputWriters
 		// --------------------------------------------------------------------
 		private void DeleteOldListContentsCore(String kindFileName)
 		{
-			Debug.Assert(!String.IsNullOrEmpty(FolderPath), "DeleteOldListContentsCore() FolderPath is null");
-			String[] listPathes = Directory.GetFiles(FolderPath, FILE_NAME_PREFIX + "_" + kindFileName + "_*" + _listExt);
+			Debug.Assert(!String.IsNullOrEmpty(_folderPath), "DeleteOldListContentsCore() FolderPath is null");
+			String[] listPathes = Directory.GetFiles(_folderPath, FILE_NAME_PREFIX + "_" + kindFileName + "_*" + _listExt);
 
 			foreach (String path in listPathes)
 			{
@@ -1512,7 +1512,7 @@ namespace YukaLister.Models.OutputWriters
 			{
 				try
 				{
-					File.Move(path, FolderPath + Path.GetFileName(path));
+					File.Move(path, _folderPath + Path.GetFileName(path));
 				}
 				catch (Exception)
 				{
@@ -1530,7 +1530,7 @@ namespace YukaLister.Models.OutputWriters
 			try
 			{
 				// File.Move() には上書きフラグが無いので File.Copy() を使う
-				File.Copy(_tempFolderPath + indexFileName, FolderPath + indexFileName, true);
+				File.Copy(_tempFolderPath + indexFileName, _folderPath + indexFileName, true);
 				File.Delete(_tempFolderPath + indexFileName);
 			}
 			catch (Exception)
@@ -1546,7 +1546,7 @@ namespace YukaLister.Models.OutputWriters
 		private void OutputCss()
 		{
 			String template = LoadTemplate("HtmlCss");
-			File.WriteAllText(FolderPath + "List.css", template, Encoding.UTF8);
+			File.WriteAllText(_folderPath + "List.css", template, Encoding.UTF8);
 		}
 
 		// --------------------------------------------------------------------
@@ -1564,7 +1564,7 @@ namespace YukaLister.Models.OutputWriters
 		private void OutputJs()
 		{
 			String template = LoadTemplate("HtmlJs");
-			File.WriteAllText(FolderPath + "List.js", template, Encoding.UTF8);
+			File.WriteAllText(_folderPath + "List.js", template, Encoding.UTF8);
 		}
 
 		// --------------------------------------------------------------------
@@ -1601,22 +1601,22 @@ namespace YukaLister.Models.OutputWriters
 			String topTemplate = LoadTemplate("HtmlIndexNotice");
 
 			// 新着（実際には新着が無い場合でも、更新中リストとしては 404 にならないように新着も出力しておく）
-			File.WriteAllText(FolderPath + IndexFileName(false, KIND_FILE_NAME_NEW), topTemplate, Encoding.UTF8);
-			File.WriteAllText(FolderPath + IndexFileName(true, KIND_FILE_NAME_NEW), topTemplate, Encoding.UTF8);
+			File.WriteAllText(_folderPath + IndexFileName(false, KIND_FILE_NAME_NEW), topTemplate, Encoding.UTF8);
+			File.WriteAllText(_folderPath + IndexFileName(true, KIND_FILE_NAME_NEW), topTemplate, Encoding.UTF8);
 
 			// インデックス系
-			File.WriteAllText(FolderPath + IndexFileName(false, KIND_FILE_NAME_CATEGORY), topTemplate, Encoding.UTF8);
-			File.WriteAllText(FolderPath + IndexFileName(true, KIND_FILE_NAME_CATEGORY), topTemplate, Encoding.UTF8);
-			File.WriteAllText(FolderPath + IndexFileName(false, KIND_FILE_NAME_TIE_UP_GROUP), topTemplate, Encoding.UTF8);
-			File.WriteAllText(FolderPath + IndexFileName(true, KIND_FILE_NAME_TIE_UP_GROUP), topTemplate, Encoding.UTF8);
-			File.WriteAllText(FolderPath + IndexFileName(false, KIND_FILE_NAME_PERIOD), topTemplate, Encoding.UTF8);
-			File.WriteAllText(FolderPath + IndexFileName(true, KIND_FILE_NAME_PERIOD), topTemplate, Encoding.UTF8);
-			File.WriteAllText(FolderPath + IndexFileName(false, KIND_FILE_NAME_SEASON), topTemplate, Encoding.UTF8);
-			File.WriteAllText(FolderPath + IndexFileName(true, KIND_FILE_NAME_SEASON), topTemplate, Encoding.UTF8);
-			File.WriteAllText(FolderPath + IndexFileName(false, KIND_FILE_NAME_ARTIST), topTemplate, Encoding.UTF8);
-			File.WriteAllText(FolderPath + IndexFileName(true, KIND_FILE_NAME_ARTIST), topTemplate, Encoding.UTF8);
-			File.WriteAllText(FolderPath + IndexFileName(false, KIND_FILE_NAME_COMPOSER), topTemplate, Encoding.UTF8);
-			File.WriteAllText(FolderPath + IndexFileName(true, KIND_FILE_NAME_COMPOSER), topTemplate, Encoding.UTF8);
+			File.WriteAllText(_folderPath + IndexFileName(false, KIND_FILE_NAME_CATEGORY), topTemplate, Encoding.UTF8);
+			File.WriteAllText(_folderPath + IndexFileName(true, KIND_FILE_NAME_CATEGORY), topTemplate, Encoding.UTF8);
+			File.WriteAllText(_folderPath + IndexFileName(false, KIND_FILE_NAME_TIE_UP_GROUP), topTemplate, Encoding.UTF8);
+			File.WriteAllText(_folderPath + IndexFileName(true, KIND_FILE_NAME_TIE_UP_GROUP), topTemplate, Encoding.UTF8);
+			File.WriteAllText(_folderPath + IndexFileName(false, KIND_FILE_NAME_PERIOD), topTemplate, Encoding.UTF8);
+			File.WriteAllText(_folderPath + IndexFileName(true, KIND_FILE_NAME_PERIOD), topTemplate, Encoding.UTF8);
+			File.WriteAllText(_folderPath + IndexFileName(false, KIND_FILE_NAME_SEASON), topTemplate, Encoding.UTF8);
+			File.WriteAllText(_folderPath + IndexFileName(true, KIND_FILE_NAME_SEASON), topTemplate, Encoding.UTF8);
+			File.WriteAllText(_folderPath + IndexFileName(false, KIND_FILE_NAME_ARTIST), topTemplate, Encoding.UTF8);
+			File.WriteAllText(_folderPath + IndexFileName(true, KIND_FILE_NAME_ARTIST), topTemplate, Encoding.UTF8);
+			File.WriteAllText(_folderPath + IndexFileName(false, KIND_FILE_NAME_COMPOSER), topTemplate, Encoding.UTF8);
+			File.WriteAllText(_folderPath + IndexFileName(true, KIND_FILE_NAME_COMPOSER), topTemplate, Encoding.UTF8);
 		}
 
 		// --------------------------------------------------------------------

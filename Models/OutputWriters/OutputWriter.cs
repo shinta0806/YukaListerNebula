@@ -57,6 +57,7 @@ namespace YukaLister.Models.OutputWriters
 		// 出力形式（表示用）
 		public String FormatName { get; protected set; } = String.Empty;
 
+#if false
 		// 出力先フォルダー（末尾 '\\' 付き）
 		private String? _folderPath;
 		public String? FolderPath
@@ -74,6 +75,7 @@ namespace YukaLister.Models.OutputWriters
 				}
 			}
 		}
+#endif
 
 		// 出力先インデックスファイル名（パス無し）
 		public String TopFileName { get; protected set; } = String.Empty;
@@ -201,6 +203,9 @@ namespace YukaLister.Models.OutputWriters
 
 		// 実際の出力項目
 		protected List<OutputItems> _runtimeOutputItems = new();
+
+		// 出力先フォルダー（末尾 '\\' 付き）
+		protected String? _folderPath;
 
 		// ====================================================================
 		// protected メンバー関数

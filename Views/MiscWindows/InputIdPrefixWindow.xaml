@@ -49,7 +49,7 @@
             </Label>
         </StackPanel>
         <Label Content="※ここでいったん設定した後、別途、環境設定ウィンドウで変更することもできます。" Margin="20,0,0,0" HorizontalAlignment="Left"/>
-        <TextBox Name="TextBoxIdPrefix" Text="{Binding IdPrefix, UpdateSourceTrigger=PropertyChanged}" Margin="20,10,20,0" Width="500" ToolTip="例）MyName-ComputerName" ToolTipService.ShowDuration="10000" materialDesign:HintAssist.Hint="{Binding ElementName=TextBoxIdPrefix, Path=ToolTip}" HorizontalAlignment="Left" sb:IsFocusedAttachedBehavior.IsFocused="{Binding IsIdPrefixFocused}"/>
+        <TextBox Name="TextBoxIdPrefix" Text="{Binding IdPrefix, UpdateSourceTrigger=PropertyChanged}" Margin="20,10,20,0" Width="500" ToolTip="例）MyNickname-ComputerName" ToolTipService.ShowDuration="10000" materialDesign:HintAssist.Hint="{Binding ElementName=TextBoxIdPrefix, Path=ToolTip}" HorizontalAlignment="Left" sb:IsFocusedAttachedBehavior.IsFocused="{Binding IsIdPrefixFocused}" Cursor="IBeam"/>
         <StackPanel Orientation="Horizontal" FlowDirection="RightToLeft" Margin="20">
             <Button Content="キャンセル" Height="Auto" Style="{StaticResource MaterialDesignRaisedLightButton}" IsCancel="True" Width="100" Padding="4" />
             <Button Content="OK" Margin="20,0,0,0" Height="Auto" IsDefault="True" Width="100" Command="{Binding ButtonOKClickedCommand}"/>

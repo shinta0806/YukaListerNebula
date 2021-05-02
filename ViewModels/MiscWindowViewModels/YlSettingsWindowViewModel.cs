@@ -9,6 +9,7 @@
 // ----------------------------------------------------------------------------
 
 using Livet.Commands;
+using Livet.Messaging.IO;
 using Livet.Messaging.Windows;
 
 using Shinta;
@@ -22,6 +23,7 @@ using System.Linq;
 using System.Windows;
 
 using YukaLister.Models.DatabaseAssist;
+using YukaLister.Models.OutputWriters;
 using YukaLister.Models.SerializableSettings;
 using YukaLister.Models.SharedMisc;
 using YukaLister.Models.YukaListerModels;
@@ -186,15 +188,15 @@ namespace YukaLister.ViewModels.MiscWindowViewModels
 			set => RaisePropertyChangedIfSet(ref _confirmOutputYukariList, value);
 		}
 
-		// リスト出力形式
-		public ObservableCollection<String> ListFormats { get; set; } = new();
+		// リスト出力クラス群
+		public ObservableCollection<OutputWriter> OutputWriters { get; set; } = new();
 
-		// 選択されたリスト出力形式
-		private String? _selectedListFormat;
-		public String? SelectedListFormat
+		// 選択されたリスト出力クラス
+		private OutputWriter? _selectedOutputWriter;
+		public OutputWriter? SelectedOutputWriter
 		{
-			get => _selectedListFormat;
-			set => RaisePropertyChangedIfSet(ref _selectedListFormat, value);
+			get => _selectedOutputWriter;
+			set => RaisePropertyChangedIfSet(ref _selectedOutputWriter, value);
 		}
 
 		// リスト出力先フォルダー
@@ -630,6 +632,8 @@ namespace YukaLister.ViewModels.MiscWindowViewModels
 #if false
 			try
 			{
+				// どこかに			LoadOutputSettings(); を入れる
+
 				YukariOutputWriter aYukariOutputWriter = new YukariOutputWriter(Environment!);
 				aYukariOutputWriter.OutputSettings?.Load();
 
@@ -677,6 +681,9 @@ namespace YukaLister.ViewModels.MiscWindowViewModels
 #if false
 			try
 			{
+				// どこかに			LoadOutputSettings(); を入れる
+
+
 				OutputWriter? aSelectedOutputWriter = SelectedOutputWriter();
 				if (aSelectedOutputWriter == null)
 				{
@@ -724,58 +731,47 @@ namespace YukaLister.ViewModels.MiscWindowViewModels
 
 		public void ButtonOutputListClicked()
 		{
-#if false
 			try
 			{
 				// 確認
-				String? aOutputFolderPath = ListFolder;
-				if (String.IsNullOrEmpty(aOutputFolderPath))
+				if (String.IsNullOrEmpty(ListFolder))
 				{
-					throw new Exception("リスト出力先フォルダーを指定して下さい。");
+					throw new Exception("リスト出力先フォルダーを指定してください。");
 				}
-				if (aOutputFolderPath![aOutputFolderPath.Length - 1] != '\\')
-				{
-					aOutputFolderPath += "\\";
-				}
-				if (!Directory.Exists(aOutputFolderPath))
-				{
-					Directory.CreateDirectory(aOutputFolderPath);
-				}
+
+				// 出力クラスに出力先が渡るようにする
+				// ウィンドウのキャンセルボタンが押された場合でも確定していることになる
+				YukaListerModel.Instance.EnvModel.YlSettings.ListOutputFolder = ListFolder;
 
 				// 出力
-				OutputWriter? aSelectedOutputWriter = SelectedOutputWriter();
-				if (aSelectedOutputWriter == null)
+				if (SelectedOutputWriter == null)
 				{
-					return;
+					throw new Exception("出力形式を選択してください。");
 				}
-				aSelectedOutputWriter.FolderPath = aOutputFolderPath;
-				if (YukariListDbInMemory == null)
-				{
-					return;
-				}
-				YlCommon.OutputList(aSelectedOutputWriter, Environment!, YukariListDbInMemory);
-				Environment!.LogWriter.ShowLogMessage(TraceEventType.Information, "リスト出力が完了しました。");
+				SelectedOutputWriter.Output();
+				YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(TraceEventType.Information, "リスト出力が完了しました。");
 
 				// 表示
-				String aOutputFilePath = aOutputFolderPath + aSelectedOutputWriter.TopFileName;
+				String outputFilePath = YukaListerModel.Instance.EnvModel.YlSettings.ListOutputFolder + SelectedOutputWriter.TopFileName;
 				try
 				{
-					Process.Start(aOutputFilePath);
+					ProcessStartInfo psi = new ProcessStartInfo
+					{
+						FileName = outputFilePath,
+						UseShellExecute = true,
+					};
+					Process.Start(psi);
 				}
 				catch (Exception)
 				{
-					throw new Exception("出力先ファイルを開けませんでした。\n" + aOutputFilePath);
+					throw new Exception("出力先ファイルを開けませんでした。\n" + outputFilePath);
 				}
-
-				// 状態保存（ウィンドウのキャンセルボタンが押されても保存されるように）
-				Environment.YukaListerSettings.ListOutputFolder = ListFolder;
 			}
-			catch (Exception oExcep)
+			catch (Exception excep)
 			{
-				Environment!.LogWriter.ShowLogMessage(TraceEventType.Error, "リスト出力ボタンクリック時エラー：\n" + oExcep.Message);
-				Environment.LogWriter.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, "　スタックトレース：\n" + oExcep.StackTrace);
+				YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(TraceEventType.Error, "リスト出力ボタンクリック時エラー：\n" + excep.Message);
+				YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, "　スタックトレース：\n" + excep.StackTrace);
 			}
-#endif
 		}
 		#endregion
 
@@ -1075,6 +1071,65 @@ namespace YukaLister.ViewModels.MiscWindowViewModels
 		// ====================================================================
 
 		// --------------------------------------------------------------------
+		// 初期化
+		// --------------------------------------------------------------------
+		public override void Initialize()
+		{
+			base.Initialize();
+
+			try
+			{
+				// タイトルバー
+				Title = "環境設定";
+#if DEBUG
+				Title = "［デバッグ］" + Title;
+#endif
+
+				// リスト出力形式
+				HtmlOutputWriter htmlOutputWriter = new();
+				CompositeDisposable.Add(htmlOutputWriter);
+				OutputWriters.Add(htmlOutputWriter);
+#if false
+				mOutputWriters.Add(new CsvOutputWriter(Environment!));
+#endif
+
+				// プログレスバー
+				ProgressBarCheckRssVisibility = Visibility.Hidden;
+
+				SettingsToProperties();
+			}
+			catch (Exception excep)
+			{
+				YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(TraceEventType.Error, "環境設定ウィンドウ初期化時エラー：\n" + excep.Message);
+				YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, "　スタックトレース：\n" + excep.StackTrace);
+			}
+		}
+
+		// --------------------------------------------------------------------
+		// イベントハンドラー
+		// --------------------------------------------------------------------
+		public void ListFolderSelected(FolderSelectionMessage folderSelectionMessage)
+		{
+			try
+			{
+				if (String.IsNullOrEmpty(folderSelectionMessage.Response))
+				{
+					return;
+				}
+				ListFolder = folderSelectionMessage.Response;
+			}
+			catch (Exception excep)
+			{
+				YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(TraceEventType.Error, "リスト出力先フォルダー選択時エラー：\n" + excep.Message);
+				YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, "　スタックトレース：\n" + excep.StackTrace);
+			}
+		}
+
+		// ====================================================================
+		// private メンバー関数
+		// ====================================================================
+
+		// --------------------------------------------------------------------
 		// 入力された値が適正か確認
 		// ＜例外＞ Exception
 		// --------------------------------------------------------------------
@@ -1122,35 +1177,13 @@ namespace YukaLister.ViewModels.MiscWindowViewModels
 		}
 
 		// --------------------------------------------------------------------
-		// 初期化
+		// すべての出力クラスの OutputSettings を読み込む
 		// --------------------------------------------------------------------
-		public override void Initialize()
+		private void LoadOutputSettings()
 		{
-			base.Initialize();
-
-			try
+			foreach (OutputWriter outputWriter in OutputWriters)
 			{
-				// タイトルバー
-				Title = "環境設定";
-#if DEBUG
-				Title = "［デバッグ］" + Title;
-#endif
-
-				// リスト出力形式
-				//mOutputWriters = new List<OutputWriter>();
-				//mOutputWriters.Add(new HtmlOutputWriter(Environment!));
-				//mOutputWriters.Add(new CsvOutputWriter(Environment!));
-				//LoadOutputSettings();
-
-				// プログレスバー
-				ProgressBarCheckRssVisibility = Visibility.Hidden;
-
-				SettingsToProperties();
-			}
-			catch (Exception excep)
-			{
-				YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(TraceEventType.Error, "環境設定ウィンドウ初期化時エラー：\n" + excep.Message);
-				YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, "　スタックトレース：\n" + excep.StackTrace);
+				outputWriter.OutputSettings.Load();
 			}
 		}
 
@@ -1200,22 +1233,9 @@ namespace YukaLister.ViewModels.MiscWindowViewModels
 			}
 
 			// リスト出力タブ
-#if false
-			ConfirmOutputYukariList = Environment.YukaListerSettings.ConfirmOutputYukariList;
-			ClearPrevList = Environment.YukaListerSettings.ClearPrevList;
-			if (mOutputWriters != null)
-			{
-				foreach (OutputWriter aOutputWriter in mOutputWriters)
-				{
-					if (aOutputWriter.FormatName != null)
-					{
-						ListFormats.Add(aOutputWriter.FormatName);
-					}
-				}
-			}
-			SelectedListFormat = ListFormats[0];
-			ListFolder = Environment.YukaListerSettings.ListOutputFolder;
-#endif
+			ConfirmOutputYukariList = YukaListerModel.Instance.EnvModel.YlSettings.ConfirmOutputYukariList;
+			SelectedOutputWriter = OutputWriters[0];
+			ListFolder = YukaListerModel.Instance.EnvModel.YlSettings.ListOutputFolder;
 
 			// メンテナンスタブ
 			CheckRss = YukaListerModel.Instance.EnvModel.YlSettings.CheckRss;
@@ -1223,7 +1243,6 @@ namespace YukaLister.ViewModels.MiscWindowViewModels
 			SyncServer = YukaListerModel.Instance.EnvModel.YlSettings.SyncServer;
 			SyncAccount = YukaListerModel.Instance.EnvModel.YlSettings.SyncAccount;
 			SyncPassword = YlCommon.Decrypt(YukaListerModel.Instance.EnvModel.YlSettings.SyncPassword);
-			Debug.WriteLine("SettingsToProperties() SyncPassword: " + SyncPassword);
 
 			// インポートタブ
 			ImportYukaListerMode = true;

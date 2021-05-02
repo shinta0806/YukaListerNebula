@@ -65,8 +65,23 @@ namespace YukaLister.Models.SerializableSettings
 		// リスト出力前に確認
 		public Boolean ConfirmOutputYukariList { get; set; }
 
-		// リスト出力先フォルダー
-		public String? ListOutputFolder { get; set; }
+		// リスト出力先フォルダー（末尾 '\\'）
+		private String? _listOutputFolder;
+		public String? ListOutputFolder
+		{
+			get => _listOutputFolder;
+			set
+			{
+				_listOutputFolder = value;
+				if (!String.IsNullOrEmpty(_listOutputFolder))
+				{
+					if (_listOutputFolder[^1] != '\\')
+					{
+						_listOutputFolder += '\\';
+					}
+				}
+			}
+		}
 
 		// --------------------------------------------------------------------
 		// メンテナンス
