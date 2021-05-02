@@ -35,6 +35,7 @@ namespace YukaLister.Models.DatabaseContexts
 		// --------------------------------------------------------------------
 		public static ListContextInMemory CreateContext(out DbSet<TFound> founds,
 				out DbSet<TPerson> people, out DbSet<TArtistSequence> artistSequences, out DbSet<TComposerSequence> composerSequences,
+				out DbSet<TTieUpGroup> tieUpGroups, out DbSet<TTieUpGroupSequence> tieUpGroupSequences,
 				out DbSet<TTag> tags, out DbSet<TTagSequence> tagSequences)
 		{
 			ListContextInMemory listContext = new();
@@ -42,6 +43,8 @@ namespace YukaLister.Models.DatabaseContexts
 			GetDbSet(listContext, out people);
 			GetDbSet(listContext, out artistSequences);
 			GetDbSet(listContext, out composerSequences);
+			GetDbSet(listContext, out tieUpGroups);
+			GetDbSet(listContext, out tieUpGroupSequences);
 			GetDbSet(listContext, out tags);
 			GetDbSet(listContext, out tagSequences);
 			return listContext;

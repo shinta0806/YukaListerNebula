@@ -30,6 +30,15 @@ namespace YukaLister.Models.SerializableSettings
 		{
 			try
 			{
+				AdjustBeforeLoad();
+			}
+			catch (Exception excep)
+			{
+				YukaListerModel.Instance.EnvModel.LogWriter.LogMessage(TraceEventType.Error, GetType().Name + "読み込み前設定調整時エラー：\n" + excep.Message);
+				YukaListerModel.Instance.EnvModel.LogWriter.LogMessage(Common.TRACE_EVENT_TYPE_STATUS, "　スタックトレース：\n" + excep.StackTrace);
+			}
+			try
+			{
 				if (!File.Exists(SettingsPath()))
 				{
 					throw new Exception("設定が保存されていません。");
@@ -92,9 +101,23 @@ namespace YukaLister.Models.SerializableSettings
 		// ====================================================================
 
 		// --------------------------------------------------------------------
+		// 読み込み後の調整
+		// --------------------------------------------------------------------
+		protected virtual void AdjustAfterLoad()
+		{
+		}
+
+		// --------------------------------------------------------------------
 		// 保存後の調整
 		// --------------------------------------------------------------------
 		protected virtual void AdjustAfterSave()
+		{
+		}
+
+		// --------------------------------------------------------------------
+		// 読み込み前の調整
+		// --------------------------------------------------------------------
+		protected virtual void AdjustBeforeLoad()
 		{
 		}
 
@@ -106,16 +129,8 @@ namespace YukaLister.Models.SerializableSettings
 		}
 
 		// --------------------------------------------------------------------
-		// 読み込み後の調整
-		// --------------------------------------------------------------------
-		protected virtual void AdjustAfterLoad()
-		{
-		}
-
-		// --------------------------------------------------------------------
 		// 保存パス
 		// --------------------------------------------------------------------
 		protected abstract String SettingsPath();
-
 	}
 }

@@ -58,6 +58,7 @@
     <Folder Include="SyncServer\settings\" />
     <Folder Include="SyncServer\template\" />
     <Folder Include="_Common\Behaviors\" />
+    <Folder Include="Templates\" />
   </ItemGroup>
 
   <ItemGroup>

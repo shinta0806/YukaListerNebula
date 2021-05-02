@@ -72,6 +72,8 @@ namespace YukaLister.Models.YukaListerCores
 					YukaListerModel.Instance.EnvModel.YukaListerPartsStatus[(Int32)YukaListerPartsStatusIndex.Sifolin] = YukaListerStatus.Running;
 					YukaListerModel.Instance.EnvModel.LogWriter.LogMessage(Common.TRACE_EVENT_TYPE_STATUS, GetType().Name + " アクティブ化。");
 
+					MusicInfoDatabaseToMemory();
+
 					while (true)
 					{
 						TargetFolderInfo? targetFolderInfo;
@@ -396,8 +398,9 @@ namespace YukaLister.Models.YukaListerCores
 
 			using ListContextInMemory listContextInMemory = ListContextInMemory.CreateContext(out DbSet<TFound> founds,
 					out DbSet<TPerson> people, out DbSet<TArtistSequence> artistSequences, out DbSet<TComposerSequence> composerSequences,
+					out DbSet<TTieUpGroup> tieUpGroups, out DbSet<TTieUpGroupSequence> tieUpGroupSequences,
 					out DbSet<TTag> tags, out DbSet<TTagSequence> tagSequences);
-			using TFoundSetter foundSetter = new(listContextInMemory, founds, people, artistSequences, composerSequences, tags, tagSequences);
+			using TFoundSetter foundSetter = new(listContextInMemory, founds, people, artistSequences, composerSequences, tieUpGroups, tieUpGroupSequences, tags, tagSequences);
 
 			// 指定フォルダーの全レコード
 			IQueryable<TFound> targetRecords = founds.Where(x => x.Folder == targetFolderInfo.TargetPath);
@@ -590,6 +593,44 @@ namespace YukaLister.Models.YukaListerCores
 				YukaListerModel.Instance.ProjModel.SetAllFolderTaskStatusToDoneInDisk();
 				_isMemoryDbDirty = false;
 			}
+		}
+
+		// --------------------------------------------------------------------
+		// 楽曲情報データベース → メモリー DB
+		// --------------------------------------------------------------------
+		private void MusicInfoDatabaseToMemory()
+		{
+			using MusicInfoContext musicInfoContext = MusicInfoContext.CreateContext(out _,
+					out _, out DbSet<TPerson> peopleInMusicInfo, out _, out _,
+					out DbSet<TTieUpGroup> tieUpGroupsInMusicInfo, out _, out DbSet<TTag> tagsInMusicInfo,
+					out _, out _, out _,
+					out _, out _, out _,
+					out DbSet<TArtistSequence> artistSequencesInMusicInfo, out _, out DbSet<TComposerSequence> composerSequencesInMusicInfo, out _,
+					out DbSet<TTieUpGroupSequence> tieUpGroupSequencesInMusicInfo, out DbSet<TTagSequence> tagSequencesInMusicInfo);
+			using ListContextInMemory listContextInMemory = ListContextInMemory.CreateContext(out _, out DbSet<TPerson> peopleInMemory,
+					out DbSet<TArtistSequence> artistSequencesInMemory, out DbSet<TComposerSequence> composerSequencesInMemory,
+					out DbSet<TTieUpGroup> tieUpGroupsInMemory, out DbSet<TTieUpGroupSequence> tieUpGroupSequencesInMemory,
+					out DbSet<TTag> tagsInMemory, out DbSet<TTagSequence> tagSequencesInMemory);
+
+			// メモリー DB クリア
+			peopleInMemory.RemoveRange(peopleInMemory);
+			artistSequencesInMemory.RemoveRange(artistSequencesInMemory);
+			composerSequencesInMemory.RemoveRange(composerSequencesInMemory);
+			tieUpGroupsInMemory.RemoveRange(tieUpGroupsInMemory);
+			tieUpGroupSequencesInMemory.RemoveRange(tieUpGroupSequencesInMemory);
+			tagsInMemory.RemoveRange(tagsInMemory);
+			tagSequencesInMemory.RemoveRange(tagSequencesInMemory);
+			listContextInMemory.SaveChanges();
+
+			// コピー
+			peopleInMemory.AddRange(peopleInMusicInfo);
+			artistSequencesInMemory.AddRange(artistSequencesInMusicInfo);
+			composerSequencesInMemory.AddRange(composerSequencesInMusicInfo);
+			tieUpGroupsInMemory.AddRange(tieUpGroupsInMusicInfo);
+			tieUpGroupSequencesInMemory.AddRange(tieUpGroupSequencesInMusicInfo);
+			tagsInMemory.AddRange(tagsInMusicInfo);
+			tagSequencesInMemory.AddRange(tagSequencesInMusicInfo);
+			listContextInMemory.SaveChanges();
 		}
 
 		// --------------------------------------------------------------------

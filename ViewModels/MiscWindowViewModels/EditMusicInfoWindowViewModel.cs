@@ -89,8 +89,9 @@ namespace YukaLister.ViewModels.MiscWindowViewModels
 				// コンポーネントによるエイリアスを指定しない状態での情報を使うため、TFoundSetterAliasSpecify ではなく TFoundSetter を使う
 				using ListContextInMemory listContextInMemory = ListContextInMemory.CreateContext(out DbSet<TFound> founds,
 						out DbSet<TPerson> people, out DbSet<TArtistSequence> artistSequences, out DbSet<TComposerSequence> composerSequences,
+						out DbSet<TTieUpGroup> tieUpGroups, out DbSet<TTieUpGroupSequence> tieUpGroupSequences,
 						out DbSet<TTag> tags, out DbSet<TTagSequence> tagSequences);
-				using TFoundSetter foundSetter = new(listContextInMemory, founds, people, artistSequences, composerSequences, tags, tagSequences);
+				using TFoundSetter foundSetter = new(listContextInMemory, founds, people, artistSequences, composerSequences, tieUpGroups, tieUpGroupSequences, tags, tagSequences);
 				Dictionary<String, String?> dicByFile = DicByFile(foundSetter);
 				if (dicByFile[YlConstants.RULE_VAR_PROGRAM] == null)
 				{
@@ -117,8 +118,9 @@ namespace YukaLister.ViewModels.MiscWindowViewModels
 				// コンポーネントによるエイリアスを指定しない状態での情報を使うため、TFoundSetterAliasSpecify ではなく TFoundSetter を使う
 				using ListContextInMemory listContextInMemory = ListContextInMemory.CreateContext(out DbSet<TFound> founds,
 						out DbSet<TPerson> people, out DbSet<TArtistSequence> artistSequences, out DbSet<TComposerSequence> composerSequences,
+						out DbSet<TTieUpGroup> tieUpGroups, out DbSet<TTieUpGroupSequence> tieUpGroupSequences,
 						out DbSet<TTag> tags, out DbSet<TTagSequence> tagSequences);
-				using TFoundSetter foundSetter = new(listContextInMemory, founds, people, artistSequences, composerSequences, tags, tagSequences);
+				using TFoundSetter foundSetter = new(listContextInMemory, founds, people, artistSequences, composerSequences, tieUpGroups, tieUpGroupSequences, tags, tagSequences);
 				Dictionary<String, String?> dicByFile = DicByFile(foundSetter);
 				if (dicByFile[YlConstants.RULE_VAR_TITLE] == null)
 				{
@@ -321,8 +323,9 @@ namespace YukaLister.ViewModels.MiscWindowViewModels
 
 				using ListContextInMemory listContextInMemory = ListContextInMemory.CreateContext(out DbSet<TFound> founds,
 						out DbSet<TPerson> people, out DbSet<TArtistSequence> artistSequences, out DbSet<TComposerSequence> composerSequences,
+						out DbSet<TTieUpGroup> tieUpGroups, out DbSet<TTieUpGroupSequence> tieUpGroupSequences,
 						out DbSet<TTag> tags, out DbSet<TTagSequence> tagSequences);
-				using TFoundSetterAliasSpecify foundSetterAliasSpecify = new(listContextInMemory, founds, people, artistSequences, composerSequences, tags, tagSequences,
+				using TFoundSetterAliasSpecify foundSetterAliasSpecify = new(listContextInMemory, founds, people, artistSequences, composerSequences, tieUpGroups, tieUpGroupSequences, tags, tagSequences,
 						UseTieUpAlias ? TieUpOrigin : null, UseSongAlias ? SongOrigin : null);
 				Dictionary<String, String?> dicByFile = DicByFile(foundSetterAliasSpecify);
 
@@ -492,8 +495,9 @@ namespace YukaLister.ViewModels.MiscWindowViewModels
 
 				using ListContextInMemory listContextInMemory = ListContextInMemory.CreateContext(out DbSet<TFound> founds,
 						out DbSet<TPerson> people, out DbSet<TArtistSequence> artistSequences, out DbSet<TComposerSequence> composerSequences,
+						out DbSet<TTieUpGroup> tieUpGroups, out DbSet<TTieUpGroupSequence> tieUpGroupSequences,
 						out DbSet<TTag> tags, out DbSet<TTagSequence> tagSequences);
-				using TFoundSetterAliasSpecify foundSetterAliasSpecify = new(listContextInMemory, founds, people, artistSequences, composerSequences, tags, tagSequences,
+				using TFoundSetterAliasSpecify foundSetterAliasSpecify = new(listContextInMemory, founds, people, artistSequences, composerSequences, tieUpGroups, tieUpGroupSequences, tags, tagSequences,
 						UseTieUpAlias ? TieUpOrigin : null, UseSongAlias ? SongOrigin : null);
 				Dictionary<String, String?> dicByFile = DicByFile(foundSetterAliasSpecify);
 
@@ -661,8 +665,9 @@ namespace YukaLister.ViewModels.MiscWindowViewModels
 				// コンポーネントによるエイリアスを指定しない状態での情報を使うため、TFoundSetterAliasSpecify ではなく TFoundSetter を使う
 				using ListContextInMemory listContextInMemory = ListContextInMemory.CreateContext(out DbSet<TFound> founds,
 						out DbSet<TPerson> people, out DbSet<TArtistSequence> artistSequences, out DbSet<TComposerSequence> composerSequences,
+						out DbSet<TTieUpGroup> tieUpGroups, out DbSet<TTieUpGroupSequence> tieUpGroupSequences,
 						out DbSet<TTag> tags, out DbSet<TTagSequence> tagSequences);
-				using TFoundSetter foundSetter = new(listContextInMemory, founds, people, artistSequences, composerSequences, tags, tagSequences);
+				using TFoundSetter foundSetter = new(listContextInMemory, founds, people, artistSequences, composerSequences, tieUpGroups, tieUpGroupSequences, tags, tagSequences);
 				Dictionary<String, String?> dicByFile = DicByFile(foundSetter);
 				TieUpNameByFileName = dicByFile[YlConstants.RULE_VAR_PROGRAM];
 				SongNameByFileName = dicByFile[YlConstants.RULE_VAR_TITLE];
@@ -836,8 +841,9 @@ namespace YukaLister.ViewModels.MiscWindowViewModels
 		{
 			using ListContextInMemory listContextInMemory = ListContextInMemory.CreateContext(out DbSet<TFound> founds,
 					out DbSet<TPerson> people, out DbSet<TArtistSequence> artistSequences, out DbSet<TComposerSequence> composerSequences,
+					out DbSet<TTieUpGroup> tieUpGroups, out DbSet<TTieUpGroupSequence> tieUpGroupSequences,
 					out DbSet<TTag> tags, out DbSet<TTagSequence> tagSequences);
-			using TFoundSetterAliasSpecify foundSetterAliasSpecify = new(listContextInMemory, founds, people, artistSequences, composerSequences, tags, tagSequences,
+			using TFoundSetterAliasSpecify foundSetterAliasSpecify = new(listContextInMemory, founds, people, artistSequences, composerSequences, tieUpGroups, tieUpGroupSequences, tags, tagSequences,
 					UseTieUpAlias ? TieUpOrigin : null, UseSongAlias ? SongOrigin : null);
 			Dictionary<String, String?> dicByFile = DicByFile(foundSetterAliasSpecify);
 
@@ -958,8 +964,9 @@ namespace YukaLister.ViewModels.MiscWindowViewModels
 
 				using ListContextInMemory listContextInMemory = ListContextInMemory.CreateContext(out DbSet<TFound> founds,
 						out DbSet<TPerson> people, out DbSet<TArtistSequence> artistSequences, out DbSet<TComposerSequence> composerSequences,
+						out DbSet<TTieUpGroup> tieUpGroups, out DbSet<TTieUpGroupSequence> tieUpGroupSequences,
 						out DbSet<TTag> tags, out DbSet<TTagSequence> tagSequences);
-				using TFoundSetterAliasSpecify foundSetterAliasSpecify = new(listContextInMemory, founds, people, artistSequences, composerSequences, tags, tagSequences,
+				using TFoundSetterAliasSpecify foundSetterAliasSpecify = new(listContextInMemory, founds, people, artistSequences, composerSequences, tieUpGroups, tieUpGroupSequences, tags, tagSequences,
 						UseTieUpAlias ? TieUpOrigin : null, UseSongAlias ? SongOrigin : null);
 				foundSetterAliasSpecify.SetTFoundValues(found, folderSettingsInMemory);
 

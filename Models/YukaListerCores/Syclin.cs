@@ -67,6 +67,7 @@ namespace YukaLister.Models.YukaListerCores
 			while (true)
 			{
 				MainEvent.WaitOne();
+				Debug.Assert(MainWindowViewModel != null, "Syclin.CoreMain() MainWindowViewModel is null");
 				Int32 startTick = Environment.TickCount;
 
 				try
@@ -85,7 +86,7 @@ namespace YukaLister.Models.YukaListerCores
 					YukaListerModel.Instance.EnvModel.LogWriter.LogMessage(Common.TRACE_EVENT_TYPE_STATUS, GetType().Name + " アクティブ化。");
 
 					// ログイン
-					MainWindowViewModel?.SetStatusBarMessageWithInvoke(Common.TRACE_EVENT_TYPE_STATUS, "同期準備中...");
+					MainWindowViewModel.SetStatusBarMessageWithInvoke(Common.TRACE_EVENT_TYPE_STATUS, "同期準備中...");
 					LoginToSyncServer();
 
 					// データベースをバックアップ
@@ -106,7 +107,7 @@ namespace YukaLister.Models.YukaListerCores
 					}
 
 					// 完了表示
-					MainWindowViewModel?.SetStatusBarMessageWithInvoke(Common.TRACE_EVENT_TYPE_STATUS, "楽曲情報データベース同期完了（ダウンロード"
+					MainWindowViewModel.SetStatusBarMessageWithInvoke(Common.TRACE_EVENT_TYPE_STATUS, "楽曲情報データベース同期完了（ダウンロード"
 							+ (numTotalDownloads == 0 ? "無" : " " + numTotalDownloads.ToString("#,0") + " 件、うち " + numTotalImports.ToString("#,0") + " 件インポート")
 							+ "、アップロード" + (numTotalUploads == 0 ? "無" : " " + numTotalUploads.ToString("#,0") + " 件") + "）");
 				}
@@ -117,7 +118,7 @@ namespace YukaLister.Models.YukaListerCores
 				catch (Exception excep)
 				{
 					// メッセージボックスではなくステータスバーにエラー表示
-					MainWindowViewModel?.SetStatusBarMessageWithInvoke(TraceEventType.Error, excep.Message);
+					MainWindowViewModel.SetStatusBarMessageWithInvoke(TraceEventType.Error, excep.Message);
 					YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, "　スタックトレース：\n" + excep.StackTrace);
 				}
 

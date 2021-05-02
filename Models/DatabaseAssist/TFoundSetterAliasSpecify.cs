@@ -30,9 +30,10 @@ namespace YukaLister.Models.DatabaseAssist
 		// --------------------------------------------------------------------
 		public TFoundSetterAliasSpecify(ListContextInMemory listContextInMemory, DbSet<TFound> listFounds,
 				DbSet<TPerson> listPeople, DbSet<TArtistSequence> listArtistSequences, DbSet<TComposerSequence> listComposerSequences,
+				DbSet<TTieUpGroup> listTieUpGroups, DbSet<TTieUpGroupSequence> listTieUpGroupSequences,
 				DbSet<TTag> listTags, DbSet<TTagSequence> listTagSequences,
 				String? specifiedProgramOrigin, String? specifiedSongOrigin)
-				: base(listContextInMemory, listFounds, listPeople, listArtistSequences, listComposerSequences, listTags, listTagSequences)
+				: base(listContextInMemory, listFounds, listPeople, listArtistSequences, listComposerSequences, listTieUpGroups, listTieUpGroupSequences, listTags, listTagSequences)
 		{
 			_specifiedProgramOrigin = specifiedProgramOrigin;
 			_specifiedSongOrigin = specifiedSongOrigin;

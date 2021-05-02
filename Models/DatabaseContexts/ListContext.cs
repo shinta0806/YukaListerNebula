@@ -32,7 +32,7 @@ namespace YukaLister.Models.DatabaseContexts
 		public DbSet<TFound>? Founds { get; set; }
 
 		// --------------------------------------------------------------------
-		// その他
+		// その他（楽曲情報データベース＋楽曲情報データベースにない情報を名寄せするためのレコード）
 		// --------------------------------------------------------------------
 
 		// 人物マスターテーブル
@@ -43,6 +43,12 @@ namespace YukaLister.Models.DatabaseContexts
 
 		// 作曲者紐付テーブル
 		public DbSet<TComposerSequence>? ComposerSequences { get; set; }
+
+		// タイアップグループマスターテーブル
+		public DbSet<TTieUpGroup>? TieUpGroups { get; set; }
+
+		// タイアップグループ紐付テーブル
+		public DbSet<TTieUpGroupSequence>? TieUpGroupSequences { get; set; }
 
 		// タグマスターテーブル
 		public DbSet<TTag>? Tags { get; set; }
@@ -110,6 +116,32 @@ namespace YukaLister.Models.DatabaseContexts
 		// データベースセット取得
 		// ＜例外＞ Exception
 		// --------------------------------------------------------------------
+		protected static void GetDbSet(ListContext listContext, out DbSet<TTieUpGroup> tieUpGroups)
+		{
+			if (listContext.TieUpGroups == null)
+			{
+				throw new Exception("タイアップグループマスターテーブルにアクセスできません。");
+			}
+			tieUpGroups = listContext.TieUpGroups;
+		}
+
+		// --------------------------------------------------------------------
+		// データベースセット取得
+		// ＜例外＞ Exception
+		// --------------------------------------------------------------------
+		protected static void GetDbSet(ListContext listContext, out DbSet<TTieUpGroupSequence> tieUpGroupSequences)
+		{
+			if (listContext.TieUpGroupSequences == null)
+			{
+				throw new Exception("タイアップグループ紐付テーブルにアクセスできません。");
+			}
+			tieUpGroupSequences = listContext.TieUpGroupSequences;
+		}
+
+		// --------------------------------------------------------------------
+		// データベースセット取得
+		// ＜例外＞ Exception
+		// --------------------------------------------------------------------
 		protected static void GetDbSet(ListContext listContext, out DbSet<TTag> tags)
 		{
 			if (listContext.Tags == null)
@@ -157,12 +189,16 @@ namespace YukaLister.Models.DatabaseContexts
 			// 人物関連のテーブル
 			modelBuilder.Entity<TPerson>().HasIndex(x => x.Name);
 
+			// タイアップグループ関連のテーブル
+			modelBuilder.Entity<TTieUpGroup>().HasIndex(x => x.Name);
+
 			// タグ関連のテーブル
 			modelBuilder.Entity<TTag>().HasIndex(x => x.Name);
 
 			// 紐付テーブル
 			modelBuilder.Entity<TArtistSequence>().HasKey(x => new { x.Id, x.Sequence });
 			modelBuilder.Entity<TComposerSequence>().HasKey(x => new { x.Id, x.Sequence });
+			modelBuilder.Entity<TTieUpGroupSequence>().HasKey(x => new { x.Id, x.Sequence });
 			modelBuilder.Entity<TTagSequence>().HasKey(x => new { x.Id, x.Sequence });
 		}
 	}

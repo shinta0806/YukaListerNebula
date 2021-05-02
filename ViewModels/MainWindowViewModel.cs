@@ -479,12 +479,14 @@ namespace YukaLister.ViewModels
 				Debug.Assert(YlConstants.MUSIC_INFO_ID_SECOND_PREFIXES.Length == (Int32)MusicInfoTables.__End__, "MainWindow.Initialize() bad MUSIC_INFO_ID_SECOND_PREFIXES length");
 				Debug.Assert(YlConstants.MUSIC_INFO_DB_TABLE_NAMES.Length == (Int32)MusicInfoTables.__End__, "MainWindow.Initialize() bad MUSIC_INFO_DB_TABLE_NAMES length");
 				Debug.Assert(YlConstants.MUSIC_INFO_TABLE_NAME_LABELS.Length == (Int32)MusicInfoTables.__End__, "MainWindow.Initialize() bad MUSIC_INFO_TABLE_NAME_LABELS length");
+				Debug.Assert(YlConstants.OUTPUT_ITEM_NAMES.Length == (Int32)OutputItems.__End__, "MainWindow.Initialize() bad OUTPUT_ITEM_NAMES length");
 
 				// 環境の変化に対応
 				DoVerChangedIfNeeded();
 				//LaunchUpdaterIfNeeded();
 
 				// 参照設定
+				YukaListerModel.Instance.EnvModel.Kamlin.MainWindowViewModel = this;
 				YukaListerModel.Instance.EnvModel.Syclin.MainWindowViewModel = this;
 
 				// 動作状況

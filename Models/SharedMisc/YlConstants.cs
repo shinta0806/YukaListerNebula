@@ -114,6 +114,43 @@ namespace YukaLister.Models.SharedMisc
 	}
 
 	// --------------------------------------------------------------------
+	// リスト出力する項目（ほぼ TFound 準拠）
+	// --------------------------------------------------------------------
+	public enum OutputItems
+	{
+		Path,                   // フルパス
+		FileName,               // ファイル名
+		Head,                   // 頭文字
+		Worker,                 // ニコカラ制作者
+		Track,                  // トラック
+		SmartTrack,             // スマートトラック
+		Comment,                // 備考
+		LastWriteTime,          // 最終更新日時
+		FileSize,               // ファイルサイズ
+		SongName,               // 楽曲名
+		SongRuby,               // 楽曲フリガナ
+		SongOpEd,               // 摘要
+		SongReleaseDate,        // リリース日
+		ArtistName,             // 歌手名
+		ArtistRuby,             // 歌手フリガナ
+		LyristName,             // 作詞者名
+		LyristRuby,             // 作詞者フリガナ
+		ComposerName,           // 作曲者名
+		ComposerRuby,           // 作曲者フリガナ
+		ArrangerName,           // 編曲者名
+		ArrangerRuby,           // 編曲者フリガナ
+		TieUpName,              // タイアップ名
+		TieUpRuby,              // タイアップフリガナ
+		TieUpAgeLimit,          // 年齢制限
+		Category,               // カテゴリー
+		TieUpGroupName,         // タイアップグループ名
+		TieUpGroupRuby,         // タイアップグループフリガナ
+		MakerName,              // 制作会社名
+		MakerRuby,              // 制作会社フリガナ
+		__End__,
+	}
+
+	// --------------------------------------------------------------------
 	// ゆかりすたー NEBULA のどのパーツの動作状況を示すか
 	// --------------------------------------------------------------------
 	public enum YukaListerPartsStatusIndex
@@ -167,6 +204,9 @@ namespace YukaLister.Models.SharedMisc
 
 		// ゆかりすたー用データベースを保存するフォルダー名
 		public const String FOLDER_NAME_DATABASE = "Database\\";
+
+		// リストテンプレートが保存されているフォルダー名
+		public const String FOLDER_NAME_TEMPLATES = "Templates\\";
 
 		// ゆかり用データベースを保存するフォルダー名
 		public const String FOLDER_NAME_LIST = "list\\";
@@ -345,6 +385,19 @@ namespace YukaLister.Models.SharedMisc
 		public const String RULE_VAR_END = ">";
 
 		// --------------------------------------------------------------------
+		// 出力設定
+		// --------------------------------------------------------------------
+
+		// 新着日数の最小値
+		public const Int32 NEW_DAYS_MIN = 1;
+
+		// enum.OutputItems の表示名
+		public static readonly String[] OUTPUT_ITEM_NAMES = new String[] { "フルパス", "ファイル名", "頭文字", "ニコカラ制作者", "トラック", "スマートトラック",
+				"備考", "最終更新日時", "ファイルサイズ", "楽曲名", "楽曲フリガナ", "摘要", "リリース日",
+				"歌手名", "歌手フリガナ", "作詞者名", "作詞者フリガナ", "作曲者名", "作曲者フリガナ", "編曲者名", "編曲者フリガナ",
+				"タイアップ名", "タイアップフリガナ", "年齢制限", "カテゴリー", "タイアップグループ名", "タイアップグループフリガナ", "制作会社名", "制作会社フリガナ" };
+
+		// --------------------------------------------------------------------
 		// 年齢制限
 		// --------------------------------------------------------------------
 
@@ -437,17 +490,26 @@ namespace YukaLister.Models.SharedMisc
 		// タイアップグループ名を表示する際に末尾に付与する文字列
 		public const String TIE_UP_GROUP_SUFFIX = "シリーズ";
 
+		// SYNC_INFO_PARAM_DATE の日付フォーマット
+		public const String SYNC_URL_DATE_FORMAT = "yyyyMMdd";
+
 		// 日付の書式指定子
 		public const String DATE_FORMAT = "yyyy/MM/dd";
 
-		// SYNC_INFO_PARAM_DATE の日付フォーマット
-		public const String SYNC_URL_DATE_FORMAT = "yyyyMMdd";
+		// 時刻の書式指定子
+		public const String TIME_FORMAT = "HH:mm:ss";
+
+		// 変数の値を区切る文字
+		public const String VAR_VALUE_DELIMITER = ",";
 
 		// RULE_VAR_ON_VOCAL / RULE_VAR_OFF_VOCAL のデフォルト値
 		public const Int32 RULE_VALUE_VOCAL_DEFAULT = 1;
 
-		// 変数の値を区切る文字
-		public const String VAR_VALUE_DELIMITER = ",";
+		// スマートトラックでトラック有りの場合の印
+		public const String SMART_TRACK_VALID_MARK = "○";
+
+		// スマートトラックでトラック無しの場合の印
+		public const String SMART_TRACK_INVALID_MARK = "×";
 
 		// 一時的に付与する ID の接頭辞
 		public const String TEMP_ID_PREFIX = "!";

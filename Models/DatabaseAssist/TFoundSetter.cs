@@ -38,6 +38,7 @@ namespace YukaLister.Models.DatabaseAssist
 		// --------------------------------------------------------------------
 		public TFoundSetter(ListContextInMemory listContextInMemory, DbSet<TFound> listFounds,
 				DbSet<TPerson> listPeople, DbSet<TArtistSequence> listArtistSequences, DbSet<TComposerSequence> listComposerSequences,
+				DbSet<TTieUpGroup> listTieUpGroups, DbSet<TTieUpGroupSequence> listTieUpGroupSequences,
 				DbSet<TTag> listTags, DbSet<TTagSequence> listTagSequences)
 		{
 			_listContextInMemory = listContextInMemory;
@@ -45,6 +46,8 @@ namespace YukaLister.Models.DatabaseAssist
 			_listPeople = listPeople;
 			_listArtistSequences = listArtistSequences;
 			_listComposerSequences = listComposerSequences;
+			_listTieUpGroups = listTieUpGroups;
+			_listTieUpGroupSequences = listTieUpGroupSequences;
 			_listTags = listTags;
 			_listTagSequences = listTagSequences;
 			_musicInfoContext = MusicInfoContext.CreateContext(out _properties,
@@ -438,6 +441,12 @@ namespace YukaLister.Models.DatabaseAssist
 
 		// 作曲者紐付テーブル
 		private readonly DbSet<TComposerSequence> _listComposerSequences;
+
+		// タイアップグループマスターテーブル
+		private readonly DbSet<TTieUpGroup> _listTieUpGroups;
+
+		// タイアップグループ紐付テーブル
+		private readonly DbSet<TTieUpGroupSequence> _listTieUpGroupSequences;
 
 		// タグマスターテーブル
 		private readonly DbSet<TTag> _listTags;

@@ -144,7 +144,7 @@ namespace YukaLister.Models.YukaListerModels
 			{
 				if (_exeFullFolder == null)
 				{
-					_exeFullFolder = Path.GetDirectoryName(ExeFullPath) + "\\";
+					_exeFullFolder = Path.GetDirectoryName(ExeFullPath) + '\\';
 				}
 				return _exeFullFolder;
 			}
