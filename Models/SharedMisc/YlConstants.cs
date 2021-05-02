@@ -195,7 +195,7 @@ namespace YukaLister.Models.SharedMisc
 		public const String APP_ID = "YukaLister";
 		public const String APP_GENERATION = "NEBULA";
 		public const String APP_NAME_J = "ゆかりすたー " + APP_GENERATION + " ";
-		public const String APP_VER = "Ver 0.01 α";
+		public const String APP_VER = "Ver 0.72 α";
 		public const String COPYRIGHT_J = "Copyright (C) 2021 by SHINTA";
 
 		// --------------------------------------------------------------------
@@ -308,8 +308,8 @@ namespace YukaLister.Models.SharedMisc
 		// MessageKey
 		// --------------------------------------------------------------------
 
-		// ウィンドウを閉じる
-		public const String MESSAGE_KEY_WINDOW_CLOSE = "Close";
+		// 検索依頼
+		public const String MESSAGE_KEY_FIND_KEYWORD = "FindKeyword";
 
 		// メインウィンドウを開く
 		public const String MESSAGE_KEY_OPEN_MAIN_WINDOW = "OpenMainWindow";
@@ -328,6 +328,9 @@ namespace YukaLister.Models.SharedMisc
 
 		// タイアップ詳細情報編集ウィンドウを開く
 		public const String MESSAGE_KEY_OPEN_EDIT_TIE_UP_WINDOW = "OpenEditTieUpWindow";
+
+		// 検索ウィンドウを開く
+		public const String MESSAGE_KEY_OPEN_FIND_KEYWORD_WINDOW = "OpenFindKeywordWindow";
 
 		// フォルダー設定ウィンドウを開く
 		public const String MESSAGE_KEY_OPEN_FOLDER_SETTINGS_WINDOW = "OpenFolderSettingsWindow";
@@ -349,6 +352,12 @@ namespace YukaLister.Models.SharedMisc
 
 		// 環境設定ウィンドウを開く
 		public const String MESSAGE_KEY_OPEN_YL_SETTINGS_WINDOW = "OpenYlSettingsWindow";
+
+		// ウィンドウをアクティブ化する
+		public const String MESSAGE_KEY_WINDOW_ACTIVATE = "Activate";
+
+		// ウィンドウを閉じる
+		public const String MESSAGE_KEY_WINDOW_CLOSE = "Close";
 
 		// --------------------------------------------------------------------
 		// アプリ独自ルールでの変数名（小文字で表記）
@@ -530,5 +539,8 @@ namespace YukaLister.Models.SharedMisc
 
 		// 同期詳細ログ ID
 		public const String SYNC_DETAIL_ID = "SyncDetail";
+
+		// 検索の方向
+		public const String FIND_DIRECTION_BACKWARD = "Backward";
 	}
 }

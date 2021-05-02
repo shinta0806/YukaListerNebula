@@ -8,14 +8,14 @@
 //
 // ----------------------------------------------------------------------------
 
-using Livet;
 using Livet.Commands;
-using Livet.EventListeners;
 using Livet.Messaging;
-using Livet.Messaging.IO;
 using Livet.Messaging.Windows;
+
 using Microsoft.EntityFrameworkCore;
+
 using Shinta;
+
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -24,11 +24,10 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Text;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
-using YukaLister.Models;
+
 using YukaLister.Models.Database;
 using YukaLister.Models.DatabaseContexts;
 using YukaLister.Models.OutputWriters;
@@ -39,6 +38,17 @@ namespace YukaLister.ViewModels.MiscWindowViewModels
 {
 	public class ViewTFoundsWindowViewModel : YlViewModel
 	{
+		// ====================================================================
+		// コンストラクター・デストラクター
+		// ====================================================================
+
+		// --------------------------------------------------------------------
+		// コンストラクター
+		// --------------------------------------------------------------------
+		public ViewTFoundsWindowViewModel()
+		{
+		}
+
 		// ====================================================================
 		// public プロパティー
 		// ====================================================================
@@ -631,7 +641,7 @@ namespace YukaLister.ViewModels.MiscWindowViewModels
 		List<OutputItems> _runtimeOutputItems = new();
 
 		// 検索ウィンドウのビューモデル
-		//FindKeywordWindowViewModel? mFindKeywordWindowViewModel;
+		FindKeywordWindowViewModel? _findKeywordWindowViewModel;
 
 
 		// ====================================================================
@@ -654,12 +664,10 @@ namespace YukaLister.ViewModels.MiscWindowViewModels
 		// --------------------------------------------------------------------
 		private void CloseFindKeywordWindowIfNeeded()
 		{
-#if false
-			if (mFindKeywordWindowViewModel != null && !mFindKeywordWindowViewModel.IsClosed)
+			if (_findKeywordWindowViewModel != null && !_findKeywordWindowViewModel.IsClosed)
 			{
-				mFindKeywordWindowViewModel.Messenger.Raise(new WindowActionMessage("Close"));
+				_findKeywordWindowViewModel.Messenger.Raise(new WindowActionMessage(YlConstants.MESSAGE_KEY_WINDOW_CLOSE));
 			}
-#endif
 		}
 
 		// --------------------------------------------------------------------
@@ -723,85 +731,79 @@ namespace YukaLister.ViewModels.MiscWindowViewModels
 		// --------------------------------------------------------------------
 		private void FindKeyword()
 		{
-#if false
-			if (mFindKeywordWindowViewModel == null || Founds == null || _runtimeOutputItems == null)
+			if (_findKeywordWindowViewModel == null)
 			{
 				throw new Exception("内部エラー：FindKeyword()");
 			}
-			if (String.IsNullOrEmpty(mFindKeywordWindowViewModel.Keyword))
-			{
-				throw new Exception("キーワードが指定されていません。");
-			}
-			String? aKeyword = mFindKeywordWindowViewModel.Keyword?.Trim();
-			if (String.IsNullOrEmpty(aKeyword))
+			String? keyword = _findKeywordWindowViewModel.Keyword?.Trim();
+			if (String.IsNullOrEmpty(keyword))
 			{
 				throw new Exception("キーワードが指定されていません。");
 			}
 
-			Int32 aBeginRowIndex = CurrentCellLocation.Y;
-			Int32 aDirection = mFindKeywordWindowViewModel.Direction;
-			Debug.Assert(aDirection == 1 || aDirection == -1, "FindKeyword() direction not set");
-			if (aDirection == 1)
+			Int32 beginRowIndex = (Int32)CurrentCellLocation.Y;
+			Int32 direction = _findKeywordWindowViewModel.Direction;
+			Debug.Assert(direction == 1 || direction == -1, "FindKeyword() direction not set");
+			if (direction == 1)
 			{
-				if (aBeginRowIndex < 0)
+				if (beginRowIndex < 0)
 				{
-					aBeginRowIndex = 0;
+					beginRowIndex = 0;
 				}
 			}
 			else
 			{
-				if (aBeginRowIndex < 0)
+				if (beginRowIndex < 0)
 				{
-					aBeginRowIndex = Founds.Count - 1;
+					beginRowIndex = Founds.Count - 1;
 				}
 			}
 
-			for (Int32 i = aBeginRowIndex; aDirection == 1 ? i < Founds.Count : i >= 0; i += aDirection)
+			for (Int32 i = beginRowIndex; direction == 1 ? i < Founds.Count : i >= 0; i += direction)
 			{
-				Int32 aBeginColumnIndex;
-				if (i == aBeginRowIndex)
+				Int32 beginColumnIndex;
+				if (i == beginRowIndex)
 				{
-					aBeginColumnIndex = CurrentCellLocation.X + aDirection;
+					beginColumnIndex = (Int32)CurrentCellLocation.X + direction;
 				}
 				else
 				{
-					if (aDirection == 1)
+					if (direction == 1)
 					{
-						aBeginColumnIndex = 0;
+						beginColumnIndex = 0;
 					}
 					else
 					{
-						aBeginColumnIndex = _runtimeOutputItems.Count - 1;
+						beginColumnIndex = _runtimeOutputItems.Count - 1;
 					}
 				}
 
-				for (Int32 j = aBeginColumnIndex; aDirection == 1 ? j < _runtimeOutputItems.Count : j >= 0; j += aDirection)
+				for (Int32 j = beginColumnIndex; direction == 1 ? j < _runtimeOutputItems.Count : j >= 0; j += direction)
 				{
-					if (mFindKeywordWindowViewModel.WholeMatch)
+					if (_findKeywordWindowViewModel.WholeMatch)
 					{
-						if (String.Compare(CellValue(j, i), aKeyword, !mFindKeywordWindowViewModel.CaseSensitive) == 0)
+						if (String.Compare(CellValue(j, i), keyword, !_findKeywordWindowViewModel.CaseSensitive) == 0)
 						{
 							// 発見
-							CurrentCellLocation = new System.Drawing.Point(j, i);
+							CurrentCellLocation = new Point(j, i);
 							return;
 						}
 					}
 					else
 					{
 						if (!String.IsNullOrEmpty(CellValue(j, i))
-								&& CellValue(j, i)?.IndexOf(aKeyword,
-								mFindKeywordWindowViewModel.CaseSensitive ? StringComparison.Ordinal : StringComparison.OrdinalIgnoreCase) >= 0)
+								&& CellValue(j, i)?.IndexOf(keyword,
+								_findKeywordWindowViewModel.CaseSensitive ? StringComparison.Ordinal : StringComparison.OrdinalIgnoreCase) >= 0)
 						{
 							// 発見
-							CurrentCellLocation = new System.Drawing.Point(j, i);
+							CurrentCellLocation = new Point(j, i);
 							return;
 						}
 					}
 				}
 			}
 
-			throw new Exception("キーワード「" + aKeyword + "」は\n見つかりませんでした。");
-#endif
+			throw new Exception("キーワード「" + keyword + "」は\n見つかりませんでした。");
 		}
 
 		// --------------------------------------------------------------------
@@ -809,31 +811,27 @@ namespace YukaLister.ViewModels.MiscWindowViewModels
 		// --------------------------------------------------------------------
 		private void ShowFindKeywordWindow()
 		{
-#if false
-			if (mFindKeywordWindowViewModel == null)
+			if (_findKeywordWindowViewModel == null)
 			{
 				// 新規作成
-				mFindKeywordWindowViewModel = new FindKeywordWindowViewModel();
-				mFindKeywordWindowViewModel.Environment = Environment;
-				mFindKeywordWindowViewModel.ViewTFoundsWindowViewModel = this;
-				CompositeDisposable.Add(mFindKeywordWindowViewModel);
-				Messenger.Raise(new TransitionMessage(mFindKeywordWindowViewModel, "OpenFindKeywordWindow"));
+				_findKeywordWindowViewModel = new(this);
+				CompositeDisposable.Add(_findKeywordWindowViewModel);
+				Messenger.Raise(new TransitionMessage(_findKeywordWindowViewModel, YlConstants.MESSAGE_KEY_OPEN_FIND_KEYWORD_WINDOW));
 			}
-			else if (mFindKeywordWindowViewModel.IsClosed)
+			else if (_findKeywordWindowViewModel.IsClosed)
 			{
 				// 閉じられたウィンドウからプロパティーを引き継ぐ
-				FindKeywordWindowViewModel aOld = mFindKeywordWindowViewModel;
-				mFindKeywordWindowViewModel = new FindKeywordWindowViewModel();
-				mFindKeywordWindowViewModel.CopyFrom(aOld);
-				CompositeDisposable.Remove(aOld);
-				aOld.Dispose();
-				CompositeDisposable.Add(mFindKeywordWindowViewModel);
-				Messenger.Raise(new TransitionMessage(mFindKeywordWindowViewModel, "OpenFindKeywordWindow"));
+				FindKeywordWindowViewModel old = _findKeywordWindowViewModel;
+				_findKeywordWindowViewModel = new(this);
+				_findKeywordWindowViewModel.CopyFrom(old);
+				CompositeDisposable.Remove(old);
+				old.Dispose();
+				CompositeDisposable.Add(_findKeywordWindowViewModel);
+				Messenger.Raise(new TransitionMessage(_findKeywordWindowViewModel, YlConstants.MESSAGE_KEY_OPEN_FIND_KEYWORD_WINDOW));
 			}
 
 			// ウィンドウを前面に出すなど
-			mFindKeywordWindowViewModel.Messenger.Raise(new InteractionMessage("Activate"));
-#endif
+			_findKeywordWindowViewModel.Messenger.Raise(new InteractionMessage(YlConstants.MESSAGE_KEY_WINDOW_ACTIVATE));
 		}
 
 		// --------------------------------------------------------------------

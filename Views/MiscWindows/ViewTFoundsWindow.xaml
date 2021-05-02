@@ -37,6 +37,10 @@
 
         <!-- If you make user choose 'OK or Cancel' closing Window, then please use Window Close cancel Behavior. -->
 
+        <l:InteractionMessageTrigger MessageKey="{x:Static msm:YlConstants.MESSAGE_KEY_FIND_KEYWORD}" Messenger="{Binding Messenger}">
+            <l:LivetCallMethodAction MethodTarget="{Binding}" MethodName="FindKeywordRequested"/>
+        </l:InteractionMessageTrigger>
+
         <l:InteractionMessageTrigger MessageKey="{x:Static msm:YlConstants.MESSAGE_KEY_WINDOW_CLOSE}" Messenger="{Binding Messenger}">
             <l:WindowInteractionMessageAction InvokeActionOnlyWhenWindowIsActive="False" />
         </l:InteractionMessageTrigger>
@@ -44,7 +48,11 @@
         <l:InteractionMessageTrigger MessageKey="{x:Static msm:YlConstants.MESSAGE_KEY_OPEN_EDIT_MUSIC_INFO_WINDOW}" Messenger="{Binding Messenger}">
             <l:TransitionInteractionMessageAction WindowType="{x:Type vmw:EditMusicInfoWindow}" Mode="Modal" IsOwned="True" />
         </l:InteractionMessageTrigger>
-        
+
+        <l:InteractionMessageTrigger MessageKey="{x:Static msm:YlConstants.MESSAGE_KEY_OPEN_FIND_KEYWORD_WINDOW}" Messenger="{Binding Messenger}">
+            <l:TransitionInteractionMessageAction WindowType="{x:Type vmw:FindKeywordWindow}" Mode="Normal" IsOwned="True" />
+        </l:InteractionMessageTrigger>
+
         <l:InteractionMessageTrigger MessageKey="{x:Static msm:YlConstants.MESSAGE_KEY_OPEN_FOLDER_SETTINGS_WINDOW}" Messenger="{Binding Messenger}">
             <l:TransitionInteractionMessageAction WindowType="{x:Type vmw:FolderSettingsWindow}" Mode="Modal" IsOwned="True" />
         </l:InteractionMessageTrigger>
