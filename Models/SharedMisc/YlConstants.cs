@@ -407,6 +407,14 @@ namespace YukaLister.Models.SharedMisc
 		public const Int32 AGE_LIMIT_CERO_Z = 18;
 
 		// --------------------------------------------------------------------
+		// Web サーバーコマンドオプション
+		// --------------------------------------------------------------------
+
+		public const String SERVER_OPTION_NAME_EASY_PASS = "easypass";
+		public const String SERVER_OPTION_NAME_UID = "uid";
+		public const String SERVER_OPTION_NAME_WIDTH = "width";
+
+		// --------------------------------------------------------------------
 		// 状態色
 		// --------------------------------------------------------------------
 

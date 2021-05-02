@@ -20,7 +20,6 @@ using Shinta;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.IO;
 
 using YukaLister.Models.SharedMisc;
 using YukaLister.Models.YukaListerModels;

@@ -12,10 +12,13 @@ using Microsoft.EntityFrameworkCore;
 using Shinta;
 using System;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Threading;
 using YukaLister.Models.Database;
+using YukaLister.Models.DatabaseAssist;
 using YukaLister.Models.DatabaseContexts;
+using YukaLister.Models.OutputWriters;
 using YukaLister.Models.SharedMisc;
 using YukaLister.Models.YukaListerModels;
 using YukaLister.ViewModels;
@@ -86,17 +89,12 @@ namespace YukaLister.Models.YukaListerCores
 						throw new Exception("ID 接頭辞が設定されていません。");
 					}
 
-#if false
 					// リスト出力
-					YukariOutputWriter aYukariOutputWriter = new YukariOutputWriter(mEnvironment);
-					aYukariOutputWriter.FolderPath = Path.GetDirectoryName(mEnvironment.YukaListerSettings.YukariListDbInDiskPath()) + "\\";
-					Debug.Assert(YukariListDbInMemory != null, "OutputYukariListByWorker() bad YukariListDbInMemory");
-					YlCommon.OutputList(aYukariOutputWriter, mEnvironment, YukariListDbInMemory!);
+					YukariOutputWriter yukariOutputWriter = new();
+					yukariOutputWriter.FolderPath = Path.GetDirectoryName(DbCommon.ListDatabasePath(YukaListerModel.Instance.EnvModel.YlSettings)) + '\\';
+					yukariOutputWriter.Output();
 
-					mEnvironment.LogWriter.ShowLogMessage(TraceEventType.Information, "リスト出力が完了しました。", true);
-#endif
-
-
+					YukaListerModel.Instance.EnvModel.LogWriter.LogMessage(TraceEventType.Information, "リスト出力が完了しました。");
 				}
 				catch (OperationCanceledException)
 				{
@@ -113,7 +111,6 @@ namespace YukaLister.Models.YukaListerCores
 				TimeSpan timeSpan = new(YlCommon.MiliToHNano(Environment.TickCount - startTick));
 				YukaListerModel.Instance.EnvModel.LogWriter.LogMessage(Common.TRACE_EVENT_TYPE_STATUS, GetType().Name + " スリープ化：アクティブ時間：" + timeSpan.ToString(@"hh\:mm\:ss"));
 			}
-
 		}
 	}
 }

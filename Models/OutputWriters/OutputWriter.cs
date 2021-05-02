@@ -9,10 +9,13 @@
 // ----------------------------------------------------------------------------
 
 using Microsoft.EntityFrameworkCore;
+
 using Shinta;
+
 using System;
 using System.Collections.Generic;
 using System.IO;
+
 using YukaLister.Models.Database;
 using YukaLister.Models.Database.Aliases;
 using YukaLister.Models.Database.Masters;
@@ -62,7 +65,7 @@ namespace YukaLister.Models.OutputWriters
 			{
 				return _folderPath;
 			}
-			protected set
+			set
 			{
 				_folderPath = value;
 				if (!String.IsNullOrEmpty(_folderPath) && _folderPath[^1] != '\\')
