@@ -341,11 +341,14 @@ namespace YukaLister.Models.SharedMisc
 		// 保存ダイアログを開く
 		public const String MESSAGE_KEY_OPEN_SAVE_FILE_DIALOG = "OpenSaveFileDialog";
 
-		// 環境設定ウィンドウを開く
-		public const String MESSAGE_KEY_OPEN_YL_SETTINGS_WINDOW = "OpenYlSettingsWindow";
-
 		// 楽曲情報データベースマスター検索ウィンドウを開く
 		public const String MESSAGE_KEY_OPEN_SEARCH_MASTER_WINDOW = "OpenSearchMasterWindow";
+
+		// ファイル一覧ウィンドウを開く
+		public const String MESSAGE_KEY_OPEN_VIEW_TFOUNDS_WINDOW = "OpenViewTFoundsWindow";
+
+		// 環境設定ウィンドウを開く
+		public const String MESSAGE_KEY_OPEN_YL_SETTINGS_WINDOW = "OpenYlSettingsWindow";
 
 		// --------------------------------------------------------------------
 		// アプリ独自ルールでの変数名（小文字で表記）

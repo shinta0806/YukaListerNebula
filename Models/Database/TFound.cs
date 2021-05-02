@@ -13,6 +13,7 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 using YukaLister.Models.Database.Masters;
+using YukaLister.Models.SharedMisc;
 
 namespace YukaLister.Models.Database
 {
@@ -196,7 +197,6 @@ namespace YukaLister.Models.Database
 		[Column(TTag.FIELD_NAME_TAG_RUBY)]
 		public String? TagRuby { get; set; }
 
-#if false
 		// --------------------------------------------------------------------
 		// ViewTFoundsWindow 表示用
 		// --------------------------------------------------------------------
@@ -204,22 +204,15 @@ namespace YukaLister.Models.Database
 		// パス無しのファイル名
 		public String FileName
 		{
-			get
-			{
-				return System.IO.Path.GetFileName(Path);
-			}
+			get => System.IO.Path.GetFileName(Path);
 		}
 
 		// スマートトラック
 		public String SmartTrack
 		{
-			get
-			{
-				return (SmartTrackOnVocal ? YlConstants.SMART_TRACK_VALID_MARK : YlConstants.SMART_TRACK_INVALID_MARK) + "/"
-						+ (SmartTrackOffVocal ? YlConstants.SMART_TRACK_VALID_MARK : YlConstants.SMART_TRACK_INVALID_MARK);
-			}
+			get => (SmartTrackOnVocal ? YlConstants.SMART_TRACK_VALID_MARK : YlConstants.SMART_TRACK_INVALID_MARK) + "/"
+					+ (SmartTrackOffVocal ? YlConstants.SMART_TRACK_VALID_MARK : YlConstants.SMART_TRACK_INVALID_MARK);
 		}
-#endif
 
 		// ====================================================================
 		// public メンバー定数

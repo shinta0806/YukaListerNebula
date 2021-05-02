@@ -600,16 +600,6 @@ namespace YukaLister.Models.DatabaseAssist
 			return YukaListerModel.Instance.EnvModel.ExeFullFolder + YlConstants.FOLDER_NAME_DATABASE;
 		}
 
-#if false
-		// --------------------------------------------------------------------
-		// ゆかり用データベースを保存するフォルダーのフルパス（末尾 '\\'）
-		// --------------------------------------------------------------------
-		public static String YukariDatabaseFullFolder()
-		{
-			return YukariDatabaseFullFolder(YukaListerModel.Instance.EnvModel.YlSettings);
-		}
-#endif
-
 		// --------------------------------------------------------------------
 		// ゆかり用データベースを保存するフォルダーのフルパス（末尾 '\\'）
 		// --------------------------------------------------------------------

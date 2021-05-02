@@ -9,7 +9,7 @@
         xmlns:vm="clr-namespace:YukaLister.ViewModels"
         xmlns:vmmw="clr-namespace:YukaLister.ViewModels.MiscWindowViewModels"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="{Binding Title}" SizeToContent="WidthAndHeight" ResizeMode="NoResize" >
+        Title="{Binding Title}" SizeToContent="WidthAndHeight" ResizeMode="NoResize" ShowInTaskbar="False" >
 
     <Window.DataContext>
         <vmmw:InputIdPrefixWindowViewModel />

@@ -41,6 +41,9 @@
             <l:TransitionInteractionMessageAction WindowType="{x:Type vmw:InputIdPrefixWindow}" Mode="Modal" IsOwned="True" />
         </l:InteractionMessageTrigger>
 
+        <l:InteractionMessageTrigger MessageKey="{x:Static msm:YlConstants.MESSAGE_KEY_OPEN_VIEW_TFOUNDS_WINDOW}" Messenger="{Binding Messenger}">
+            <l:TransitionInteractionMessageAction WindowType="{x:Type vmw:ViewTFoundsWindow}" Mode="Modal" IsOwned="True" />
+        </l:InteractionMessageTrigger>
         <l:InteractionMessageTrigger MessageKey="{x:Static msm:YlConstants.MESSAGE_KEY_OPEN_YL_SETTINGS_WINDOW}" Messenger="{Binding Messenger}">
             <l:TransitionInteractionMessageAction WindowType="{x:Type vmw:YlSettingsWindow}" Mode="Modal" IsOwned="True" />
         </l:InteractionMessageTrigger>

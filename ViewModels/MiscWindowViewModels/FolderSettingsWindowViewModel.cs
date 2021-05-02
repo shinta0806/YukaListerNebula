@@ -1322,6 +1322,7 @@ namespace YukaLister.ViewModels.MiscWindowViewModels
 				return;
 			}
 
+			// ViewModel 経由で名称の編集ウィンドウを開く
 			String filePath = FolderPath + "\\" + SelectedPreviewInfo.FileName;
 			using EditMusicInfoWindowViewModel editMusicInfoWindowViewModel = new(filePath);
 			Messenger.Raise(new TransitionMessage(editMusicInfoWindowViewModel, YlConstants.MESSAGE_KEY_OPEN_EDIT_MUSIC_INFO_WINDOW));

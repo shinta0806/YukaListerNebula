@@ -710,6 +710,14 @@ namespace YukaLister.Models.SharedMisc
 		}
 
 		// --------------------------------------------------------------------
+		// 指定されたファイルを選択してエクスプローラーを開く
+		// --------------------------------------------------------------------
+		public static void OpenExplorer(String path)
+		{
+			Process.Start("EXPLORER.EXE", @"/select,""" + path + @"""");
+		}
+
+		// --------------------------------------------------------------------
 		// カテゴリーメニューに値を設定
 		// --------------------------------------------------------------------
 		public static void SetContextMenuItemCategories(List<MenuItem> menuItems, RoutedEventHandler click)

@@ -384,6 +384,50 @@ namespace YukaLister.ViewModels
 		}
 		#endregion
 
+		#region ファイル一覧ボタンの制御
+		private ViewModelCommand? _buttonTFoundsClickedCommand;
+
+		public ViewModelCommand ButtonTFoundsClickedCommand
+		{
+			get
+			{
+				if (_buttonTFoundsClickedCommand == null)
+				{
+					_buttonTFoundsClickedCommand = new ViewModelCommand(ButtonTFoundsClicked, CanButtonTFoundsClick);
+				}
+				return _buttonTFoundsClickedCommand;
+			}
+		}
+
+		public Boolean CanButtonTFoundsClick()
+		{
+			return _numFounds > 0;
+		}
+
+		public void ButtonTFoundsClicked()
+		{
+			try
+			{
+				DateTime musicInfoDbTimeBak = MusicInfoContext.LastWriteTime();
+
+				// ViewModel 経由でウィンドウを開く
+				using ViewTFoundsWindowViewModel viewTFoundsWindowViewModel = new();
+				Messenger.Raise(new TransitionMessage(viewTFoundsWindowViewModel, YlConstants.MESSAGE_KEY_OPEN_VIEW_TFOUNDS_WINDOW));
+
+				// 楽曲情報データベースが更新された場合は同期を行う
+				if (MusicInfoContext.LastWriteTime() != musicInfoDbTimeBak)
+				{
+					YlCommon.ActivateSyclinIfNeeded();
+				}
+			}
+			catch (Exception excep)
+			{
+				YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(TraceEventType.Error, "ファイル一覧ボタンクリック時エラー：\n" + excep.Message);
+				YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, "　スタックトレース：\n" + excep.StackTrace);
+			}
+		}
+		#endregion
+
 		#region フォルダー設定ボタンの制御
 		private ViewModelCommand? _buttonFolderSettingsClickedCommand;
 
@@ -632,6 +676,9 @@ namespace YukaLister.ViewModels
 
 		// config.ini 監視用
 		private FileSystemWatcher _fileSystemWatcherYukariConfig = new();
+
+		// 検索可能ファイル数
+		private Int32 _numFounds;
 
 		// Dispose フラグ
 		private Boolean _isDisposed = false;
@@ -947,7 +994,9 @@ namespace YukaLister.ViewModels
 		private void UpdateNumRecordsLabel()
 		{
 			using ListContextInDisk listContextInDisk = ListContextInDisk.CreateContext(out DbSet<TFound> founds);
-			NumRecordsLabel = founds.Count().ToString("#,0");
+			_numFounds = founds.Count();
+			NumRecordsLabel = _numFounds.ToString("#,0");
+			ButtonTFoundsClickedCommand.RaiseCanExecuteChanged();
 		}
 
 		// --------------------------------------------------------------------
