@@ -1,0 +1,1272 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>ゆかりすたー NEBULA Ver 1.0 ヘルプ</title>
+<link rel="stylesheet" href="HelpParts/SHIHelpG2.css" type="text/css">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+<script src="HelpParts/Scroll.js"></script>
+</head>
+
+
+<body>
+
+<!-- Float Top Button -->
+<a href="#Top">
+<div id="PageTopButton">
+ <div id="PageTopButtonText">▲</div>
+</div>
+</a>
+
+<!-- ★★★　メインコンテンツ　★★★ -->
+<div id="MainCol">
+
+<a name="Top"></a>
+
+<a name="Hajimeni"></a>
+<h1>はじめに</h1>
+
+<a name="Gaiyou"></a>
+<h2>概要</h2>
+
+<p>
+<img src="HelpParts/YukaLister_Icon.png" alt="" width="128" align="right" hspace="10" vspace="10">
+ゆかりすたー NEBULA（ネビュラ）はカラオケ動画ファイルを整理し、<a href="https://github.com/bee7813993/KaraokeRequestorWeb/wiki" target="_blank">ゆかり</a>（持ち込みカラオケ用のブラウザリクエストツール）から検索できるようにするツールです。データベースを活用することにより、タイアップしている番組名や歌手名などの付加情報を含めて整理します。<br>
+<br>
+ゆかりすたー NEBULA とゆかりが協調して動作することにより、例えば、ファイル名に歌手名が含まれていない場合でも歌手名検索が可能になったり、フリガナでの検索が可能になったりするなど、単なるファイル名検索よりも一歩進んだ検索が可能となります。もちろん、ファイル名検索も可能です。<br clear="right">
+<br>
+さらに検索に加えて、カラオケ動画ファイルを見やすく整理したリストを作成することもできます。リストのサンプルは<a href="SampleFolderSettings/リスト生成結果/index.html" target="_blank">こちら</a>になります。サンプルの詳細については<a href="#Sample">サンプル</a>章をご覧ください。<br>
+<br>
+なお、本ヘルプで縮小表示されている画像は、クリックすると原寸大で表示されます。<br clear="right">
+</p>
+
+<blockquote>
+（補足）<br>
+ゆかりすたー NEBULA は、ニコカラりすたー、ゆかりすたー（初代）、ゆかりすたー METEOR の後継となる 4 代目のツールです。<br>
+ニコカラりすたー、ゆかりすたー（初代）、ゆかりすたー METEOR は既に開発を終了しましたので、今後はゆかりすたー NEBULA をご利用下さい。<br>
+</blockquote>
+
+<a name="Shinkapoint"></a>
+<h2>進化ポイント</h2>
+
+<p>
+前世代のゆかりすたー METEOR と比べて、ゆかりすたー NEBULA は以下のような点が進化しています。<br>
+<br>
+すぐに使える……以前に追加したことのあるフォルダーは既に整理が終わった状態になっているので、フォルダー追加後すぐに検索可能な状態になります。フォルダー追加直後は以前の情報での検索となりますので、最近追加・変更されたファイルは検索できませんが、変更されていないほとんどのファイルは検索可能です。しばらくすると、最新の状態で検索できるようになります。<br>
+<br>
+データベース精度向上……データベースに登録する際のフリガナ情報の精度を向上させました。また、タイアップに複数のシリーズを紐付けることができるようになりました。<br>
+<br>
+メインウィンドウ UI 改善……追加したフォルダーをツリー状で確認できるようになりました。また、検索可能ファイル数が分かるようになりました。<br>
+<br>
+応答性向上……起動直後やリムーバブルメディア接続時、他の動作を問題なく行えるようにしました。<br>
+</p>
+
+<a name="Dousakankyou"></a>
+<h2>動作環境</h2>
+
+<p>
+<a href="http://shinta.coresv.com/software/yukalister-nebula-jpn/#Support" target="_blank">ゆかりすたー NEBULA 公式ページのサポート情報</a>をご覧ください。<br>
+<br>
+Windows Defender がゆかりすたー NEBULA の動作に悪影響を及ぼすことがありますので、Windows Defender は使用しないことを推奨します。詳しくは<a href="https://github.com/shinta0806/YukaLister/issues/125" target="_blank">こちら</a>を参照して下さい。<br>
+</p>
+
+<a name="Install"></a>
+<h2>インストール</h2>
+
+<p>
+前提として、ゆかりが正常に動作している必要があります。<br>
+<br>
+そのうえで、ダウンロードしたゆかりすたー NEBULA  zip ファイルの中にある「YukaLister」フォルダーを、ゆかりがインストールしてある htdocs フォルダーの中にコピー（解凍）します。<br>
+<br>
+通常、ゆかりは<br>
+</p>
+<pre>
+C:\xampp\htdocs
+</pre>
+<p>
+フォルダーにインストールされているはずですが、その場合、ゆかりすたー NEBULA の実行ファイルのフルパスは
+</p>
+<pre>
+C:\xampp\htdocs\YukaLister\YukaLister.exe
+</pre>
+<p>
+となります。<br>
+<br>
+zip ファイルの中のファイルを直接起動すると正常に動作しませんので、必ず解凍して下さい。<br>
+</p>
+
+<a name="Urawaza"></a>
+<h3>裏技</h3>
+
+<p>
+ゆかりすたー NEBULA を使用する際は、前提として、ゆかりが正常に動作している必要がありますが、まだゆかりをインストールしていないけれどとりあえずゆかりすたー NEBULA を使いたい、と言う場合は、config.ini という名前のファイル（中身は何でも構いません）を、ゆかりすたー NEBULA をインストールしたフォルダーの親フォルダーに保存することで、ゆかりすたー NEBULA を使用することができます。通常のフォルダー構成であれば、<br>
+</p>
+<pre>
+C:\xampp\htdocs\config.ini
+</pre>
+<p>
+に保存すれば大丈夫です。<br>
+</p>
+
+<a name="Kido"></a>
+<h2>起動</h2>
+
+<p>
+<a href="HelpParts/YukaLister_MainWindow.png" target="_blank"><img src="HelpParts/YukaLister_MainWindow.png" alt="" width="256" align="right" border="0" hspace="10" vspace="10"></a>
+ゆかりすたー NEBULA（YukaLister.exe）を起動すると、メインウィンドウが表示されます。<br clear="right">
+<br>
+<a href="HelpParts/YukaLister_SmartScreen.png" target="_blank"><img src="HelpParts/YukaLister_SmartScreen.png" alt="" width="256" align="right" border="0" hspace="10" vspace="10"></a>
+SmartScreen によって起動ができない場合（「Windows によって PC が保護されました」という画面が表示される場合）は、「詳細情報」をクリックしてから「実行する」をクリックしてください。<br>
+<br>
+ゆかりすたー NEBULA は定期的（3 日ごと）に最新版が公開されているかどうかを確認し、公開されている場合はお知らせします。ファイアーウォール等のセキュリティーソフトを使用している場合は、ゆかりすたー NEBULA のインターネット通信を許可して下さい。<br clear="right">
+</p>
+
+<a name="KantannaTsukaikata"></a>
+<h1>簡単な使い方</h1>
+
+<p>
+ゆかりすたー NEBULA がフォルダー内にあるカラオケ動画ファイルのファイル名を確認し、その情報をゆかりが読み込んで検索できるようにするまでの一連の流れを説明します。<br>
+</p>
+
+<a name="SeijouniDousashiteirukaKakunin"></a>
+<h2>正常に動作しているか確認</h2>
+
+<p>
+<a href="HelpParts/YukaLister_MainWindow.png" target="_blank"><img src="HelpParts/YukaLister_MainWindow.png" alt="" width="256" align="right" border="0" hspace="10" vspace="10"></a>
+起動したゆかりすたー NEBULA のメインウィンドウ上部が青色表示となり、「ゆかりすたー NEBULA は正常に動作しています」と表示されていれば、ゆかりすたー NEBULA は正常に動作しています。<br>
+<br>
+メインウィンドウ上部が赤色表示となり、「ゆかり設定ファイルが正しく指定されていません」と表示されている場合は、正常に動作していません。適切なフォルダーにゆかりすたー NEBULA がインストールされているか、<a href="#Install">インストール</a>節を再度確認して下さい。<br>
+<br>
+ゆかり設定ファイルを手動で指定することもできます。環境設定節を参照して下さい。<br clear="right">
+</p>
+
+<a name="YukariKensakutaishouFolderTsuika"></a>
+<h2>ゆかり検索対象フォルダー追加</h2>
+
+<p>
+<a href="HelpParts/YukaLister_MainWindow.png" target="_blank"><img src="HelpParts/YukaLister_MainWindow.png" alt="" width="256" align="right" border="0" hspace="10" vspace="10"></a>
+ゆかりすたー NEBULA メインウィンドウ下部の「追加」ボタンをクリックして、ゆかりで検索したいカラオケ動画ファイルが保存されているフォルダーを選択してください。<br>
+<br>
+エクスプローラーからフォルダーをゆかりすたー NEBULA のメインウィンドウにドラッグ＆ドロップしても追加できます。<br>
+<br>
+選択したフォルダーとそのサブフォルダーが「ゆかり検索対象フォルダー」に追加されます。表示されるのは選択したフォルダーのみですが、「ゆかり検索対象フォルダー」欄の左側の「＞」印をクリックすると、サブフォルダーも表示されるようになります。<br clear="right">
+<br>
+<a href="HelpParts/YukaLister_FolderAdded.png" target="_blank"><img src="HelpParts/YukaLister_FolderAdded.png" alt="" width="256" align="right" border="0" hspace="10" vspace="10"></a>
+フォルダーが追加された時点からカラオケ動画ファイルの整理が始まり、整理が終わったフォルダーは一覧表の「状態」列が「追加完了」になります。「追加完了」になったフォルダーの中にあるカラオケ動画ファイルは、ゆかりで検索することが可能です。<br>
+<br>
+誤ったフォルダーを追加してしまった場合は、一覧表からフォルダーを選択して「削除」ボタンをクリックすると、ゆかり検索対象フォルダーから削除されます。<br>
+<br>
+また、追加したフォルダーが USB メモリなどのリムーバブルメディア内にあるフォルダーの場合、リムーバブルメディアを外すと、自動的にゆかり検索対象フォルダーから削除されます。リムーバブルメディアを再度接続すると、自動的にゆかり検索対象フォルダーに追加されます。<br clear="right">
+</p>
+
+<a name="YukarinoSettei"></a>
+<h2>ゆかりの設定</h2>
+
+<a name="Yukarinoversionkakunin"></a>
+<h3>ゆかりのバージョン確認</h3>
+
+<p>
+<a href="HelpParts/YukaLister_YukariSettings_Version.png" target="_blank"><img src="HelpParts/YukaLister_YukariSettings_Version.png" alt="" width="256" align="right" border="0" hspace="10" vspace="10"></a>
+ゆかりは <a href="https://github.com/bee7813993/KaraokeRequestorWeb/commit/d2de06e5604f87a245f8880d33f3bd6f531a1074" target="_blank">v0.09.9-alpha-92</a> 以降のバージョンを使用してください。それよりも前のバージョンのゆかりではゆかりすたー NEBULA との協調動作ができません。<br>
+<br>
+ウェブブラウザでゆかりにアクセスし（ゆかりすたーと同じパソコンからアクセスする場合は <a href="http://localhost/" target="_blank">http://localhost/</a>）、メニューから［Help 等→設定］をクリック、ユーザー名（admin）を入力してゆかり設定ページを開きます。<br>
+<br>
+ページ末尾のほうにある「オンラインアップデート画面」ボタンをクリックします。<br>
+<br>
+ゆかりの現在のバージョンが表示されますので、上記のバージョン以降かどうか確認してください。<br>
+<br>
+バージョンが古い場合は、最新版の「更新」ボタンをクリックして最新バージョンにアップデートしてください。<br clear="right">
+</p>
+
+<a name="Kensakusettei"></a>
+<h3>検索設定</h3>
+
+<p>
+<a href="HelpParts/YukaLister_YukariSettings_Search.png" target="_blank"><img src="HelpParts/YukaLister_YukariSettings_Search.png" alt="" width="256" align="right" border="0" hspace="10" vspace="10"></a>
+ゆかりの設定ページの「検索画面設定」の「検索画面に表示する項目」のところを表示します。<br>
+<br>
+「ファイル名検索（りすたー）」と「りすたー DB 検索」のチェックを入れます。<br>
+<br>
+「りすたー DB ファイルパス」は、ゆかりすたー NEBULA が正しくインストールされている場合はデフォルトのまま（list\List.sqlite3）で構いません。ゆかりすたー NEBULA を通常とは異なるフォルダーにインストールした場合は、ゆかりすたー NEBULA が生成する List.sqlite3 のパス（ゆかりすたー NEBULA のフォルダ直下にある list フォルダーの中に生成されます）を指定して下さい。<br clear="right">
+</p>
+
+<a name="TopgamenmessagenoSettei"></a>
+<h3>トップ画面メッセージの設定</h3>
+
+<p>
+<a href="HelpParts/YukaLister_YukariSettings_TopMessage.png" target="_blank"><img src="HelpParts/YukaLister_YukariSettings_TopMessage.png" alt="" width="256" align="right" border="0" hspace="10" vspace="10"></a>
+ゆかりの設定ページの「トップ画面メッセージの設定」のところを表示し、「予約一覧（トップ）画面表示メッセージ」および「検索画面表示メッセージ」の 2 箇所に以下のように入力します。<br clear="right">
+</p>
+
+<pre>
+【ゆかりすたー NEBULA 一覧】&lt;br&gt;
+&lt;a href=&quot;list/List_index_New.php?yukarihost=#yukarihost#&quot;&gt;新着&lt;/a&gt;　
+&lt;a href=&quot;list/index.php?yukarihost=#yukarihost#&quot;&gt;カテゴリー別&lt;/a&gt;　
+&lt;a href=&quot;list/List_index_Series.php?yukarihost=#yukarihost#&quot;&gt;シリーズ別&lt;/a&gt;　
+&lt;a href=&quot;list/List_index_Season.php?yukarihost=#yukarihost#&quot;&gt;期別&lt;/a&gt;　
+&lt;a href=&quot;list/List_index_Period.php?yukarihost=#yukarihost#&quot;&gt;年代別&lt;/a&gt;　
+&lt;a href=&quot;list/List_index_Artist.php?yukarihost=#yukarihost#&quot;&gt;歌手別&lt;/a&gt;　
+&lt;a href=&quot;list/List_index_Composer.php?yukarihost=#yukarihost#&quot;&gt;作曲者別&lt;/a&gt;　
+&lt;a href=&quot;list/List_index_Tag.php?yukarihost=#yukarihost#&quot;&gt;タグ別&lt;/a&gt;　
+&lt;br&gt;
+</pre>
+
+<p>
+「設定反映」ボタンをクリックすると、ゆかりの設定が更新されます。<br>
+</p>
+
+<a name="YukaridenoKensakuFilename"></a>
+<h2>ゆかりでの検索（ファイル名）</h2>
+
+<p>
+<a href="HelpParts/YukaLister_YukariSearch_FileName.png" target="_blank"><img src="HelpParts/YukaLister_YukariSearch_FileName.png" alt="" width="256" align="right" border="0" hspace="10" vspace="10"></a>
+ゆかりの検索ページにアクセスします。<br>
+<br>
+「キーワード検索」欄に、ゆかりすたー NEBULA に追加したフォルダー内にあるファイルのファイル名を入力すると、検索結果として表示され、曲をリクエストすることができます。<br clear="right">
+</p>
+
+<a name="YukaridenoListhyouji"></a>
+<h2>ゆかりでのリスト表示</h2>
+
+<p>
+ゆかりの検索ページにアクセスし、【ゆかりすたー NEBULA 一覧】の下にある「カテゴリー別」などをクリックします。<br>
+<br>
+ゆかりすたー NEBULA が生成したリストが表示され、ファイル名をクリックすると曲をリクエストすることができます。<br>
+</p>
+
+<a name="ZokuseikensakunoDounyuu"></a>
+<h1>属性検索の導入</h1>
+
+<a name="Zokuseikensakutowa"></a>
+<h2>属性検索とは</h2>
+
+<p>
+<a href="#KantannaTsukaikata">前章</a>により、ゆかりによるファイル名検索が行えるようになりました。<br>
+<br>
+しかし、単なるファイル名検索では、ゆかりすたー NEBULA の実力の 1 割も発揮していません。ゆかりすたー NEBULA の特徴は、「楽曲名」「歌手名」といった属性ごとにカラオケ動画ファイルの整理・検索が可能となることです。<br>
+<br>
+例えば、「さるかに合戦」というタイトルのアニメ番組があったと仮定して、「蜂が飛ぶ」というオープニング曲のカラオケ動画ファイルがあるとします。<br>
+</p>
+
+<table>
+  <tr><th>楽曲名</th><td>蜂が飛ぶ</td></tr>
+  <tr><th>タイアップ名</th><td>さるかに合戦</td></tr>
+  <tr><th>歌手名</th><td>蜂八兄弟</td></tr>
+  <tr><th>ファイル名</th><td>さるかに合戦_蜂が飛ぶ.mp4</td></tr>
+</table>
+
+<p>
+ゆかりすたー NEBULA を活用すると、「タイアップ名＝さるかに合戦」のカラオケ動画ファイルを一覧表示して「さるかに合戦_蜂が飛ぶ.mp4」を見つけたり、さらには、「歌手名＝蜂八兄弟」といったファイル名には無い情報を指定して「さるかに合戦_蜂が飛ぶ.mp4」を検索できるようになります。<br>
+<br>
+「楽曲名」「歌手名」といった属性ごとにキーワードを指定して検索することを属性検索と言います。<br>
+</p>
+
+<a name="FolderSettei"></a>
+<h2>フォルダー設定</h2>
+
+<p>
+属性での整理・検索を行えるようにするために、ゆかりすたー NEBULA は、ファイル名を解析してさまざまな情報（番組名や楽曲名など）を読み取ります。<br>
+<br>
+この時に重要になってくるのが、ファイル名がどのようなルール（命名規則）で名付けられているか、ということです。「さるかに合戦_蜂が飛ぶ.mp4」の例では、命名規則が「番組名_楽曲名」となっています。一方で、「蜂が飛ぶ_さるかに合戦.mp4」というファイル名であれば、命名規則は「楽曲名_歌手名」ということになります。<br>
+<br>
+命名規則を指示してゆかりすたー NEBULA がファイル名を適切に解析できるようにするために行うのが、フォルダー設定です。<br>
+<br>
+フォルダー設定を行うには、ゆかり検索対象フォルダーで設定を行いたいフォルダーを選択してから、「フォルダー設定」ボタンをクリックします。すると、フォルダー設定ウィンドウが開きます。フォルダー設定ウィンドウの一番上に設定対象フォルダー名が表示されているので確認してください。<br>
+</p>
+
+<a name="FileMeimeikisokuTab"></a>
+<h3>ファイル命名規則タブ</h3>
+
+<p>
+<a href="HelpParts/YukaLister_FolderSettingsWindow_File.png" target="_blank"><img src="HelpParts/YukaLister_FolderSettingsWindow_File.png" alt="" width="256" align="right" border="0" hspace="10" vspace="10"></a>
+フォルダー設定ウィンドウには 2 つのタブがあり、最初のタブが「ファイル命名規則」タブです。このタブでは、設定対象フォルダー内に保存されているカラオケ動画ファイルの命名規則を指定します。<br>
+<br>
+「このフォルダー内にあるニコカラファイルの命名規則」欄に命名規則を入力し、「追加」ボタンをクリックすることで、命名規則を指定できます。<br>
+<br>
+「さるかに合戦_蜂が飛ぶ.mp4」のように、「拡張子を除く部分」が<br>
+</p>
+<pre>
+番組名_楽曲名
+</pre>
+<p>
+の命名規則でファイル名を付けている場合の指定方法は以下のようになります。<br>
+<br>
+ファイル命名規則入力欄の右側にあるタグボタンをクリックすると、番組分類やゲーム種別などの項目名がポップアップメニューに表示されるので、「タイアップ名」（番組名）をクリックします。すると、入力欄には「&lt;Program&gt;」が入力されます。続いて、キーボードから「_」を入力し、さらに、タグボタンのポップアップメニューから「楽曲名」をクリックして「&lt;Title&gt;」を入力します。これにより、命名規則入力欄には<br>
+</p>
+<pre>
+&lt;Program&gt;_&lt;Title&gt;
+</pre>
+<p>
+と入力されましたので、「追加」ボタンをクリックして命名規則に追加します。<br>
+<br>
+命名規則には、拡張子部分は含めないで下さい。<br>
+<br>
+命名規則は複数登録することが可能で、複数登録されている場合は、上から順に命名規則とファイル名が合致するか検索されます。<br>
+<br>
+命名規則の記述例をいくつか記載しておきます。<br>
+</p>
+
+<table>
+  <tr><th>ファイル名</th><th>命名規則</th></tr>
+  <tr><td>さるかに合戦_蜂が飛ぶ</td><td>&lt;Program&gt;_&lt;Title&gt;</td></tr>
+  <tr><td>蜂が飛ぶ (On-Off) さるかに合戦</td><td>&lt;Title&gt; (&lt;Track&gt;) &lt;Program&gt;</td></tr>
+  <tr><td>蜂が飛ぶ【2tr-on-off】さるかに合戦</td><td>&lt;Title&gt;【&lt;Track&gt;】&lt;Program&gt;</td></tr>
+  <tr><td>さるかに合戦 - 蜂が飛ぶ／蜂八兄弟</td><td>&lt;Program&gt; - &lt;Title&gt;／&lt;Artist&gt;</td></tr>
+  <tr><td>【さるかに合戦】蜂が飛ぶ／蜂八兄弟(On-Off)</td><td>【&lt;Program&gt;】&lt;Title&gt;／&lt;Artist&gt;(&lt;Track&gt;)</td></tr>
+  <tr><td>【さるかに合戦】「蜂が飛ぶ」[OP][蜂八兄弟][2tr On-VC]</td><td>【&lt;Program&gt;】「&lt;Title&gt;」[&lt;OpEd&gt;][&lt;Artist&gt;][&lt;Track&gt;]</td></tr>
+</table>
+
+<blockquote>
+（補足）<br>
+ゆかりすたー NEBULA の前身ツールであるニコカラりすたーでは、一部の項目を無視して命名規則を設定することが推奨されていましたが、ゆかりすたー NEBULA では、ファイル名に含まれているすべての項目を命名規則として含めることが推奨されています。<br>
+</blockquote>
+
+<a name="KoteichikoumokuTab"></a>
+<h3>固定値項目タブ</h3>
+
+<p>
+<a href="HelpParts/YukaLister_FolderSettingsWindow_Folder.png" target="_blank"><img src="HelpParts/YukaLister_FolderSettingsWindow_Folder.png" alt="" width="256" align="right" border="0" hspace="10" vspace="10"></a>
+フォルダー設定ウィンドウの 2 つめのタブは「固定値項目」タブです。このタブでは、フォルダー内のすべてのニコカラファイルに付与する項目を指定します。例えば、フォルダー内のすべてのニコカラファイルの制作者を AAA さんであると指定することなどが可能です。<br>
+<br>
+指定したい「項目」をコンボボックスから選び、「値」欄に値を入力（または選択）してから「追加」ボタンをクリックして、固定値項目に追加します。<br clear="right">
+</p>
+
+<a name="FileKensakuPreview"></a>
+<h3>ファイル検索プレビュー</h3>
+
+<p>
+2 つのタブの下にある「ファイル検索」ボタンをクリックすると、設定内容が保存され、2 つのタブで設定した内容に従って設定対象フォルダー内のファイルがどうのように解析されるかプレビューできます。設定対象フォルダー内のファイルが一覧表示され、設定に従って解析された項目が表示されます。<br>
+<br>
+「項目と値」が空欄になっているファイルは、ファイル名が正しく解析されていません。ファイル命名規則を追加するなどして、フォルダー内のすべてのファイル名が正しく解析されるようにして下さい。
+</p>
+
+<a name="FolderSetteinoKanryo"></a>
+<h3>フォルダー設定の完了</h3>
+
+<p>
+フォルダー設定を終えたら「OK」ボタンをクリックして、フォルダー設定ウィンドウを閉じます。<br>
+<br>
+設定を終えると、メインウィンドウのフォルダー一覧で、設定を行ったフォルダーの「設定有無」が「有」に変化します。<br>
+<br>
+1 つのフォルダーの設定を行うと、そのサブフォルダーにも設定が適用されます。一覧においては「設定有無」が「親に有」と表示されます。サブフォルダー独自の設定を行いたい場合は、サブフォルダーの「設定」ボタンをクリックして設定を行って下さい。<br>
+<br>
+ゆかり検索対象フォルダーの全てのフォルダーで、「設定有無」が「有」または「親に有」になるようにします。<br>
+</p>
+
+<a name="YukaridenoKensakuAttr"></a>
+<h2>ゆかりでの検索（属性）</h2>
+
+<p>
+<a href="HelpParts/YukaLister_YukariSearch_FileName.png" target="_blank"><img src="HelpParts/YukaLister_YukariSearch_FileName.png" alt="" width="256" align="right" border="0" hspace="10" vspace="10"></a>
+フォルダー設定を終えたフォルダー内にあるカラオケ動画ファイルについては、「作品名（タイアップ名）」「楽曲名」などの属性ごとの検索が可能となりました。<br>
+<br>
+ゆかりの検索ページにアクセスします。<br>
+<br>
+「キーワード検索」欄に作品名を入力すると、検索結果として表示され、曲をリクエストすることができます。<br clear="right">
+<br>
+<a href="HelpParts/YukaLister_YukariSearch_TieUp.png" target="_blank"><img src="HelpParts/YukaLister_YukariSearch_TieUp.png" alt="" width="256" align="right" border="0" hspace="10" vspace="10"></a>
+「キーワード検索」は作品名だけではなく、楽曲名やファイル名などが一致した場合も検索結果として表示します。例えば、「さるかに」で検索すると、「さるかに合戦」というタイトルのアニメ番組のカラオケ動画だけではなく、「まさる君」というタイトルのアニメ番組の「まさるかにんげんのちから」という曲名のカラオケ動画も検索結果として表示します。<br>
+<br>
+作品名に「さるかに」が含まれる場合のみ検索したい場合は、「作品名検索」欄に「さるかに」と入力することで、目的のカラオケ動画を検索することができます。<br clear="right">
+</p>
+
+<a name="GakkyokujouhoudatabasenoSeibi"></a>
+<h1>楽曲情報データベースの入力</h1>
+
+<p>
+属性検索をさらに一歩進めると、ファイル名には無い情報も検索できるようになります。<br>
+<br>
+例えば、「歌手名＝蜂八兄弟」を検索すると「さるかに合戦_蜂が飛ぶ.mp4」がヒットする、といったことが可能になります。<br>
+<br>
+属性検索を便利にするためには、ゆかりすたー NEBULA の楽曲情報データベースに情報を入力します。楽曲情報データベースとは、楽曲の正式名称、タイアップ作品名、歌手、作曲者といった楽曲に関する様々な情報を集積しているデータベースです。<br>
+</p>
+
+<blockquote>
+（補足）<br>
+前世代のゆかりすたー METEOR に搭載されていた anison.info CSV のインポート機能は廃止されました。データ構造が異なり、精度良くデータを反映することが困難なためです。<br>
+</blockquote>
+  
+<a name="GamendenoNyuuryoku"></a>
+<h2>画面での入力</h2>
+
+<p>
+楽曲情報データベースのすべての項目を入力するには、ゆかりすたー NEBULA の画面上で情報を入力していきます。<br>
+<br>
+以降の節で、各画面の説明を行います。<br>
+</p>
+
+<a name="NamaewoSoroeru"></a>
+<h2>名前を揃える（名称の編集ウィンドウ）</h2>
+
+<p>
+カラオケ動画ファイルのファイル名が間違っている場合、ファイル名から取得される楽曲名も間違ったものになりますが、ゆかりすたー NEBULA の機能により、（ファイル名を変更しなくても）正しい楽曲名（楽曲情報データベースに登録されている楽曲名）として認識させることができます。<br>
+<br>
+ゆかりすたー NEBULA のメインウィンドウで、ファイル名が間違っているものを含むフォルダーを選択して「フォルダー設定」ボタンをクリックします。<br>
+<br>
+フォルダー設定ウィンドウで「ファイル検索」ボタンをクリックします。<br>
+<br>
+ファイル名が間違っている行の「編集」ボタンをクリックします。<br>
+<br>
+名称の編集ウィンドウが開きます。<br>
+<br>
+ファイル名が間違っている場合は、楽曲名の下側に赤字で「データベース未登録」と表示されているはずです。「楽曲名を揃える」のチェックが有効になっていることを確認し、「検索」ボタンをクリックします。<br>
+<br>
+楽曲名の正式名称を検索ウィンドウが開きます。検索キーワード欄に正しい楽曲名を入力して検索ボタンをクリックすると、楽曲情報データベースに登録されている楽曲名の中から合致するものが検索されますので、目的の楽曲名を選択してから「選択」ボタンをクリックします。検索にヒットしない場合は、検索キーワードを短くして再度検索してみて下さい。それでもヒットしない場合は、そもそも楽曲情報データベースに登録されていないので、楽曲情報データベースへの登録を別途行って下さい。。<br>
+<br>
+「選択」ボタンをクリックすると楽曲名の正式名称を検索ウィンドウが閉じ、名称の編集ウィンドウの楽曲名の正式名称のところに正式名称が表示されます。<br>
+<br>
+同様の操作で、タイアップ名も揃えることができます。<br>
+<br>
+「OK」ボタンをクリックすると名称の編集ウィンドウが閉じ、修正情報が楽曲情報データベースに保存されます。<br>
+</p>
+
+<blockquote>
+カラオケ動画ファイルのファイル名が間違っている場合の対応策としては当然ながら、ファイル名を修正するという方法もありますので、やりやすい方で対処して下さい。<br>
+<br>
+ゆかりすたーの画面上で楽曲名を修正するメリットとしては、<br>
+</p>
+<ul>
+<li>既にたくさんのニコカラを作っていた場合、ファイル名のすべてをリネームするのが大変なのに対し、画面上での修正は 1 楽曲につき 1 回で済む。</li>
+<li>継続的に動画サイトなどからニコカラをダウンロードする場合、1 回画面上で修正しておけば、以降のダウンロード時には対応が不要となる。</li>
+<li>「&lt;」のようにファイル名として使用できない文字がタイアップ名などに含まれている場合は、ファイル名では対処のしようがない。</li>
+</ul>
+<p>
+などが挙げられます。<br>
+</p>
+</blockquote>
+
+<a name="GakkyokujouhounoShinkitourokutoHenkou"></a>
+<h2>楽曲情報の新規登録と変更（楽曲詳細情報の編集ウィンドウ）</h2>
+
+<p>
+名称の編集ウィンドウで楽曲名の正式名称を検索してもヒットしない場合、「楽曲詳細編集」ボタンをクリックすると、楽曲詳細情報の編集ウィンドウが開き、楽曲情報を新規に入力することができます（必ず、本当に未登録かどうか検索してからにして下さい）。<br>
+<br>
+既に登録済みの楽曲に対して「楽曲詳細編集」ボタンをクリックすると、楽曲詳細情報の編集ウィンドウが開き、登録済みの楽曲情報を変更することができます。<br>
+</p>
+
+<a name="TieUpjouhounoShinkitourokutoHenkou"></a>
+<h2>タイアップ情報の新規登録と変更（タイアップ詳細情報の編集ウィンドウ）</h2>
+
+<p>
+名称の編集ウィンドウでタイアップ名の正式名称を検索してもヒットしない場合、「タイアップ詳細編集」ボタンをクリックすると、タイアップ詳細情報の編集ウィンドウが開き、タイアップ情報を新規に入力することができます（必ず、本当に未登録かどうか検索してからにして下さい）。<br>
+<br>
+既に登録済みのタイアップに対して「タイアップ詳細編集」ボタンをクリックすると、タイアップ詳細情報の編集ウィンドウが開き、登録済みのタイアップ情報を変更することができます。<br>
+</p>
+
+<a name="KasyuSakushisyaSakkyokusyaHenkyokusyanoSentaku"></a>
+<h2>歌手・作詞者・作曲者・編曲者の選択</h2>
+
+<p>
+楽曲詳細情報の編集ウィンドウで「歌手あり」にチェックを入れて検索ボタンをクリックすると、歌手を検索して、楽曲の歌手を選択することができます。歌手が一人の場合はこの方法が簡単です。<br>
+<br>
+一方、「歌手詳細編集」ボタンをクリックすると歌手の編集ウィンドウが開き、複数の歌手を選択することができます。「検索して追加」ボタンをクリックすると歌手を一人選択できますが、複数回繰り返すことで、複数名の歌手を選択できます。<br>
+<br>
+作詞者・作曲者・編曲者についても同様です。<br>
+</p>
+
+<a name="KasyuSakushisyaSakkyokusyaHenkyokusyajouhounoShinkitourokutoHenkou"></a>
+<h2>歌手・作詞者・作曲者・編曲者情報の新規登録と変更（歌手詳細情報の編集ウィンドウ他）</h2>
+
+<p>
+歌手の編集ウィンドウで歌手を検索してもヒットしない場合、「新規人物作成」ボタンをクリックすると、歌手詳細情報の編集ウィンドウが開き、歌手情報を新規に入力することができます（必ず、本当に未登録かどうか検索してからにして下さい）。<br>
+<br>
+既に登録済みの歌手に対して「人物詳細編集」ボタンをクリックすると、歌手詳細情報の編集ウィンドウが開き、登録済みの歌手情報を変更することができます。<br>
+<br>
+作詞者・作曲者・編曲者についても同様です。<br>
+<br>
+なお、歌手と作詞者が同じ人物の場合は、歌手として登録した当該人物は、作詞者として検索してもヒットしますので、同じ人物情報を使用します。<br>
+</p>
+
+<a name="SeisakugaisyajouhounoShinkitourokutoHenkou"></a>
+<h2>制作会社情報の新規登録と変更（制作会社詳細情報の編集ウィンドウ）</h2>
+
+<p>
+タイアップ詳細情報の編集ウィンドウで制作会社を検索してもヒットしない場合、「制作会社詳細編集」ボタンをクリックすると、制作会社詳細情報の編集ウィンドウが開き、制作会社情報を新規に入力することができます（必ず、本当に未登録かどうか検索してからにして下さい）。<br>
+<br>
+既に登録済みの制作会社に対して「制作会社詳細編集」ボタンをクリックすると、制作会社詳細情報の編集ウィンドウが開き、登録済みの制作会社情報を変更することができます。<br>
+</p>
+
+<a name="SeriesjouhounoShinkitourokutoHenkou"></a>
+<h2>シリーズ情報の新規登録と変更（シリーズ詳細情報の編集ウィンドウ）</h2>
+
+<p>
+タイアップ詳細情報の編集ウィンドウでシリーズを検索してもヒットしない場合、「シリーズ詳細編集」ボタンをクリックすると、シリーズ詳細情報の編集ウィンドウが開き、シリーズ情報を新規に入力することができます（必ず、本当に未登録かどうか検索してからにして下さい）。<br>
+<br>
+既に登録済みのシリーズに対して「シリーズ詳細編集」ボタンをクリックすると、シリーズ詳細情報の編集ウィンドウが開き、登録済みのシリーズ情報を変更することができます。<br>
+</p>
+
+<a name="NyuuryokukekkanoKakunin"></a>
+<h2>入力結果の確認</h2>
+
+<p>
+入力した楽曲情報データベースをもとに、カラオケ動画ファイルがきちんと整理されているか、以下の方法で確認ができます。<br>
+</p>
+
+<a name="MeisyounohensyuuwindowdeKakunin"></a>
+<h3>名称の編集ウィンドウで確認</h3>
+
+<p>
+名称の編集ウィンドウの下半分に、楽曲情報データベースを適用した結果の属性判定結果が表示されます。<br>
+<br>
+楽曲情報データベースの内容を修正すると、直ちに情報が最新となりますので、名称の編集ウィンドウで確認するのが最も手軽です。<br>
+</p>
+
+<a name="YukaridenoListhyoujideKakunin"></a>
+<h3>ゆかりでのリスト表示で確認</h3>
+
+<p>
+メインウィンドウのゆかり検索対象フォルダーに追加されたフォルダー内にあるカラオケ動画ファイルについて、自動的にゆかり用リストが出力されます。<br>
+<br>
+<a href="#YukaridenoListhyouji">ゆかりでのリスト表示</a>節に記載の手順でゆかり用リストを表示し、楽曲情報データベースの内容がリストに反映されているかを確認します。<br>
+<br>
+なお、楽曲情報データベースの内容を更新した場合、リストに反映させるには一度ゆかりすたー NEBULA を再起動する必要があります。<br>
+</p>
+
+<a name="HtmllisthyoujideKakunin"></a>
+<h3>HTML リスト表示で確認</h3>
+
+<p>
+メインウィンドウのゆかり検索対象フォルダーに追加されたフォルダー内にあるカラオケ動画ファイルについて、HTML 形式でのリストを出力し、楽曲情報データベースの内容がリストに反映されているかを確認します。<br>
+<br>
+HTML 形式でのリスト出力については、<a href="#Kankyousettei">環境設定章</a>を参照して下さい。<br>
+<br>
+なお、楽曲情報データベースの内容を更新した場合、リストに反映させるには一度ゆかりすたー NEBULA を再起動する必要があります。<br>
+</p>
+
+<a name="Mitourokukenshutsu"></a>
+<h3>未登録検出</h3>
+
+<p>
+楽曲情報データベースの内容がリストに反映されない原因の多くは、カラオケ動画ファイルのファイル名が間違っているために、ファイル名から取得した情報（楽曲名など）が間違ってしまっていて、楽曲情報データベースの情報（楽曲名など）と一致しない場合です。<br>
+<br>
+楽曲情報データベースとファイル名の情報が合致しているかどうかを簡単に検出するには、「未登録検出」が便利です。<br>
+<br>
+フォルダー設定ウィンドウを開き、「ファイル検索」ボタンをクリックしてプレビューの後、「未登録検出」ボタンをクリックします。すると、解釈されたファイルの内容が楽曲情報データベースに登録されていない行が選択されるので、合致していないものを検出することができます。<br>
+</p>
+
+<a name="UmakuListkaSarenaibaai"></a>
+<h3>うまくリスト化されない場合</h3>
+
+<p>
+楽曲情報データベースの内容がリストに反映されないカラオケ動画ファイルを発見した場合は、<a href="#UmakuListkaSarenaibaainoTaishohou">うまくリスト化されない場合の対処法</a>をご覧ください。<br>
+</p>
+
+<a name="UmakuListkaSarenaibaainoTaishohou"></a>
+<h1>うまくリスト化されない場合の対処法</h1>
+
+<p>
+思い通りにリスト化されない（例えば、カテゴリー「その他」に分類されてしまう）ファイルがある場合は、以下のポイントを順に確認していきましょう。<br>
+</p>
+
+<a name="Fileichiranwindow"></a>
+<h2>ファイル一覧ウィンドウ</h2>
+
+<p>
+<a href="HelpParts/YukaLister_FileListWindow.png" target="_blank"><img src="HelpParts/YukaLister_FileListWindow.png" alt="" width="256" align="right" border="0" hspace="10" vspace="10"></a>
+メインウィンドウの「ファイル一覧」ボタンをクリックすると、ファイル一覧ウィンドウが開きます。<br>
+<br>
+ファイル一覧ウィンドウには、ゆかり検索対象フォルダーに追加したフォルダー内にあるすべてのファイルの情報が項目別に表示されます。データが存在する項目は白、データが存在しない項目はピンクのセルで表示されます。<br>
+<br>
+「検索」ボタンをクリックするとキーワード検索ができます。思い通りにリスト化されないファイルのファイル名などで検索することにより、当該ファイルを素早く見つけることができます。<br>
+<br>
+ピンクの「↓検索」ボタンをクリックすると、選択されているセルと同じ列の中からデータが存在しない項目を検索できます。逆に、白の「↓検索」ボタンをクリックすると、選択されているセルと同じ列の中からデータが存在する項目を検索できます。<br clear="right">
+</p>
+
+<a name="FoldersetteinoKakunin"></a>
+<h2>フォルダー設定の確認</h2>
+
+<p>
+ファイル一覧ウィンドウで思い通りにリスト化されないファイルを見つけたら、「フォルダー設定」ボタンをクリックしてフォルダー設定ウィンドウを開き、ファイル命名規則が正しく適用されているかを確認します。<br>
+<br>
+フォルダー設定ウィンドウの「ファイル検索」ボタンをクリックして、検索結果を表示します。「項目と値」の欄に解釈された楽曲名などが表示されているか、確認して下さい。<br>
+<br>
+例えば右の画像【未作成】の例では、2 つめのファイル「桃太郎＿桃から生まれた.mp4」において、固定値項目で指定したニコカラ制作者しか解釈されておらず、ファイル命名規則で指定した番組名や楽曲名が解釈されていません。<br>
+<br>
+原因は、ファイル名命名規則では「&lt;Program&gt;_&lt;Title&gt;」というように、番組名と楽曲名を「半角の」アンダーバーで区切っているのに対し、ファイル名が「全角の」アンダーバーで区切っているためです。<br>
+<br>
+このように、「項目と値」が他と比べて少ない（または、空欄になっている）ファイルは、ファイル命名規則がうまく適用されていません。<br>
+<br>
+対処法としては、
+</p>
+<ol>
+<li>ファイル名を半角アンダーバーに修正する。</li>
+<li>ファイル命名規則に全角アンダーバーで区切る規則を追加し、2 つの規則を登録する。</li>
+</ol>
+<p>
+というように、ファイル名を修正する方法と、ファイル命名規則を見直す方法の 2 種類があります。やりやすい方を選んで対処して下さい。<br clear="right">
+</p>
+
+<a name="GakkyokujouhoudatabasetoHyoukinoIcchinoKakunin"></a>
+<h2>楽曲情報データベースと表記の一致の確認</h2>
+
+<p>
+楽曲情報データベースの情報がリストに反映されない一因として、ファイル名から取得した「楽曲名」などの情報の表記と、楽曲情報データベースに登録されている「楽曲名」などの情報の表記が一致していないことが考えられます。特に、記号類の有無に注意して下さい。<br>
+<br>
+うまく情報が反映されないファイルがあるフォルダーのフォルダー設定ウィンドウを開き、「ファイル検索」ボタンをクリックします。ファイル一覧が表示されるので、「項目と値」列が空欄または、フォルダー固定値項目のみしか表示されていない行を探します。<br>
+<br>
+「ファイル検索」ボタンをクリックしてファイル一覧が表示されている時に、「未登録検出」ボタンをクリックすると、楽曲情報データベースと表記が一致していないファイルが選択されるので、うまく情報が反映されないファイルを簡単に見つけることができます。<br>
+<br>
+問題のある行を見つけたら、行の右側の「編集」ボタンをクリックし、名称の編集ウィンドウを開き、楽曲情報データベースを編集します。名称の編集ウィンドウの操作方法については、<a href="#NamaewoSoroeru">名前を揃える</a>節を参照して下さい。<br>
+</p>
+
+<a name="Listnitsuite"></a>
+<h1>リストについて</h1>
+
+<p>
+ゆかりすたー NEBULA が出力するリストについて、補足が必要と思われる事項について解説します。<br>
+</p>
+
+<a name="JouhougennoYuusenjuni"></a>
+<h2>情報源の優先順位</h2>
+
+<p>
+ゆかりすたー NEBULA は、<br>
+</p>
+<ol>
+<li>楽曲情報データベースに登録されている情報</li>
+<li>「フォルダー設定→ファイル命名規則」を元にファイル名から取得した情報</li>
+<li>「フォルダー設定→固定値項目」から取得した情報</li>
+</ol>
+<p>
+の 3 種類の情報を用いてカラオケ動画ファイルを整理し、リスト化を行います。<br>
+<br>
+1 つの項目が複数の情報源にある場合は、上に記載の順序で優先されます。例えば、楽曲情報データベースとファイル名の両方から「歌手名」を取得できた場合、楽曲情報データベースから取得した「歌手名」をリストに記載します。<br>
+</p>
+
+<blockquote>
+（補足）<br>
+ゆかりすたー NEBULA の前身ツールであるニコカラりすたーとは優先順位が異なっています。ニコカラりすたーを使用していた方は、優先順位にご注意下さい。<br>
+</blockquote>
+
+<a name="ListKoumoku"></a>
+<h2>リスト項目</h2>
+
+<ul>
+  <li>スマートトラック列（On / Off）……ファイル命名規則などから取得したトラック情報を解析し、オンボーカル・オフボーカルのトラックがある場合に○印を表示します。
+    <ul>
+      <li>トラック情報を「-」「_」「+」「,」「.」「 」（半角スペース）で区切ります。<br>（例）On（鼠合唱団）-On（丑合唱団）-Off →「On（鼠合唱団）」「On（丑合唱団）」「Off」の 3 つに区切ります。</li>
+      <li>区切られた文字のうち「Cho」「Cut」「DAM」「Guide」「GuideVocal」「Inst」「JOY」「Off」「OffCho」「OffVocal」「Offのみ」「VC」「オフ」「オフボ」「オフボーカル」「ボイキャン」「ボーカルキャンセル」「配信」をオフボーカルと見なします。</li>
+      <li>区切られた文字のうち「2tr」「2ch」「OnOff」「OffOn」をオンボーカルオフボーカル両方と見なします。</li>
+      <li>区切られた文字のうち上記以外をオンボーカルと見なします。なお、大文字小文字は区別しません。</li>
+      <li>フォルダー設定の固定値項目などで「&lt;Onvocal&gt;」が「1」に設定されている場合、オンボーカルがあるものと見なします。</li>
+      <li>フォルダー設定の固定値項目などで「&lt;Offvocal&gt;」が「1」に設定されている場合、オフボーカルがあるものと見なします。</li>
+    </ul>
+  </li>
+</ul>
+
+<a name="RiyoushakaranoMondaihoukoku"></a>
+<h1>利用者からの問題報告</h1>
+
+<a name="Mondaihoukokukinoutowa"></a>
+<h2>リスト問題報告機能とは</h2>
+
+<p>
+リスト問題報告機能は、ゆかり用リストを閲覧した人が問題（例：楽曲名が間違っている等）に気付いた際、その場で指摘できる機能です。<br>
+<br>
+リスト作成者だけではなく利用者全員でのチェックが可能となることにより、リストの精度を高めるチャンスが飛躍的に向上します。<br>
+</p>
+
+<a name="RiyoushaniyoruMondaihoukokunoYarikata"></a>
+<h2>利用者による問題報告のやり方</h2>
+
+<p>
+<a href="HelpParts/YukaLister_Report_Link.png" target="_blank"><img src="HelpParts/YukaLister_Report_Link.png" alt="" width="256" align="right" border="0" hspace="10" vspace="10"></a>
+ゆかり用リストの右端には、「報告」リンクが付いています（HTML リストには付いていないので間違えないで下さい）。<br>
+<br>
+利用者がリストの問題を発見した場合、問題のある箇所の報告リンクをクリックします。<br clear="right">
+<br>
+<a href="HelpParts/YukaLister_Report_ReportForm.png" target="_blank"><img src="HelpParts/YukaLister_Report_ReportForm.png" alt="" width="256" align="right" border="0" hspace="10" vspace="10"></a>
+「リストの問題を報告」ページが開き、現在のリストの内容が表示され、その下に、問題の内容を入力できるフォームが表示されます。<br>
+<br>
+問題のある項目が何かを選択したうえで、正しい内容や、コメント、報告者名を入力します。<br>
+<br>
+「問題を報告する」ボタンをクリックすると、報告完了です。<br>
+</p>
+
+<a name="HoukokusaretamondainoKakunin"></a>
+<h2>報告された問題の確認</h2>
+
+<p>
+<a href="HelpParts/YukaLister_Report_Notice.png" target="_blank"><img src="HelpParts/YukaLister_Report_Notice.png" alt="" width="256" align="right" border="0" hspace="10" vspace="10"></a>
+利用者から報告されたリストの問題をゆかりすたー NEBULA 上で確認するには、ゆかりすたー NEBULA のメインウィンドウを見ます。メインウィンドウ上部の「報告されたリストの問題を一覧表示」ボタン上に、報告された問題の数が表示されます。<br clear="right">
+<br>
+<a href="HelpParts/YukaLister_Report_List.png" target="_blank"><img src="HelpParts/YukaLister_Report_List.png" alt="" width="256" align="right" border="0" hspace="10" vspace="10"></a>
+「報告されたリストの問題を一覧表示」ボタンをクリックすると、報告された問題が一覧表示されます。<br clear="right">
+</p>
+
+<a name="HoukokusaretamondaihenoTaiou"></a>
+<h2>報告された問題への対応</h2>
+
+<p>
+<a href="HelpParts/YukaLister_Report_Detail.png" target="_blank"><img src="HelpParts/YukaLister_Report_Detail.png" alt="" width="256" align="right" border="0" hspace="10" vspace="10"></a>
+問題一覧の中から目的の報告を選択して「詳細」ボタンをクリックすると、「報告されたリスト問題の管理」ウィンドウが開き、問題の詳細を見ることができます。<br>
+<br>
+そこから各種設定ウィンドウを開けますので、<br>
+</p>
+
+<ul>
+<li>名称の編集ウィンドウから名寄せや楽曲情報データベースの修正をする</li>
+<li>フォルダー設定ウィンドウから命名規則を修正する</li>
+</ul>
+
+<p>
+などの対応を取ります。<br>
+<br>
+その後、「対応コメント」に対応内容を入力し、対応状況を「完了」とすることで、対応の記録を残せます。<br>
+<br>
+対応完了にすると、リスト問題報告一覧ウィンドウから表示が消えますが、「すべて」のチェックを選ぶことで、対応完了した問題を再度表示することもできます。<br>
+</p>
+
+<a name="Douki"></a>
+<h1>同期</h1>
+
+<a name="Doukikinoutowa"></a>
+<h2>同期機能とは</h2>
+
+<p>
+複数台のパソコンでゆかりすたー NEBULA を使用する際、楽曲情報データベースの内容を常に最新の同じ内容に保つための機能が同期です。<br>
+<br>
+例えば、昼間は画面の広いデスクトップパソコンでゆかりすたー NEBULA を使っていて、夜はベッドに寝ながらノートパソコンでゆかりすたー NEBULA を使う、という使い方をしている場合、楽曲情報をデスクトップパソコンに入力しても、通常はノートパソコンにはその内容が反映されません。<br>
+<br>
+しかし、同期機能を使うことで、デスクトップパソコンで入力した楽曲情報データベースの内容がノートパソコンにも反映されるようになります。デスクトップパソコンとノートパソコンに同期設定をしておくことで、楽曲情報をデスクトップパソコンとノートパソコンのどちらで入力しても、もう片方のパソコンで参照できるため、利便性・作業効率の向上が可能となります。<br>
+</p>
+
+<a name="DoukikinounoTsukaikata"></a>
+<h2>同期機能の使い方</h2>
+
+<p>
+同期機能を使うためには、Web サーバーにゆかりすたー NEBULA の同期機能を組み込む必要があります。<br>
+<br>
+組み込み作業は難易度が高く、上級者向けですので、本ヘルプでは解説しません。<br>
+<br>
+SyncServer フォルダー内のファイルを Web サーバーに組み込み、適切な MySQL の設定が自力でできる上級者の方のみ、同期機能をお使い下さい。<br>
+</p>
+
+<a name="Kankyousettei"></a>
+<h1>環境設定</h1>
+
+<p>
+ゆかりすたー NEBULA の全体的な動作に関する設定を行います。<br>
+</p>
+
+<a name="Setteitab"></a>
+<h2>設定タブ</h2>
+
+<a name="Yukarisetteifile"></a>
+<h3>ゆかり設定ファイル</h3>
+
+<p>
+ゆかりの設定ファイルがある場所を指定します。絶対パスまたは相対パスで指定できます。<br>
+<br>
+ゆかりおよびゆかりすたー NEBULAを標準のフォルダーにインストールしている場合は、この項目はデフォルトのままにしておいて下さい。<br>
+</p>
+
+<a name="AutoTarget"></a>
+<h3>起動時やリムーバブルメディア接続時、前回のフォルダーを自動的に追加する</h3>
+
+<p>
+このオプションを有効にしておくと、ゆかり検索対象フォルダーの追加の手間が省けます。<br>
+</p>
+
+<a name="ServerForYukari"></a>
+<h3>ゆかり用サーバー機能を提供する</h3>
+
+<p>
+このオプションを有効にしておくと、ゆかり上でのプレビュー等が可能になります。<br>
+</p>
+
+<a name="IdSettouji"></a>
+<h3>ID 先頭付与文字列</h3>
+
+<p>
+ゆかりすたー NEBULA では、登録される楽曲情報データベースのデータを識別するための ID を付与していますが、その ID の先頭に付与する文字列を指定します。<br>
+<br>
+ID を区別できるようにするためのものなので、任意の文字列で構いませんが、複数台のパソコンでゆかりすたー NEBULA を使用している場合は、それぞれのパソコンで異なる文字列を指定してください。例えば、<br>
+</p>
+<ul>
+<li>リビングで使用しているパソコン→「リビング」を指定</li>
+<li>寝室で使用しているパソコン→「寝室」を指定</li>
+</ul>
+<p>
+といったように指定すると良いでしょう。<br>
+<br>
+また、OS 再インストール時など設定が消去された場合は、以前に使用していた ID 先頭付与文字列とは異なるものを指定して下さい。以前に「リビング」を指定した場合は、「リビング2」などにすると良いでしょう。<br>
+</p>
+
+<a name="Listtaisyoutab"></a>
+<h2>リスト対象タブ</h2>
+
+<p>
+リスト化対象のファイルの拡張子を指定できます。ゆかり検索対象フォルダーを追加した際、フォルダー内のファイルのうち、ここで指定した拡張子を持つファイルのみが、リストに表示されます。<br>
+</p>
+
+<a name="ListsyutsuryokutabYukari"></a>
+<h2>リスト出力タブ：ゆかりリクエスト用リスト（PHP）</h2>
+
+<p>
+リスト出力タブのゆかりリクエスト用リスト欄では、自動的に出力・更新されるゆかりリクエスト用リストの設定を行います。<br>
+</p>
+
+<a name="YukariListSyutsuryokusettei"></a>
+<h3>出力設定</h3>
+
+<p>
+出力設定ボタンをクリックすると、ゆかりリクエスト用リストの出力設定を行うことができます。<br>
+</p>
+
+<a name="YukariListsyutsuryokusakifolder"></a>
+<h3>リスト出力先フォルダー</h3>
+
+<p>
+ゆかりリクエスト用リストが出力されるフォルダーを表示しています。変更はできません。<br>
+<br>
+ゆかりリクエスト用リストの出力先は<a href="#Yukarisetteifile">ゆかり設定ファイルの場所</a>から自動算出されますので、変更したい場合は、ゆかり設定ファイルの場所を指定し直して下さい。<br>
+</p>
+
+<a name="YukariListsyutsuryokumaekakunin"></a>
+<h3>ゆかりリクエスト用リスト出力前に確認する</h3>
+
+<p>
+ゆかりリクエスト用リストを出力する前に、出力して良いかどうかの確認を行います。<br>
+<br>
+ゆかりリクエスト用リストは必要に応じて随時出力されるため、このオプションを有効にすると頻繁に確認を求められることになり面倒です。通常はオフのままにして置いて下さい。<br>
+</p>
+
+<a name="KidoujiniZenkainoYukariyourequestlistwoClearsuru"></a>
+<h3>起動時に前回のゆかりリクエスト用リストをクリアする</h3>
+
+<p>
+このオプションを有効にしておくことで、ゆかりすたー NEBULA 起動時に前回のゆかりリクエスト用リストが一旦クリアされ、ゆかり検索対象フォルダー追加後に改めてリストが生成されます。<br>
+<br>
+このオプションを無効にすると、ゆかり検索対象フォルダー追加後にリストを生成するまでの間、前回のリストが利用できる状態を維持します。すぐにリストが使えるというメリットがある反面、存在しないファイルがリスト化されている状態になる恐れもあり、ゆかり検索対象フォルダーの内容とリストに齟齬が発生する恐れがありますので注意してください。<br>
+</p>
+
+<a name="ListsyutsuryokutabEtsuran"></a>
+<h2>リスト出力タブ：閲覧用リスト（PHP）</h2>
+
+<p>
+リスト出力タブの閲覧用リスト欄では、閲覧用にリストを手動出力することができます。<br>
+</p>
+
+<a name="Listsyuturyokukeishiki"></a>
+<h3>リスト出力形式</h3>
+
+<p>
+リスト出力形式では、閲覧用リストをどの形式で出力するかを選択できます。<br>
+<br>
+また、出力設定ボタンをクリックすると、出力するリストの出力設定を行うことができます。<br>
+</p>
+
+<a name="Listsyuturyokusakifolder"></a>
+<h3>リスト出力先フォルダー</h3>
+
+<p>
+出力するリストの保存場所を指定します。<br>
+<br>
+設定を終えた後、「閲覧用リスト出力」ボタンをクリックすると、リストが出力され、関連付けられたアプリケーション（ブラウザなど）でリストが開かれます。<br>
+</p>
+
+<a name="Maintenancetab"></a>
+<h2>メンテナンスタブ</h2>
+
+<a name="Autocheckrss"></a>
+<h3>ゆかりすたーの最新情報・更新版を自動的に確認する</h3>
+
+<p>
+ゆかりすたー NEBULA に関する最新情報や更新版があるかどうか、インターネット上で自動的に確認し、ある場合は表示・バージョンアップを行うことができます。<br>
+</p>
+
+<a name="Logwohozonnsuru"></a>
+<h3>ログを保存する</h3>
+
+<p>
+ゆかりすたー NEBULA のログを保存します。動作に問題が発生したときに開発者とやり取りする際、手助けになる場合があります。<br>
+</p>
+
+<a name="GakkyokujouhoudatabasewoDoukisuru"></a>
+<h3>楽曲情報データベースを同期する</h3>
+
+<p>
+同期については<a href="#Douki">同期</a>章をご覧ください。<br>
+</p>
+
+<a name="Importtab"></a>
+<h2>インポートタブ</h2>
+
+<p>
+インポートタブでは、外部のデータを楽曲情報データベースの内容として取り込むことができます。<br>
+<br>
+以下の項目を設定した後、「インポート」ボタンをクリックすると、楽曲情報データベースに内容が取り込まれます。<br>
+<br>
+なお、ファイルを指定する際は、参照ボタンで指定することもできますし、エクスプローラーからファイルをドラッグ＆ドロップしても指定することができます。<br>
+</p>
+
+<a name="YukaListerdeexportshitafilewoImport"></a>
+<h3>ゆかりすたー NEBULA でエクスポートしたファイルをインポート</h3>
+
+<p>
+エクスポートタブでエクスポートしたゆかりすたー情報ファイルや、自動的にバックアップされている楽曲情報データベースから、楽曲情報を取り込みます。<br>
+</p>
+
+<a name="Exporttab"></a>
+<h2>エクスポートタブ</h2>
+
+<p>
+楽曲情報データベースの内容を外部ストレージに保存することで、バックアップを取ることができます。<br>
+<br>
+エクスポート先を指定してから、エクスポートボタンをクリックして下さい。<br>
+</p>
+
+<a name="Listshutsuryokusettei"></a>
+<h1>リスト出力設定</h1>
+
+<p>
+環境設定ウィンドウの「リスト出力タブ」で「出力設定」ボタンをクリックすることで、リスト出力に関する設定を行うことができます。<br>
+<br>
+具体的な設定項目については次節以降にすべて記載しますが、出力形式によっては、設定できる項目が少ない（タブが表示されない）ものもあります。<br>
+</p>
+
+<a name="Kihonsetteitab"></a>
+<h2>基本設定タブ</h2>
+
+<p>
+<a href="HelpParts/YukaLister_OutputSettingsWindow_Basic.png" target="_blank"><img src="HelpParts/YukaLister_OutputSettingsWindow_Basic.png" alt="" width="256" align="right" border="0" hspace="10" vspace="10"></a>
+リスト生成の基本となる項目を設定します。<br>
+</p>
+
+<a name="Shutsuryokukoumoku"></a>
+<h3>出力項目</h3>
+
+<p>
+リストに出力する情報を指定します。<br>
+<br>
+「すべて」を選択すると、ゆかりすたー NEBULA が出力できるすべての項目がリストに出力されます。<br>
+<br>
+「以下で追加した項目」を選択すると、下部のリストボックスで指定した項目のみが出力されます。<br>
+<br>
+左側のリストボックスにある項目が出力されない項目で、右側のリストボックスにある項目が出力される項目です。<br>
+<br>
+左側のリストボックスから、出力したい項目を選択し、追加ボタンをクリックすることで、右側のリストボックスに移動して出力されるようになります。<br>
+<br>
+逆に、右側のリストボックスの項目を選択し、削除ボタンをクリックすることで、左側のリストボックスに移動して出力されないようになります。<br>
+<br>
+また、右側のリストボックスの項目を選択し、上へ・下へボタンをクリックすることで、項目の順番を入れ替えることができます。<br>
+</p>
+
+<a name="Htmltab"></a>
+<h2>HTML タブ</h2>
+
+<p>
+<a href="HelpParts/YukaLister_OutputSettingsWindow_Html.png" target="_blank"><img src="HelpParts/YukaLister_OutputSettingsWindow_Html.png" alt="" width="256" align="right" border="0" hspace="10" vspace="10"></a>
+HTML 系リストに特有の設定を行います。<br>
+</p>
+
+<a name="Shinchaku"></a>
+<h3>NEW（新着）</h3>
+
+<p>
+「31 日以内に更新されたファイルを NEW（新着）に記載する」のチェックを入れると、リストに NEW（新着）という番組分類を作成し、過去 31 日以内に更新された新しいニコカラファイルをすべてそこに入れます。<br>
+<br>
+NEW にリスト化された新しいニコカラファイルは元の番組分類（例えばアニメ）でも引き続きリスト化されますので、リスト中に 2 回登場することになります。従って、NEW に分類された曲の数は、トップページ末尾の合計曲数に重複してカウントすることはしません。<br>
+<br>
+また、新着扱いにする日数は自由に指定することができます。<br>
+</p>
+
+<a name="SuishouFilemei"></a>
+<h1>推奨ファイル名</h1>
+
+<p>
+見やすいリストを作成するためには、カラオケ動画ファイルのファイル名に必要な情報を盛り込んでおくことが必要です。最低限、以下の項目をファイル名に入れておくと、見やすいリストができるでしょう。
+</p>
+
+<ul>
+<li>タイアップ名</li>
+<li>楽曲名</li>
+<li>トラック情報</li>
+<li>（備考）</li>
+</ul>
+
+<p>
+備考は必要な場合のみ記載します。例えば、以下のような内容を備考に記載すると良いでしょう。<br>
+</p>
+
+<ul>
+<li>パート有：男声パートと女声パートの字幕が色分けされている場合</li>
+<li>暫定版：作成途中のニコカラファイルの場合</li>
+</ul>
+
+<p>
+これらを踏まえて、ファイル命名規則を例えば次のようにすると良いでしょう。備考がある場合と無い場合の 2 パターンを命名規則として登録します。<br>
+</p>
+
+<ul>
+<li>【&lt;Program&gt;】&lt;Title&gt;(&lt;Track&gt;)※&lt;Comment&gt;</li>
+<li>【&lt;Program&gt;】&lt;Title&gt;(&lt;Track&gt;)</li>
+</ul>
+
+<p>
+具体的なファイル名は、例えば次のようにします。<br>
+</p>
+
+<ul>
+<li>【桃太郎】鬼をやっつけろ！(On-Off)※パート有.mp4</li>
+<li>【桃太郎】鬼をやっつけろ！(On-Off).mp4</li>
+</ul>
+
+<a name="Sample"></a>
+<h1>サンプル</h1>
+
+<p>
+一定の命名規則に従ってリネームされているニコカラファイルと、そのニコカラファイルをうまくリスト化するためのフォルダー設定のサンプルを、SampleFolderSettings に入れてあります。<br>
+<br>
+環境設定で SampleFolderSettings フォルダー内のゆかりすたー情報ファイルフォルダーにあるファイルをインポートしてください。その後、リスト化対象フォルダーを SampleFolderSettings（フルパスで指定して下さい）にしてリスト生成すると、リストが生成されます。<br>
+<br>
+全てのファイルが「その他」に分類されてしまう場合は、インポートを行ったか再度確認して下さい。<br>
+<br>
+開発者環境にて生成したリストを <a href="SampleFolderSettings/リスト生成結果/index.html" target="_blank">SampleFolderSettings/リスト生成結果</a> フォルダーに入れてありますので参考にして下さい。<br>
+<br>
+なお、ファイル名からリストを生成するサンプルですので、mp4 ファイルについては中身の無い 0 バイトのファイルになっています。<br>
+</p>
+
+<a name="AAAsannoRei"></a>
+<h2>AAA さんの例</h2>
+
+<h3>ファイル整理方法</h3>
+<p>
+AAA さんはシンプルに動画を管理しており、フォルダー分けはせずに、<br>
+</p>
+<pre>
+タイアップ名_楽曲名
+</pre>
+<p>
+というルールでファイルを整理しています。
+</p>
+
+<h3>リスト化の設定</h3>
+
+<p>
+<a href="HelpParts/YukaLister_SampleFolderSettings_AAA.png" target="_blank"><img src="HelpParts/YukaLister_SampleFolderSettings_AAA.png" alt="" width="256" align="right" border="0" hspace="10" vspace="10"></a>
+ファイル名からはニコカラ制作者が読み取れないため、フォルダー設定の固定値項目でニコカラ制作者を設定しています。
+</p>
+
+<a name="BBBsannoRei"></a>
+<h2>BBB さんの例</h2>
+
+<h3>ファイル整理方法</h3>
+<p>
+BBB さんはカテゴリーごとのフォルダーを作成したうえで、
+</p>
+<pre>
+【タイアップ名】楽曲名_BBB
+</pre>
+<p>
+というルールでファイルを整理しています。<br>
+たまに備考（コメント）を付けて、<br>
+</p>
+<pre>
+【タイアップ名】楽曲名※備考_BBB
+</pre>
+<p>
+というルールになることがあります。
+</p>
+
+<h3>リスト化の設定</h3>
+<p>
+<a href="HelpParts/YukaLister_SampleFolderSettings_BBB.png" target="_blank"><img src="HelpParts/YukaLister_SampleFolderSettings_BBB.png" alt="" width="256" align="right" border="0" hspace="10" vspace="10"></a>
+備考が付いている場合と付いていない場合で命名規則が異なっているため、フォルダー設定では 2 つの命名規則を設定しています。<br>
+<br>
+複数の命名規則が設定された場合は、上から順にチェックされるため、備考付きの命名規則を先に登録しています。備考無しを先に登録してしまうと、「※備考」の部分も含めて楽曲名と解釈されてしまうためです。<br>
+<br>
+フォルダーを問わず命名規則は一貫しているため、フォルダー設定は BBB さんの親フォルダーで一度指定すれば、すべてのサブフォルダーで適用されます。<br>
+</p>
+
+<a name="CCCsannoRei"></a>
+<h2>CCC さんの例</h2>
+
+<h3>ファイル整理方法</h3>
+<p>
+CCC さんは
+</p>
+<pre>
+タイアップ名／楽曲名／CCC
+</pre>
+<p>
+というルールでファイルを整理しています。<br>
+<br>
+いい加減な性格なので、タイアップ名や楽曲名が公式通りになっておらず、表記揺れしています。<br>
+</p>
+
+<h3>リスト化の設定</h3>
+<p>
+タイアップ名、楽曲名、ニコカラ製作者をファイル名から取得する設定にしています。<br>
+<br>
+<a href="HelpParts/YukaLister_SampleFolderSettings_CCC.png" target="_blank"><img src="HelpParts/YukaLister_SampleFolderSettings_CCC.png" alt="" width="256" align="right" border="0" hspace="10" vspace="10"></a>
+タイアップ名や楽曲名が表記揺れしているため、名称の編集ウィンドウで名寄せ登録を行っています。例えば、ファイル名では「ももたろう」となっていますが、正式なタイアップ名は「桃太郎」のため、「ももたろう」→「桃太郎」の名寄せをしています。<br clear="right">
+</p>
+
+<a name="DDDsannoRei"></a>
+<h2>DDD さんの例</h2>
+
+<h3>ファイル整理方法</h3>
+<p>
+DDD さんは童謡のニコカラを作成しており、
+</p>
+<pre>
+【楽曲名の頭文字】楽曲名(DDD)
+</pre>
+<p>
+というルールでファイルを整理しています。<br>
+</p>
+
+<h3>リスト化の設定</h3>
+<p>
+<a href="HelpParts/YukaLister_SampleFolderSettings_DDD.png" target="_blank"><img src="HelpParts/YukaLister_SampleFolderSettings_DDD.png" alt="" width="256" align="right" border="0" hspace="10" vspace="10"></a>
+楽曲名フリガナ、楽曲名、ニコカラ制作者をファイル名から取得する設定にしています。<br>
+<br>
+童謡の場合、紐付くタイアップがありません。タイアップ名が取得できる場合はタイアップ名の五十音順にリスト化されますが、このようにタイアップ名が取得できない場合は、楽曲名の五十音順にリスト化されます。<br>
+<br>
+DDD さんは楽曲名の頭文字でファイルを整理していますので、この頭文字を楽曲名の読み仮名として取得することで、楽曲名が漢字の場合でも、正しく五十音順にリスト化されるようになります。<br>
+<br>
+紐付くタイアップがないためにカテゴリーが「その他」となってしまうのを防ぐため、フォルダー固定値で、番組分類を「一般」としています。<br>
+</p>
+
+<a name="Komattatokiwa"></a>
+<h1>困ったときは</h1>
+
+<p>
+ゆかりすたー NEBULA のサポートページをご覧ください。<br>
+</p>
+<ul>
+<li><a href="http://shinta.coresv.com/software/yukalister-nebula-jpn/#Support" target="_blank">ゆかりすたー NEBULA　サポートページ</a></li>
+</ul>
+
+<a name="Sonota"></a>
+<h1>その他</h1>
+
+<a name="Database"></a>
+<h2>データベース</h2>
+
+<table>
+<tr><th>種類別</th><td>フリーソフトウェア</td></tr>
+<tr><th>名称</th><td>リスト作成ツール</td></tr>
+<tr><th>ソフトウェア名</th><td>ゆかりすたー NEBULA</td></tr>
+<tr><th>ダウンロード</th><td><a href="http://shinta.coresv.com/software/yukalister-nebula-jpn/#Download" target="_blank">http://shinta.coresv.com/software/yukalister-nebula-jpn/#Download</a>（メイン）<br><a href="http://shinta0806be.ldblog.jp/archives/9212448.html" target="_blank">http://shinta0806be.ldblog.jp/archives/9212448.html</a>（バックアップ）</td></tr>
+<tr><th>作者</th><td>SHINTA</td></tr>
+<tr><th>作者 E メール</th><td><img src="HelpParts/MailAddrG2.png" border="0"></td></tr>
+<tr><th>製品番号</th><td>SHWI-043-F</td></tr>
+</table>
+
+<a name="License"></a>
+<h2>ライセンス</h2>
+
+<p>
+ゆかりすたー NEBULA には以下のライセンスが適用されます。<br>
+</p>
+<ul>
+<li><a href="http://creativecommons.org/licenses/by-nc-nd/2.1/jp/" target="_blank">クリエイティブ・コモンズ・ライセンス（表示 - 非営利 - 改変禁止 2.1 日本）</a></li>
+</ul>
+<p>
+※第三者から提供されている部分を除きます。第三者から提供されている部分については、元のライセンスに従います。<br>
+※営利目的で使用したい場合は、個別に応じられる場合がありますので事前にご相談下さい。<br>
+</p>
+
+<a name="Kaiteirireki"></a>
+<h2>改訂履歴</h2>
+
+<p>
+ゆかりすたー NEBULA の改訂履歴は以下をご覧ください。<br>
+</p>
+<ul>
+<li><a href="YukaLister_History_JPN.txt" target="_blank">YukaLister_History_JPN.txt</a></li>
+</ul>
+
+<a name="Syaji"></a>
+<h2>謝辞</h2>
+
+<p>
+ゆかりすたー NEBULA の動作に当たり、以下のソフトウェアを使用させていただいております。ありがとうございます。各ソフトウェアのライセンス等については、各ソフトウェアのドキュメントを ThirdPartyDocuments フォルダ内に同梱しています。<br>
+</p>
+<ul>
+<li><a href="https://github.com/MaterialDesignInXAML/MaterialDesignInXamlToolkit" target="_blank">Material Design In XAML Toolkit</a></li>
+<li><a href="https://github.com/runceel/Livet" target="_blank">Livet</a></li>
+</ul>
+
+</div><!-- MainCol -->
+
+<!-- ★★★　左側メニュー　★★★ -->
+<a name="LColMenu"></a>
+<div id="LCol">
+
+<!-- CFileMerge:IndexBegin -->
+<div class="SideMenuItemH1"><a href="#Hajimeni">はじめに</a></div>
+<div class="SideMenuItemH2"><a href="#Gaiyou">概要</a></div>
+<div class="SideMenuItemH2"><a href="#Shinkapoint">進化ポイント</a></div>
+<div class="SideMenuItemH2"><a href="#Dousakankyou">動作環境</a></div>
+<div class="SideMenuItemH2"><a href="#Install">インストール</a></div>
+<div class="SideMenuItemH2"><a href="#Kido">起動</a></div>
+<div class="SideMenuItemH1"><a href="#KantannaTsukaikata">簡単な使い方</a></div>
+<div class="SideMenuItemH2"><a href="#SeijouniDousashiteirukaKakunin">正常に動作しているか確認</a></div>
+<div class="SideMenuItemH2"><a href="#YukariKensakutaishouFolderTsuika">ゆかり検索対象フォルダー追加</a></div>
+<div class="SideMenuItemH2"><a href="#YukarinoSettei">ゆかりの設定</a></div>
+<div class="SideMenuItemH2"><a href="#YukaridenoKensakuFilename">ゆかりでの検索（ファイル名）</a></div>
+<div class="SideMenuItemH2"><a href="#YukaridenoListhyouji">ゆかりでのリスト表示</a></div>
+<div class="SideMenuItemH1"><a href="#ZokuseikensakunoDounyuu">属性検索の導入</a></div>
+<div class="SideMenuItemH2"><a href="#Zokuseikensakutowa">属性検索とは</a></div>
+<div class="SideMenuItemH2"><a href="#FolderSettei">フォルダー設定</a></div>
+<div class="SideMenuItemH2"><a href="#YukaridenoKensakuAttr">ゆかりでの検索（属性）</a></div>
+<div class="SideMenuItemH1"><a href="#GakkyokujouhoudatabasenoSeibi">楽曲情報データベースの入力</a></div>
+<div class="SideMenuItemH2"><a href="#GamendenoNyuuryoku">画面での入力</a></div>
+<div class="SideMenuItemH2"><a href="#NamaewoSoroeru">名前を揃える（名称の編集ウィンドウ）</a></div>
+<div class="SideMenuItemH2"><a href="#GakkyokujouhounoShinkitourokutoHenkou">楽曲情報の新規登録と変更（楽曲詳細情報の編集ウィンドウ）</a></div>
+<div class="SideMenuItemH2"><a href="#TieUpjouhounoShinkitourokutoHenkou">タイアップ情報の新規登録と変更（タイアップ詳細情報の編集ウィンドウ）</a></div>
+<div class="SideMenuItemH2"><a href="#KasyuSakushisyaSakkyokusyaHenkyokusyanoSentaku">歌手・作詞者・作曲者・編曲者の選択</a></div>
+<div class="SideMenuItemH2"><a href="#KasyuSakushisyaSakkyokusyaHenkyokusyajouhounoShinkitourokutoHenkou">歌手・作詞者・作曲者・編曲者情報の新規登録と変更（歌手詳細情報の編集ウィンドウ他）</a></div>
+<div class="SideMenuItemH2"><a href="#SeisakugaisyajouhounoShinkitourokutoHenkou">制作会社情報の新規登録と変更（制作会社詳細情報の編集ウィンドウ）</a></div>
+<div class="SideMenuItemH2"><a href="#SeriesjouhounoShinkitourokutoHenkou">シリーズ情報の新規登録と変更（シリーズ詳細情報の編集ウィンドウ）</a></div>
+<div class="SideMenuItemH2"><a href="#NyuuryokukekkanoKakunin">入力結果の確認</a></div>
+<div class="SideMenuItemH1"><a href="#UmakuListkaSarenaibaainoTaishohou">うまくリスト化されない場合の対処法</a></div>
+<div class="SideMenuItemH2"><a href="#Fileichiranwindow">ファイル一覧ウィンドウ</a></div>
+<div class="SideMenuItemH2"><a href="#FoldersetteinoKakunin">フォルダー設定の確認</a></div>
+<div class="SideMenuItemH2"><a href="#GakkyokujouhoudatabasetoHyoukinoIcchinoKakunin">楽曲情報データベースと表記の一致の確認</a></div>
+<div class="SideMenuItemH1"><a href="#Listnitsuite">リストについて</a></div>
+<div class="SideMenuItemH2"><a href="#JouhougennoYuusenjuni">情報源の優先順位</a></div>
+<div class="SideMenuItemH2"><a href="#ListKoumoku">リスト項目</a></div>
+<div class="SideMenuItemH1"><a href="#RiyoushakaranoMondaihoukoku">利用者からの問題報告</a></div>
+<div class="SideMenuItemH2"><a href="#Mondaihoukokukinoutowa">リスト問題報告機能とは</a></div>
+<div class="SideMenuItemH2"><a href="#RiyoushaniyoruMondaihoukokunoYarikata">利用者による問題報告のやり方</a></div>
+<div class="SideMenuItemH2"><a href="#HoukokusaretamondainoKakunin">報告された問題の確認</a></div>
+<div class="SideMenuItemH2"><a href="#HoukokusaretamondaihenoTaiou">報告された問題への対応</a></div>
+<div class="SideMenuItemH1"><a href="#Douki">同期</a></div>
+<div class="SideMenuItemH2"><a href="#Doukikinoutowa">同期機能とは</a></div>
+<div class="SideMenuItemH2"><a href="#DoukikinounoTsukaikata">同期機能の使い方</a></div>
+<div class="SideMenuItemH1"><a href="#Kankyousettei">環境設定</a></div>
+<div class="SideMenuItemH2"><a href="#Setteitab">設定タブ</a></div>
+<div class="SideMenuItemH2"><a href="#Listtaisyoutab">リスト対象タブ</a></div>
+<div class="SideMenuItemH2"><a href="#ListsyutsuryokutabYukari">リスト出力タブ：ゆかりリクエスト用リスト（PHP）</a></div>
+<div class="SideMenuItemH2"><a href="#ListsyutsuryokutabEtsuran">リスト出力タブ：閲覧用リスト（PHP）</a></div>
+<div class="SideMenuItemH2"><a href="#Maintenancetab">メンテナンスタブ</a></div>
+<div class="SideMenuItemH2"><a href="#Importtab">インポートタブ</a></div>
+<div class="SideMenuItemH2"><a href="#Exporttab">エクスポートタブ</a></div>
+<div class="SideMenuItemH1"><a href="#Listshutsuryokusettei">リスト出力設定</a></div>
+<div class="SideMenuItemH2"><a href="#Kihonsetteitab">基本設定タブ</a></div>
+<div class="SideMenuItemH2"><a href="#Htmltab">HTML タブ</a></div>
+<div class="SideMenuItemH1"><a href="#SuishouFilemei">推奨ファイル名</a></div>
+<div class="SideMenuItemH1"><a href="#Sample">サンプル</a></div>
+<div class="SideMenuItemH2"><a href="#AAAsannoRei">AAA さんの例</a></div>
+<div class="SideMenuItemH2"><a href="#BBBsannoRei">BBB さんの例</a></div>
+<div class="SideMenuItemH2"><a href="#CCCsannoRei">CCC さんの例</a></div>
+<div class="SideMenuItemH2"><a href="#DDDsannoRei">DDD さんの例</a></div>
+<div class="SideMenuItemH1"><a href="#Komattatokiwa">困ったときは</a></div>
+<div class="SideMenuItemH1"><a href="#Sonota">その他</a></div>
+<div class="SideMenuItemH2"><a href="#Database">データベース</a></div>
+<div class="SideMenuItemH2"><a href="#License">ライセンス</a></div>
+<div class="SideMenuItemH2"><a href="#Kaiteirireki">改訂履歴</a></div>
+<div class="SideMenuItemH2"><a href="#Syaji">謝辞</a></div>
+<!-- CFileMerge:IndexEnd -->
+
+</div><!-- LCol -->
+
+
+</body>
+
+</html>

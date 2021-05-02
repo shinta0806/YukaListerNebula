@@ -51,6 +51,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="Documents\HelpParts\" />
     <Folder Include="Models\ValueConverters\" />
     <Folder Include="SyncServer\common_lib\" />
     <Folder Include="SyncServer\data\" />
