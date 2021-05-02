@@ -175,6 +175,20 @@ namespace YukaLister.Models.SerializableSettings
 		}
 
 		// --------------------------------------------------------------------
+		// RSS の確認が必要かどうか
+		// --------------------------------------------------------------------
+		public Boolean IsCheckRssNeeded()
+		{
+			if (!CheckRss)
+			{
+				return false;
+			}
+			DateTime emptyDate = new DateTime();
+			TimeSpan day3 = new TimeSpan(3, 0, 0, 0);
+			return RssCheckDate == emptyDate || DateTime.Now.Date - RssCheckDate >= day3;
+		}
+
+		// --------------------------------------------------------------------
 		// ゆかり設定ファイルが正しく指定されているかどうか
 		// --------------------------------------------------------------------
 		public Boolean IsYukariConfigPathValid()

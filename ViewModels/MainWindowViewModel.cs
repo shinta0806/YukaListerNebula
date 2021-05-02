@@ -527,7 +527,7 @@ namespace YukaLister.ViewModels
 
 				// 環境の変化に対応
 				DoVerChangedIfNeeded();
-				//LaunchUpdaterIfNeeded();
+				LaunchUpdaterIfNeeded();
 
 				// 参照設定
 				YukaListerModel.Instance.EnvModel.Kamlin.MainWindowViewModel = this;
@@ -830,9 +830,27 @@ namespace YukaLister.ViewModels
 			{
 				// 自動更新できない
 				return YlConstants.APP_NAME_J + " が Program Files フォルダー配下にインストールされているため、正常に動作しません。\n"
-						+ "他のフォルダー（例えば C:\\MyApp）配下にインストールしてください。";
+						+ "他のフォルダー（例えば C:\\xampp\\htdocs）配下にインストールしてください。";
 			}
 			return null;
+		}
+
+		// --------------------------------------------------------------------
+		// ちょちょいと自動更新を起動
+		// --------------------------------------------------------------------
+		private void LaunchUpdaterIfNeeded()
+		{
+			if (!YukaListerModel.Instance.EnvModel.YlSettings.IsCheckRssNeeded())
+			{
+				return;
+			}
+
+			UpdaterLauncher updaterLauncher = YlCommon.CreateUpdaterLauncher(true, false, false, false);
+			if (updaterLauncher.Launch(updaterLauncher.ForceShow))
+			{
+				YukaListerModel.Instance.EnvModel.YlSettings.RssCheckDate = DateTime.Now.Date;
+				YukaListerModel.Instance.EnvModel.YlSettings.Save();
+			}
 		}
 
 		// --------------------------------------------------------------------
