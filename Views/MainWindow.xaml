@@ -33,6 +33,10 @@
 
         <!--  If you make user choose 'OK or Cancel' closing Window, then please use Window Close cancel Behavior.  -->
 
+        <l:InteractionMessageTrigger MessageKey="{x:Static msm:YlConstants.MESSAGE_KEY_OPEN_ABOUT_WINDOW}" Messenger="{Binding Messenger}">
+            <l:TransitionInteractionMessageAction WindowType="{x:Type vmw:AboutWindow}" Mode="Modal" IsOwned="True" />
+        </l:InteractionMessageTrigger>
+
         <l:InteractionMessageTrigger MessageKey="{x:Static msm:YlConstants.MESSAGE_KEY_OPEN_FOLDER_SETTINGS_WINDOW}" Messenger="{Binding Messenger}">
             <l:TransitionInteractionMessageAction WindowType="{x:Type vmw:FolderSettingsWindow}" Mode="Modal" IsOwned="True" />
         </l:InteractionMessageTrigger>
@@ -70,7 +74,7 @@
                         <MenuItem Header="バージョン情報 (_A)" Command="{Binding MenuItemAboutClickedCommand}" />
                     </ContextMenu>
                 </Button.ContextMenu>
-                <materialDesign:PackIcon Kind="HelpOutline" Height="18" Width="18" />
+                <materialDesign:PackIcon Kind="HelpCircleOutline" Height="18" Width="18" />
             </Button>
             <Button Style="{StaticResource MaterialDesignRaisedLightButton}" ToolTip="環境設定" Width="50" Height="25" Margin="0,0,10,0" DockPanel.Dock="Right" VerticalAlignment="Center" Command="{Binding ButtonYukaListerSettingsClickedCommand}">
                 <materialDesign:PackIcon Kind="SettingsOutline" Height="18" Width="18" />

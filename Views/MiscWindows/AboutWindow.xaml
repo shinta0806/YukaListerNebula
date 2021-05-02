@@ -1,0 +1,100 @@
+﻿<Window x:Class="YukaLister.Views.MiscWindows.AboutWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:behaviors="http://schemas.microsoft.com/xaml/behaviors"
+        xmlns:l="http://schemas.livet-mvvm.net/2011/wpf"
+        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+        xmlns:sb="clr-namespace:Shinta.Behaviors"
+        xmlns:v="clr-namespace:YukaLister.Views"
+        xmlns:vm="clr-namespace:YukaLister.ViewModels"
+        xmlns:vmmw="clr-namespace:YukaLister.ViewModels.MiscWindowViewModels"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="{Binding Title}" ShowInTaskbar="False" ResizeMode="NoResize" SizeToContent="WidthAndHeight" >
+
+    <Window.DataContext>
+        <vmmw:AboutWindowViewModel />
+    </Window.DataContext>
+
+    <behaviors:Interaction.Behaviors>
+        <sb:WindowBindingSupportBehavior IsCascade="True" MinimizeBox="False"/>
+    </behaviors:Interaction.Behaviors>
+
+    <behaviors:Interaction.Triggers>
+        <!-- When ContentRendered event raised, Initialize method of ViewModel would be called. -->
+        <behaviors:EventTrigger EventName="ContentRendered">
+            <l:LivetCallMethodAction MethodTarget="{Binding}" MethodName="Initialize" />
+        </behaviors:EventTrigger>
+
+        <!-- Dispose method is called, when Window closing. -->
+        <behaviors:EventTrigger EventName="Closed">
+            <l:DataContextDisposeAction />
+        </behaviors:EventTrigger>
+
+        <!-- If you make user choose 'OK or Cancel' closing Window, then please use Window Close cancel Behavior. -->
+
+    </behaviors:Interaction.Triggers>
+
+    <StackPanel>
+        <DockPanel Margin="20,20,20,0">
+            <Image HorizontalAlignment="Left" Height="120" Margin="0" VerticalAlignment="Top" Width="120" Source="pack://application:,,,/Icon/YukaListerアイコン.png"/>
+            <StackPanel VerticalAlignment="Center">
+                <Label Content="{Binding AppName}" FontSize="16" HorizontalContentAlignment="Center"/>
+                <Label Content="{Binding AppVer}" Margin="0,10,0,0" HorizontalContentAlignment="Center"/>
+                <Label Content="{Binding Copyright}" Margin="0,10,0,0" HorizontalContentAlignment="Center"/>
+            </StackPanel>
+        </DockPanel>
+        <GroupBox Header="作者情報" Margin="20,20,20,0" materialDesign:ColorZoneAssist.Mode="SecondaryMid" Width="460">
+            <StackPanel>
+                <StackPanel Orientation="Horizontal">
+                    <Label Content="E メール：" HorizontalContentAlignment="Right" Width="90"/>
+                    <Label Content="shinta.0806@gmail.com"/>
+                </StackPanel>
+                <StackPanel Orientation="Horizontal">
+                    <Label Content="ホームページ：" HorizontalContentAlignment="Right" Width="90"/>
+                    <Label>
+                        <Hyperlink Command="{Binding LinkClickedCommand}" CommandParameter="{Binding Text, ElementName=TextBlockAutherWeb}" >
+                            <TextBlock Name="TextBlockAutherWeb" Text="http://shinta.coresv.com"/>
+                        </Hyperlink>
+                    </Label>
+                </StackPanel>
+                <StackPanel Orientation="Horizontal">
+                    <Label Content="Twitter：" HorizontalContentAlignment="Right" Width="90"/>
+                    <Label>
+                        <Hyperlink Command="{Binding LinkClickedCommand}" CommandParameter="{Binding Text, ElementName=TextBlockAutherTwitter}" >
+                            <TextBlock Name="TextBlockAutherTwitter" Text="https://twitter.com/shinta0806"/>
+                        </Hyperlink>
+                    </Label>
+                </StackPanel>
+                <StackPanel Orientation="Horizontal">
+                    <Label Content="ファンサイト：" HorizontalContentAlignment="Right" Width="90"/>
+                    <Label>
+                        <Hyperlink Command="{Binding LinkClickedCommand}" CommandParameter="{Binding Text, ElementName=TextBlockAutherFantia}" >
+                            <TextBlock Name="TextBlockAutherFantia" Text="https://fantia.jp/fanclubs/65509"/>
+                        </Hyperlink>
+                    </Label>
+                </StackPanel>
+            </StackPanel>
+        </GroupBox>
+        <GroupBox Header="アプリケーション情報" Margin="20,20,20,0" materialDesign:ColorZoneAssist.Mode="SecondaryMid" Width="460">
+            <StackPanel>
+                <StackPanel Orientation="Horizontal">
+                    <Label Content="配布ページ：" HorizontalContentAlignment="Right" Width="90"/>
+                    <Label>
+                        <Hyperlink Command="{Binding LinkClickedCommand}" CommandParameter="{Binding Text, ElementName=AppWeb}">
+                            <TextBlock Name="AppWeb" Text="http://shinta.coresv.com/software/yukalister-nebula-jpn/"/>
+                        </Hyperlink>
+                    </Label>
+                </StackPanel>
+                <StackPanel Orientation="Horizontal">
+                    <Label Content="サポートページ：" HorizontalContentAlignment="Right" Width="90"/>
+                    <Label>
+                        <Hyperlink Command="{Binding LinkClickedCommand}" CommandParameter="{Binding Text, ElementName=AppWebSupport}" >
+                            <TextBlock Name="AppWebSupport" Text="http://shinta.coresv.com/software/yukalister-nebula-jpn/#Support"/>
+                        </Hyperlink>
+                    </Label>
+                </StackPanel>
+            </StackPanel>
+        </GroupBox>
+        <Button Content="OK" HorizontalAlignment="Center" Margin="0,20" Width="100" Height="Auto" IsDefault="True" IsCancel="True" />
+    </StackPanel>
+
+</Window>

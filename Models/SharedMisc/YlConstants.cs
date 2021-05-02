@@ -314,6 +314,9 @@ namespace YukaLister.Models.SharedMisc
 		// メインウィンドウを開く
 		public const String MESSAGE_KEY_OPEN_MAIN_WINDOW = "OpenMainWindow";
 
+		// バージョン情報ウィンドウを開く
+		public const String MESSAGE_KEY_OPEN_ABOUT_WINDOW = "OpenAboutWindow";
+
 		// マスター詳細編集ウィンドウを開く
 		public const String MESSAGE_KEY_OPEN_EDIT_MASTER_WINDOW = "OpenEditMasterWindow";
 

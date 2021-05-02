@@ -305,6 +305,37 @@ namespace YukaLister.ViewModels
 		}
 		#endregion
 
+		#region バージョン情報メニューアイテムの制御
+		private ViewModelCommand? _menuItemAboutClickedCommand;
+
+		public ViewModelCommand MenuItemAboutClickedCommand
+		{
+			get
+			{
+				if (_menuItemAboutClickedCommand == null)
+				{
+					_menuItemAboutClickedCommand = new ViewModelCommand(MenuItemAboutClicked);
+				}
+				return _menuItemAboutClickedCommand;
+			}
+		}
+
+		public void MenuItemAboutClicked()
+		{
+			try
+			{
+				// ViewModel 経由でウィンドウを開く
+				using AboutWindowViewModel aboutWindowViewModel = new();
+				Messenger.Raise(new TransitionMessage(aboutWindowViewModel, YlConstants.MESSAGE_KEY_OPEN_ABOUT_WINDOW));
+			}
+			catch (Exception excep)
+			{
+				YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(TraceEventType.Error, "バージョン情報メニュークリック時エラー：\n" + excep.Message);
+				YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, "　スタックトレース：\n" + excep.StackTrace);
+			}
+		}
+		#endregion
+
 		#region DataGrid ダブルクリックの制御
 
 		private ViewModelCommand? _dataGridDoubleClickedCommand;
