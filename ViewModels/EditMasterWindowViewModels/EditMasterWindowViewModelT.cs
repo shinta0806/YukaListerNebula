@@ -189,15 +189,36 @@ namespace YukaLister.ViewModels.EditMasterWindowViewModels
 		{
 			try
 			{
-				if (SelectedMaster?.Id == NewIdForDisplay())
+				if (SelectedMaster == null)
+				{
+					return;
+				}
+
+				if (SelectedMaster.Id == NewIdForDisplay())
 				{
 					throw new Exception("新規" + _caption + "はまだ登録されていないので、削除の必要はありません。\nキャンセルボタンをクリックして編集をキャンセルしてください。");
 				}
 
-				if (MessageBox.Show("この" + _caption + "を削除しますか？",
-						"確認", MessageBoxButton.YesNo, MessageBoxImage.Exclamation) != MessageBoxResult.Yes)
+				T? sameNameNoSyncMaster = DbCommon.SelectMastersByName(_records, SelectedMaster.Name).FirstOrDefault(x => x.UpdateTime <= YlConstants.INVALID_MJD);
+				if (SelectedMaster.UpdateTime > YlConstants.INVALID_MJD && sameNameNoSyncMaster != null)
 				{
-					return;
+					// 削除しようとしているレコードが同期されたデータで、同名の同期されていないデータがある場合は警告
+					if (MessageBox.Show("この" + _caption + "は同期されたデータです。\n同名の同期されていないデータ（ID: " + sameNameNoSyncMaster.Id + "）存在しています。\n"
+							+ "名前が重複している" + _caption + "を整理しようとしている場合、同期されていないデータから削除することを検討してください。\n"
+							+ "このまま同期されたデータを削除してしまってよろしいですか？\n（同期されていないデータから削除する場合は「いいえ」をクリックしてください）",
+							"確認", MessageBoxButton.YesNo, MessageBoxImage.Exclamation) != MessageBoxResult.Yes)
+					{
+						return;
+					}
+				}
+				else
+				{
+					// それ以外の場合は通常の確認
+					if (MessageBox.Show("この" + _caption + "を削除しますか？",
+							"確認", MessageBoxButton.YesNo, MessageBoxImage.Exclamation) != MessageBoxResult.Yes)
+					{
+						return;
+					}
 				}
 
 				// データベースをバックアップ
