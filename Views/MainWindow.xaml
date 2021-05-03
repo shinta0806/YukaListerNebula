@@ -80,7 +80,7 @@
                 <materialDesign:PackIcon Kind="SettingsOutline" Height="18" Width="18" />
             </Button>
             <materialDesign:Badged Badge="{Binding ReportsBadge}" BadgeColorZoneMode="Dark" DockPanel.Dock="Right" VerticalAlignment="Center" Margin="0,0,15,0" Padding="0,0,-15,0" >
-                <Button Style="{StaticResource MaterialDesignRaisedLightButton}" ToolTip="報告されたリストの問題を一覧表示" Width="50" Height="25" Margin="0,0,10,0" Command="{Binding ButtonReportsClickedCommand}">
+                <Button Style="{StaticResource MaterialDesignRaisedLightButton}" ToolTip="報告されたリストの問題を一覧表示" Width="50" Height="25" Margin="0,0,10,0" Command="{Binding ButtonReportsClickedCommand}" Visibility="Hidden" >
                     <materialDesign:PackIcon Kind="MessageWarningOutline" Height="18" Width="18" />
                 </Button>
             </materialDesign:Badged>

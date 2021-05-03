@@ -233,7 +233,7 @@ namespace YukaLister.Models.YukaListerModels
 		// --------------------------------------------------------------------
 		// ファイル名
 		// --------------------------------------------------------------------
-		private const String FILE_NAME_HELP_PREFIX = YlConstants.APP_ID + "_JPN";
+		private const String FILE_NAME_HELP_PREFIX = YlConstants.APP_ID + "Nebula_JPN";
 
 		// --------------------------------------------------------------------
 		// フォルダー名
@@ -276,7 +276,7 @@ namespace YukaLister.Models.YukaListerModels
 					helpPath = ExeFullFolder + FOLDER_NAME_HELP_PARTS + FILE_NAME_HELP_PREFIX + "_" + anchor + Common.FILE_EXT_HTML;
 					try
 					{
-						Process.Start(helpPath);
+						YlCommon.ShellExecute(helpPath);
 						return;
 					}
 					catch (Exception excep)
@@ -288,7 +288,7 @@ namespace YukaLister.Models.YukaListerModels
 
 				// アンカーが指定されていない場合・状況依存型ヘルプを表示できなかった場合は通常のヘルプを表示
 				helpPath = ExeFullFolder + FILE_NAME_HELP_PREFIX + Common.FILE_EXT_HTML;
-				Process.Start(helpPath);
+				YlCommon.ShellExecute(helpPath);
 			}
 			catch (Exception excep)
 			{

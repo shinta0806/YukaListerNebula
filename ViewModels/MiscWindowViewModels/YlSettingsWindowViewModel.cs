@@ -755,12 +755,7 @@ namespace YukaLister.ViewModels.MiscWindowViewModels
 				String outputFilePath = YukaListerModel.Instance.EnvModel.YlSettings.ListOutputFolder + SelectedOutputWriter.TopFileName;
 				try
 				{
-					ProcessStartInfo psi = new ProcessStartInfo
-					{
-						FileName = outputFilePath,
-						UseShellExecute = true,
-					};
-					Process.Start(psi);
+					YlCommon.ShellExecute(outputFilePath);
 				}
 				catch (Exception)
 				{

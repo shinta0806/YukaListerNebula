@@ -305,6 +305,42 @@ namespace YukaLister.ViewModels
 		}
 		#endregion
 
+		#region ヘルプメニューアイテムの制御
+		public ListenerCommand<String>? MehuItemHelpClickedCommand
+		{
+			get => YukaListerModel.Instance.EnvModel.HelpClickedCommand;
+		}
+		#endregion
+
+		#region 履歴メニューアイテムの制御
+		private ViewModelCommand? _menuItemHistoryClickedCommand;
+
+		public ViewModelCommand MenuItemHistoryClickedCommand
+		{
+			get
+			{
+				if (_menuItemHistoryClickedCommand == null)
+				{
+					_menuItemHistoryClickedCommand = new ViewModelCommand(MenuItemHistoryClicked);
+				}
+				return _menuItemHistoryClickedCommand;
+			}
+		}
+
+		public void MenuItemHistoryClicked()
+		{
+			try
+			{
+				YlCommon.ShellExecute(YukaListerModel.Instance.EnvModel.ExeFullFolder + FILE_NAME_HISTORY);
+			}
+			catch (Exception excep)
+			{
+				YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(TraceEventType.Error, "改訂履歴メニュークリック時エラー：\n" + excep.Message);
+				YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, "　スタックトレース：\n" + excep.StackTrace);
+			}
+		}
+		#endregion
+
 		#region バージョン情報メニューアイテムの制御
 		private ViewModelCommand? _menuItemAboutClickedCommand;
 
@@ -691,6 +727,13 @@ namespace YukaLister.ViewModels
 				YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, "　スタックトレース：\n" + excep.StackTrace);
 			}
 		}
+
+		// ====================================================================
+		// private メンバー定数
+		// ====================================================================
+
+		// 改訂履歴ファイル
+		private const String FILE_NAME_HISTORY = "YukaListerNebula_History_JPN" + Common.FILE_EXT_TXT;
 
 		// ====================================================================
 		// private メンバー変数
