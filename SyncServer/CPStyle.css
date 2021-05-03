@@ -220,39 +220,6 @@ div.SideMenuItem a:hover
 }
 
 /* --------------------------------------------------------
--  スピードバー（DL/UL 速度グラフ）
--------------------------------------------------------- */
-
-.DLTH
-{
-	width: 150px;
-}
-
-.ULTH
-{
-	width: 82px;
-}
-
-.SpeedBox
-{
-	position: relative;
-	line-height: 120%;
-}
-
-.SpeedBar
-{
-	position: relative;
-	top: 0.6em;
-}
-
-.SpeedNum
-{
-	position: relative;
-	top: -0.6em;
-	text-align: right;
-}
-
-/* --------------------------------------------------------
 -  ナビゲーション
 -------------------------------------------------------- */
 
@@ -332,23 +299,6 @@ hr
 .Small70
 {
 	font-size: 70%;
-}
-
-.ConnectOK
-, .ConnectNG
-{
-	background-position: right top;
-	background-repeat: no-repeat;
-}
-
-.ConnectOK
-{
-	background-image: url("image/ConnectOKBG.png");
-}
-
-.ConnectNG
-{
-	background-image: url("image/ConnectNGBG.png");
 }
 
 .Centering

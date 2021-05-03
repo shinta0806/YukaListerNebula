@@ -771,7 +771,7 @@ class	CPManager
 				.FIELD_NAME_ACCOUNT_NAME.' VARCHAR(255) NOT NULL,'
 				.FIELD_NAME_ACCOUNT_PASSWORD.' VARCHAR(255) NOT NULL,'
 				.FIELD_NAME_ACCOUNT_ADMIN.' TINYINT(1) NOT NULL,'
-				.FIELD_NAME_ACCOUNT_LOGIN_TIME.' DOUBLE NOT NULL,'
+				.FIELD_NAME_ACCOUNT_PERMISSION.' INT NOT NULL,'
 				.FIELD_NAME_ACCOUNT_UPDATE_TIME.' DOUBLE NOT NULL,'
 				.'PRIMARY KEY ('.FIELD_NAME_ACCOUNT_UID.'),'
 				.'UNIQUE ('.FIELD_NAME_ACCOUNT_NAME.')'
@@ -1306,7 +1306,7 @@ class	CPManager
 				.' "'.$name.'",'
 				.' "'.password_hash($raw_pw, PASSWORD_DEFAULT).'",'
 				.' '.var_to_string($is_admin).','
-				.' '.$this->invalid_mjd().','
+				.' '.(PERMISSION_DOWNLOAD | PERMISSION_UPLOAD).','
 				.' '.$this->now_mjd().');';
 		log_message('insert_account() '.$sql, LOG_LEVEL_STATUS, FALSE);
 		$pdo->exec($sql);
