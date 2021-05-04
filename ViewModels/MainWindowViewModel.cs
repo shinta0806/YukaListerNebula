@@ -172,6 +172,44 @@ namespace YukaLister.ViewModels
 		// コマンド
 		// --------------------------------------------------------------------
 
+		#region ファイルドロップの制御
+		private ListenerCommand<String[]>? _windowFileDropCommand;
+
+		public ListenerCommand<String[]> WindowFileDropCommand
+		{
+			get
+			{
+				if (_windowFileDropCommand == null)
+				{
+					_windowFileDropCommand = new ListenerCommand<String[]>(WindowFileDrop);
+				}
+				return _windowFileDropCommand;
+			}
+		}
+
+		public async void WindowFileDrop(String[] files)
+		{
+			try
+			{
+				foreach (String file in files)
+				{
+					if (!Directory.Exists(file))
+					{
+						// フォルダーでない場合は何もしない
+						continue;
+					}
+
+					await AddFolderAsync(file);
+				}
+			}
+			catch (Exception excep)
+			{
+				YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(TraceEventType.Error, "ファイルドロップ時エラー：\n" + excep.Message);
+				YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, "　スタックトレース：\n" + excep.StackTrace);
+			}
+		}
+		#endregion
+
 		#region リムーバブルメディア着脱の制御
 		private ListenerCommand<DeviceChangeInfo>? _windowDeviceChangeCommand;
 
@@ -540,27 +578,12 @@ namespace YukaLister.ViewModels
 		{
 			try
 			{
-				if (String.IsNullOrEmpty(folderSelectionMessage.Response))
-				{
-					return;
-				}
-
-				// AddTargetFolderAsync() に時間を要することがあるので表示を更新しておく
-				Cursor = Cursors.Wait;
-				await YukaListerModel.Instance.ProjModel.AddTargetFolderAsync(folderSelectionMessage.Response);
-				UpdateDataGrid();
-
-				// 次回 UI 更新タイミングまでに追加が完了してしまっていても検索可能ファイル数が更新されるようにする
-				_prevYukaListerWholeStatus = YukaListerStatus.__End__;
+				await AddFolderAsync(folderSelectionMessage.Response);
 			}
 			catch (Exception excep)
 			{
 				YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(TraceEventType.Error, "追加フォルダー選択時エラー：\n" + excep.Message);
 				YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, "　スタックトレース：\n" + excep.StackTrace);
-			}
-			finally
-			{
-				Cursor = null;
 			}
 		}
 
@@ -628,46 +651,10 @@ namespace YukaLister.ViewModels
 				String sub = hoge[2..];
 				Debug.WriteLine("Initialize() sub: " + sub);
 #endif
-#if DEBUGz
-				using MusicInfoContext musicInfoContext = MusicInfoContext.CreateContext(out DbSet<TSong> songs);
-				Debug.WriteLine("Initialize() " + songs.EntityType.Name);
-				Debug.WriteLine("Initialize() " + DbCommon.MusicInfoIdSecondPrefix(songs));
-				if (songs.EntityType.ClrType == typeof(TSong))
-				{
-					Debug.WriteLine("Initialize() type TSong");
-				}
-#endif
-#if DEBUGz
-				CacheContext.CreateContext("D:", out _);
-#endif
 
 #if DEBUGz
 				Debug.WriteLine("Exists 1: " + File.Exists(@"D:\TempD\TestYl\1234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890\1234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890\a.txt"));
 				Debug.WriteLine("Exists 2: " + File.Exists(@"D:\TempD\TestYl\1234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890\1234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890\12345678901234567890123456789\FolderNameLength.txt"));
-#endif
-
-#if DEBUGz
-				TargetFolderInfo t1 = new("D:\\hoge\\folder", "D:\\hoge\\folder", 0);
-				t1.HasChildren = true;
-				t1.NumTotalFolders = 2;
-				//targetFolderInfo.IsOpen = true;
-				TestTargetFolderInfo = t1;
-
-				List<TargetFolderInfo> targetFolderInfos = new();
-				targetFolderInfos.Add(t1);
-				TargetFolderInfo t2 = new("D:\\hoge\\folder", "D:\\hoge\\folder\\サブA", 1);
-				t2.HasChildren = true;
-				t2.NumTotalFolders = 2;
-				targetFolderInfos.Add(t2);
-				TargetFolderInfo t3 = new("D:\\hoge\\folder", "D:\\hoge\\folder\\サブA\\さらにサブ", 2);
-				targetFolderInfos.Add(t3);
-				TargetFolderInfo t4 = new("D:\\hoge\\folder", "D:\\hoge\\folder\\サブA\\さらにサブ2", 2);
-				targetFolderInfos.Add(t4);
-				TargetFolderInfo t5 = new("D:\\hoge\\folder", "D:\\hoge\\folder\\サブB", 1);
-				t5.HasChildren = true;
-				t5.NumTotalFolders = 2;
-				targetFolderInfos.Add(t5);
-				TargetFolderInfosVisible = targetFolderInfos;
 #endif
 
 				// スタートアップ終了
@@ -765,6 +752,33 @@ namespace YukaLister.ViewModels
 		// ====================================================================
 		// private メンバー関数
 		// ====================================================================
+
+		// --------------------------------------------------------------------
+		// フォルダーを 1 つ追加
+		// ＜例外＞ Exception
+		// --------------------------------------------------------------------
+		private async ValueTask AddFolderAsync(String folderPath)
+		{
+			if (String.IsNullOrEmpty(folderPath))
+			{
+				return;
+			}
+
+			try
+			{
+				// AddTargetFolderAsync() に時間を要することがあるので表示を更新しておく
+				Cursor = Cursors.Wait;
+				await YukaListerModel.Instance.ProjModel.AddTargetFolderAsync(folderPath);
+				UpdateDataGrid();
+
+				// 次回 UI 更新タイミングまでに追加が完了してしまっていても検索可能ファイル数が更新されるようにする
+				_prevYukaListerWholeStatus = YukaListerStatus.__End__;
+			}
+			finally
+			{
+				Cursor = null;
+			}
+		}
 
 		// --------------------------------------------------------------------
 		// 接続されているすべてのドライブで自動接続
