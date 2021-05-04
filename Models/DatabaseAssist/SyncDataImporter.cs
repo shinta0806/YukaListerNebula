@@ -467,7 +467,7 @@ namespace YukaLister.Models.DatabaseAssist
 			}
 
 			// ID が既にテーブル内にあるか確認
-			T? existRecord = DbCommon.SelectBaseById(records, newRecord.Id);
+			T? existRecord = DbCommon.SelectBaseById(records, newRecord.Id, true);
 			if (existRecord == null)
 			{
 				if (newRecord.Invalid)
