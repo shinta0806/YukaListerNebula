@@ -161,7 +161,7 @@ namespace YukaLister.Models.DatabaseAssist
 		public Dictionary<String, String?> MatchFileNameRulesAndFolderRuleForSearch(String fileNameBody, FolderSettingsInMemory folderSettingsInMemory)
 		{
 			// ファイル名・フォルダー固定値と合致する命名規則を探す
-			Dictionary<String, String?> dicByFile = YlCommon.MatchFileNameRulesAndFolderRuleForSearch(Path.GetFileNameWithoutExtension(fileNameBody), folderSettingsInMemory);
+			Dictionary<String, String?> dicByFile = YlCommon.MatchFileNameRulesAndFolderRuleForSearch(fileNameBody, folderSettingsInMemory);
 			dicByFile[YlConstants.RULE_VAR_PROGRAM] = ProgramOrigin(dicByFile[YlConstants.RULE_VAR_PROGRAM]);
 			dicByFile[YlConstants.RULE_VAR_TITLE] = SongOrigin(dicByFile[YlConstants.RULE_VAR_TITLE]);
 			if (dicByFile[YlConstants.RULE_VAR_CATEGORY] != null)
