@@ -70,7 +70,7 @@ namespace YukaLister.Models.YukaListerModels
 		public Syclin Syclin { get; } = new();
 
 		// ゆかりすたー NEBULA パーツごとの動作状況
-		private volatile YukaListerStatus[] _yukaListerPartsStatus = new YukaListerStatus[(Int32)YukaListerPartsStatusIndex.__End__];
+		private readonly YukaListerStatus[] _yukaListerPartsStatus = new YukaListerStatus[(Int32)YukaListerPartsStatusIndex.__End__];
 		public YukaListerStatus[] YukaListerPartsStatus
 		{
 			get => _yukaListerPartsStatus;
@@ -78,7 +78,7 @@ namespace YukaLister.Models.YukaListerModels
 
 		// ゆかりすたー NEBULA パーツごとの動作メッセージ
 		// YukaListerPartsStatusMessage[YukaListerPartsStatusIndex.Sifolin] は使用しない
-		private volatile String[] _yukaListerPartsStatusMessage = new String[(Int32)YukaListerPartsStatusIndex.__End__];
+		private readonly String[] _yukaListerPartsStatusMessage = new String[(Int32)YukaListerPartsStatusIndex.__End__];
 		public String[] YukaListerPartsStatusMessage
 		{
 			get => _yukaListerPartsStatusMessage;

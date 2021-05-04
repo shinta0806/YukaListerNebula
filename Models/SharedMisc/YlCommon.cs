@@ -118,8 +118,6 @@ namespace YukaLister.Models.SharedMisc
 		public static FolderSettingsInMemory CreateFolderSettingsInMemory(FolderSettingsInDisk folderSettingsInDisk)
 		{
 			FolderSettingsInMemory folderSettingsInMemory = new();
-			String rule;
-			List<String> groups;
 
 			// フォルダー命名規則を辞書に格納
 			foreach (String inDisk in folderSettingsInDisk.FolderNameRules)
@@ -138,7 +136,7 @@ namespace YukaLister.Models.SharedMisc
 					continue;
 				}
 
-				folderSettingsInMemory.FolderNameRules[inDisk.Substring(1, equalPos - 2).ToLower()] = inDisk.Substring(equalPos + 1);
+				folderSettingsInMemory.FolderNameRules[inDisk.Substring(1, equalPos - 2).ToLower()] = inDisk[(equalPos + 1)..];
 			}
 
 			// ファイル命名規則を正規表現に変換
@@ -152,7 +150,7 @@ namespace YukaLister.Models.SharedMisc
 				{
 					continue;
 				}
-				MakeRegexPattern(fileNameRule!, out rule, out groups);
+				MakeRegexPattern(fileNameRule!, out String rule, out List<String> groups);
 				folderSettingsInMemory.FileNameRules.Add(rule);
 				folderSettingsInMemory.FileRegexGroups.Add(groups);
 			}
@@ -168,7 +166,7 @@ namespace YukaLister.Models.SharedMisc
 		public static Dictionary<String, String?> CreateRuleDictionary()
 		{
 			Dictionary<String, String> varMapWith = CreateRuleDictionaryWithDescription();
-			Dictionary<String, String?> varMap = new Dictionary<String, String?>();
+			Dictionary<String, String?> varMap = new();
 
 			foreach (String key in varMapWith.Keys)
 			{
@@ -256,8 +254,8 @@ namespace YukaLister.Models.SharedMisc
 			// 復号化
 			using AesManaged aes = new();
 			using ICryptoTransform decryptor = aes.CreateDecryptor(ENCRYPT_KEY, ENCRYPT_IV);
-			using MemoryStream writeStream = new MemoryStream();
-			using (CryptoStream cryptoStream = new CryptoStream(writeStream, decryptor, CryptoStreamMode.Write))
+			using MemoryStream writeStream = new();
+			using (CryptoStream cryptoStream = new(writeStream, decryptor, CryptoStreamMode.Write))
 			{
 				cryptoStream.Write(cipherBytes, 0, cipherBytes.Length);
 			}
@@ -355,7 +353,7 @@ namespace YukaLister.Models.SharedMisc
 			using AesManaged aes = new();
 			using ICryptoTransform encryptor = aes.CreateEncryptor(ENCRYPT_KEY, ENCRYPT_IV);
 			using MemoryStream writeStream = new();
-			using (CryptoStream cryptoStream = new CryptoStream(writeStream, encryptor, CryptoStreamMode.Write))
+			using (CryptoStream cryptoStream = new(writeStream, encryptor, CryptoStreamMode.Write))
 			{
 				cryptoStream.Write(plainBytes, 0, plainBytes.Length);
 			}
@@ -861,7 +859,7 @@ namespace YukaLister.Models.SharedMisc
 		// --------------------------------------------------------------------
 		public static String TempFolderPath()
 		{
-			String path = Path.GetTempPath() + Path.GetFileNameWithoutExtension(Environment.GetCommandLineArgs()[0]) + "\\" + Process.GetCurrentProcess().Id.ToString() + "\\";
+			String path = Path.GetTempPath() + Path.GetFileNameWithoutExtension(Environment.GetCommandLineArgs()[0]) + "\\" + Environment.ProcessId.ToString() + "\\";
 			if (!Directory.Exists(path))
 			{
 				try
@@ -899,7 +897,7 @@ namespace YukaLister.Models.SharedMisc
 		// --------------------------------------------------------------------
 		public static String WithoutDriveLetter(String path)
 		{
-			return path.Substring(2);
+			return path[2..];
 		}
 
 		// ====================================================================
@@ -981,7 +979,7 @@ namespace YukaLister.Models.SharedMisc
 			}
 
 			StringBuilder sb = new();
-			sb.Append("^");
+			sb.Append('^');
 			Int32 beginPos = 0;
 			Int32 endPos;
 			Boolean longestExists = false;
@@ -1014,7 +1012,7 @@ namespace YukaLister.Models.SharedMisc
 
 					beginPos = endPos + 1;
 				}
-				else if (@".$^{[(|)*+?\".IndexOf(ruleInDisk[beginPos]) >= 0)
+				else if (@".$^{[(|)*+?\".Contains(ruleInDisk[beginPos]))
 				{
 					// エスケープが必要な文字
 					sb.Append('\\');
@@ -1028,7 +1026,7 @@ namespace YukaLister.Models.SharedMisc
 					beginPos++;
 				}
 			}
-			sb.Append("$");
+			sb.Append('$');
 			ruleInMemory = sb.ToString();
 		}
 

@@ -329,7 +329,36 @@ namespace YukaLister.Models.YukaListerModels
 		// ゆかり検索対象フォルダー（全部）
 		// この中から絞って VM の表示用に渡す
 		// アクセス時はロックが必要
-		private List<TargetFolderInfo> _targetFolderInfos = new();
+		private readonly List<TargetFolderInfo> _targetFolderInfos = new();
+
+		// ====================================================================
+		// private static メンバー関数
+		// ====================================================================
+
+		// --------------------------------------------------------------------
+		// 自動追加対象のドライブかどうか
+		// --------------------------------------------------------------------
+		private static Boolean IsAutoTargetDrive(String driveLetter)
+		{
+			DriveInfo driveInfo = new(driveLetter);
+			if (!driveInfo.IsReady)
+			{
+				YukaListerModel.Instance.EnvModel.LogWriter.LogMessage(TraceEventType.Verbose, "IsAutoTargetDrive2Sh() 準備ができていない：" + driveLetter);
+				return false;
+			}
+
+			// リムーバブルドライブのみを対象としたいが、ポータブル HDD/SSD も Fixed 扱いになるため、Fixed も対象とする
+			switch (driveInfo.DriveType)
+			{
+				case DriveType.Fixed:
+				case DriveType.Removable:
+					YukaListerModel.Instance.EnvModel.LogWriter.LogMessage(TraceEventType.Verbose, "IsAutoTargetDrive2Sh() 対象：" + driveLetter);
+					return true;
+				default:
+					YukaListerModel.Instance.EnvModel.LogWriter.LogMessage(TraceEventType.Verbose, "IsAutoTargetDrive2Sh() 非対象：" + driveLetter + ", " + driveInfo.DriveType.ToString());
+					return false;
+			}
+		}
 
 		// ====================================================================
 		// private メンバー関数
@@ -341,7 +370,7 @@ namespace YukaLister.Models.YukaListerModels
 		private void AdjustAutoTargetInfoIfNeeded2Sh(String driveLetter)
 		{
 			Debug.Assert(driveLetter.Length == 2, "AdjustAutoTargetInfoIfNeeded2Sh() bad driveLetter");
-			if (!IsAutoTargetDrive2Sh(driveLetter))
+			if (!IsAutoTargetDrive(driveLetter))
 			{
 				return;
 			}
@@ -387,31 +416,6 @@ namespace YukaLister.Models.YukaListerModels
 				}
 			}
 			return -1;
-		}
-
-		// --------------------------------------------------------------------
-		// 自動追加対象のドライブかどうか
-		// --------------------------------------------------------------------
-		private Boolean IsAutoTargetDrive2Sh(String driveLetter)
-		{
-			DriveInfo driveInfo = new DriveInfo(driveLetter);
-			if (!driveInfo.IsReady)
-			{
-				YukaListerModel.Instance.EnvModel.LogWriter.LogMessage(TraceEventType.Verbose, "IsAutoTargetDrive2Sh() 準備ができていない：" + driveLetter);
-				return false;
-			}
-
-			// リムーバブルドライブのみを対象としたいが、ポータブル HDD/SSD も Fixed 扱いになるため、Fixed も対象とする
-			switch (driveInfo.DriveType)
-			{
-				case DriveType.Fixed:
-				case DriveType.Removable:
-					YukaListerModel.Instance.EnvModel.LogWriter.LogMessage(TraceEventType.Verbose, "IsAutoTargetDrive2Sh() 対象：" + driveLetter);
-					return true;
-				default:
-					YukaListerModel.Instance.EnvModel.LogWriter.LogMessage(TraceEventType.Verbose, "IsAutoTargetDrive2Sh() 非対象：" + driveLetter + ", " + driveInfo.DriveType.ToString());
-					return false;
-			}
 		}
 
 		// --------------------------------------------------------------------

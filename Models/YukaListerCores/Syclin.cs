@@ -178,10 +178,10 @@ namespace YukaLister.Models.YukaListerCores
 		// ====================================================================
 
 		// ダウンローダー
-		private Downloader _downloader = new();
+		private readonly Downloader _downloader = new();
 
 		// 詳細ログ（同期専用）
-		private LogWriter _logWriterSyncDetail = new(YlConstants.APP_ID + YlConstants.SYNC_DETAIL_ID);
+		private readonly LogWriter _logWriterSyncDetail = new(YlConstants.APP_ID + YlConstants.SYNC_DETAIL_ID);
 
 		// Dispose フラグ
 		private Boolean _isDisposed;
@@ -261,7 +261,7 @@ namespace YukaLister.Models.YukaListerCores
 				String downloadPath = YlCommon.TempPath();
 				_downloader.Download(SyncUrl(SYNC_MODE_NAME_DOWNLOAD_SYNC_DATA) + "&Date=" + targetDate.ToString(YlConstants.SYNC_URL_DATE_FORMAT), downloadPath);
 
-				FileInfo fileInfo = new FileInfo(downloadPath);
+				FileInfo fileInfo = new(downloadPath);
 				if (fileInfo.Length == 0)
 				{
 					throw new Exception("サーバーからダウンロードしたファイルが空でした。");
@@ -330,7 +330,7 @@ namespace YukaLister.Models.YukaListerCores
 			}
 
 			// ログイン情報送信
-			Dictionary<String, String?> postParams = new Dictionary<String, String?>
+			Dictionary<String, String?> postParams = new()
 			{
 				// HTML Name 属性
 				{ "Name", YukaListerModel.Instance.EnvModel.YlSettings.SyncAccount },
@@ -405,7 +405,7 @@ namespace YukaLister.Models.YukaListerCores
 					return false;
 				}
 
-				errMessage = status.Substring(1);
+				errMessage = status[1..];
 				return true;
 			}
 			catch (Exception excep)
@@ -417,7 +417,7 @@ namespace YukaLister.Models.YukaListerCores
 		// --------------------------------------------------------------------
 		// 楽曲情報データベース同期コマンド URL
 		// --------------------------------------------------------------------
-		private String SyncUrl(String mode)
+		private static String SyncUrl(String mode)
 		{
 			return YukaListerModel.Instance.EnvModel.YlSettings.SyncServer + FILE_NAME_CP_MAIN + "?Mode=" + mode;
 		}
@@ -469,8 +469,7 @@ namespace YukaLister.Models.YukaListerCores
 					Post(postParams, uploadFiles);
 
 					// アップロード結果確認
-					String? errMessage;
-					if (SyncPostErrorExists(out errMessage))
+					if (SyncPostErrorExists(out String? errMessage))
 					{
 						throw new Exception("同期データをアップロードできませんでした：" + errMessage);
 					}

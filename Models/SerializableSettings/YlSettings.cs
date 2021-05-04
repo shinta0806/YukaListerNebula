@@ -183,8 +183,8 @@ namespace YukaLister.Models.SerializableSettings
 			{
 				return false;
 			}
-			DateTime emptyDate = new DateTime();
-			TimeSpan day3 = new TimeSpan(3, 0, 0, 0);
+			DateTime emptyDate = new();
+			TimeSpan day3 = new(3, 0, 0, 0);
 			return RssCheckDate == emptyDate || DateTime.Now.Date - RssCheckDate >= day3;
 		}
 
@@ -288,13 +288,13 @@ namespace YukaLister.Models.SerializableSettings
 		private const String YUKARI_CONFIG_KEY_NAME_EASY_AUTH_KEYWORD = "useeasyauth_word";
 
 		// ====================================================================
-		// private メンバー関数
+		// private static メンバー関数
 		// ====================================================================
 
 		// --------------------------------------------------------------------
 		// ゆかり設定を config.ini の内容から取得
 		// --------------------------------------------------------------------
-		private String YukariConfigValue(String[] config, String keyName)
+		private static String YukariConfigValue(String[] config, String keyName)
 		{
 			// キーを検索
 			Int32 line = -1;
@@ -320,7 +320,7 @@ namespace YukaLister.Models.SerializableSettings
 				return String.Empty;
 			}
 
-			return config[line].Substring(pos + 1);
+			return config[line][(pos + 1)..];
 		}
 	}
 }
