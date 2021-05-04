@@ -57,7 +57,7 @@
                         <TextBox Text="{Binding YukariConfigPathSeed}" VerticalAlignment="Center" Margin="0,0,10,0" />
                     </DockPanel>
                     <CheckBox Content="起動時やリムーバブルメディア接続時、前回のフォルダーを自動的に追加する" IsChecked="{Binding AddFolderOnDeviceArrived}" Margin="20,20,0,0" />
-                    <CheckBox Content="ゆかり用サーバー機能（プレビュー等）を提供する" IsChecked="{Binding ProvideYukariPreview}" Margin="20,10,0,0" />
+                    <CheckBox Visibility="Hidden" Content="ゆかり用サーバー機能（プレビュー等）を提供する" IsChecked="{Binding ProvideYukariPreview}" Margin="20,10,0,0" />
                     <DockPanel Margin="20,10,20,0" >
                         <Label Content="ID 先頭付与文字列 (_I)：" VerticalAlignment="Center" Width="140" HorizontalContentAlignment="Right" />
                         <TextBox Name="TextBoxIdPrefix" Text="{Binding IdPrefix}" Margin="0,0,110,0" ToolTip="お好きな文字列で構いませんが、パソコンごとに異なる文字列を指定してください。" ToolTipService.ShowDuration="10000" materialDesign:HintAssist.Hint="{Binding ElementName=TextBoxIdPrefix, Path=ToolTip}" />
@@ -88,7 +88,7 @@
                         <Border BorderBrush="{DynamicResource {x:Static SystemColors.ControlLightBrushKey}}" BorderThickness="1" Height="3" VerticalAlignment="Center" Margin="0"/>
                     </DockPanel>
                     <DockPanel Margin="20,10,20,0">
-                        <Button Height="Auto" Content="出力設定 (_S)" Style="{StaticResource MaterialDesignRaisedLightButton}" Margin="0" DockPanel.Dock="Right" Width="100" Padding="0,4" Command="{Binding ButtonYukariListSettingsClickedCommand}"/>
+                        <Button Visibility="Hidden" Height="Auto" Content="出力設定 (_S)" Style="{StaticResource MaterialDesignRaisedLightButton}" Margin="0" DockPanel.Dock="Right" Width="100" Padding="0,4" Command="{Binding ButtonYukariListSettingsClickedCommand}"/>
                         <Label Content="ゆかりリクエスト用リストは、常に自動的に出力・更新されます。"/>
                     </DockPanel>
                     <StackPanel Margin="20,10,0,0">
@@ -99,7 +99,7 @@
                         <Label Content="{Binding YukariListFolder}" />
                     </DockPanel>
                     <StackPanel Margin="20,10,0,0">
-                        <CheckBox IsChecked="{Binding ConfirmOutputYukariList}" Content="ゆかりリクエスト用リスト出力前に確認する (_N)" />
+                        <CheckBox Visibility="Hidden" IsChecked="{Binding ConfirmOutputYukariList}" Content="ゆかりリクエスト用リスト出力前に確認する (_N)" />
                     </StackPanel>
                     <DockPanel Margin="0,20,0,0">
                         <Border BorderBrush="{DynamicResource {x:Static SystemColors.ControlLightBrushKey}}" BorderThickness="1" Height="3" VerticalAlignment="Center" Margin="0" Width="20"/>
@@ -108,7 +108,7 @@
                     </DockPanel>
                     <DockPanel Margin="0,10,20,0">
                         <Label Content="リスト出力形式 (_F)：" Width="170" HorizontalContentAlignment="Right"/>
-                        <Button Height="Auto" Content="出力設定 (_T)" Style="{StaticResource MaterialDesignRaisedLightButton}" Margin="0" DockPanel.Dock="Right" Width="100" Padding="0,4" Command="{Binding ButtonListSettingsClickedCommand}"/>
+                        <Button Visibility="Hidden" Height="Auto" Content="出力設定 (_T)" Style="{StaticResource MaterialDesignRaisedLightButton}" Margin="0" DockPanel.Dock="Right" Width="100" Padding="0,4" Command="{Binding ButtonListSettingsClickedCommand}"/>
                         <ComboBox ItemsSource="{Binding OutputWriters}" SelectedItem="{Binding SelectedOutputWriter}" DisplayMemberPath="FormatName" Margin="0,0,10,0"/>
                     </DockPanel>
                     <DockPanel Margin="0,10,20,0">
@@ -145,7 +145,7 @@
                     </StackPanel>
                     <StackPanel Margin="0,10,20,0">
                         <Button Height="Auto" Content="設定のバックアップ(_B)" Style="{StaticResource MaterialDesignRaisedLightButton}" Margin="0" Width="210" DockPanel.Dock="Right" HorizontalAlignment="Right" Command="{Binding ButtonBackupClickedCommand}"/>
-                        <Button Height="Auto" Content="設定の復元(_R)" Style="{StaticResource MaterialDesignRaisedLightButton}" Margin="0,10,0,0" Width="210" DockPanel.Dock="Right" HorizontalAlignment="Right" Command="{Binding ButtonRestoreClickedCommand}"/>
+                        <Button Visibility="Hidden" Height="Auto" Content="設定の復元(_R)" Style="{StaticResource MaterialDesignRaisedLightButton}" Margin="0,10,0,0" Width="210" DockPanel.Dock="Right" HorizontalAlignment="Right" Command="{Binding ButtonRestoreClickedCommand}"/>
                     </StackPanel>
                     <StackPanel Margin="20,10,0,0">
                         <CheckBox Content="楽曲情報データベースを同期する (_S)" IsChecked="{Binding SyncMusicInfoDb}" />
@@ -175,7 +175,7 @@
                 </StackPanel>
             </TabItem>
             <TabItem Header="インポート">
-                <StackPanel>
+                <StackPanel Visibility="Hidden" >
                     <StackPanel Margin="20,20,0,0">
                         <RadioButton Content="ゆかりすたー情報ファイル（ゆかりすたーでエクスポートしたファイル）をインポート (_Y)" IsChecked="{Binding ImportYukaListerMode}" GroupName="Import" />
                     </StackPanel>
@@ -195,7 +195,7 @@
                 </StackPanel>
             </TabItem>
             <TabItem Header="エクスポート">
-                <StackPanel>
+                <StackPanel Visibility="Hidden" >
                     <StackPanel Margin="20,15,20,0">
                         <Label Content="エクスポート先" />
                     </StackPanel>
