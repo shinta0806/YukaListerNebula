@@ -742,6 +742,7 @@ namespace YukaLister.Models.DatabaseAssist
 				}
 
 				// TieUp 由来項目の設定
+				record.TieUpId = tieUpOfSong.Id;
 				record.TieUpName = tieUpOfSong.Name;
 				record.TieUpRuby = tieUpOfSong.RubyForSearch;
 				record.TieUpAgeLimit = tieUpOfSong.AgeLimit;

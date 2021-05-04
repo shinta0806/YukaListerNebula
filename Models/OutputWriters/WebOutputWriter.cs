@@ -1292,7 +1292,7 @@ namespace YukaLister.Models.OutputWriters
 
 		// --------------------------------------------------------------------
 		// グループ＝タイアップグループ名の頭文字、ページ＝タイアップグループ名、章＝タイアップ名、でページ内容生成
-		// ToDo: GenerateTagHeadAndTagsCore() などと統合できるのではないか
+		// ToDo: GenerateTagHeadAndTagsCore() などと統合できるのではないか（Where が TieUpId だから難しい？）
 		// --------------------------------------------------------------------
 		private WebPageInfoTree GenerateTieUpGroupHeadAndTieUpGroupsCore(Boolean isAdult)
 		{
@@ -1304,12 +1304,12 @@ namespace YukaLister.Models.OutputWriters
 			Dictionary<String, List<TFound>> tieUpNamesAndTFounds = new();
 
 			// ToDo: JOIN したほうが速いかもしれない
-			IQueryable<TFound> founds = _founds.Where(x => x.TieUpName != null && x.SongId != null
+			IQueryable<TFound> founds = _founds.Where(x => x.TieUpId != null && x.SongId != null
 					&& (isAdult ? x.TieUpAgeLimit >= YlConstants.AGE_LIMIT_CERO_Z : x.TieUpAgeLimit < YlConstants.AGE_LIMIT_CERO_Z));
 			List<QrFoundAndTieUpGroup> queryResult = new(founds.Count());
 			foreach (TFound found in founds)
 			{
-				List<TTieUpGroup> tieUpGroups = DbCommon.SelectSequencedTieUpGroupsByTieUpId(_tieUpGroupSequencesInMemory, _tieUpGroupsInMemory, found.SongId!);
+				List<TTieUpGroup> tieUpGroups = DbCommon.SelectSequencedTieUpGroupsByTieUpId(_tieUpGroupSequencesInMemory, _tieUpGroupsInMemory, found.TieUpId!);
 				foreach (TTieUpGroup tieUpGroup in tieUpGroups)
 				{
 					queryResult.Add(new(found, tieUpGroup));

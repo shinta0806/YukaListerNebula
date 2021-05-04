@@ -149,7 +149,13 @@ namespace YukaLister.Models.Database
 		// TTieUp
 		// --------------------------------------------------------------------
 
+		// タイアップ ID
+		// NEBULA で追加された項目
+		[Column(TTieUp.FIELD_NAME_TIE_UP_ID)]
+		public String? TieUpId { get; set; }
+
 		// タイアップ名
+		// ファイル名から供給される場合もあるため、TieUpId == null でも TieUpName が設定されていることはあり得る
 		[Column(FIELD_NAME_FOUND_TIE_UP_NAME)]
 		public String? TieUpName { get; set; }
 

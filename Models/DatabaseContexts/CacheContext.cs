@@ -230,8 +230,12 @@ namespace YukaLister.Models.DatabaseContexts
 		{
 			if (Properties != null && DbCommon.ValidPropertyExists(Properties))
 			{
-				// 既存のデータベースがある場合はクリアしない
-				return;
+				TProperty property = DbCommon.Property(Properties);
+				if (Common.CompareVersionString(property.AppVer, "Ver 1.09 α") >= 0)
+				{
+					// 既存のデータベースがあり、キャッシュデータの互換性がある場合はクリアしない
+					return;
+				}
 			}
 			CreateDatabase();
 		}

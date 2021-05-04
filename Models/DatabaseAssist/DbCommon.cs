@@ -342,7 +342,7 @@ namespace YukaLister.Models.DatabaseAssist
 		{
 			try
 			{
-				return properties.First();
+				return properties.AsNoTracking().First();
 			}
 			catch (Exception)
 			{
