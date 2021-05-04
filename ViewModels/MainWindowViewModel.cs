@@ -624,6 +624,11 @@ namespace YukaLister.ViewModels
 				YlCommon.ActivateSyclinIfNeeded();
 
 #if DEBUGz
+				String hoge = "01234";
+				String sub = hoge[2..];
+				Debug.WriteLine("Initialize() sub: " + sub);
+#endif
+#if DEBUGz
 				using MusicInfoContext musicInfoContext = MusicInfoContext.CreateContext(out DbSet<TSong> songs);
 				Debug.WriteLine("Initialize() " + songs.EntityType.Name);
 				Debug.WriteLine("Initialize() " + DbCommon.MusicInfoIdSecondPrefix(songs));

@@ -70,13 +70,13 @@ namespace YukaLister.Models.DatabaseAssist
 		}
 
 		// ====================================================================
-		// private メンバー関数
+		// private メンバー変数
 		// ====================================================================
 
 		// 元のタイアップ名
-		private String? _specifiedProgramOrigin;
+		private readonly String? _specifiedProgramOrigin;
 
 		// 元の楽曲名
-		public String? _specifiedSongOrigin;
+		private readonly String? _specifiedSongOrigin;
 	}
 }

@@ -65,13 +65,13 @@ namespace YukaLister.Models.DatabaseAssist
 		}
 
 		// ====================================================================
-		// private メンバー変数
+		// private static メンバー変数
 		// ====================================================================
 
 		// --------------------------------------------------------------------
 		// Boolean を文字列で送信する同期データに変換
 		// --------------------------------------------------------------------
-		private String BooleanToSyncData(Boolean boolean)
+		private static String BooleanToSyncData(Boolean boolean)
 		{
 			if (boolean)
 			{
@@ -83,11 +83,10 @@ namespace YukaLister.Models.DatabaseAssist
 			}
 		}
 
-
 		// --------------------------------------------------------------------
 		// IRcAlias エクスポート
 		// --------------------------------------------------------------------
-		private (List<String> csvHead, List<List<String>> csvContents) ExportAlias<T>(DbSet<T> records, String fieldPrefix) where T : class, IRcAlias
+		private static (List<String> csvHead, List<List<String>> csvContents) ExportAlias<T>(DbSet<T> records, String fieldPrefix) where T : class, IRcAlias
 		{
 			List<String> csvHead = new();
 			List<List<String>> csvContents = new();
@@ -110,7 +109,7 @@ namespace YukaLister.Models.DatabaseAssist
 		// --------------------------------------------------------------------
 		// IRcMaster エクスポート
 		// --------------------------------------------------------------------
-		private (List<String> csvHead, List<List<String>> csvContents) ExportMaster<T>(DbSet<T> records, String fieldPrefix) where T : class, IRcMaster
+		private static (List<String> csvHead, List<List<String>> csvContents) ExportMaster<T>(DbSet<T> records, String fieldPrefix) where T : class, IRcMaster
 		{
 			List<String> csvHead = new();
 			List<List<String>> csvContents = new();
@@ -133,7 +132,7 @@ namespace YukaLister.Models.DatabaseAssist
 		// --------------------------------------------------------------------
 		// IRcSequence エクスポート
 		// --------------------------------------------------------------------
-		private (List<String> csvHead, List<List<String>> csvContents) ExportSequence<T>(DbSet<T> records, String fieldPrefix) where T : class, IRcSequence
+		private static (List<String> csvHead, List<List<String>> csvContents) ExportSequence<T>(DbSet<T> records, String fieldPrefix) where T : class, IRcSequence
 		{
 			List<String> csvHead = new();
 			List<List<String>> csvContents = new();
@@ -154,18 +153,9 @@ namespace YukaLister.Models.DatabaseAssist
 		}
 
 		// --------------------------------------------------------------------
-		// エクスポート対象外
-		// --------------------------------------------------------------------
-		private (List<String> csvHead, List<List<String>> csvContents) NotExport(MusicInfoTables tableIndex)
-		{
-			_logWriterSyncDetail.LogMessage(Common.TRACE_EVENT_TYPE_STATUS, "エクスポート対象外テーブル：" + YlConstants.MUSIC_INFO_TABLE_NAME_LABELS[(Int32)tableIndex]);
-			return (new List<String>(), new List<List<String>>());
-		}
-
-		// --------------------------------------------------------------------
 		// IRcAlias 用に csvHead を設定（下位の IRcBase も設定）
 		// --------------------------------------------------------------------
-		private void SetAliasCsvHead(List<String> csvHead, String fieldPrefix)
+		private static void SetAliasCsvHead(List<String> csvHead, String fieldPrefix)
 		{
 			SetBaseCsvHead(csvHead, fieldPrefix);
 
@@ -176,7 +166,7 @@ namespace YukaLister.Models.DatabaseAssist
 		// --------------------------------------------------------------------
 		// IRcAlias を csvRecord に設定（下位の IRcBase も設定）
 		// --------------------------------------------------------------------
-		private void SetAliasCsvRecord(IRcAlias alias, List<String> csvRecord)
+		private static void SetAliasCsvRecord(IRcAlias alias, List<String> csvRecord)
 		{
 			SetBaseCsvRecord(alias, csvRecord);
 
@@ -187,7 +177,7 @@ namespace YukaLister.Models.DatabaseAssist
 		// --------------------------------------------------------------------
 		// IRcBase 用に csvHead を設定（Dirty を除く）
 		// --------------------------------------------------------------------
-		private void SetBaseCsvHead(List<String> csvHead, String fieldPrefix)
+		private static void SetBaseCsvHead(List<String> csvHead, String fieldPrefix)
 		{
 			csvHead.Add(fieldPrefix + YlConstants.FIELD_SUFFIX_ID);
 			csvHead.Add(fieldPrefix + YlConstants.FIELD_SUFFIX_IMPORT);
@@ -198,7 +188,7 @@ namespace YukaLister.Models.DatabaseAssist
 		// --------------------------------------------------------------------
 		// IRcBase を csvRecord に設定（Dirty を除く）
 		// --------------------------------------------------------------------
-		private void SetBaseCsvRecord(IRcBase bas, List<String> csvRecord)
+		private static void SetBaseCsvRecord(IRcBase bas, List<String> csvRecord)
 		{
 			csvRecord.Add(bas.Id);
 			csvRecord.Add(BooleanToSyncData(bas.Import));
@@ -209,7 +199,7 @@ namespace YukaLister.Models.DatabaseAssist
 		// --------------------------------------------------------------------
 		// IRcCategorizable 用に csvHead を設定（下位は設定しない）
 		// --------------------------------------------------------------------
-		private void SetCategorizableCsvHead(List<String> csvHead, String fieldPrefix)
+		private static void SetCategorizableCsvHead(List<String> csvHead, String fieldPrefix)
 		{
 			csvHead.Add(fieldPrefix + YlConstants.FIELD_SUFFIX_CATEGORY_ID);
 			csvHead.Add(fieldPrefix + YlConstants.FIELD_SUFFIX_RELEASE_DATE);
@@ -218,7 +208,7 @@ namespace YukaLister.Models.DatabaseAssist
 		// --------------------------------------------------------------------
 		// IRcCategorizable を csvRecord に設定（下位は設定しない）
 		// --------------------------------------------------------------------
-		private void SetCategorizableCsvRecord(IRcCategorizable categorizable, List<String> csvRecord)
+		private static void SetCategorizableCsvRecord(IRcCategorizable categorizable, List<String> csvRecord)
 		{
 			csvRecord.Add(categorizable.CategoryId ?? String.Empty);
 			csvRecord.Add(categorizable.ReleaseDate.ToString());
@@ -228,7 +218,7 @@ namespace YukaLister.Models.DatabaseAssist
 		// IRcMaster 用に csvHead を設定（下位の IRcBase も設定）
 		// IRcMaster より上位の TSong, TTieUp にも対応
 		// --------------------------------------------------------------------
-		private void SetMasterCsvHead<T>(List<String> csvHead, String fieldPrefix) where T : IRcBase
+		private static void SetMasterCsvHead<T>(List<String> csvHead, String fieldPrefix) where T : IRcBase
 		{
 			SetBaseCsvHead(csvHead, fieldPrefix);
 
@@ -256,7 +246,7 @@ namespace YukaLister.Models.DatabaseAssist
 		// IRcMaster を csvRecord に設定（下位の IRcBase も設定）
 		// IRcMaster より上位の TSong, TTieUp にも対応
 		// --------------------------------------------------------------------
-		private void SetMasterCsvRecord(IRcMaster master, List<String> csvRecord)
+		private static void SetMasterCsvRecord(IRcMaster master, List<String> csvRecord)
 		{
 			SetBaseCsvRecord(master, csvRecord);
 
@@ -283,7 +273,7 @@ namespace YukaLister.Models.DatabaseAssist
 		// --------------------------------------------------------------------
 		// IRcSequence 用に csvHead を設定（下位の IRcBase も設定）
 		// --------------------------------------------------------------------
-		private void SetSequenceCsvHead(List<String> csvHead, String fieldPrefix)
+		private static void SetSequenceCsvHead(List<String> csvHead, String fieldPrefix)
 		{
 			SetBaseCsvHead(csvHead, fieldPrefix);
 
@@ -294,12 +284,25 @@ namespace YukaLister.Models.DatabaseAssist
 		// --------------------------------------------------------------------
 		// IRcSequence を csvRecord に設定（下位の IRcBase も設定）
 		// --------------------------------------------------------------------
-		private void SetSequenceCsvRecord(IRcSequence sequence, List<String> csvRecord)
+		private static void SetSequenceCsvRecord(IRcSequence sequence, List<String> csvRecord)
 		{
 			SetBaseCsvRecord(sequence, csvRecord);
 
 			csvRecord.Add(sequence.Sequence.ToString());
 			csvRecord.Add(sequence.LinkId);
+		}
+
+		// ====================================================================
+		// private メンバー変数
+		// ====================================================================
+
+		// --------------------------------------------------------------------
+		// エクスポート対象外
+		// --------------------------------------------------------------------
+		private (List<String> csvHead, List<List<String>> csvContents) NotExport(MusicInfoTables tableIndex)
+		{
+			_logWriterSyncDetail.LogMessage(Common.TRACE_EVENT_TYPE_STATUS, "エクスポート対象外テーブル：" + YlConstants.MUSIC_INFO_TABLE_NAME_LABELS[(Int32)tableIndex]);
+			return (new List<String>(), new List<List<String>>());
 		}
 	}
 }

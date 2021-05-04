@@ -42,19 +42,19 @@ namespace YukaLister.Models.DatabaseAssist
 				DbSet<TTag> listTags, DbSet<TTagSequence> listTagSequences)
 		{
 			_listContextInMemory = listContextInMemory;
-			_listFounds = listFounds;
+			_ = listFounds;
 			_listPeople = listPeople;
 			_listArtistSequences = listArtistSequences;
-			_listComposerSequences = listComposerSequences;
-			_listTieUpGroups = listTieUpGroups;
-			_listTieUpGroupSequences = listTieUpGroupSequences;
-			_listTags = listTags;
-			_listTagSequences = listTagSequences;
-			_musicInfoContext = MusicInfoContext.CreateContext(out _properties,
+			_ = listComposerSequences;
+			_ = listTieUpGroups;
+			_ = listTieUpGroupSequences;
+			_ = listTags;
+			_ = listTagSequences;
+			_musicInfoContext = MusicInfoContext.CreateContext(out _,
 					out _songs, out _people, out _tieUps, out _categories,
 					out _tieUpGroups, out _makers, out _tags,
-					out _songAliases, out _personAliases, out _tieUpAliases,
-					out _categoryAliases, out _tieUpGroupAliases, out _makerAliases,
+					out _songAliases, out _, out _tieUpAliases,
+					out _, out _, out _,
 					out _artistSequences, out _lyristSequences, out _composerSequences, out _arrangerSequences,
 					out _tieUpGroupSequences, out _tagSequences);
 			_categoryNames = DbCommon.SelectCategoryNames(_categories);
@@ -355,7 +355,7 @@ namespace YukaLister.Models.DatabaseAssist
 		// --------------------------------------------------------------------
 
 		// データベースプロパティーテーブル
-		private readonly DbSet<TProperty> _properties;
+		//private readonly DbSet<TProperty> _properties;
 
 		// --------------------------------------------------------------------
 		// マスターテーブル
@@ -390,19 +390,19 @@ namespace YukaLister.Models.DatabaseAssist
 		private readonly DbSet<TSongAlias> _songAliases;
 
 		// 人物別名テーブル
-		private readonly DbSet<TPersonAlias> _personAliases;
+		//private readonly DbSet<TPersonAlias> _personAliases;
 
 		// タイアップ別名テーブル
 		private readonly DbSet<TTieUpAlias> _tieUpAliases;
 
 		// カテゴリー別名テーブル
-		private readonly DbSet<TCategoryAlias> _categoryAliases;
+		//private readonly DbSet<TCategoryAlias> _categoryAliases;
 
 		// タイアップグループ別名テーブル
-		private readonly DbSet<TTieUpGroupAlias> _tieUpGroupAliases;
+		//private readonly DbSet<TTieUpGroupAlias> _tieUpGroupAliases;
 
 		// 制作会社別名テーブル
-		private readonly DbSet<TMakerAlias> _makerAliases;
+		//private readonly DbSet<TMakerAlias> _makerAliases;
 
 		// --------------------------------------------------------------------
 		// 紐付テーブル
@@ -431,7 +431,7 @@ namespace YukaLister.Models.DatabaseAssist
 		// --------------------------------------------------------------------
 
 		// 検出ファイルリストテーブル
-		private readonly DbSet<TFound> _listFounds;
+		//private readonly DbSet<TFound> _listFounds;
 
 		// 人物マスターテーブル
 		private readonly DbSet<TPerson> _listPeople;
@@ -440,19 +440,19 @@ namespace YukaLister.Models.DatabaseAssist
 		private readonly DbSet<TArtistSequence> _listArtistSequences;
 
 		// 作曲者紐付テーブル
-		private readonly DbSet<TComposerSequence> _listComposerSequences;
+		//private readonly DbSet<TComposerSequence> _listComposerSequences;
 
 		// タイアップグループマスターテーブル
-		private readonly DbSet<TTieUpGroup> _listTieUpGroups;
+		//private readonly DbSet<TTieUpGroup> _listTieUpGroups;
 
 		// タイアップグループ紐付テーブル
-		private readonly DbSet<TTieUpGroupSequence> _listTieUpGroupSequences;
+		//private readonly DbSet<TTieUpGroupSequence> _listTieUpGroupSequences;
 
 		// タグマスターテーブル
-		private readonly DbSet<TTag> _listTags;
+		//private readonly DbSet<TTag> _listTags;
 
 		// タグ紐付テーブル
-		private readonly DbSet<TTagSequence> _listTagSequences;
+		//private readonly DbSet<TTagSequence> _listTagSequences;
 
 		// --------------------------------------------------------------------
 		// その他
@@ -521,14 +521,10 @@ namespace YukaLister.Models.DatabaseAssist
 			return (String.IsNullOrEmpty(names) ? null : names, String.IsNullOrEmpty(rubies) ? null : rubies);
 		}
 
-		// ====================================================================
-		// private メンバー関数
-		// ====================================================================
-
 		// --------------------------------------------------------------------
 		// 検索ワードと検索ワードフリガナをコメント用に整形
 		// --------------------------------------------------------------------
-		private String? KeywordToComment(IRcMaster master)
+		private static String? KeywordToComment(IRcMaster master)
 		{
 			String? comment = null;
 			if (!String.IsNullOrEmpty(master.Keyword))
@@ -541,6 +537,10 @@ namespace YukaLister.Models.DatabaseAssist
 			}
 			return comment;
 		}
+
+		// ====================================================================
+		// private メンバー関数
+		// ====================================================================
 
 		// --------------------------------------------------------------------
 		// （dicByFile から取得した）人物情報をゆかり用リストデータベースに登録

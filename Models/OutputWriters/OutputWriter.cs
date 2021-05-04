@@ -208,6 +208,19 @@ namespace YukaLister.Models.OutputWriters
 		protected String? _folderPath;
 
 		// ====================================================================
+		// protected static メンバー関数
+		// ====================================================================
+
+		// --------------------------------------------------------------------
+		// テンプレート読み込み
+		// --------------------------------------------------------------------
+		protected static String LoadTemplate(String fileNameBody)
+		{
+			return File.ReadAllText(YukaListerModel.Instance.EnvModel.ExeFullFolder + YlConstants.FOLDER_NAME_TEMPLATES
+					+ fileNameBody + Common.FILE_EXT_TPL);
+		}
+
+		// ====================================================================
 		// protected メンバー関数
 		// ====================================================================
 
@@ -234,15 +247,6 @@ namespace YukaLister.Models.OutputWriters
 
 			// 解放完了
 			_isDisposed = true;
-		}
-
-		// --------------------------------------------------------------------
-		// テンプレート読み込み
-		// --------------------------------------------------------------------
-		protected String LoadTemplate(String fileNameBody)
-		{
-			return File.ReadAllText(YukaListerModel.Instance.EnvModel.ExeFullFolder + YlConstants.FOLDER_NAME_TEMPLATES
-					+ fileNameBody + Common.FILE_EXT_TPL);
 		}
 
 		// --------------------------------------------------------------------

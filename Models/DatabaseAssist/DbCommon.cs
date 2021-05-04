@@ -631,7 +631,7 @@ namespace YukaLister.Models.DatabaseAssist
 			{
 				// IRcBase
 				Id = id,
-				Import = false,
+				Import = isImport,
 				Invalid = false,
 				UpdateTime = YlConstants.INVALID_MJD,
 				Dirty = true,

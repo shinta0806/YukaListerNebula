@@ -94,13 +94,144 @@ namespace YukaLister.Models.DatabaseAssist
 		// ====================================================================
 
 		// メインウィンドウ
-		private MainWindowViewModel _mainWindowViewModel;
+		private readonly MainWindowViewModel _mainWindowViewModel;
 
 		// ダウンロード済の zip ファイルを解凍したフォルダー（末尾は '\\'）
-		private String _extractFolder;
+		private readonly String _extractFolder;
 
 		// 同期情報
-		private Dictionary<String, String> _syncInfos;
+		private readonly Dictionary<String, String> _syncInfos;
+
+		// ====================================================================
+		// private static メンバー関数
+		// ====================================================================
+
+		// --------------------------------------------------------------------
+		// 同期データから IRcAlias を設定（下位の IRcBase も設定）
+		// ＜例外＞ Exception
+		// --------------------------------------------------------------------
+		private static void SetAliasBySyncData(IRcAlias alias, String fieldPrefix, Dictionary<String, String> syncOneData)
+		{
+			SetBaseBySyncData(alias, fieldPrefix, syncOneData);
+
+			String? al = YlCommon.NormalizeDbString(syncOneData[fieldPrefix + YlConstants.FIELD_SUFFIX_ALIAS]);
+			if (String.IsNullOrEmpty(al))
+			{
+				throw new Exception("同期データの別名が空です：" + alias.Id);
+			}
+			alias.Alias = al;
+			String? originalId = YlCommon.NormalizeDbString(syncOneData[fieldPrefix + YlConstants.FIELD_SUFFIX_ORIGINAL_ID]);
+			if (String.IsNullOrEmpty(originalId))
+			{
+				throw new Exception("同期データの元の ID が空です：" + alias.Id);
+			}
+			alias.OriginalId = originalId;
+		}
+
+		// --------------------------------------------------------------------
+		// 同期データから IRcBase を設定
+		// ＜例外＞ Exception
+		// --------------------------------------------------------------------
+		private static void SetBaseBySyncData(IRcBase bas, String fieldPrefix, Dictionary<String, String> syncOneData)
+		{
+			String? id = YlCommon.NormalizeDbString(syncOneData[fieldPrefix + YlConstants.FIELD_SUFFIX_ID]);
+			if (String.IsNullOrEmpty(id))
+			{
+				throw new Exception("同期データの ID が空です");
+			}
+			bas.Id = id;
+			bas.Import = SyncDataToBoolean(syncOneData[fieldPrefix + YlConstants.FIELD_SUFFIX_IMPORT]);
+			bas.Invalid = SyncDataToBoolean(syncOneData[fieldPrefix + YlConstants.FIELD_SUFFIX_INVALID]);
+			bas.UpdateTime = SyncDataToDouble(syncOneData[fieldPrefix + YlConstants.FIELD_SUFFIX_UPDATE_TIME]);
+			bas.Dirty = false;
+		}
+
+		// --------------------------------------------------------------------
+		// 同期データから IRcCategorizable を設定（下位は設定しない）
+		// ＜例外＞ Exception
+		// --------------------------------------------------------------------
+		private static void SetCategorizableBySyncData(IRcCategorizable categorizable, String fieldPrefix, Dictionary<String, String> syncOneData)
+		{
+			categorizable.CategoryId = YlCommon.NormalizeDbString(syncOneData[fieldPrefix + YlConstants.FIELD_SUFFIX_CATEGORY_ID]);
+			categorizable.ReleaseDate = SyncDataToDouble(syncOneData[fieldPrefix + YlConstants.FIELD_SUFFIX_RELEASE_DATE]);
+		}
+
+		// --------------------------------------------------------------------
+		// 同期データから IRcMaster を設定（下位の IRcBase も設定）
+		// IRcMaster より上位の TSong, TTieUp にも対応
+		// ＜例外＞ Exception
+		// --------------------------------------------------------------------
+		private static void SetMasterBySyncData(IRcMaster master, String fieldPrefix, Dictionary<String, String> syncOneData)
+		{
+			SetBaseBySyncData(master, fieldPrefix, syncOneData);
+
+			master.Name = YlCommon.NormalizeDbString(syncOneData[fieldPrefix + YlConstants.FIELD_SUFFIX_NAME]);
+			master.Ruby = YlCommon.NormalizeDbRubyForMusicInfo(syncOneData[fieldPrefix + YlConstants.FIELD_SUFFIX_RUBY]);
+			master.RubyForSearch = YlCommon.NormalizeDbRubyForSearch(syncOneData[fieldPrefix + YlConstants.FIELD_SUFFIX_RUBY_FOR_SEARCH]);
+			master.Keyword = YlCommon.NormalizeDbString(syncOneData[fieldPrefix + YlConstants.FIELD_SUFFIX_KEYWORD]);
+			master.KeywordRubyForSearch = YlCommon.NormalizeDbRubyForSearch(syncOneData[fieldPrefix + YlConstants.FIELD_SUFFIX_KEYWORD_RUBY_FOR_SEARCH]);
+
+			if (master is TSong song)
+			{
+				SetCategorizableBySyncData(song, fieldPrefix, syncOneData);
+				song.TieUpId = YlCommon.NormalizeDbString(syncOneData[fieldPrefix + YlConstants.FIELD_SUFFIX_TIE_UP_ID]);
+				song.OpEd = YlCommon.NormalizeDbString(syncOneData[fieldPrefix + YlConstants.FIELD_SUFFIX_OP_ED]);
+			}
+			else if (master is TTieUp tieUp)
+			{
+				SetCategorizableBySyncData(tieUp, fieldPrefix, syncOneData);
+				tieUp.MakerId = YlCommon.NormalizeDbString(syncOneData[fieldPrefix + YlConstants.FIELD_SUFFIX_MAKER_ID]);
+				tieUp.AgeLimit = SyncDataToInt32(syncOneData[fieldPrefix + YlConstants.FIELD_SUFFIX_AGE_LIMIT]);
+			}
+		}
+
+		// --------------------------------------------------------------------
+		// 同期データから IRcSequence を設定（下位の IRcBase も設定）
+		// ＜例外＞ Exception
+		// --------------------------------------------------------------------
+		private static void SetSequenceBySyncData(IRcSequence sequence, String fieldPrefix, Dictionary<String, String> syncOneData)
+		{
+			SetBaseBySyncData(sequence, fieldPrefix, syncOneData);
+
+			sequence.Sequence = SyncDataToInt32(syncOneData[fieldPrefix + YlConstants.FIELD_SUFFIX_SEQUENCE]);
+			String? linkId = YlCommon.NormalizeDbString(syncOneData[fieldPrefix + YlConstants.FIELD_SUFFIX_LINK_ID]);
+			if (String.IsNullOrEmpty(linkId))
+			{
+				throw new Exception("同期データのリンク ID が空です：" + sequence.Id);
+			}
+			sequence.LinkId = linkId;
+		}
+
+		// --------------------------------------------------------------------
+		// 文字列で受信した同期データを Boolean に変換
+		// --------------------------------------------------------------------
+		private static Boolean SyncDataToBoolean(String str)
+		{
+			if (String.IsNullOrEmpty(str))
+			{
+				return false;
+			}
+
+			return str[0] != '0';
+		}
+
+		// --------------------------------------------------------------------
+		// 文字列で受信した同期データを Double に変換
+		// --------------------------------------------------------------------
+		private static Double SyncDataToDouble(String str)
+		{
+			_ = Double.TryParse(str, out Double doub);
+			return doub;
+		}
+
+		// --------------------------------------------------------------------
+		// 文字列で受信した同期データを Int32 に変換
+		// --------------------------------------------------------------------
+		private static Int32 SyncDataToInt32(String str)
+		{
+			_ = Int32.TryParse(str, out Int32 int32);
+			return int32;
+		}
 
 		// ====================================================================
 		// private メンバー関数
@@ -120,7 +251,7 @@ namespace YukaLister.Models.DatabaseAssist
 				{
 					continue;
 				}
-				syncInfos[line[0..pos]] = line.Substring(pos + 1);
+				syncInfos[line[0..pos]] = line[(pos + 1)..];
 			}
 			return syncInfos;
 		}
@@ -152,7 +283,7 @@ namespace YukaLister.Models.DatabaseAssist
 			}
 
 			// サーバーの仕様変更によりカラム順序が変わっても対応できるよう、Dictionary にする
-			List<Dictionary<String, String>> syncData = new List<Dictionary<String, String>>();
+			List<Dictionary<String, String>> syncData = new();
 			for (Int32 i = 1; i < csvContents.Count; i++)
 			{
 				Dictionary<String, String> record = new();
@@ -281,46 +412,6 @@ namespace YukaLister.Models.DatabaseAssist
 			return numImports;
 		}
 
-#if false
-		// --------------------------------------------------------------------
-		// TMaker インポート
-		// --------------------------------------------------------------------
-		private Int32 ImportTMaker(List<Dictionary<String, String>> syncData)
-		{
-			Int32 numImports = 0;
-			Int32 numChecks = 0;
-			_logWriterSyncDetail.LogMessage(Common.TRACE_EVENT_TYPE_STATUS, "制作会社マスターインポート中...");
-
-			foreach (Dictionary<String, String> oneData in syncData)
-			{
-				TMaker newRecord = new();
-				try
-				{
-					SetMasterBySyncData(newRecord, TMaker.FIELD_PREFIX_MAKER, oneData);
-				}
-				catch (Exception excep)
-				{
-					_logWriterSyncDetail.LogMessage(TraceEventType.Error, "TMaker 設定時エラー：" + excep.Message);
-					continue;
-				}
-				UpdateMasterDatabaseIfNeeded(_makers, newRecord, ref numImports);
-
-				numChecks++;
-				if (numChecks % IMPORT_PROGRESS_BLOCK == 0)
-				{
-					_mainWindowViewModel.SetStatusBarMessageWithInvoke(Common.TRACE_EVENT_TYPE_STATUS, "同期データをダウンロード中...（" + _syncInfos[SYNC_INFO_PARAM_DATE] + "）：制作会社マスター確認 "
-							+ numChecks.ToString("#,0") + " 件");
-				}
-
-				YukaListerModel.Instance.EnvModel.AppCancellationTokenSource.Token.ThrowIfCancellationRequested();
-			}
-
-			_musicInfoContext.SaveChanges();
-
-			return numImports;
-		}
-#endif
-
 		// --------------------------------------------------------------------
 		// IRcSequence インポート
 		// --------------------------------------------------------------------
@@ -352,135 +443,6 @@ namespace YukaLister.Models.DatabaseAssist
 			_musicInfoContext.SaveChanges();
 
 			return numImports;
-		}
-
-		// --------------------------------------------------------------------
-		// 同期データから IRcAlias を設定（下位の IRcBase も設定）
-		// ＜例外＞ Exception
-		// --------------------------------------------------------------------
-		private void SetAliasBySyncData(IRcAlias alias, String fieldPrefix, Dictionary<String, String> syncOneData)
-		{
-			SetBaseBySyncData(alias, fieldPrefix, syncOneData);
-
-			String? al = YlCommon.NormalizeDbString(syncOneData[fieldPrefix + YlConstants.FIELD_SUFFIX_ALIAS]);
-			if (String.IsNullOrEmpty(al))
-			{
-				throw new Exception("同期データの別名が空です：" + alias.Id);
-			}
-			alias.Alias = al;
-			String? originalId = YlCommon.NormalizeDbString(syncOneData[fieldPrefix + YlConstants.FIELD_SUFFIX_ORIGINAL_ID]);
-			if (String.IsNullOrEmpty(originalId))
-			{
-				throw new Exception("同期データの元の ID が空です：" + alias.Id);
-			}
-			alias.OriginalId = originalId;
-		}
-
-		// --------------------------------------------------------------------
-		// 同期データから IRcBase を設定
-		// ＜例外＞ Exception
-		// --------------------------------------------------------------------
-		private void SetBaseBySyncData(IRcBase bas, String fieldPrefix, Dictionary<String, String> syncOneData)
-		{
-			String? id = YlCommon.NormalizeDbString(syncOneData[fieldPrefix + YlConstants.FIELD_SUFFIX_ID]);
-			if (String.IsNullOrEmpty(id))
-			{
-				throw new Exception("同期データの ID が空です");
-			}
-			bas.Id = id;
-			bas.Import = SyncDataToBoolean(syncOneData[fieldPrefix + YlConstants.FIELD_SUFFIX_IMPORT]);
-			bas.Invalid = SyncDataToBoolean(syncOneData[fieldPrefix + YlConstants.FIELD_SUFFIX_INVALID]);
-			bas.UpdateTime = SyncDataToDouble(syncOneData[fieldPrefix + YlConstants.FIELD_SUFFIX_UPDATE_TIME]);
-			bas.Dirty = false;
-		}
-
-		// --------------------------------------------------------------------
-		// 同期データから IRcCategorizable を設定（下位は設定しない）
-		// ＜例外＞ Exception
-		// --------------------------------------------------------------------
-		private void SetCategorizableBySyncData(IRcCategorizable categorizable, String fieldPrefix, Dictionary<String, String> syncOneData)
-		{
-			categorizable.CategoryId = YlCommon.NormalizeDbString(syncOneData[fieldPrefix + YlConstants.FIELD_SUFFIX_CATEGORY_ID]);
-			categorizable.ReleaseDate = SyncDataToDouble(syncOneData[fieldPrefix + YlConstants.FIELD_SUFFIX_RELEASE_DATE]);
-		}
-
-		// --------------------------------------------------------------------
-		// 同期データから IRcMaster を設定（下位の IRcBase も設定）
-		// IRcMaster より上位の TSong, TTieUp にも対応
-		// ＜例外＞ Exception
-		// --------------------------------------------------------------------
-		private void SetMasterBySyncData(IRcMaster master, String fieldPrefix, Dictionary<String, String> syncOneData)
-		{
-			SetBaseBySyncData(master, fieldPrefix, syncOneData);
-
-			master.Name = YlCommon.NormalizeDbString(syncOneData[fieldPrefix + YlConstants.FIELD_SUFFIX_NAME]);
-			master.Ruby = YlCommon.NormalizeDbRubyForMusicInfo(syncOneData[fieldPrefix + YlConstants.FIELD_SUFFIX_RUBY]);
-			master.RubyForSearch = YlCommon.NormalizeDbRubyForSearch(syncOneData[fieldPrefix + YlConstants.FIELD_SUFFIX_RUBY_FOR_SEARCH]);
-			master.Keyword = YlCommon.NormalizeDbString(syncOneData[fieldPrefix + YlConstants.FIELD_SUFFIX_KEYWORD]);
-			master.KeywordRubyForSearch = YlCommon.NormalizeDbRubyForSearch(syncOneData[fieldPrefix + YlConstants.FIELD_SUFFIX_KEYWORD_RUBY_FOR_SEARCH]);
-
-			if (master is TSong song)
-			{
-				SetCategorizableBySyncData(song, fieldPrefix, syncOneData);
-				song.TieUpId = YlCommon.NormalizeDbString(syncOneData[fieldPrefix + YlConstants.FIELD_SUFFIX_TIE_UP_ID]);
-				song.OpEd = YlCommon.NormalizeDbString(syncOneData[fieldPrefix + YlConstants.FIELD_SUFFIX_OP_ED]);
-			}
-			else if (master is TTieUp tieUp)
-			{
-				SetCategorizableBySyncData(tieUp, fieldPrefix, syncOneData);
-				tieUp.MakerId = YlCommon.NormalizeDbString(syncOneData[fieldPrefix + YlConstants.FIELD_SUFFIX_MAKER_ID]);
-				tieUp.AgeLimit = SyncDataToInt32(syncOneData[fieldPrefix + YlConstants.FIELD_SUFFIX_AGE_LIMIT]);
-			}
-		}
-
-		// --------------------------------------------------------------------
-		// 同期データから IRcSequence を設定（下位の IRcBase も設定）
-		// ＜例外＞ Exception
-		// --------------------------------------------------------------------
-		private void SetSequenceBySyncData(IRcSequence sequence, String fieldPrefix, Dictionary<String, String> syncOneData)
-		{
-			SetBaseBySyncData(sequence, fieldPrefix, syncOneData);
-
-			sequence.Sequence = SyncDataToInt32(syncOneData[fieldPrefix + YlConstants.FIELD_SUFFIX_SEQUENCE]);
-			String? linkId = YlCommon.NormalizeDbString(syncOneData[fieldPrefix + YlConstants.FIELD_SUFFIX_LINK_ID]);
-			if (String.IsNullOrEmpty(linkId))
-			{
-				throw new Exception("同期データのリンク ID が空です：" + sequence.Id);
-			}
-			sequence.LinkId = linkId;
-		}
-
-		// --------------------------------------------------------------------
-		// 文字列で受信した同期データを Boolean に変換
-		// --------------------------------------------------------------------
-		private Boolean SyncDataToBoolean(String str)
-		{
-			if (String.IsNullOrEmpty(str))
-			{
-				return false;
-			}
-
-			return str[0] != '0';
-		}
-
-		// --------------------------------------------------------------------
-		// 文字列で受信した同期データを Double に変換
-		// --------------------------------------------------------------------
-		private Double SyncDataToDouble(String str)
-		{
-			Double doub;
-			Double.TryParse(str, out doub);
-			return doub;
-		}
-
-		// --------------------------------------------------------------------
-		// 文字列で受信した同期データを Int32 に変換
-		// --------------------------------------------------------------------
-		private Int32 SyncDataToInt32(String str)
-		{
-			Int32 int32;
-			Int32.TryParse(str, out int32);
-			return int32;
 		}
 
 		// --------------------------------------------------------------------

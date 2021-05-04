@@ -98,6 +98,6 @@ namespace YukaLister.Models.SerializableSettings
 		// ====================================================================
 
 		// ドライブレター
-		private String _driveLetter;
+		private readonly String _driveLetter;
 	}
 }

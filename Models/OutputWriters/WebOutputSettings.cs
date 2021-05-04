@@ -115,13 +115,13 @@ namespace YukaLister.Models.OutputWriters
 		private const Int32 NEW_DAYS_DEFAULT = 31;
 
 		// ====================================================================
-		// private メンバー関数
+		// private static メンバー関数
 		// ====================================================================
 
 		// --------------------------------------------------------------------
 		// 保存パス
 		// --------------------------------------------------------------------
-		private String SettingsPath()
+		private static String SettingsPath()
 		{
 			return Common.UserAppDataFolderPath() + nameof(WebOutputSettings) + Common.FILE_EXT_CONFIG;
 		}
