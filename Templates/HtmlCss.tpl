@@ -61,6 +61,12 @@ input.report
 	text-align: center;
 }
 
+.rightalign
+{
+	margin: auto;
+	text-align: right;
+}
+
 table
 {
 	border-collapse: collapse;

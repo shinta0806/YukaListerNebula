@@ -9,14 +9,14 @@
 // ----------------------------------------------------------------------------
 
 using Microsoft.EntityFrameworkCore;
+
 using Shinta;
+
 using System;
 using System.Diagnostics;
-using System.IO;
 using System.Linq;
-using System.Threading;
+
 using YukaLister.Models.Database;
-using YukaLister.Models.DatabaseAssist;
 using YukaLister.Models.DatabaseContexts;
 using YukaLister.Models.OutputWriters;
 using YukaLister.Models.SharedMisc;
@@ -91,7 +91,6 @@ namespace YukaLister.Models.YukaListerCores
 
 					// リスト出力
 					YukariOutputWriter yukariOutputWriter = new();
-					//yukariOutputWriter.FolderPath = Path.GetDirectoryName(DbCommon.ListDatabasePath(YukaListerModel.Instance.EnvModel.YlSettings)) + '\\';
 					yukariOutputWriter.Output();
 
 					YukaListerModel.Instance.EnvModel.LogWriter.LogMessage(TraceEventType.Information, "リスト出力が完了しました。");

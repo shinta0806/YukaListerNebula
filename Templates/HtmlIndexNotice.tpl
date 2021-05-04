@@ -20,5 +20,6 @@
 一覧を更新しています。少し待ってから再度アクセスしてみてください。<br>
 </p>
 <p class="generator">by <!-- $Generator$ --> <!-- $GenerateDate$ --></p>
+<p class="rightalign"><!-- $Support$ --></p>
 </body>
 </html>

@@ -3,6 +3,7 @@
         xmlns:behaviors="http://schemas.microsoft.com/xaml/behaviors"
         xmlns:l="http://schemas.livet-mvvm.net/2011/wpf"
         xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+        xmlns:msm="clr-namespace:YukaLister.Models.SharedMisc"
         xmlns:sb="clr-namespace:Shinta.Behaviors"
         xmlns:v="clr-namespace:YukaLister.Views"
         xmlns:vm="clr-namespace:YukaLister.ViewModels"
@@ -68,7 +69,7 @@
                     <Label Content="ファンサイト：" HorizontalContentAlignment="Right" Width="90"/>
                     <Label>
                         <Hyperlink Command="{Binding LinkClickedCommand}" CommandParameter="{Binding Text, ElementName=TextBlockAutherFantia}" >
-                            <TextBlock Name="TextBlockAutherFantia" Text="https://fantia.jp/fanclubs/65509"/>
+                            <TextBlock Name="TextBlockAutherFantia" Text="{x:Static msm:YlConstants.URL_FANTIA}"/>
                         </Hyperlink>
                     </Label>
                 </StackPanel>

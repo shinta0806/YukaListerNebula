@@ -545,5 +545,8 @@ namespace YukaLister.Models.SharedMisc
 
 		// 検索の方向
 		public const String FIND_DIRECTION_BACKWARD = "Backward";
+
+		// Fantia
+		public const String URL_FANTIA = "https://fantia.jp/fanclubs/65509";
 	}
 }

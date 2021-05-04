@@ -100,6 +100,7 @@ namespace YukaLister.Models.OutputWriters
 			// 出力先フォルダーへの出力
 			OutputCss();
 			OutputJs();
+			OutputImage();
 
 			// その他のファイルの出力
 			OutputMisc();
@@ -326,6 +327,9 @@ namespace YukaLister.Models.OutputWriters
 		// リストファイル名の先頭文字列（カテゴリーインデックス以外）
 		private const String FILE_NAME_PREFIX = "List";
 
+		// Fantial ロゴ画像
+		private const String FILE_NAME_BODY_FANTIA_LOGO = "FantiaLogo";
+
 		// リストの種類に応じたファイル名
 		private const String KIND_FILE_NAME_ARTIST = "Artist";
 		private const String KIND_FILE_NAME_CATEGORY = "Category";
@@ -353,6 +357,7 @@ namespace YukaLister.Models.OutputWriters
 		private const String HTML_VAR_NUM_SONGS = "<!-- $NumSongs$ -->";
 		private const String HTML_VAR_PAGES = "<!-- $Pages$ -->";
 		private const String HTML_VAR_PROGRAMS = "<!-- $Programs$ -->";
+		private const String HTML_VAR_SUPPORT = "<!-- $Support$ -->";
 		private const String HTML_VAR_TITLE = "<!-- $Title$ -->";
 
 		// テーブル非表示
@@ -366,6 +371,10 @@ namespace YukaLister.Models.OutputWriters
 		// Hex1 / Hex2 は MAX_HEX_SOURCE_LENGTH の 2 倍の長さになる
 		// 長くなるのは Hex1 か Hex2 のどちらかという前提で、パスの長さが 256 を超えない程度の指定にする
 		private const Int32 MAX_HEX_SOURCE_LENGTH = 70;
+
+		// 開発者支援サイトリンク
+		private const String SUPPORT_LINK = "<a href=\"" + YlConstants.URL_FANTIA + "\" target=\"_blank\"><img src=\""
+				+ FILE_NAME_BODY_FANTIA_LOGO + Common.FILE_EXT_PNG + "\" height=\"20\">開発者支援サイト</a>";
 
 		// ====================================================================
 		// private メンバー変数
@@ -470,6 +479,7 @@ namespace YukaLister.Models.OutputWriters
 			}
 			ReplaceListContent(pageInfoTree, HTML_VAR_GENERATOR, YlConstants.APP_NAME_J + "  " + YlConstants.APP_VER);
 			ReplaceListContent(pageInfoTree, HTML_VAR_GENERATE_DATE, DateTime.Now.ToString(YlConstants.DATE_FORMAT));
+			ReplaceListContent(pageInfoTree, HTML_VAR_SUPPORT, SUPPORT_LINK);
 
 			// その他の調整
 			AdjustListMisc(pageInfoTree);
@@ -1603,6 +1613,15 @@ namespace YukaLister.Models.OutputWriters
 		{
 			return FILE_NAME_PREFIX + "_" + kindFileName + "_" + (isAdult ? YlConstants.AGE_LIMIT_CERO_Z.ToString() + "_" : null)
 					+ StringToHex(groupName) + (String.IsNullOrEmpty(pageName) ? null : "_" + StringToHex(pageName)) + _listExt;
+		}
+
+		// --------------------------------------------------------------------
+		// 画像を出力
+		// --------------------------------------------------------------------
+		private void OutputImage()
+		{
+			File.Copy(YukaListerModel.Instance.EnvModel.ExeFullFolder + YlConstants.FOLDER_NAME_TEMPLATES + FILE_NAME_BODY_FANTIA_LOGO + Common.FILE_EXT_TPL,
+					_folderPath + FILE_NAME_BODY_FANTIA_LOGO + Common.FILE_EXT_PNG, true);
 		}
 
 		// --------------------------------------------------------------------
