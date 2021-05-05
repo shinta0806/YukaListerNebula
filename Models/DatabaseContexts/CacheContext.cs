@@ -217,8 +217,8 @@ namespace YukaLister.Models.DatabaseContexts
 			}
 
 			// 隠し属性
-			FileAttributes attr = File.GetAttributes(DatabasePath());
-			File.SetAttributes(DatabasePath(), attr | FileAttributes.Hidden);
+			//FileAttributes attr = File.GetAttributes(DatabasePath());
+			//File.SetAttributes(DatabasePath(), attr | FileAttributes.Hidden);
 
 			YukaListerModel.Instance.EnvModel.LogWriter.LogMessage(Common.TRACE_EVENT_TYPE_STATUS, "キャッシュデータベースを初期化しました。");
 		}
@@ -231,7 +231,7 @@ namespace YukaLister.Models.DatabaseContexts
 			if (Properties != null && DbCommon.ValidPropertyExists(Properties))
 			{
 				TProperty property = DbCommon.Property(Properties);
-				if (Common.CompareVersionString(property.AppVer, "Ver 1.13 α") >= 0)
+				if (Common.CompareVersionString(property.AppVer, "Ver 1.18 α") >= 0)
 				{
 					// 既存のデータベースがあり、キャッシュデータの互換性がある場合はクリアしない
 					return;
@@ -245,7 +245,7 @@ namespace YukaLister.Models.DatabaseContexts
 		// --------------------------------------------------------------------
 		private String DatabasePath()
 		{
-			return _driveLetter + "\\" + FILE_NAME_CACHE_DATABASE;
+			return YlCommon.YukaListerStatusFolderPath(_driveLetter, true) + FILE_NAME_CACHE_DATABASE;
 		}
 	}
 }

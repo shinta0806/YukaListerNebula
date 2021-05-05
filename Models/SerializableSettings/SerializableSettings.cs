@@ -41,7 +41,7 @@ namespace YukaLister.Models.SerializableSettings
 			{
 				if (!File.Exists(SettingsPath()))
 				{
-					throw new Exception("設定が保存されていません。");
+					throw new Exception("設定が保存されていません：" + SettingsPath());
 				}
 				SerializableSettings loaded = Common.Deserialize(SettingsPath(), this);
 				Common.ShallowCopy(loaded, this);

@@ -932,6 +932,22 @@ namespace YukaLister.Models.SharedMisc
 			return path[2..];
 		}
 
+		// --------------------------------------------------------------------
+		// ゆかりすたー用ファイル群を保存するフォルダーのフルパス（末尾 '\\'）
+		// --------------------------------------------------------------------
+		public static String YukaListerStatusFolderPath(String driveLetter, Boolean create = false)
+		{
+			Debug.Assert(driveLetter.Length == 2, "YukaListerStatusFolderPath() bad driveLetter");
+			String path = driveLetter + '\\' + YlConstants.FOLDER_NAME_YUKALISTER_STATUS;
+			if (!Directory.Exists(path) && create)
+			{
+				Directory.CreateDirectory(path);
+				FileAttributes attr = File.GetAttributes(path);
+				File.SetAttributes(path, attr | FileAttributes.Hidden);
+			}
+			return path;
+		}
+
 		// ====================================================================
 		// private メンバー定数
 		// ====================================================================

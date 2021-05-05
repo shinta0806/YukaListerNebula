@@ -195,7 +195,7 @@ namespace YukaLister.Models.SharedMisc
 		public const String APP_ID = "YukaLister";
 		public const String APP_GENERATION = "NEBULA";
 		public const String APP_NAME_J = "ゆかりすたー " + APP_GENERATION + " ";
-		public const String APP_VER = "Ver 1.16 α";
+		public const String APP_VER = "Ver 1.18 α";
 		public const String COPYRIGHT_J = "Copyright (C) 2021 by SHINTA";
 
 		// --------------------------------------------------------------------
@@ -210,6 +210,9 @@ namespace YukaLister.Models.SharedMisc
 
 		// ゆかり用データベースを保存するフォルダー名
 		public const String FOLDER_NAME_LIST = "list\\";
+
+		// 各ドライブのゆかりすたー用ファイル群を保存するフォルダー名
+		public const String FOLDER_NAME_YUKALISTER_STATUS = APP_ID + "Status\\";
 
 		// --------------------------------------------------------------------
 		// ファイル名

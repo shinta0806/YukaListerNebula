@@ -647,12 +647,7 @@ namespace YukaLister.ViewModels
 				YlCommon.ActivateSyclinIfNeeded();
 
 #if DEBUGz
-				String hoge = "01234";
-				String sub = hoge[2..];
-				Debug.WriteLine("Initialize() sub: " + sub);
-				String hoge2 = "D:";
-				String sub2 = hoge2[2..];	// OK
-				Debug.WriteLine("Initialize() sub2: " + sub2);
+				String hoge = YlCommon.YukaListerStatusFolderPath("D:");
 #endif
 
 #if DEBUGz

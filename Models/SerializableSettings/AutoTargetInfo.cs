@@ -61,8 +61,8 @@ namespace YukaLister.Models.SerializableSettings
 		// --------------------------------------------------------------------
 		protected override void AdjustAfterSave()
 		{
-			FileAttributes attr = File.GetAttributes(SettingsPath());
-			File.SetAttributes(SettingsPath(), attr | FileAttributes.Hidden);
+			//FileAttributes attr = File.GetAttributes(SettingsPath());
+			//File.SetAttributes(SettingsPath(), attr | FileAttributes.Hidden);
 		}
 
 		// --------------------------------------------------------------------
@@ -70,8 +70,10 @@ namespace YukaLister.Models.SerializableSettings
 		// --------------------------------------------------------------------
 		protected override void AdjustBeforeSave()
 		{
+			YlCommon.YukaListerStatusFolderPath(_driveLetter, true);
+
 			// 隠しファイルを直接上書きできないので一旦削除する
-			YlCommon.DeleteFileIfExists(SettingsPath());
+			//YlCommon.DeleteFileIfExists(SettingsPath());
 		}
 
 		// --------------------------------------------------------------------
@@ -83,7 +85,7 @@ namespace YukaLister.Models.SerializableSettings
 			{
 				throw new Exception("ドライブレターが設定されていません。");
 			}
-			return _driveLetter + "\\" + FILE_NAME_AUTO_TARGET_INFO;
+			return YlCommon.YukaListerStatusFolderPath(_driveLetter) + FILE_NAME_AUTO_TARGET_INFO;
 		}
 
 		// ====================================================================
