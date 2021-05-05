@@ -376,9 +376,23 @@ namespace YukaLister.ViewModels.MiscWindowViewModels
 				else
 				{
 					List<TSong> songsByFoundSetter = foundSetterAliasSpecify.FindSongsByMusicInfoDatabase(dicByFile);
-					if (songsByFoundSetter.Count == 1)
+					if (songsByFoundSetter.Count == 0)
 					{
-						// 1 つに絞り込めた場合はそれに紐付くタイアップをデフォルトにする
+						// 楽曲が見当たらない場合はタイアップのみで判定する
+						if (sameNameTieUps.Count == 2)
+						{
+							// 新規以外が 1 つならそれをデフォルトにする
+							editTieUpWindowViewModel.DefaultMasterId = sameNameTieUps[1].Id;
+						}
+						else
+						{
+							// 新規以外が複数ある場合は新規をデフォルトにする
+							editTieUpWindowViewModel.DefaultMasterId = sameNameTieUps[0].Id;
+						}
+					}
+					else if (songsByFoundSetter.Count == 1)
+					{
+						// 楽曲を 1 つに絞り込めた場合はそれに紐付くタイアップをデフォルトにする
 						editTieUpWindowViewModel.DefaultMasterId = songsByFoundSetter[0].TieUpId;
 					}
 					else
