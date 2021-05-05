@@ -650,6 +650,9 @@ namespace YukaLister.ViewModels
 				String hoge = "01234";
 				String sub = hoge[2..];
 				Debug.WriteLine("Initialize() sub: " + sub);
+				String hoge2 = "D:";
+				String sub2 = hoge2[2..];	// OK
+				Debug.WriteLine("Initialize() sub2: " + sub2);
 #endif
 
 #if DEBUGz
@@ -672,6 +675,10 @@ namespace YukaLister.ViewModels
 		// --------------------------------------------------------------------
 		public void SetStatusBarMessageWithInvoke(TraceEventType traceEventType, String msg)
 		{
+			if (YukaListerModel.Instance.EnvModel.AppCancellationTokenSource.IsCancellationRequested)
+			{
+				return;
+			}
 			DispatcherHelper.UIDispatcher.Invoke(new Action(() =>
 			{
 				StatusBarMessage = msg;
