@@ -361,8 +361,6 @@ namespace YukaLister.Models.YukaListerCores
 		// --------------------------------------------------------------------
 		private static void CacheToDiskCore(TargetFolderInfo targetFolderInfo)
 		{
-			YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, targetFolderInfo.TargetPath
-					+ "\nキャッシュをゆかり用リストデータベースに反映しています...");
 			using CacheContext cacheContext = CacheContext.CreateContext(YlCommon.DriveLetter(targetFolderInfo.TargetPath), out DbSet<TFound> cacheFounds);
 			cacheContext.ChangeTracker.QueryTrackingBehavior = QueryTrackingBehavior.NoTracking;
 
@@ -378,6 +376,8 @@ namespace YukaLister.Models.YukaListerCores
 				cacheRecords = cacheFounds.Where(x => x.ParentFolder.Contains(withoutDriveLetterOne)).ToList();
 				if (!cacheRecords.Any())
 				{
+					YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, targetFolderInfo.TargetPath
+							+ "\nキャッシュはありませんでした。");
 					return;
 				}
 
@@ -391,6 +391,9 @@ namespace YukaLister.Models.YukaListerCores
 					cacheRecord.ParentFolder = drive + YlCommon.WithoutDriveLetter(cacheRecord.ParentFolder);
 				}
 			}
+
+			YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, targetFolderInfo.TargetPath
+					+ "\nキャッシュをゆかり用リストデータベースに反映しています...");
 
 			// キャッシュの Uid 初期化
 			foreach (TFound cacheRecord in cacheRecords)
@@ -624,6 +627,11 @@ namespace YukaLister.Models.YukaListerCores
 				String[] subFolderPathes = Directory.GetDirectories(parentFolder.TargetPath, "*", SearchOption.TopDirectoryOnly);
 				foreach (String subFolderPath in subFolderPathes)
 				{
+					if (YlCommon.IsIgnoreFolder(subFolderPath))
+					{
+						continue;
+					}
+
 					// サブフォルダー追加
 					TargetFolderInfo subFolder = new(parentFolder.ParentPath, subFolderPath, parentFolder.Level + 1);
 					subFolder.IsCacheUsed = parentFolder.IsCacheUsed;

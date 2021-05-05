@@ -90,9 +90,6 @@ namespace YukaLister.Models.YukaListerModels
 				}
 
 				// 親の追加
-#if DEBUGz
-				parentFolder += "\\\\";
-#endif
 				TargetFolderInfo targetFolderInfo = new(parentFolder);
 				lock (_targetFolderInfos)
 				{
@@ -104,7 +101,7 @@ namespace YukaLister.Models.YukaListerModels
 				YukaListerModel.Instance.EnvModel.Sifolin.MainEvent.Set();
 
 				// スリープ状態のデバイスだとここで時間がかかる
-				AdjustAutoTargetInfoIfNeeded2Sh(YlCommon.DriveLetter(parentFolder));
+				AdjustAutoTargetInfoIfNeeded(YlCommon.DriveLetter(parentFolder));
 				//ListCancellationTokenSource?.Cancel();
 			});
 		}
@@ -257,7 +254,7 @@ namespace YukaLister.Models.YukaListerModels
 			// 通知
 			YukaListerModel.Instance.EnvModel.IsMainWindowDataGridItemUpdated = true;
 			YukaListerModel.Instance.EnvModel.Sifolin.MainEvent.Set();
-			AdjustAutoTargetInfoIfNeeded2Sh(YlCommon.DriveLetter(parentFolder));
+			AdjustAutoTargetInfoIfNeeded(YlCommon.DriveLetter(parentFolder));
 			//ListCancellationTokenSource?.Cancel();
 			return true;
 		}
@@ -342,7 +339,7 @@ namespace YukaLister.Models.YukaListerModels
 			DriveInfo driveInfo = new(driveLetter);
 			if (!driveInfo.IsReady)
 			{
-				YukaListerModel.Instance.EnvModel.LogWriter.LogMessage(TraceEventType.Verbose, "IsAutoTargetDrive2Sh() 準備ができていない：" + driveLetter);
+				YukaListerModel.Instance.EnvModel.LogWriter.LogMessage(TraceEventType.Verbose, "IsAutoTargetDrive() 準備ができていない：" + driveLetter);
 				return false;
 			}
 
@@ -351,10 +348,10 @@ namespace YukaLister.Models.YukaListerModels
 			{
 				case DriveType.Fixed:
 				case DriveType.Removable:
-					YukaListerModel.Instance.EnvModel.LogWriter.LogMessage(TraceEventType.Verbose, "IsAutoTargetDrive2Sh() 対象：" + driveLetter);
+					YukaListerModel.Instance.EnvModel.LogWriter.LogMessage(TraceEventType.Verbose, "IsAutoTargetDrive() 対象：" + driveLetter);
 					return true;
 				default:
-					YukaListerModel.Instance.EnvModel.LogWriter.LogMessage(TraceEventType.Verbose, "IsAutoTargetDrive2Sh() 非対象：" + driveLetter + ", " + driveInfo.DriveType.ToString());
+					YukaListerModel.Instance.EnvModel.LogWriter.LogMessage(TraceEventType.Verbose, "IsAutoTargetDrive() 非対象：" + driveLetter + ", " + driveInfo.DriveType.ToString());
 					return false;
 			}
 		}
@@ -366,9 +363,9 @@ namespace YukaLister.Models.YukaListerModels
 		// --------------------------------------------------------------------
 		// 自動追加フォルダーを最適化
 		// --------------------------------------------------------------------
-		private void AdjustAutoTargetInfoIfNeeded2Sh(String driveLetter)
+		private void AdjustAutoTargetInfoIfNeeded(String driveLetter)
 		{
-			Debug.Assert(driveLetter.Length == 2, "AdjustAutoTargetInfoIfNeeded2Sh() bad driveLetter");
+			Debug.Assert(driveLetter.Length == 2, "AdjustAutoTargetInfoIfNeeded() bad driveLetter");
 			if (!IsAutoTargetDrive(driveLetter))
 			{
 				return;
@@ -434,6 +431,5 @@ namespace YukaLister.Models.YukaListerModels
 				index += _targetFolderInfos[index].NumTotalFolders;
 			}
 		}
-
 	}
 }

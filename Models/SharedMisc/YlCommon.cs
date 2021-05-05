@@ -454,6 +454,25 @@ namespace YukaLister.Models.SharedMisc
 		}
 
 		// --------------------------------------------------------------------
+		// ゆかり検索対象外のフォルダーかどうか
+		// --------------------------------------------------------------------
+		public static Boolean IsIgnoreFolder(String folderPath)
+		{
+			String withoutDriveLetter = WithoutDriveLetter(folderPath);
+
+			if (withoutDriveLetter.StartsWith(@"\$RECYCLE.BIN", StringComparison.OrdinalIgnoreCase))
+			{
+				return true;
+			}
+			if (withoutDriveLetter.StartsWith(@"\System Volume Information", StringComparison.OrdinalIgnoreCase))
+			{
+				return true;
+			}
+
+			return false;
+		}
+
+		// --------------------------------------------------------------------
 		// 同一のファイル・フォルダーかどうか
 		// 末尾の '\\' 有無や大文字小文字にかかわらず比較する
 		// いずれかが null の場合は false とする
