@@ -91,6 +91,7 @@ namespace YukaLister.Models.DatabaseAssist
 
 		// --------------------------------------------------------------------
 		// dicByFile に合致する楽曲群を、楽曲情報データベースから検索
+		// 楽曲名、タイアップ名、カテゴリー、歌手名で絞り込むが、複数候補となることがあり得る
 		// --------------------------------------------------------------------
 		public List<TSong> FindSongsByMusicInfoDatabase(Dictionary<String, String?> dicByFile)
 		{
@@ -693,39 +694,43 @@ namespace YukaLister.Models.DatabaseAssist
 				return;
 			}
 
+			// 楽曲名、タイアップ名等で絞り込んだ結果を取得
 			List<TSong> songs = FindSongsByMusicInfoDatabase(dicByFile);
-			TTieUp? tieUpOfSong = null;
+
 			TSong? selectedSong = null;
+			TTieUp? selectedTieUp = null;
 			if (songs.Any())
 			{
-				// 楽曲情報データベース内に曲情報がある場合は、曲に紐付くタイアップを得る
+				// これ以上は絞り込めないので、先頭の楽曲を選択する
 				selectedSong = songs[0];
-				tieUpOfSong = DbCommon.SelectBaseById(_tieUps, selectedSong.TieUpId);
+
+				// 楽曲情報データベース内に曲情報がある場合は、曲に紐付くタイアップを得る
+				selectedTieUp = DbCommon.SelectBaseById(_tieUps, selectedSong.TieUpId);
 			}
-			else
+			if (selectedTieUp == null)
 			{
-				// 楽曲情報データベース内に曲情報が無い場合は、タイアップ情報があるか検索
+				// 曲に紐付くタイアップが無い場合は、ファイル名からタイアップを取得
 				if (dicByFile[YlConstants.RULE_VAR_PROGRAM] != null)
 				{
-					tieUpOfSong = DbCommon.SelectMasterByName(_tieUps, dicByFile[YlConstants.RULE_VAR_PROGRAM]);
-				}
-				if (tieUpOfSong == null)
-				{
-					// 曲情報もタイアップ情報も無い場合は諦める
-					return;
+					selectedTieUp = DbCommon.SelectMasterByName(_tieUps, dicByFile[YlConstants.RULE_VAR_PROGRAM]);
 				}
 			}
-
-			if (tieUpOfSong != null)
+			if (selectedSong == null && selectedTieUp == null)
 			{
-				TCategory? categoryOfTieUp = DbCommon.SelectBaseById(_categories, tieUpOfSong.CategoryId);
+				// 曲情報もタイアップ情報も無い場合は諦める
+				return;
+			}
+
+			if (selectedTieUp != null)
+			{
+				TCategory? categoryOfTieUp = DbCommon.SelectBaseById(_categories, selectedTieUp.CategoryId);
 				if (categoryOfTieUp != null)
 				{
 					// TCategory 由来項目の設定
 					record.Category = categoryOfTieUp.Name;
 				}
 
-				TMaker? makerOfTieUp = DbCommon.SelectBaseById(_makers, tieUpOfSong.MakerId);
+				TMaker? makerOfTieUp = DbCommon.SelectBaseById(_makers, selectedTieUp.MakerId);
 				if (makerOfTieUp != null)
 				{
 					// TMaker 由来項目の設定
@@ -733,7 +738,7 @@ namespace YukaLister.Models.DatabaseAssist
 					record.MakerRuby = makerOfTieUp.RubyForSearch;
 				}
 
-				List<TTieUpGroup> tieUpGroups = DbCommon.SelectSequencedTieUpGroupsByTieUpId(_tieUpGroupSequences, _tieUpGroups, tieUpOfSong.Id);
+				List<TTieUpGroup> tieUpGroups = DbCommon.SelectSequencedTieUpGroupsByTieUpId(_tieUpGroupSequences, _tieUpGroups, selectedTieUp.Id);
 				if (tieUpGroups.Any())
 				{
 					// TTieUpGroup 由来項目の設定
@@ -742,12 +747,12 @@ namespace YukaLister.Models.DatabaseAssist
 				}
 
 				// TieUp 由来項目の設定
-				record.TieUpId = tieUpOfSong.Id;
-				record.TieUpName = tieUpOfSong.Name;
-				record.TieUpRuby = tieUpOfSong.RubyForSearch;
-				record.TieUpAgeLimit = tieUpOfSong.AgeLimit;
-				record.SongReleaseDate = tieUpOfSong.ReleaseDate;
-				record.Comment += KeywordToComment(tieUpOfSong);
+				record.TieUpId = selectedTieUp.Id;
+				record.TieUpName = selectedTieUp.Name;
+				record.TieUpRuby = selectedTieUp.RubyForSearch;
+				record.TieUpAgeLimit = selectedTieUp.AgeLimit;
+				record.SongReleaseDate = selectedTieUp.ReleaseDate;
+				record.Comment += KeywordToComment(selectedTieUp);
 			}
 
 			if (selectedSong == null)
