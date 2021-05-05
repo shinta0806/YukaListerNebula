@@ -361,55 +361,62 @@ namespace YukaLister.Models.YukaListerCores
 		// --------------------------------------------------------------------
 		private static void CacheToDiskCore(TargetFolderInfo targetFolderInfo)
 		{
-			using CacheContext cacheContext = CacheContext.CreateContext(YlCommon.DriveLetter(targetFolderInfo.TargetPath), out DbSet<TFound> cacheFounds);
-			cacheContext.ChangeTracker.QueryTrackingBehavior = QueryTrackingBehavior.NoTracking;
-
-			// QueryTrackingBehavior.NoTracking（または AsNoTracking()）時、結果の内容を変更して使いたい時は IQueryable<T> で受けてはならない（変更できない）
-			// List<T> 等に変換すれば結果を変更できる
-			List<TFound> cacheRecords = cacheFounds.Where(x => x.ParentFolder == targetFolderInfo.TargetPath).ToList();
-
-			if (!cacheRecords.Any())
+			try
 			{
-				// キャッシュが見つからない場合、ドライブレター以外の部分で合致するか再度検索
-				// 誤検知しないようコロンも含めて検索するので、YlCommon.WithoutDriveLetter() は使用しない
-				String withoutDriveLetterOne = targetFolderInfo.TargetPath[1..];
-				cacheRecords = cacheFounds.Where(x => x.ParentFolder.Contains(withoutDriveLetterOne)).ToList();
+				using CacheContext cacheContext = CacheContext.CreateContext(YlCommon.DriveLetter(targetFolderInfo.TargetPath), out DbSet<TFound> cacheFounds);
+				cacheContext.ChangeTracker.QueryTrackingBehavior = QueryTrackingBehavior.NoTracking;
+
+				// QueryTrackingBehavior.NoTracking（または AsNoTracking()）時、結果の内容を変更して使いたい時は IQueryable<T> で受けてはならない（変更できない）
+				// List<T> 等に変換すれば結果を変更できる
+				List<TFound> cacheRecords = cacheFounds.Where(x => x.ParentFolder == targetFolderInfo.TargetPath).ToList();
+
 				if (!cacheRecords.Any())
 				{
+					// キャッシュが見つからない場合、ドライブレター以外の部分で合致するか再度検索
+					// 誤検知しないようコロンも含めて検索するので、YlCommon.WithoutDriveLetter() は使用しない
+					String withoutDriveLetterOne = targetFolderInfo.TargetPath[1..];
+					cacheRecords = cacheFounds.Where(x => x.ParentFolder.Contains(withoutDriveLetterOne)).ToList();
+					if (!cacheRecords.Any())
+					{
+						YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, targetFolderInfo.TargetPath
+								+ "\nキャッシュはありませんでした。");
+						return;
+					}
+
 					YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, targetFolderInfo.TargetPath
-							+ "\nキャッシュはありませんでした。");
-					return;
+							+ "\nキャッシュのドライブレターを変換しています...");
+					String drive = YlCommon.DriveLetter(targetFolderInfo.TargetPath);
+					foreach (TFound cacheRecord in cacheRecords)
+					{
+						cacheRecord.Path = drive + YlCommon.WithoutDriveLetter(cacheRecord.Path);
+						cacheRecord.Folder = drive + YlCommon.WithoutDriveLetter(cacheRecord.Folder);
+						cacheRecord.ParentFolder = drive + YlCommon.WithoutDriveLetter(cacheRecord.ParentFolder);
+					}
 				}
 
 				YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, targetFolderInfo.TargetPath
-						+ "\nキャッシュのドライブレターを変換しています...");
-				String drive = YlCommon.DriveLetter(targetFolderInfo.TargetPath);
+						+ "\nキャッシュをゆかり用リストデータベースに反映しています...");
+
+				// キャッシュの Uid 初期化
 				foreach (TFound cacheRecord in cacheRecords)
 				{
-					cacheRecord.Path = drive + YlCommon.WithoutDriveLetter(cacheRecord.Path);
-					cacheRecord.Folder = drive + YlCommon.WithoutDriveLetter(cacheRecord.Folder);
-					cacheRecord.ParentFolder = drive + YlCommon.WithoutDriveLetter(cacheRecord.ParentFolder);
+					cacheRecord.Uid = 0;
 				}
+
+				using ListContextInDisk listContextInDisk = ListContextInDisk.CreateContext(out DbSet<TFound> diskFounds);
+				diskFounds.AddRange(cacheRecords);
+				listContextInDisk.SaveChanges();
+				targetFolderInfo.IsCacheUsed = true;
+				YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, targetFolderInfo.TargetPath
+						+ "\nキャッシュをゆかり用リストデータベースに反映しました。");
 			}
-
-			YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, targetFolderInfo.TargetPath
-					+ "\nキャッシュをゆかり用リストデータベースに反映しています...");
-
-			// キャッシュの Uid 初期化
-			foreach (TFound cacheRecord in cacheRecords)
+			catch (Exception excep)
 			{
-				cacheRecord.Uid = 0;
+				// C ドライブ等、ルートに書き込み権限がなくキャッシュデータベースが作れていない場合も例外が発生する
+				// C ドライブをゆかり検索対象フォルダーに追加する度にメッセージが表示されるのはナンセンスなので、ログのみとする
+				YukaListerModel.Instance.EnvModel.LogWriter.LogMessage(TraceEventType.Error, "キャッシュ DB → ディスク DB 時エラー：\n" + excep.Message);
+				YukaListerModel.Instance.EnvModel.LogWriter.LogMessage(Common.TRACE_EVENT_TYPE_STATUS, "　スタックトレース：\n" + excep.StackTrace);
 			}
-
-			using ListContextInDisk listContextInDisk = ListContextInDisk.CreateContext(out DbSet<TFound> diskFounds);
-			diskFounds.AddRange(cacheRecords);
-			listContextInDisk.SaveChanges();
-			targetFolderInfo.IsCacheUsed = true;
-			YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, targetFolderInfo.TargetPath
-					+ "\nキャッシュをゆかり用リストデータベースに反映しました。");
-#if DEBUGz
-			Thread.Sleep(30 * 1000);
-#endif
 		}
 
 		// --------------------------------------------------------------------
@@ -421,9 +428,19 @@ namespace YukaLister.Models.YukaListerCores
 			IQueryable<String> parentFolders = founds.GroupBy(x => x.ParentFolder).Select(x => x.Key);
 			foreach (String parentFolder in parentFolders)
 			{
-				using CacheContext cacheContext = new(YlCommon.DriveLetter(parentFolder));
-				IQueryable<TFound> records = founds.Where(x => x.ParentFolder == parentFolder);
-				cacheContext.UpdateCache(records);
+				try
+				{
+					using CacheContext cacheContext = new(YlCommon.DriveLetter(parentFolder));
+					IQueryable<TFound> records = founds.Where(x => x.ParentFolder == parentFolder);
+					cacheContext.UpdateCache(records);
+				}
+				catch (Exception excep)
+				{
+					// C ドライブ等、ルートに書き込み権限がなくキャッシュデータベースが作れていない場合も例外が発生する
+					// C ドライブをゆかり検索対象フォルダーに追加する度にメッセージが表示されるのはナンセンスなので、ログのみとする
+					YukaListerModel.Instance.EnvModel.LogWriter.LogMessage(TraceEventType.Error, "メモリー DB → キャッシュ DB 時エラー：\n" + excep.Message);
+					YukaListerModel.Instance.EnvModel.LogWriter.LogMessage(Common.TRACE_EVENT_TYPE_STATUS, "　スタックトレース：\n" + excep.StackTrace);
+				}
 			}
 		}
 

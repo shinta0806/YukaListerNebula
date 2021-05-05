@@ -916,6 +916,7 @@ namespace YukaLister.Models.SharedMisc
 		// --------------------------------------------------------------------
 		public static String WithoutDriveLetter(String path)
 		{
+			// "D:" のような 2 文字に対して [2..] を適用しても例外は発生しない
 			return path[2..];
 		}
 
