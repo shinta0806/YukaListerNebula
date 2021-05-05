@@ -297,7 +297,7 @@ namespace YukaLister.Models.SharedMisc
 		// --------------------------------------------------------------------
 		public static FolderExcludeSettingsStatus DetectFolderExcludeSettingsStatus(String folder)
 		{
-			String? folderExcludeSettingsFolder = FindExcludeSettingsFolder2Ex(folder);
+			String? folderExcludeSettingsFolder = FindExcludeSettingsFolder(folder);
 			if (String.IsNullOrEmpty(folderExcludeSettingsFolder))
 			{
 				return FolderExcludeSettingsStatus.False;
@@ -313,7 +313,7 @@ namespace YukaLister.Models.SharedMisc
 		// --------------------------------------------------------------------
 		public static FolderSettingsStatus DetectFolderSettingsStatus2Ex(String folder)
 		{
-			String? folderSettingsFolder = FindSettingsFolder2Ex(folder);
+			String? folderSettingsFolder = FindSettingsFolder(folder);
 			if (String.IsNullOrEmpty(folderSettingsFolder))
 			{
 				return FolderSettingsStatus.None;
@@ -366,7 +366,7 @@ namespace YukaLister.Models.SharedMisc
 		// --------------------------------------------------------------------
 		// 指定されたフォルダーのフォルダー除外設定ファイルがあるフォルダーを返す
 		// --------------------------------------------------------------------
-		public static String? FindExcludeSettingsFolder2Ex(String? folder)
+		public static String? FindExcludeSettingsFolder(String? folder)
 		{
 			while (!String.IsNullOrEmpty(folder))
 			{
@@ -382,7 +382,7 @@ namespace YukaLister.Models.SharedMisc
 		// --------------------------------------------------------------------
 		// 指定されたフォルダーのフォルダー設定ファイルがあるフォルダーを返す
 		// --------------------------------------------------------------------
-		public static String? FindSettingsFolder2Ex(String? folder)
+		public static String? FindSettingsFolder(String? folder)
 		{
 			while (!String.IsNullOrEmpty(folder))
 			{
@@ -566,12 +566,12 @@ namespace YukaLister.Models.SharedMisc
 		// それでも見つからない場合は null ではなく空のインスタンスを返す
 		// ニコカラりすたーのフォルダー設定ファイルには対応しない
 		// --------------------------------------------------------------------
-		public static FolderSettingsInDisk LoadFolderSettings2Ex(String? folder)
+		public static FolderSettingsInDisk LoadFolderSettings(String? folder)
 		{
 			FolderSettingsInDisk folderSettings = new();
 			try
 			{
-				String? folderSettingsFolder = FindSettingsFolder2Ex(folder);
+				String? folderSettingsFolder = FindSettingsFolder(folder);
 				if (!String.IsNullOrEmpty(folderSettingsFolder))
 				{
 					if (File.Exists(folderSettingsFolder + "\\" + YlConstants.FILE_NAME_YUKA_LISTER_CONFIG))
@@ -613,6 +613,18 @@ namespace YukaLister.Models.SharedMisc
 			return dic;
 		}
 #endif
+
+		// --------------------------------------------------------------------
+		// ファイル名とファイル命名規則・フォルダー固定値がマッチするか確認し、マッチしたマップを返す（ルビは検索用に正規化）
+		// エイリアスを解決したい場合は TFoundSetter.MatchFileNameRulesAndFolderRuleForSearch() を使用すること
+		// ＜引数＞ path: ファイル名フルパス
+		// --------------------------------------------------------------------
+		public static Dictionary<String, String?> MatchFileNameRulesAndFolderRuleForSearch(String path)
+		{
+			FolderSettingsInDisk folderSettingsInDisk = YlCommon.LoadFolderSettings(Path.GetDirectoryName(path));
+			FolderSettingsInMemory folderSettingsInMemory = YlCommon.CreateFolderSettingsInMemory(folderSettingsInDisk);
+			return YlCommon.MatchFileNameRulesAndFolderRuleForSearch(Path.GetFileNameWithoutExtension(path), folderSettingsInMemory);
+		}
 
 		// --------------------------------------------------------------------
 		// ファイル名とファイル命名規則・フォルダー固定値がマッチするか確認し、マッチしたマップを返す（ルビは検索用に正規化）

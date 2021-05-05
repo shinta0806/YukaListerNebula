@@ -310,7 +310,7 @@ namespace YukaLister.Models.YukaListerCores
 		private static void AddInfosCore(TargetFolderInfo targetFolderInfo)
 		{
 			// フォルダー設定を読み込む
-			FolderSettingsInDisk folderSettingsInDisk = YlCommon.LoadFolderSettings2Ex(targetFolderInfo.TargetPath);
+			FolderSettingsInDisk folderSettingsInDisk = YlCommon.LoadFolderSettings(targetFolderInfo.TargetPath);
 			FolderSettingsInMemory folderSettingsInMemory = YlCommon.CreateFolderSettingsInMemory(folderSettingsInDisk);
 
 			using ListContextInMemory listContextInMemory = ListContextInMemory.CreateContext(out DbSet<TFound> founds,

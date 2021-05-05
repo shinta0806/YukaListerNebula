@@ -1144,7 +1144,7 @@ namespace YukaLister.ViewModels.MiscWindowViewModels
 			String[] filePathes = Directory.GetFiles(folderPath);
 
 			// マッチをリストに追加
-			FolderSettingsInDisk folderSettingsInDisk = YlCommon.LoadFolderSettings2Ex(folderPath);
+			FolderSettingsInDisk folderSettingsInDisk = YlCommon.LoadFolderSettings(folderPath);
 			FolderSettingsInMemory folderSettingsInMemory = YlCommon.CreateFolderSettingsInMemory(folderSettingsInDisk);
 			using ListContextInMemory listContextInMemory = ListContextInMemory.CreateContext(out DbSet<TFound> founds,
 					out DbSet<TPerson> people, out DbSet<TArtistSequence> artistSequences, out DbSet<TComposerSequence> composerSequences,
@@ -1193,7 +1193,7 @@ namespace YukaLister.ViewModels.MiscWindowViewModels
 			String[] subFolders = Directory.GetDirectories(folderPath, "*", SearchOption.TopDirectoryOnly);
 			foreach (String subFolder in subFolders)
 			{
-				if (YlCommon.FindSettingsFolder2Ex(subFolder) != subFolder)
+				if (YlCommon.FindSettingsFolder(subFolder) != subFolder)
 				{
 					AddPreviewInfos(subFolder);
 				}
@@ -1439,7 +1439,7 @@ namespace YukaLister.ViewModels.MiscWindowViewModels
 			}
 
 			// マッチ準備
-			FolderSettingsInDisk folderSettingsInDisk = YlCommon.LoadFolderSettings2Ex(FolderPath);
+			FolderSettingsInDisk folderSettingsInDisk = YlCommon.LoadFolderSettings(FolderPath);
 			FolderSettingsInMemory folderSettingsInMemory = YlCommon.CreateFolderSettingsInMemory(folderSettingsInDisk);
 			using ListContextInMemory listContextInMemory = ListContextInMemory.CreateContext(out DbSet<TFound> founds,
 					out DbSet<TPerson> people, out DbSet<TArtistSequence> artistSequences, out DbSet<TComposerSequence> composerSequences,
@@ -1747,7 +1747,7 @@ namespace YukaLister.ViewModels.MiscWindowViewModels
 				SettingsFileStatus = YlCommon.DetectFolderSettingsStatus2Ex(FolderPath);
 
 				// 読み込み
-				FolderSettingsInDisk settings = YlCommon.LoadFolderSettings2Ex(FolderPath);
+				FolderSettingsInDisk settings = YlCommon.LoadFolderSettings(FolderPath);
 
 				// 設定反映
 				FileNameRules.Clear();

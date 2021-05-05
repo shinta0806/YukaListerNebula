@@ -447,7 +447,7 @@ namespace YukaLister.ViewModels.MiscWindowViewModels
 				{
 					return;
 				}
-				String? settingsFolder = YlCommon.FindSettingsFolder2Ex(folder);
+				String? settingsFolder = YlCommon.FindSettingsFolder(folder);
 				if (String.IsNullOrEmpty(settingsFolder))
 				{
 					settingsFolder = folder;
@@ -684,9 +684,7 @@ namespace YukaLister.ViewModels.MiscWindowViewModels
 			String path = SelectedFound.Path;
 
 			// ファイル命名規則とフォルダー固定値を適用
-			FolderSettingsInDisk folderSettingsInDisk = YlCommon.LoadFolderSettings2Ex(path);
-			FolderSettingsInMemory folderSettingsInMemory = YlCommon.CreateFolderSettingsInMemory(folderSettingsInDisk);
-			Dictionary<String, String?> dicByFile = YlCommon.MatchFileNameRulesAndFolderRuleForSearch(Path.GetFileNameWithoutExtension(path), folderSettingsInMemory);
+			Dictionary<String, String?> dicByFile = YlCommon.MatchFileNameRulesAndFolderRuleForSearch(path);
 
 			// 楽曲名が取得できていない場合は編集不可
 			if (String.IsNullOrEmpty(dicByFile[YlConstants.RULE_VAR_TITLE]))
