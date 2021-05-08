@@ -959,8 +959,9 @@ namespace YukaLister.ViewModels.MiscWindowViewModels
 					return;
 				}
 
-				YlCommon.DeleteFileIfExists(FolderPath + "\\" + YlConstants.FILE_NAME_YUKA_LISTER_CONFIG);
-				YlCommon.DeleteFileIfExists(FolderPath + "\\" + YlConstants.FILE_NAME_YUKA_LISTER_EXCLUDE_CONFIG);
+				YlCommon.DeleteFileIfExists(FolderPath + '\\' + YlConstants.FILE_NAME_YUKA_LISTER_CONFIG);
+				YlCommon.DeleteFileIfExists(FolderPath + '\\' + YlConstants.FILE_NAME_YUKA_LISTER_EXCLUDE_CONFIG);
+				YlCommon.DeleteFileIfExists(FolderPath + '\\' + YlConstants.FILE_NAME_NICO_KARA_LISTER_CONFIG);
 
 				// UI に反映
 				SettingsToProperties();
@@ -1637,7 +1638,7 @@ namespace YukaLister.ViewModels.MiscWindowViewModels
 			YukaListerModel.Instance.EnvModel.TagSettings.Save();
 
 			// 保存（除外設定）
-			String yukaListerExcludeConfigPath = FolderPath + "\\" + YlConstants.FILE_NAME_YUKA_LISTER_EXCLUDE_CONFIG;
+			String yukaListerExcludeConfigPath = FolderPath + '\\' + YlConstants.FILE_NAME_YUKA_LISTER_EXCLUDE_CONFIG;
 			if (IsExcluded)
 			{
 				if (!File.Exists(yukaListerExcludeConfigPath))
@@ -1649,6 +1650,9 @@ namespace YukaLister.ViewModels.MiscWindowViewModels
 			{
 				YlCommon.DeleteFileIfExists(yukaListerExcludeConfigPath);
 			}
+
+			// ニコカラりすたーの設定ファイルがある場合は削除
+			YlCommon.DeleteFileIfExists(FolderPath + '\\' + YlConstants.FILE_NAME_NICO_KARA_LISTER_CONFIG);
 
 			// 設定ファイルの状態
 			SettingsFileStatus = YlCommon.DetectFolderSettingsStatus2Ex(FolderPath);

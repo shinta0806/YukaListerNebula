@@ -217,6 +217,8 @@ namespace YukaLister.Models.SharedMisc
 		// --------------------------------------------------------------------
 		// ファイル名
 		// --------------------------------------------------------------------
+
+		public const String FILE_NAME_NICO_KARA_LISTER_CONFIG = "NicoKaraLister" + Common.FILE_EXT_CONFIG;
 		public const String FILE_NAME_YUKA_LISTER_CONFIG = APP_ID + Common.FILE_EXT_CONFIG;
 		public const String FILE_NAME_YUKA_LISTER_EXCLUDE_CONFIG = APP_ID + "Exclude" + Common.FILE_EXT_CONFIG;
 		public const String FILE_NAME_YUKARI_CONFIG = "config" + Common.FILE_EXT_INI;

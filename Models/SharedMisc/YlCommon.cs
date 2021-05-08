@@ -381,12 +381,17 @@ namespace YukaLister.Models.SharedMisc
 
 		// --------------------------------------------------------------------
 		// 指定されたフォルダーのフォルダー設定ファイルがあるフォルダーを返す
+		// 互換性維持のため、ニコカラりすたーの設定ファイルも扱う
 		// --------------------------------------------------------------------
 		public static String? FindSettingsFolder(String? folder)
 		{
 			while (!String.IsNullOrEmpty(folder))
 			{
-				if (File.Exists(folder + "\\" + YlConstants.FILE_NAME_YUKA_LISTER_CONFIG))
+				if (File.Exists(folder + '\\' + YlConstants.FILE_NAME_YUKA_LISTER_CONFIG))
+				{
+					return folder;
+				}
+				if (File.Exists(folder + '\\' + YlConstants.FILE_NAME_NICO_KARA_LISTER_CONFIG))
 				{
 					return folder;
 				}
@@ -562,9 +567,9 @@ namespace YukaLister.Models.SharedMisc
 
 		// --------------------------------------------------------------------
 		// フォルダー設定を読み込む
+		// FILE_NAME_YUKA_LISTER_CONFIG 優先、無い場合は FILE_NAME_NICO_KARA_LISTER_CONFIG
 		// 見つからない場合は親フォルダーの設定を読み込む
 		// それでも見つからない場合は null ではなく空のインスタンスを返す
-		// ニコカラりすたーのフォルダー設定ファイルには対応しない
 		// --------------------------------------------------------------------
 		public static FolderSettingsInDisk LoadFolderSettings(String? folder)
 		{
@@ -574,10 +579,14 @@ namespace YukaLister.Models.SharedMisc
 				String? folderSettingsFolder = FindSettingsFolder(folder);
 				if (!String.IsNullOrEmpty(folderSettingsFolder))
 				{
-					if (File.Exists(folderSettingsFolder + "\\" + YlConstants.FILE_NAME_YUKA_LISTER_CONFIG))
+					if (File.Exists(folderSettingsFolder + '\\' + YlConstants.FILE_NAME_YUKA_LISTER_CONFIG))
 					{
 						// エントリーが欠損しているファイルから Deserialize() しても FileNameRules 等は null にはならない
-						folderSettings = Common.Deserialize(folderSettingsFolder + "\\" + YlConstants.FILE_NAME_YUKA_LISTER_CONFIG, folderSettings);
+						folderSettings = Common.Deserialize(folderSettingsFolder + '\\' + YlConstants.FILE_NAME_YUKA_LISTER_CONFIG, folderSettings);
+					}
+					else
+					{
+						folderSettings = Common.Deserialize(folderSettingsFolder + '\\' + YlConstants.FILE_NAME_NICO_KARA_LISTER_CONFIG, folderSettings);
 					}
 				}
 			}
