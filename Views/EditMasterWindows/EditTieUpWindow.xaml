@@ -129,7 +129,7 @@
                     </behaviors:EventTrigger>
                 </behaviors:Interaction.Triggers>
                 <Button.ContextMenu>
-                    <ContextMenu ItemsSource="{Binding ContextMenuButtonSelectCategoryItems}">
+                    <ContextMenu ItemsSource="{Binding ContextMenuButtonSelectCategoryItems}" >
                     </ContextMenu>
                 </Button.ContextMenu>
             </Button>
@@ -143,7 +143,7 @@
                     </behaviors:EventTrigger>
                 </behaviors:Interaction.Triggers>
                 <Button.ContextMenu>
-                    <ContextMenu ItemsSource="{Binding ContextMenuButtonSelectAgeLimitItems}">
+                    <ContextMenu ItemsSource="{Binding ContextMenuButtonSelectAgeLimitItems}" >
                     </ContextMenu>
                 </Button.ContextMenu>
             </Button>

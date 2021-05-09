@@ -32,7 +32,7 @@ namespace YukaLister.ViewModels.EditSequenceWindowViewModels
 		// コンストラクター
 		// --------------------------------------------------------------------
 		public EditTagsWindowViewModel(MusicInfoContext musicInfoContext, DbSet<TTag> records)
-				: base(musicInfoContext, records)
+				: base(musicInfoContext, records, false)
 		{
 		}
 

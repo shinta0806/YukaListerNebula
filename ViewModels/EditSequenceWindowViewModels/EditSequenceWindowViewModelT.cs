@@ -42,14 +42,15 @@ namespace YukaLister.ViewModels.EditSequenceWindowViewModels
 		// --------------------------------------------------------------------
 		// コンストラクター
 		// --------------------------------------------------------------------
-		public EditSequenceWindowViewModel(MusicInfoContext musicInfoContext, DbSet<T> records, String? captionDetail = null)
+		public EditSequenceWindowViewModel(MusicInfoContext musicInfoContext, DbSet<T> records, Boolean searchOnInitialize, String? captionDetail = null)
 		{
 			_musicInfoContext = musicInfoContext;
 			_records = records;
-			_caption2 = YlConstants.MUSIC_INFO_TABLE_NAME_LABELS[DbCommon.MusicInfoTableIndex<T>()];
+			_searchOnInitialize = searchOnInitialize;
+			_caption = YlConstants.MUSIC_INFO_TABLE_NAME_LABELS[DbCommon.MusicInfoTableIndex<T>()];
 			if (String.IsNullOrEmpty(captionDetail))
 			{
-				_captionDetail = _caption2;
+				_captionDetail = _caption;
 			}
 			else
 			{
@@ -453,15 +454,21 @@ namespace YukaLister.ViewModels.EditSequenceWindowViewModels
 #endif
 
 				// ラベル
-				Description = "「検索して追加」ボタンで" + _caption2 + "を追加して下さい。複数追加も可能です。";
-				DataGridHeader = _caption2;
-				ButtonEditContent = _caption2 + "詳細編集 (_E)";
-				ButtonNewContent = "新規" + _caption2 + "作成 (_N)";
+				Description = "「検索して追加」ボタンで" + _caption + "を追加して下さい。複数追加も可能です。";
+				DataGridHeader = _caption;
+				ButtonEditContent = _caption + "詳細編集 (_E)";
+				ButtonNewContent = "新規" + _caption + "作成 (_N)";
 
 				// 表示名
 				foreach (T master in Masters)
 				{
 					DbCommon.SetAvoidSameName(_records, master);
+				}
+
+				// 検索して追加
+				if (_searchOnInitialize)
+				{
+					Add();
 				}
 			}
 			catch (Exception excep)
@@ -493,9 +500,12 @@ namespace YukaLister.ViewModels.EditSequenceWindowViewModels
 		// private メンバー変数
 		// ====================================================================
 
+		// Initialize() で検索して追加を実施するかどうか
+		private Boolean _searchOnInitialize;
+
 		// 編集対象の名称
 		// 例）_captionDetail が "歌手" の場合、_caption は "人物"
-		private String _caption2;
+		private String _caption;
 
 		// 編集対象の名称詳細
 		private String _captionDetail;
@@ -588,11 +598,11 @@ namespace YukaLister.ViewModels.EditSequenceWindowViewModels
 		{
 			if (!_isMasterSearched)
 			{
-				throw new Exception("新規" + _caption2 + "作成の前に一度、目的の" + _caption2 + "が未登録かどうか検索して下さい。");
+				throw new Exception("新規" + _caption + "作成の前に一度、目的の" + _caption + "が未登録かどうか検索して下さい。");
 			}
 
-			if (MessageBox.Show("目的の" + _caption2 + "が未登録の場合（検索してもヒットしない場合）に限り、新規" + _caption2 + "作成を行って下さい。\n"
-					+ "新規" + _caption2 + "作成を行いますか？", "確認", MessageBoxButton.YesNo, MessageBoxImage.Exclamation) == MessageBoxResult.No)
+			if (MessageBox.Show("目的の" + _caption + "が未登録の場合（検索してもヒットしない場合）に限り、新規" + _caption + "作成を行って下さい。\n"
+					+ "新規" + _caption + "作成を行いますか？", "確認", MessageBoxButton.YesNo, MessageBoxImage.Exclamation) == MessageBoxResult.No)
 			{
 				return;
 			}
