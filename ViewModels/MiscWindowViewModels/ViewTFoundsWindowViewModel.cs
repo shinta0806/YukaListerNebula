@@ -684,6 +684,12 @@ namespace YukaLister.ViewModels.MiscWindowViewModels
 
 			String path = SelectedFound.Path;
 
+			// キャッシュデータを基にしている場合があるため、ファイルが既に存在しない場合がある
+			if (!File.Exists(path))
+			{
+				throw new Exception("ファイルが存在しません。\n前回起動以降にファイルが削除・リネームされた可能性があります。\n" + path + "\nフォルダー整理完了後にファイル一覧ウィンドウを開き直してください。\n");
+			}
+
 			// ファイル命名規則とフォルダー固定値を適用
 			Dictionary<String, String?> dicByFile = YlCommon.MatchFileNameRulesAndFolderRuleForSearch(path);
 

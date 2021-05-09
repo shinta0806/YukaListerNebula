@@ -354,6 +354,10 @@ namespace YukaLister.Models.YukaListerCores
 			// 動作状況設定
 			targetFolderInfo.SetFolderTaskDetail(FolderTaskDetail.CacheToDisk, FolderTaskDetail.FindSubFolders);
 			SetFolderTaskStatus(targetFolderInfo, FolderTaskStatus.Queued);
+
+#if DEBUGz
+			Thread.Sleep(60 * 1000);
+#endif
 		}
 
 		// --------------------------------------------------------------------
