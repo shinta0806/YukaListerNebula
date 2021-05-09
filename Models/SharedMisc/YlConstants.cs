@@ -539,6 +539,9 @@ namespace YukaLister.Models.SharedMisc
 		// スマートトラックでトラック無しの場合の印
 		public const String SMART_TRACK_INVALID_MARK = "×";
 
+		// これ以降の備考は Web リストに出力しない
+		public const String WEB_LIST_IGNORE_COMMENT_DELIMITER = VAR_VALUE_DELIMITER + "//";
+
 		// 一時的に付与する ID の接頭辞
 		public const String TEMP_ID_PREFIX = "!";
 

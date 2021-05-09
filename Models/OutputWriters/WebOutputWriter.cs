@@ -177,7 +177,20 @@ namespace YukaLister.Models.OutputWriters
 						stringBuilder.Append("<td>" + (found.SmartTrackOffVocal ? YlConstants.SMART_TRACK_VALID_MARK : null) + "</td>");
 						break;
 					case OutputItems.Comment:
-						stringBuilder.Append("<td class=\"small\">" + found.Comment + "</td>");
+						String? comment = null;
+						if (!String.IsNullOrEmpty(found.Comment))
+						{
+							Int32 ignorePos = found.Comment.IndexOf(YlConstants.WEB_LIST_IGNORE_COMMENT_DELIMITER);
+							if (ignorePos >= 0)
+							{
+								comment = found.Comment[0..ignorePos];
+							}
+							else
+							{
+								comment = found.Comment;
+							}
+						}
+						stringBuilder.Append("<td class=\"small\">" + comment + "</td>");
 						break;
 					case OutputItems.LastWriteTime:
 						stringBuilder.Append("<td class=\"small\">" + JulianDay.ModifiedJulianDateToDateTime(found.LastWriteTime).

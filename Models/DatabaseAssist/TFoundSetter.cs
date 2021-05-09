@@ -242,9 +242,10 @@ namespace YukaLister.Models.DatabaseAssist
 			record.SmartTrackOffVocal = !record.SmartTrackOffVocal ? dicByFile[YlConstants.RULE_VAR_OFF_VOCAL] != null : record.SmartTrackOffVocal;
 
 			// コメントについては、楽曲情報データベースのコメントがある場合でも dicByFile のコメントも付与する
+			// 楽曲情報データベースのコメントは Web リストに出力しないので、dicByFile のコメントを前に付与する
 			if (dicByFile[YlConstants.RULE_VAR_COMMENT] != null)
 			{
-				record.Comment += dicByFile[YlConstants.RULE_VAR_COMMENT];
+				record.Comment = dicByFile[YlConstants.RULE_VAR_COMMENT] + record.Comment;
 			}
 
 			// トラック情報からスマートトラック解析
@@ -535,6 +536,10 @@ namespace YukaLister.Models.DatabaseAssist
 			if (!String.IsNullOrEmpty(master.KeywordRubyForSearch))
 			{
 				comment += master.KeywordRubyForSearch + YlConstants.VAR_VALUE_DELIMITER;
+			}
+			if (!String.IsNullOrEmpty(comment))
+			{
+				comment = YlConstants.WEB_LIST_IGNORE_COMMENT_DELIMITER + comment;
 			}
 			return comment;
 		}
