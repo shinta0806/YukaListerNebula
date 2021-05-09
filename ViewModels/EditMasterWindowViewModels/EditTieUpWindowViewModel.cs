@@ -207,11 +207,6 @@ namespace YukaLister.ViewModels.EditMasterWindowViewModels
 			{
 				if (String.IsNullOrEmpty(MakerDisplayName))
 				{
-					if (!_isMakerSearched)
-					{
-						throw new Exception("制作会社が選択されていないため新規制作会社情報作成となりますが、その前に一度、目的の制作会社が未登録かどうか検索して下さい。");
-					}
-
 					if (MessageBox.Show("制作会社が選択されていません。\n新規に制作会社情報を作成しますか？\n"
 							+ "（目的の制作会社が未登録の場合（検索してもヒットしない場合）に限り、新規作成を行って下さい）", "確認",
 							MessageBoxButton.YesNo, MessageBoxImage.Exclamation) == MessageBoxResult.No)
@@ -495,9 +490,6 @@ namespace YukaLister.ViewModels.EditMasterWindowViewModels
 		// タイアップグループ ID（カンマ区切りで複数）
 		private String? _tieUpGroupIds;
 
-		// 制作会社を検索したかどうか
-		private Boolean _isMakerSearched;
-
 		// ====================================================================
 		// private メンバー関数
 		// ====================================================================
@@ -536,7 +528,7 @@ namespace YukaLister.ViewModels.EditMasterWindowViewModels
 		}
 
 		// --------------------------------------------------------------------
-		// 複数タイアップグループの検索
+		// 複数タイアップグループ検索
 		// --------------------------------------------------------------------
 		private void EditTieUpGroup(Boolean searchOnInitialize)
 		{
@@ -560,8 +552,9 @@ namespace YukaLister.ViewModels.EditMasterWindowViewModels
 			}
 			else
 			{
-				// タイアップグループが削除された場合があるので最新化
-				(HasTieUpGroup, _tieUpGroupIds, TieUpGroupDisplayNames) = ConcatMasterIdsAndNames(tieUpGroups, DbCommon.ExceptInvalid(tieUpGroups, YlCommon.SplitIds(_tieUpGroupIds)));
+				// キャンセルの場合でも、タイアップグループが削除された場合があるので最新化
+				// キャンセルの場合はチェックボックスはいじらない（グループではない検索がキャンセルされた場合にチェックボックスをいじらないのと同じ）
+				(_, _tieUpGroupIds, TieUpGroupDisplayNames) = ConcatMasterIdsAndNames(tieUpGroups, DbCommon.ExceptInvalid(tieUpGroups, YlCommon.SplitIds(_tieUpGroupIds)));
 			}
 		}
 
@@ -575,7 +568,7 @@ namespace YukaLister.ViewModels.EditMasterWindowViewModels
 		}
 
 		// --------------------------------------------------------------------
-		// 制作会社を検索
+		// 制作会社検索
 		// --------------------------------------------------------------------
 		private void SearchMaker()
 		{
@@ -584,7 +577,6 @@ namespace YukaLister.ViewModels.EditMasterWindowViewModels
 			searchMasterWindowViewModel.SelectedKeyword = OriginalMakerName();
 			Messenger.Raise(new TransitionMessage(searchMasterWindowViewModel, YlConstants.MESSAGE_KEY_OPEN_SEARCH_MASTER_WINDOW));
 
-			_isMakerSearched = true;
 			SetMaker(searchMasterWindowViewModel.IsOk, makers, searchMasterWindowViewModel.OkSelectedMaster);
 		}
 

@@ -1022,6 +1022,7 @@ namespace YukaLister.Models.OutputWriters
 					// カテゴリーが新しくなったので 1 ページ分出力
 					GenerateOneList(pageInfoTree, tieUpNamesAndTFounds, isAdult, KIND_FILE_NAME_NEW, "新着",
 							String.IsNullOrEmpty(prevCategory) ? YlConstants.GROUP_MISC : prevCategory, OutputItems.TieUpName);
+					prevTFound = null;
 				}
 
 				if (prevTFound == null
@@ -1185,6 +1186,7 @@ namespace YukaLister.Models.OutputWriters
 						// 頭文字が新しくなったので 1 ページ分出力
 						GenerateOneList(pageInfoTree, tieUpNamesAndTFounds, isAdult,
 								KIND_FILE_NAME_PERIOD, sinceYear.ToString() + " 年代", prevTFound.Head ?? String.Empty, OutputItems.TieUpName);
+						prevTFound = null;
 					}
 
 					if (prevTFound == null
@@ -1343,6 +1345,7 @@ namespace YukaLister.Models.OutputWriters
 					// 頭文字またはページが新しくなったので 1 ページ分出力
 					GenerateOneList(pageInfoTree, tieUpNamesAndTFounds, isAdult,
 							KIND_FILE_NAME_TIE_UP_GROUP, prevTieUpGroupHead, prevRecord.TieUpGroup.Name + YlConstants.TIE_UP_GROUP_SUFFIX, OutputItems.TieUpName);
+					prevRecord = null;
 				}
 
 				if (prevRecord == null

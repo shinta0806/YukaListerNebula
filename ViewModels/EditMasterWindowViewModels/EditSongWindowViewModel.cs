@@ -87,7 +87,14 @@ namespace YukaLister.ViewModels.EditMasterWindowViewModels
 				{
 					ButtonSearchTieUpClickedCommand.RaiseCanExecuteChanged();
 					ButtonEditTieUpClickedCommand.RaiseCanExecuteChanged();
-					if (!_hasTieUp)
+					if (_hasTieUp)
+					{
+						if (_initialized)
+						{
+							SearchTieUp();
+						}
+					}
+					else
 					{
 						_tieUpId = null;
 						TieUpDisplayName = null;
@@ -141,6 +148,18 @@ namespace YukaLister.ViewModels.EditMasterWindowViewModels
 				{
 					ButtonSearchTagClickedCommand.RaiseCanExecuteChanged();
 					ButtonEditTagClickedCommand.RaiseCanExecuteChanged();
+					if (_hasTag)
+					{
+						if (_initialized)
+						{
+							EditTag(true);
+						}
+					}
+					else
+					{
+						_tagIds = null;
+						TagDisplayNames = null;
+					}
 				}
 			}
 		}
@@ -164,11 +183,22 @@ namespace YukaLister.ViewModels.EditMasterWindowViewModels
 				{
 					ButtonSearchArtistClickedCommand.RaiseCanExecuteChanged();
 					ButtonEditArtistClickedCommand.RaiseCanExecuteChanged();
-					if (!_hasArtist)
+					if (_hasArtist)
+					{
+						if (_initialized && String.IsNullOrEmpty(_artistIds))
+						{
+							(HasArtist, _artistIds, ArtistDisplayNames) = EditPeople(true, "歌手", _hasArtist, _artistIds, ArtistDisplayNames);
+							ExceptInvalidPeople();
+						}
+					}
+					else
 					{
 						_artistIds = null;
 						ArtistDisplayNames = null;
 					}
+
+					// 歌手の状態によって作詞者同上の状態が決まる
+					ButtonSameLyristClickedCommand.RaiseCanExecuteChanged();
 				}
 			}
 		}
@@ -191,13 +221,23 @@ namespace YukaLister.ViewModels.EditMasterWindowViewModels
 				if (RaisePropertyChangedIfSet(ref _hasLyrist, value))
 				{
 					ButtonSearchLyristClickedCommand.RaiseCanExecuteChanged();
-					ButtonSameLyristClickedCommand.RaiseCanExecuteChanged();
 					ButtonEditLyristClickedCommand.RaiseCanExecuteChanged();
-					if (!_hasLyrist)
+					if (_hasLyrist)
+					{
+						if (_initialized && String.IsNullOrEmpty(_lyristIds))
+						{
+							(HasLyrist, _lyristIds, LyristDisplayNames) = EditPeople(true, "作詞者", _hasLyrist, _lyristIds, LyristDisplayNames);
+							ExceptInvalidPeople();
+						}
+					}
+					else
 					{
 						_lyristIds = null;
 						LyristDisplayNames = null;
 					}
+
+					// 作詞者の状態によって作曲者同上の状態が決まる
+					ButtonSameComposerClickedCommand.RaiseCanExecuteChanged();
 				}
 			}
 		}
@@ -220,13 +260,23 @@ namespace YukaLister.ViewModels.EditMasterWindowViewModels
 				if (RaisePropertyChangedIfSet(ref _hasComposer, value))
 				{
 					ButtonSearchComposerClickedCommand.RaiseCanExecuteChanged();
-					ButtonSameComposerClickedCommand.RaiseCanExecuteChanged();
 					ButtonEditComposerClickedCommand.RaiseCanExecuteChanged();
-					if (!_hasComposer)
+					if (_hasComposer)
+					{
+						if (_initialized && String.IsNullOrEmpty(_composerIds))
+						{
+							(HasComposer, _composerIds, ComposerDisplayNames) = EditPeople(true, "作曲者", _hasComposer, _composerIds, ComposerDisplayNames);
+							ExceptInvalidPeople();
+						}
+					}
+					else
 					{
 						_composerIds = null;
 						ComposerDisplayNames = null;
 					}
+
+					// 作曲者の状態によって編曲者同上の状態が決まる
+					ButtonSameArrangerClickedCommand.RaiseCanExecuteChanged();
 				}
 			}
 		}
@@ -249,9 +299,16 @@ namespace YukaLister.ViewModels.EditMasterWindowViewModels
 				if (RaisePropertyChangedIfSet(ref _hasArranger, value))
 				{
 					ButtonSearchArrangerClickedCommand.RaiseCanExecuteChanged();
-					ButtonSameArrangerClickedCommand.RaiseCanExecuteChanged();
 					ButtonEditArrangerClickedCommand.RaiseCanExecuteChanged();
-					if (!_hasArranger)
+					if (_hasArranger)
+					{
+						if (_initialized && String.IsNullOrEmpty(_arrangerIds))
+						{
+							(HasArranger, _arrangerIds, ArrangerDisplayNames) = EditPeople(true, "編曲者", _hasArranger, _arrangerIds, ArrangerDisplayNames);
+							ExceptInvalidPeople();
+						}
+					}
+					else
 					{
 						_arrangerIds = null;
 						ArrangerDisplayNames = null;
@@ -296,13 +353,7 @@ namespace YukaLister.ViewModels.EditMasterWindowViewModels
 		{
 			try
 			{
-				MusicInfoContext.GetDbSet(_musicInfoContext, out DbSet<TTieUp> tieUps);
-				using SearchMasterWindowViewModel<TTieUp> searchMasterWindowViewModel = new(tieUps);
-				searchMasterWindowViewModel.SelectedKeyword = OriginalTieUpName();
-				Messenger.Raise(new TransitionMessage(searchMasterWindowViewModel, YlConstants.MESSAGE_KEY_OPEN_SEARCH_MASTER_WINDOW));
-
-				_isTieUpSearched = true;
-				SetTieUp(searchMasterWindowViewModel.IsOk, tieUps, searchMasterWindowViewModel.OkSelectedMaster);
+				SearchTieUp();
 			}
 			catch (Exception excep)
 			{
@@ -338,11 +389,6 @@ namespace YukaLister.ViewModels.EditMasterWindowViewModels
 			{
 				if (String.IsNullOrEmpty(_tieUpId))
 				{
-					if (!_isTieUpSearched)
-					{
-						throw new Exception("タイアップが選択されていないため新規タイアップ情報作成となりますが、その前に一度、目的のタイアップが未登録かどうか検索して下さい。");
-					}
-
 					if (MessageBox.Show("タイアップが選択されていません。\n新規にタイアップ情報を作成しますか？\n"
 							+ "（目的のタイアップが未登録の場合（検索してもヒットしない場合）に限り、新規作成を行って下さい）", "確認",
 							MessageBoxButton.YesNo, MessageBoxImage.Exclamation) == MessageBoxResult.No)
@@ -481,29 +527,7 @@ namespace YukaLister.ViewModels.EditMasterWindowViewModels
 		{
 			try
 			{
-				MusicInfoContext.GetDbSet(_musicInfoContext, out DbSet<TTag> tags);
-				using EditTagsWindowViewModel editTagsWindowViewModel = new(_musicInfoContext, tags);
-				List<String> splitIds = YlCommon.SplitIds(_tagIds);
-				foreach (String id in splitIds)
-				{
-					TTag? tag = DbCommon.SelectBaseById(tags, id);
-					if (tag != null)
-					{
-						editTagsWindowViewModel.Masters.Add(tag);
-					}
-				}
-				Messenger.Raise(new TransitionMessage(editTagsWindowViewModel, YlConstants.MESSAGE_KEY_OPEN_EDIT_SEQUENCE_WINDOW));
-
-				if (editTagsWindowViewModel.IsOk)
-				{
-					// 指定されたタグを表示
-					(HasTag, _tagIds, TagDisplayNames) = ConcatMasterIdsAndNames(tags, editTagsWindowViewModel.OkSelectedMasters);
-				}
-				else
-				{
-					// タグが削除された場合があるので最新化
-					(HasTag, _tagIds, TagDisplayNames) = ConcatMasterIdsAndNames(tags, DbCommon.ExceptInvalid(tags, YlCommon.SplitIds(_tagIds)));
-				}
+				EditTag(false);
 			}
 			catch (Exception excep)
 			{
@@ -538,6 +562,7 @@ namespace YukaLister.ViewModels.EditMasterWindowViewModels
 			try
 			{
 				(_artistIds, ArtistDisplayNames) = SearchPerson("歌手", _artistIds, ArtistDisplayNames);
+				ButtonSameLyristClickedCommand.RaiseCanExecuteChanged();
 			}
 			catch (Exception excep)
 			{
@@ -571,8 +596,9 @@ namespace YukaLister.ViewModels.EditMasterWindowViewModels
 		{
 			try
 			{
-				(HasArtist, _artistIds, ArtistDisplayNames) = EditPeople("歌手", _artistIds, ArtistDisplayNames);
+				(HasArtist, _artistIds, ArtistDisplayNames) = EditPeople(false, "歌手", HasArtist, _artistIds, ArtistDisplayNames);
 				ExceptInvalidPeople();
+				ButtonSameLyristClickedCommand.RaiseCanExecuteChanged();
 			}
 			catch (Exception excep)
 			{
@@ -607,6 +633,7 @@ namespace YukaLister.ViewModels.EditMasterWindowViewModels
 			try
 			{
 				(_lyristIds, LyristDisplayNames) = SearchPerson("作詞者", _lyristIds, LyristDisplayNames);
+				ButtonSameComposerClickedCommand.RaiseCanExecuteChanged();
 			}
 			catch (Exception excep)
 			{
@@ -633,7 +660,7 @@ namespace YukaLister.ViewModels.EditMasterWindowViewModels
 
 		public Boolean CanButtonSameLyristClicked()
 		{
-			return HasLyrist;
+			return !String.IsNullOrEmpty(_artistIds);
 		}
 
 		public void ButtonSameLyristClicked()
@@ -642,6 +669,7 @@ namespace YukaLister.ViewModels.EditMasterWindowViewModels
 			{
 				_lyristIds = _artistIds;
 				LyristDisplayNames = ArtistDisplayNames;
+				HasLyrist = !String.IsNullOrEmpty(_lyristIds);
 			}
 			catch (Exception excep)
 			{
@@ -675,8 +703,9 @@ namespace YukaLister.ViewModels.EditMasterWindowViewModels
 		{
 			try
 			{
-				(HasLyrist, _lyristIds, LyristDisplayNames) = EditPeople("作詞者", _lyristIds, LyristDisplayNames);
+				(HasLyrist, _lyristIds, LyristDisplayNames) = EditPeople(false, "作詞者", HasLyrist, _lyristIds, LyristDisplayNames);
 				ExceptInvalidPeople();
+				ButtonSameComposerClickedCommand.RaiseCanExecuteChanged();
 			}
 			catch (Exception excep)
 			{
@@ -711,6 +740,7 @@ namespace YukaLister.ViewModels.EditMasterWindowViewModels
 			try
 			{
 				(_composerIds, ComposerDisplayNames) = SearchPerson("作曲者", _composerIds, ComposerDisplayNames);
+				ButtonSameArrangerClickedCommand.RaiseCanExecuteChanged();
 			}
 			catch (Exception excep)
 			{
@@ -737,7 +767,7 @@ namespace YukaLister.ViewModels.EditMasterWindowViewModels
 
 		public Boolean CanButtonSameComposerClicked()
 		{
-			return HasComposer;
+			return !String.IsNullOrEmpty(_lyristIds);
 		}
 
 		public void ButtonSameComposerClicked()
@@ -746,6 +776,7 @@ namespace YukaLister.ViewModels.EditMasterWindowViewModels
 			{
 				_composerIds = _lyristIds;
 				ComposerDisplayNames = LyristDisplayNames;
+				HasComposer = !String.IsNullOrEmpty(_composerIds);
 			}
 			catch (Exception excep)
 			{
@@ -779,8 +810,9 @@ namespace YukaLister.ViewModels.EditMasterWindowViewModels
 		{
 			try
 			{
-				(HasComposer, _composerIds, ComposerDisplayNames) = EditPeople("作曲者", _composerIds, ComposerDisplayNames);
+				(HasComposer, _composerIds, ComposerDisplayNames) = EditPeople(false, "作曲者", HasComposer, _composerIds, ComposerDisplayNames);
 				ExceptInvalidPeople();
+				ButtonSameArrangerClickedCommand.RaiseCanExecuteChanged();
 			}
 			catch (Exception excep)
 			{
@@ -841,7 +873,7 @@ namespace YukaLister.ViewModels.EditMasterWindowViewModels
 
 		public Boolean CanButtonSameArrangerClicked()
 		{
-			return HasArranger;
+			return !String.IsNullOrEmpty(_composerIds);
 		}
 
 		public void ButtonSameArrangerClicked()
@@ -850,6 +882,7 @@ namespace YukaLister.ViewModels.EditMasterWindowViewModels
 			{
 				_arrangerIds = _composerIds;
 				ArrangerDisplayNames = ComposerDisplayNames;
+				HasArranger = !String.IsNullOrEmpty(_arrangerIds);
 			}
 			catch (Exception excep)
 			{
@@ -883,7 +916,7 @@ namespace YukaLister.ViewModels.EditMasterWindowViewModels
 		{
 			try
 			{
-				(HasArranger, _arrangerIds, ArrangerDisplayNames) = EditPeople("編曲者", _arrangerIds, ArrangerDisplayNames);
+				(HasArranger, _arrangerIds, ArrangerDisplayNames) = EditPeople(false, "編曲者", HasArranger, _arrangerIds, ArrangerDisplayNames);
 				ExceptInvalidPeople();
 			}
 			catch (Exception excep)
@@ -913,6 +946,8 @@ namespace YukaLister.ViewModels.EditMasterWindowViewModels
 				AddContextMenuItemToButtonSelectOpEd("IN（挿入歌）");
 				AddContextMenuItemToButtonSelectOpEd("IM（イメージソング）");
 				AddContextMenuItemToButtonSelectOpEd("CH（キャラクターソング）");
+
+				_initialized = true;
 			}
 			catch (Exception excep)
 			{
@@ -1095,6 +1130,9 @@ namespace YukaLister.ViewModels.EditMasterWindowViewModels
 		// private メンバー変数
 		// ====================================================================
 
+		// 初期化が完了したかどうか
+		private Boolean _initialized;
+
 		// タイアップ ID
 		private String? _tieUpId;
 
@@ -1112,9 +1150,6 @@ namespace YukaLister.ViewModels.EditMasterWindowViewModels
 
 		// 編曲者 ID（カンマ区切りで複数）
 		private String? _arrangerIds;
-
-		// タイアップを検索したかどうか
-		private Boolean _isTieUpSearched;
 
 		// ====================================================================
 		// private メンバー関数
@@ -1153,10 +1188,10 @@ namespace YukaLister.ViewModels.EditMasterWindowViewModels
 		// --------------------------------------------------------------------
 		// 人物詳細編集
 		// --------------------------------------------------------------------
-		private (Boolean has, String? ids, String? names) EditPeople(String captionDetail, String? srcIds, String? srcNames)
+		private (Boolean has, String? ids, String? names) EditPeople(Boolean searchOnInitialize, String captionDetail, Boolean srcHas, String? srcIds, String? srcNames)
 		{
 			MusicInfoContext.GetDbSet(_musicInfoContext, out DbSet<TPerson> people);
-			using EditPeopleWindowViewModel editPeopleWindowViewModel = new(_musicInfoContext, people, captionDetail);
+			using EditPeopleWindowViewModel editPeopleWindowViewModel = new(_musicInfoContext, people, searchOnInitialize, captionDetail);
 			List<String> splitIds = YlCommon.SplitIds(srcIds);
 			foreach (String id in splitIds)
 			{
@@ -1176,20 +1211,52 @@ namespace YukaLister.ViewModels.EditMasterWindowViewModels
 			else
 			{
 				// 元の人物を返す
-				return (!String.IsNullOrEmpty(srcIds), srcIds, srcNames);
+				return (srcHas, srcIds, srcNames);
+			}
+		}
+
+		// --------------------------------------------------------------------
+		// 複数タグ検索
+		// --------------------------------------------------------------------
+		private void EditTag(Boolean searchOnInitialize)
+		{
+			MusicInfoContext.GetDbSet(_musicInfoContext, out DbSet<TTag> tags);
+			using EditTagsWindowViewModel editTagsWindowViewModel = new(_musicInfoContext, tags, searchOnInitialize);
+			List<String> splitIds = YlCommon.SplitIds(_tagIds);
+			foreach (String id in splitIds)
+			{
+				TTag? tag = DbCommon.SelectBaseById(tags, id);
+				if (tag != null)
+				{
+					editTagsWindowViewModel.Masters.Add(tag);
+				}
+			}
+			Messenger.Raise(new TransitionMessage(editTagsWindowViewModel, YlConstants.MESSAGE_KEY_OPEN_EDIT_SEQUENCE_WINDOW));
+
+			if (editTagsWindowViewModel.IsOk)
+			{
+				// 指定されたタグを表示
+				(HasTag, _tagIds, TagDisplayNames) = ConcatMasterIdsAndNames(tags, editTagsWindowViewModel.OkSelectedMasters);
+			}
+			else
+			{
+				// キャンセルの場合でも、タグが削除された場合があるので最新化
+				// キャンセルの場合はチェックボックスはいじらない（グループではない検索がキャンセルされた場合にチェックボックスをいじらないのと同じ）
+				(_, _tagIds, TagDisplayNames) = ConcatMasterIdsAndNames(tags, DbCommon.ExceptInvalid(tags, YlCommon.SplitIds(_tagIds)));
 			}
 		}
 
 		// --------------------------------------------------------------------
 		// 無効化された人物を除外する
+		// 歌手～編曲者で人物を共有しているため、どれかを変更したらすべてで除外が必要
 		// --------------------------------------------------------------------
 		private void ExceptInvalidPeople()
 		{
 			MusicInfoContext.GetDbSet(_musicInfoContext, out DbSet<TPerson> people);
-			(HasArtist, _artistIds, ArtistDisplayNames) = ConcatMasterIdsAndNames(people, DbCommon.ExceptInvalid(people, YlCommon.SplitIds(_artistIds)));
-			(HasLyrist, _lyristIds, LyristDisplayNames) = ConcatMasterIdsAndNames(people, DbCommon.ExceptInvalid(people, YlCommon.SplitIds(_lyristIds)));
-			(HasComposer, _composerIds, ComposerDisplayNames) = ConcatMasterIdsAndNames(people, DbCommon.ExceptInvalid(people, YlCommon.SplitIds(_composerIds)));
-			(HasArranger, _arrangerIds, ArrangerDisplayNames) = ConcatMasterIdsAndNames(people, DbCommon.ExceptInvalid(people, YlCommon.SplitIds(_arrangerIds)));
+			(_, _artistIds, ArtistDisplayNames) = ConcatMasterIdsAndNames(people, DbCommon.ExceptInvalid(people, YlCommon.SplitIds(_artistIds)));
+			(_, _lyristIds, LyristDisplayNames) = ConcatMasterIdsAndNames(people, DbCommon.ExceptInvalid(people, YlCommon.SplitIds(_lyristIds)));
+			(_, _composerIds, ComposerDisplayNames) = ConcatMasterIdsAndNames(people, DbCommon.ExceptInvalid(people, YlCommon.SplitIds(_composerIds)));
+			(_, _arrangerIds, ArrangerDisplayNames) = ConcatMasterIdsAndNames(people, DbCommon.ExceptInvalid(people, YlCommon.SplitIds(_arrangerIds)));
 		}
 
 		// --------------------------------------------------------------------
@@ -1219,6 +1286,19 @@ namespace YukaLister.ViewModels.EditMasterWindowViewModels
 
 			DbCommon.SetAvoidSameName(people, searchMasterWindowViewModel.OkSelectedMaster);
 			return (searchMasterWindowViewModel.OkSelectedMaster.Id, searchMasterWindowViewModel.OkSelectedMaster.DisplayName);
+		}
+
+		// --------------------------------------------------------------------
+		// タイアップ検索
+		// --------------------------------------------------------------------
+		private void SearchTieUp()
+		{
+			MusicInfoContext.GetDbSet(_musicInfoContext, out DbSet<TTieUp> tieUps);
+			using SearchMasterWindowViewModel<TTieUp> searchMasterWindowViewModel = new(tieUps);
+			searchMasterWindowViewModel.SelectedKeyword = OriginalTieUpName();
+			Messenger.Raise(new TransitionMessage(searchMasterWindowViewModel, YlConstants.MESSAGE_KEY_OPEN_SEARCH_MASTER_WINDOW));
+
+			SetTieUp(searchMasterWindowViewModel.IsOk, tieUps, searchMasterWindowViewModel.OkSelectedMaster);
 		}
 
 		// --------------------------------------------------------------------

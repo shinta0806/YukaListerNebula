@@ -31,8 +31,8 @@ namespace YukaLister.ViewModels.EditSequenceWindowViewModels
 		// --------------------------------------------------------------------
 		// コンストラクター
 		// --------------------------------------------------------------------
-		public EditTagsWindowViewModel(MusicInfoContext musicInfoContext, DbSet<TTag> records)
-				: base(musicInfoContext, records, false)
+		public EditTagsWindowViewModel(MusicInfoContext musicInfoContext, DbSet<TTag> records, Boolean searchOnInitialize)
+				: base(musicInfoContext, records, searchOnInitialize)
 		{
 		}
 
