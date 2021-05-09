@@ -831,12 +831,20 @@ namespace YukaLister.Models.SharedMisc
 			if (year < 100)
 			{
 				// 2 桁の西暦を 4 桁に変換する
-				if (year <= nowYear % 100)
+				Int32 nowYear2 = nowYear % 100;
+				if (year <= nowYear2)
 				{
+					// 現在年の 2 桁以下の場合は、現在年と同世紀とする
 					year += (nowYear / 100) * 100;
+				}
+				else if (year <= nowYear2 + YEAR_DISAMBIGUATION_DELTA)
+				{
+					// 現在年の 2 桁に近い場合は、曖昧さ回避のために受け付けないこととする
+					throw new Exception(caption + "の年が今年に近いため、世紀を自動判定できません。年を西暦 4 桁で入力してください。");
 				}
 				else
 				{
+					// 現在年より 1 つ古い世紀とする
 					year += (nowYear / 100 - 1) * 100;
 				}
 			}
@@ -1009,6 +1017,9 @@ namespace YukaLister.Models.SharedMisc
 
 		// 同期詳細ログ
 		private const String FILE_NAME_SYNC_DETAIL_LOG = YlConstants.APP_ID + YlConstants.SYNC_DETAIL_ID + Common.FILE_EXT_LOG;
+
+		// 西暦 2 桁時の世紀の曖昧さ回避用
+		private const Int32 YEAR_DISAMBIGUATION_DELTA = 10;
 
 		// ====================================================================
 		// private static メンバー変数
