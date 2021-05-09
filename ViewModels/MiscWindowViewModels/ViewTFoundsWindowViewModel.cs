@@ -619,7 +619,8 @@ namespace YukaLister.ViewModels.MiscWindowViewModels
 				}
 
 				// データベース読み込み
-				using ListContextInMemory listContextInMemory = ListContextInMemory.CreateContext(out DbSet<TFound> founds);
+				// キャッシュも利用できるよう、メモリではなくディスクの方を使用する
+				using ListContextInDisk listContextInDisk = ListContextInDisk.CreateContext(out DbSet<TFound> founds);
 				Founds = founds.ToList();
 
 				// カーソルを左上にする（変更検知のため一旦ダミーを設定する）
