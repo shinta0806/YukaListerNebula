@@ -605,6 +605,24 @@ namespace YukaLister.ViewModels
 				// イベントハンドラー
 				TargetFolderInfo.IsOpenChanged = TargetFolderInfoIsOpenChanged;
 
+				// テンポラリフォルダー準備
+				String tempFolderPath = YlCommon.TempFolderPath();
+				try
+				{
+					// 偶然以前と同じ PID となり、かつ、以前異常終了してテンポラリフォルダーが削除されていない場合に対応
+					Directory.Delete(tempFolderPath, true);
+				}
+				catch
+				{
+				}
+				try
+				{
+					Directory.CreateDirectory(tempFolderPath);
+				}
+				catch
+				{
+				}
+
 				// スプラッシュウィンドウを閉じる
 				_splashWindowViewModel.Close();
 
@@ -713,6 +731,13 @@ namespace YukaLister.ViewModels
 				// 終了処理
 				await YukaListerModel.Instance.EnvModel.QuitAllCoresAsync();
 				SaveExitStatus();
+				try
+				{
+					Directory.Delete(YlCommon.TempFolderPath(), true);
+				}
+				catch
+				{
+				}
 				_isDisposed = true;
 			}
 			catch (Exception excep)

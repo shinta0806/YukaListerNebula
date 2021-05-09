@@ -903,22 +903,10 @@ namespace YukaLister.Models.SharedMisc
 
 		// --------------------------------------------------------------------
 		// テンポラリフォルダーのパス（末尾 '\\'）
-		// 存在しない場合は作成する
 		// --------------------------------------------------------------------
 		public static String TempFolderPath()
 		{
-			String path = Path.GetTempPath() + Path.GetFileNameWithoutExtension(Environment.GetCommandLineArgs()[0]) + "\\" + Environment.ProcessId.ToString() + "\\";
-			if (!Directory.Exists(path))
-			{
-				try
-				{
-					Directory.CreateDirectory(path);
-				}
-				catch
-				{
-				}
-			}
-			return path;
+			return Path.GetTempPath() + Path.GetFileNameWithoutExtension(Environment.GetCommandLineArgs()[0]) + '\\' + Environment.ProcessId.ToString() + '\\';
 		}
 
 		// --------------------------------------------------------------------
