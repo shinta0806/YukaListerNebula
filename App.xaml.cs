@@ -1,32 +1,77 @@
-﻿using Livet;
+﻿// ============================================================================
+// 
+// アプリケーション
+// 
+// ============================================================================
+
+// ----------------------------------------------------------------------------
+//
+// ----------------------------------------------------------------------------
+
+using Livet;
+
+using Shinta;
+
 using System;
-using System.Collections.Generic;
-using System.Configuration;
-using System.Data;
-using System.Linq;
+using System.Threading;
 using System.Windows;
+
+using YukaLister.Models.SharedMisc;
 
 namespace YukaLister
 {
 	public partial class App : Application
 	{
+		// ====================================================================
+		// private メンバー変数
+		// ====================================================================
+
+		// 多重起動防止用
+		// アプリケーション終了までガベージコレクションされないようにメンバー変数で持つ
+		private Mutex? _mutex;
+
+		// ====================================================================
+		// private メンバー関数
+		// ====================================================================
+
+		// --------------------------------------------------------------------
+		// スタートアップ
+		// --------------------------------------------------------------------
 		private void Application_Startup(object sender, StartupEventArgs e)
 		{
+			// Livet コード
 			DispatcherHelper.UIDispatcher = Dispatcher;
-			//AppDomain.CurrentDomain.UnhandledException += new UnhandledExceptionEventHandler(CurrentDomain_UnhandledException);
+
+			// 集約エラーハンドラー設定
+			AppDomain.CurrentDomain.UnhandledException += new UnhandledExceptionEventHandler(CurrentDomain_UnhandledException);
+
+			// 多重起動チェック
+			_mutex = CommonWindows.ActivateAnotherProcessWindowIfNeeded(Common.SHINTA + '_' + YlConstants.APP_ID + '_' + YlConstants.APP_GENERATION);
+			if (_mutex == null)
+			{
+				throw new MultiInstanceException();
+			}
 		}
 
-		// Application level error handling
-		//private void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
-		//{
-		//    //TODO: Logging
-		//    MessageBox.Show(
-		//        "Something errors were occurred.",
-		//        "Error",
-		//        MessageBoxButton.OK,
-		//        MessageBoxImage.Error);
-		//
-		//    Environment.Exit(1);
-		//}
+		// --------------------------------------------------------------------
+		// 集約エラーハンドラー
+		// --------------------------------------------------------------------
+		private void CurrentDomain_UnhandledException(Object sender, UnhandledExceptionEventArgs unhandledExceptionEventArgs)
+		{
+			if (unhandledExceptionEventArgs.ExceptionObject is MultiInstanceException)
+			{
+				// 多重起動の場合は何もしない
+			}
+			else
+			{
+				if (unhandledExceptionEventArgs.ExceptionObject is Exception excep)
+				{
+					MessageBox.Show("不明なエラーが発生しました。アプリケーションを終了します。\n" + excep.Message + "\n" + excep.StackTrace,
+							"エラー", MessageBoxButton.OK, MessageBoxImage.Error);
+				}
+			}
+
+			Environment.Exit(1);
+		}
 	}
 }
