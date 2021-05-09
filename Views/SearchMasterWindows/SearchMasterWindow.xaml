@@ -53,7 +53,7 @@
         </DockPanel>
         <Label Content="{Binding FoundsDescription}" Margin="20,5,0,0"/>
         <DataGrid AutoGenerateColumns="False" CanUserReorderColumns="False" CanUserSortColumns="False" CanUserResizeRows="False" SelectionMode="Single" IsReadOnly="True"
-                Width="380" Margin="20,0,20,0" Height="200" materialDesign:DataGridAssist.ColumnHeaderPadding="3 5 3 5" materialDesign:DataGridAssist.CellPadding="3" ItemsSource="{Binding Founds}" SelectedItem="{Binding SelectedFound}" CanUserAddRows="False" CanUserDeleteRows="False" 
+                Width="380" Margin="20,0,20,0" Height="350" materialDesign:DataGridAssist.ColumnHeaderPadding="3 5 3 5" materialDesign:DataGridAssist.CellPadding="3" ItemsSource="{Binding Founds}" SelectedItem="{Binding SelectedFound}" CanUserAddRows="False" CanUserDeleteRows="False" 
                 sb:IsFocusedAttachedBehavior.IsFocused="{Binding AreFoundsFocused}">
             <DataGrid.Columns>
                 <DataGridTextColumn Header="検索結果" Width="*" Binding="{Binding DisplayName}" />

@@ -450,6 +450,17 @@ namespace YukaLister.ViewModels.SearchMasterWindowViewModels
 				return;
 			}
 
+			// ルビ
+			String? rubyForSearch = YlCommon.NormalizeDbRubyForSearch(normalizedKeyword);
+			if (!String.IsNullOrEmpty(rubyForSearch) && rubyForSearch.Length == normalizedKeyword.Length)
+			{
+				SelectedFound = Founds.FirstOrDefault(x => x.RubyForSearch == rubyForSearch);
+				if (SelectedFound != null)
+				{
+					return;
+				}
+			}
+
 			// 先頭を選択
 			SelectedFound = Founds[0];
 		}
