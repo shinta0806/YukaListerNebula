@@ -965,7 +965,7 @@ namespace YukaLister.Models.SharedMisc
 		private const String NORMALIZE_DB_RUBY_FOR_SEARCH_FROM = "ァィゥェォッャュョヮヵヶガギグゲゴザジズゼゾダヂヅデドバビブベボパピプペポヰヱヴヷヸヹヺｧｨｩｪｫｯｬｭｮ"
 				+ "ぁぃぅぇぉっゃゅょゎゕゖがぎぐげござじずぜぞだぢづでどばびぶべぼぱぴぷぺぽゐゑゔ" + NORMALIZE_DB_FORBIDDEN_FROM;
 		private const String NORMALIZE_DB_RUBY_FOR_SEARCH_TO = "アイウエオツヤユヨワカケカキクケコサシスセソタチツテトハヒフヘホハヒフヘホイエフワイエヲアイウエオツヤユヨ"
-				+ "アイウエオツヤユヨワカケカキクケコサシスセソタチツテトハヒフヘホハヒフヘホイエウ" + NORMALIZE_DB_FORBIDDEN_TO;
+				+ "アイウエオツヤユヨワカケカキクケコサシスセソタチツテトハヒフヘホハヒフヘホイエフ" + NORMALIZE_DB_FORBIDDEN_TO;
 
 		// NormalizeDbRubyForMusicInfo() 用：フリガナ正規化対象文字（半角カタカナ→全角カタカナ）
 		private const String NORMALIZE_DB_RUBY_FOR_MUSIC_INFO_FROM = NORMALIZE_DB_FORBIDDEN_FROM + "ｧｨｩｪｫｯｬｭｮ";
@@ -1229,14 +1229,14 @@ namespace YukaLister.Models.SharedMisc
 				}
 
 				// 上記以外の全角カタカナ・音引きはそのまま
-				if ('ア' <= chara && chara <= 'ヺ' || chara == 'ー')
+				if ('ァ' <= chara && chara <= 'ヺ' || chara == 'ー')
 				{
 					katakana.Append(chara);
 					continue;
 				}
 
 				// 上記以外のひらがなをカタカナに変換
-				if ('あ' <= chara && chara <= 'ん')
+				if ('ぁ' <= chara && chara <= 'ゔ')
 				{
 					katakana.Append((Char)(chara + 0x60));
 					continue;
