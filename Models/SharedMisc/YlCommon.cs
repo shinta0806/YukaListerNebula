@@ -962,14 +962,14 @@ namespace YukaLister.Models.SharedMisc
 		// --------------------------------------------------------------------
 
 		// NormalizeDbRubyForSearch() 用：フリガナ正規化対象文字（小文字・濁点→大文字・清音）
-		private const String NORMALIZE_DB_RUBY_FOR_SEARCH_FROM = "ァィゥェォッャュョヮヵヶガギグゲゴザジズゼゾダヂヅデドバビブベボパピプペポヰヱヴヷヸヹヺｧｨｩｪｫｯｬｭｮ"
-				+ "ぁぃぅぇぉっゃゅょゎゕゖがぎぐげござじずぜぞだぢづでどばびぶべぼぱぴぷぺぽゐゑゔ" + NORMALIZE_DB_FORBIDDEN_FROM;
-		private const String NORMALIZE_DB_RUBY_FOR_SEARCH_TO = "アイウエオツヤユヨワカケカキクケコサシスセソタチツテトハヒフヘホハヒフヘホイエフワイエヲアイウエオツヤユヨ"
-				+ "アイウエオツヤユヨワカケカキクケコサシスセソタチツテトハヒフヘホハヒフヘホイエフ" + NORMALIZE_DB_FORBIDDEN_TO;
+		private const String NORMALIZE_DB_RUBY_FOR_SEARCH_FROM = "ァィゥェォッャュョヮヵヶヲガギグゲゴザジズゼゾダヂヅデドバビブベボパピプペポヰヱヴヷヸヹヺｧｨｩｪｫｯｬｭｮｦ"
+				+ "ぁぃぅぇぉっゃゅょゎゕゖをがぎぐげござじずぜぞだぢづでどばびぶべぼぱぴぷぺぽゐゑゔ" + NORMALIZE_DB_FORBIDDEN_FROM;
+		private const String NORMALIZE_DB_RUBY_FOR_SEARCH_TO = "アイウエオツヤユヨワカケオカキクケコサシスセソタチツテトハヒフヘホハヒフヘホイエフワイエオアイウエオツヤユヨオ"
+				+ "アイウエオツヤユヨワカケオカキクケコサシスセソタチツテトハヒフヘホハヒフヘホイエフ" + NORMALIZE_DB_FORBIDDEN_TO;
 
-		// NormalizeDbRubyForMusicInfo() 用：フリガナ正規化対象文字（半角カタカナ→全角カタカナ）
-		private const String NORMALIZE_DB_RUBY_FOR_MUSIC_INFO_FROM = NORMALIZE_DB_FORBIDDEN_FROM + "ｧｨｩｪｫｯｬｭｮ";
-		private const String NORMALIZE_DB_RUBY_FOR_MUSIC_INFO_TO = NORMALIZE_DB_FORBIDDEN_TO + "ァィゥェォッャュョ";
+		// NormalizeDbRubyForMusicInfo() 用：フリガナ正規化対象文字（半角カタカナ→全角カタカナ等）
+		private const String NORMALIZE_DB_RUBY_FOR_MUSIC_INFO_FROM = NORMALIZE_DB_FORBIDDEN_FROM + "ｧｨｩｪｫｯｬｭｮゕゖ";
+		private const String NORMALIZE_DB_RUBY_FOR_MUSIC_INFO_TO = NORMALIZE_DB_FORBIDDEN_TO + "ァィゥェォッャュョカケ";
 
 		// NormalizeDbString() 用：禁則文字（全角スペース、一部の半角文字等）
 		private const String NORMALIZE_DB_STRING_FROM = "　\u2019ﾞﾟ｡｢｣､･~\u301C" + NORMALIZE_DB_RUBY_FOR_MUSIC_INFO_FROM;
