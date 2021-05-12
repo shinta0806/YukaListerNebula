@@ -86,7 +86,7 @@ namespace YukaLister.ViewModels.EditMasterWindowViewModels
 					ButtonEditMakerClickedCommand.RaiseCanExecuteChanged();
 					if (_hasMaker)
 					{
-						if (_initialized)
+						if (_isAutoSearchAllowed)
 						{
 							SearchMaker();
 						}
@@ -121,7 +121,7 @@ namespace YukaLister.ViewModels.EditMasterWindowViewModels
 					ButtonEditTieUpGroupClickedCommand.RaiseCanExecuteChanged();
 					if (_hasTieUpGroup)
 					{
-						if (_initialized)
+						if (_isAutoSearchAllowed)
 						{
 							EditTieUpGroup(true);
 						}
@@ -352,8 +352,6 @@ namespace YukaLister.ViewModels.EditMasterWindowViewModels
 				AddContextMenuItemToButtonSelectAgeLimit(YlConstants.AGE_LIMIT_CERO_C.ToString() + " 才以上対象（CERO C 相当）");
 				AddContextMenuItemToButtonSelectAgeLimit(YlConstants.AGE_LIMIT_CERO_D.ToString() + " 才以上対象（CERO D 相当）");
 				AddContextMenuItemToButtonSelectAgeLimit(YlConstants.AGE_LIMIT_CERO_Z.ToString() + " 才以上対象（CERO Z 相当）");
-
-				_initialized = true;
 			}
 			catch (Exception excep)
 			{
@@ -418,6 +416,8 @@ namespace YukaLister.ViewModels.EditMasterWindowViewModels
 		{
 			base.RecordToProperties(master);
 
+			_isAutoSearchAllowed = false;
+
 			// 年齢制限
 			if (master.AgeLimit == 0)
 			{
@@ -445,6 +445,8 @@ namespace YukaLister.ViewModels.EditMasterWindowViewModels
 			{
 				(HasTieUpGroup, _tieUpGroupIds, TieUpGroupDisplayNames) = ConcatMasterIdsAndNames(tieUpGroups, SequencedTieUpGroups);
 			}
+
+			_isAutoSearchAllowed = true;
 		}
 
 		// --------------------------------------------------------------------
@@ -481,8 +483,8 @@ namespace YukaLister.ViewModels.EditMasterWindowViewModels
 		// private メンバー変数
 		// ====================================================================
 
-		// 初期化が完了したかどうか
-		private Boolean _initialized;
+		// 自動的に検索ウィンドウを開いて良いか
+		private Boolean _isAutoSearchAllowed;
 
 		// 制作会社 ID
 		private String? _makerId;

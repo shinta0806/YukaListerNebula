@@ -89,7 +89,7 @@ namespace YukaLister.ViewModels.EditMasterWindowViewModels
 					ButtonEditTieUpClickedCommand.RaiseCanExecuteChanged();
 					if (_hasTieUp)
 					{
-						if (_initialized)
+						if (_isAutoSearchAllowed)
 						{
 							SearchTieUp();
 						}
@@ -150,7 +150,7 @@ namespace YukaLister.ViewModels.EditMasterWindowViewModels
 					ButtonEditTagClickedCommand.RaiseCanExecuteChanged();
 					if (_hasTag)
 					{
-						if (_initialized)
+						if (_isAutoSearchAllowed)
 						{
 							EditTag(true);
 						}
@@ -185,7 +185,7 @@ namespace YukaLister.ViewModels.EditMasterWindowViewModels
 					ButtonEditArtistClickedCommand.RaiseCanExecuteChanged();
 					if (_hasArtist)
 					{
-						if (_initialized && String.IsNullOrEmpty(_artistIds))
+						if (_isAutoSearchAllowed && String.IsNullOrEmpty(_artistIds))
 						{
 							(HasArtist, _artistIds, ArtistDisplayNames) = EditPeople(true, "歌手", _hasArtist, _artistIds, ArtistDisplayNames);
 							ExceptInvalidPeople();
@@ -224,7 +224,7 @@ namespace YukaLister.ViewModels.EditMasterWindowViewModels
 					ButtonEditLyristClickedCommand.RaiseCanExecuteChanged();
 					if (_hasLyrist)
 					{
-						if (_initialized && String.IsNullOrEmpty(_lyristIds))
+						if (_isAutoSearchAllowed && String.IsNullOrEmpty(_lyristIds))
 						{
 							(HasLyrist, _lyristIds, LyristDisplayNames) = EditPeople(true, "作詞者", _hasLyrist, _lyristIds, LyristDisplayNames);
 							ExceptInvalidPeople();
@@ -263,7 +263,7 @@ namespace YukaLister.ViewModels.EditMasterWindowViewModels
 					ButtonEditComposerClickedCommand.RaiseCanExecuteChanged();
 					if (_hasComposer)
 					{
-						if (_initialized && String.IsNullOrEmpty(_composerIds))
+						if (_isAutoSearchAllowed && String.IsNullOrEmpty(_composerIds))
 						{
 							(HasComposer, _composerIds, ComposerDisplayNames) = EditPeople(true, "作曲者", _hasComposer, _composerIds, ComposerDisplayNames);
 							ExceptInvalidPeople();
@@ -302,7 +302,7 @@ namespace YukaLister.ViewModels.EditMasterWindowViewModels
 					ButtonEditArrangerClickedCommand.RaiseCanExecuteChanged();
 					if (_hasArranger)
 					{
-						if (_initialized && String.IsNullOrEmpty(_arrangerIds))
+						if (_isAutoSearchAllowed && String.IsNullOrEmpty(_arrangerIds))
 						{
 							(HasArranger, _arrangerIds, ArrangerDisplayNames) = EditPeople(true, "編曲者", _hasArranger, _arrangerIds, ArrangerDisplayNames);
 							ExceptInvalidPeople();
@@ -946,8 +946,6 @@ namespace YukaLister.ViewModels.EditMasterWindowViewModels
 				AddContextMenuItemToButtonSelectOpEd("IN（挿入歌）");
 				AddContextMenuItemToButtonSelectOpEd("IM（イメージソング）");
 				AddContextMenuItemToButtonSelectOpEd("CH（キャラクターソング）");
-
-				_initialized = true;
 			}
 			catch (Exception excep)
 			{
@@ -1051,6 +1049,8 @@ namespace YukaLister.ViewModels.EditMasterWindowViewModels
 		{
 			base.RecordToProperties(master);
 
+			_isAutoSearchAllowed = false;
+
 			// タイアップ関係
 			MusicInfoContext.GetDbSet(_musicInfoContext, out DbSet<TTieUp> tieUps);
 			TTieUp? tieUp = DbCommon.SelectBaseById(tieUps, master.TieUpId);
@@ -1080,6 +1080,8 @@ namespace YukaLister.ViewModels.EditMasterWindowViewModels
 
 			SetIsTieUpEnabled();
 			SetIsCategoryEnabled();
+
+			_isAutoSearchAllowed = true;
 		}
 
 		// --------------------------------------------------------------------
@@ -1130,8 +1132,8 @@ namespace YukaLister.ViewModels.EditMasterWindowViewModels
 		// private メンバー変数
 		// ====================================================================
 
-		// 初期化が完了したかどうか
-		private Boolean _initialized;
+		// 自動的に検索ウィンドウを開いて良いか
+		private Boolean _isAutoSearchAllowed;
 
 		// タイアップ ID
 		private String? _tieUpId;
