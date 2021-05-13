@@ -972,8 +972,8 @@ namespace YukaLister.Models.SharedMisc
 		private const String NORMALIZE_DB_RUBY_FOR_MUSIC_INFO_TO = NORMALIZE_DB_FORBIDDEN_TO + "ァィゥェォッャュョカケ";
 
 		// NormalizeDbString() 用：禁則文字（全角スペース、一部の半角文字等）
-		private const String NORMALIZE_DB_STRING_FROM = "　\u2019ﾞﾟ｡｢｣､･~\u301C" + NORMALIZE_DB_RUBY_FOR_MUSIC_INFO_FROM;
-		private const String NORMALIZE_DB_STRING_TO = " '゛゜。「」、・～～" + NORMALIZE_DB_RUBY_FOR_MUSIC_INFO_TO;
+		private const String NORMALIZE_DB_STRING_FROM = "　\u2019ﾞﾟ｡｢｣､･~\u301C♯" + NORMALIZE_DB_RUBY_FOR_MUSIC_INFO_FROM;
+		private const String NORMALIZE_DB_STRING_TO = " '゛゜。「」、・～～#" + NORMALIZE_DB_RUBY_FOR_MUSIC_INFO_TO;
 
 		// NormalizeDbXXX() 用：変換後がフリガナ対象の禁則文字（半角カタカナ大文字）
 		private const String NORMALIZE_DB_FORBIDDEN_FROM = "ｦｰｱｲｳｴｵｶｷｸｹｺｻｼｽｾｿﾀﾁﾂﾃﾄﾅﾆﾇﾈﾉﾊﾋﾌﾍﾎﾏﾐﾑﾒﾓﾔﾕﾖﾗﾘﾙﾚﾛﾜﾝ";
