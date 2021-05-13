@@ -963,21 +963,25 @@ namespace YukaLister.Models.SharedMisc
 
 		// NormalizeDbRubyForSearch() 用：フリガナ正規化対象文字（小文字・濁点→大文字・清音）
 		private const String NORMALIZE_DB_RUBY_FOR_SEARCH_FROM = "ァィゥェォッャュョヮヵヶヲガギグゲゴザジズゼゾダヂヅデドバビブベボパピプペポヰヱヴヷヸヹヺｧｨｩｪｫｯｬｭｮｦ"
-				+ "ぁぃぅぇぉっゃゅょゎゕゖをがぎぐげござじずぜぞだぢづでどばびぶべぼぱぴぷぺぽゐゑゔ" + NORMALIZE_DB_FORBIDDEN_FROM;
+				+ "ぁぃぅぇぉっゃゅょゎゕゖをがぎぐげござじずぜぞだぢづでどばびぶべぼぱぴぷぺぽゐゑゔ" + NORMALIZE_DB_RUBY_COMMON_FROM + NORMALIZE_DB_FORBIDDEN_FROM;
 		private const String NORMALIZE_DB_RUBY_FOR_SEARCH_TO = "アイウエオツヤユヨワカケオカキクケコサシスセソタチツテトハヒフヘホハヒフヘホイエフワイエオアイウエオツヤユヨオ"
-				+ "アイウエオツヤユヨワカケオカキクケコサシスセソタチツテトハヒフヘホハヒフヘホイエフ" + NORMALIZE_DB_FORBIDDEN_TO;
+				+ "アイウエオツヤユヨワカケオカキクケコサシスセソタチツテトハヒフヘホハヒフヘホイエフ" + NORMALIZE_DB_RUBY_COMMON_TO + NORMALIZE_DB_FORBIDDEN_TO;
 
 		// NormalizeDbRubyForMusicInfo() 用：フリガナ正規化対象文字（半角カタカナ→全角カタカナ等）
-		private const String NORMALIZE_DB_RUBY_FOR_MUSIC_INFO_FROM = NORMALIZE_DB_FORBIDDEN_FROM + "ｧｨｩｪｫｯｬｭｮゕゖ";
-		private const String NORMALIZE_DB_RUBY_FOR_MUSIC_INFO_TO = NORMALIZE_DB_FORBIDDEN_TO + "ァィゥェォッャュョカケ";
+		private const String NORMALIZE_DB_RUBY_FOR_MUSIC_INFO_FROM = "ゕゖ" + NORMALIZE_DB_RUBY_COMMON_FROM + NORMALIZE_DB_FORBIDDEN_FROM;
+		private const String NORMALIZE_DB_RUBY_FOR_MUSIC_INFO_TO = "ヵヶ" + NORMALIZE_DB_RUBY_COMMON_TO + NORMALIZE_DB_FORBIDDEN_TO;
+
+		// NormalizeDbRubyXXX() 用
+		private const String NORMALIZE_DB_RUBY_COMMON_FROM = "~～\u301C";
+		private const String NORMALIZE_DB_RUBY_COMMON_TO = "ーーー";
 
 		// NormalizeDbString() 用：禁則文字（全角スペース、一部の半角文字等）
-		private const String NORMALIZE_DB_STRING_FROM = "　\u2019ﾞﾟ｡｢｣､･~\u301C♯" + NORMALIZE_DB_RUBY_FOR_MUSIC_INFO_FROM;
-		private const String NORMALIZE_DB_STRING_TO = " '゛゜。「」、・～～#" + NORMALIZE_DB_RUBY_FOR_MUSIC_INFO_TO;
+		private const String NORMALIZE_DB_STRING_FROM = "　\u2019ﾞﾟ｡｢｣､･~\u301C♯" + NORMALIZE_DB_FORBIDDEN_FROM;
+		private const String NORMALIZE_DB_STRING_TO = " '゛゜。「」、・～～#" + NORMALIZE_DB_FORBIDDEN_TO;
 
 		// NormalizeDbXXX() 用：変換後がフリガナ対象の禁則文字（半角カタカナ大文字）
-		private const String NORMALIZE_DB_FORBIDDEN_FROM = "ｦｰｱｲｳｴｵｶｷｸｹｺｻｼｽｾｿﾀﾁﾂﾃﾄﾅﾆﾇﾈﾉﾊﾋﾌﾍﾎﾏﾐﾑﾒﾓﾔﾕﾖﾗﾘﾙﾚﾛﾜﾝ";
-		private const String NORMALIZE_DB_FORBIDDEN_TO = "ヲーアイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモヤユヨラリルレロワン";
+		private const String NORMALIZE_DB_FORBIDDEN_FROM = "ｦｰｱｲｳｴｵｶｷｸｹｺｻｼｽｾｿﾀﾁﾂﾃﾄﾅﾆﾇﾈﾉﾊﾋﾌﾍﾎﾏﾐﾑﾒﾓﾔﾕﾖﾗﾘﾙﾚﾛﾜﾝｧｨｩｪｫｯｬｭｮ";
+		private const String NORMALIZE_DB_FORBIDDEN_TO = "ヲーアイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモヤユヨラリルレロワンァィゥェォッャュョ";
 
 		// --------------------------------------------------------------------
 		// その他
