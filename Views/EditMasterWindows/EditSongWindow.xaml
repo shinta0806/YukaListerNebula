@@ -98,7 +98,7 @@
             <Label Content="{Binding TieUpDisplayName}" Margin="0" Grid.Row="3" Grid.Column="3"/>
             <Button Content="タイアップ詳細編集" Grid.Row="3" Grid.Column="4" Height="Auto" FontSize="12" Padding="2" Style="{StaticResource MaterialDesignRaisedLightButton}" Margin="5,5,0,5" Command="{Binding ButtonEditTieUpClickedCommand}"/>
             <Label Content="摘要 (_T)：" Margin="0" Grid.Row="4" Grid.Column="0" HorizontalAlignment="Right"/>
-            <Button Name="ButtonSelectOpEd" Content="選択" Grid.Row="4" Grid.Column="2" Height="Auto" FontSize="12" Padding="2" Style="{StaticResource MaterialDesignRaisedLightButton}" Margin="5" Command="{Binding ButtonSelectOpEdClickedCommand}">
+            <Button Name="ButtonSelectOpEd" Content="選択" Grid.Row="4" Grid.Column="2" Height="Auto" FontSize="12" Padding="2" Style="{StaticResource MaterialDesignRaisedLightButton}" Margin="5" >
                 <behaviors:Interaction.Triggers>
                     <behaviors:EventTrigger EventName="Click">
                         <behaviors:ChangePropertyAction TargetObject="{Binding ContextMenu, ElementName=ButtonSelectOpEd}" PropertyName="IsOpen" Value="True"/>

@@ -436,26 +436,6 @@ namespace YukaLister.ViewModels.EditMasterWindowViewModels
 		}
 		#endregion
 
-		#region 摘要選択ボタンの制御
-		private ViewModelCommand? _buttonSelectOpEdClickedCommand;
-
-		public ViewModelCommand ButtonSelectOpEdClickedCommand
-		{
-			get
-			{
-				if (_buttonSelectOpEdClickedCommand == null)
-				{
-					_buttonSelectOpEdClickedCommand = new ViewModelCommand(ButtonSelectOpEdClicked);
-				}
-				return _buttonSelectOpEdClickedCommand;
-			}
-		}
-
-		public void ButtonSelectOpEdClicked()
-		{
-		}
-		#endregion
-
 		#region タグ検索ボタンの制御
 		private ViewModelCommand? _buttonSearchTagClickedCommand;
 

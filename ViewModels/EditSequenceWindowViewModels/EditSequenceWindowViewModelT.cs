@@ -501,14 +501,14 @@ namespace YukaLister.ViewModels.EditSequenceWindowViewModels
 		// ====================================================================
 
 		// Initialize() で検索して追加を実施するかどうか
-		private Boolean _searchOnInitialize;
+		private readonly Boolean _searchOnInitialize;
 
 		// 編集対象の名称
 		// 例）_captionDetail が "歌手" の場合、_caption は "人物"
-		private String _caption;
+		private readonly String _caption;
 
 		// 編集対象の名称詳細
-		private String _captionDetail;
+		private readonly String _captionDetail;
 
 		// 検索したかどうか
 		private Boolean _isMasterSearched;

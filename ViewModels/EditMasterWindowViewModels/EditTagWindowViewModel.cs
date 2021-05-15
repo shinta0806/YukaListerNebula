@@ -70,11 +70,11 @@ namespace YukaLister.ViewModels.EditMasterWindowViewModels
 		// --------------------------------------------------------------------
 		protected override void CheckInput()
 		{
-			// 名前の重複は無条件で NG のため、基底より先にチェック
+			// タグの場合、名前の重複は無条件で NG のため、基底より先にチェック
 			String? normalizedName = YlCommon.NormalizeDbString(Name);
 			if (!String.IsNullOrEmpty(normalizedName))
 			{
-				(List<TTag> dups, Int32 numDups) = GetSameNameRecords(normalizedName);
+				(_, Int32 numDups) = GetSameNameRecords(normalizedName);
 				if (numDups > 0)
 				{
 					throw new Exception(_caption + "「" + normalizedName + "」は既に登録されています。\n同じ名前の" + _caption + "は登録できません。");

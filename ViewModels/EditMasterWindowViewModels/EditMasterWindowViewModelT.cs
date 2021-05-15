@@ -578,6 +578,28 @@ namespace YukaLister.ViewModels.EditMasterWindowViewModels
 		}
 
 		// ====================================================================
+		// private static メンバー関数
+		// ====================================================================
+
+		// --------------------------------------------------------------------
+		// ルビの一部が削除されたら警告
+		// ＜例外＞ OperationCanceledException
+		// --------------------------------------------------------------------
+		private static void WarnRubyDeletedIfNeeded(String? originalRuby, String? normalizedRuby)
+		{
+			if (!String.IsNullOrEmpty(originalRuby)
+					&& (String.IsNullOrEmpty(normalizedRuby) || originalRuby.Length != normalizedRuby.Length))
+			{
+				if (MessageBox.Show("フリガナはカタカナのみ登録可能のため、カタカナ以外は削除されます。\n"
+						+ originalRuby + " → " + normalizedRuby + "\nよろしいですか？", "確認",
+						MessageBoxButton.YesNo, MessageBoxImage.Exclamation) == MessageBoxResult.No)
+				{
+					throw new OperationCanceledException();
+				}
+			}
+		}
+
+		// ====================================================================
 		// private メンバー関数
 		// ====================================================================
 
@@ -698,24 +720,6 @@ namespace YukaLister.ViewModels.EditMasterWindowViewModels
 			else
 			{
 				IdInfo = "（同名の登録が複数あります）";
-			}
-		}
-
-		// --------------------------------------------------------------------
-		// ルビの一部が削除されたら警告
-		// ＜例外＞ OperationCanceledException
-		// --------------------------------------------------------------------
-		private void WarnRubyDeletedIfNeeded(String? originalRuby, String? normalizedRuby)
-		{
-			if (!String.IsNullOrEmpty(originalRuby)
-					&& (String.IsNullOrEmpty(normalizedRuby) || originalRuby.Length != normalizedRuby.Length))
-			{
-				if (MessageBox.Show("フリガナはカタカナのみ登録可能のため、カタカナ以外は削除されます。\n"
-						+ originalRuby + " → " + normalizedRuby + "\nよろしいですか？", "確認",
-						MessageBoxButton.YesNo, MessageBoxImage.Exclamation) == MessageBoxResult.No)
-				{
-					throw new OperationCanceledException();
-				}
 			}
 		}
 	}

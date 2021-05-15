@@ -411,7 +411,6 @@ namespace YukaLister.ViewModels
 		#endregion
 
 		#region DataGrid ダブルクリックの制御
-
 		private ViewModelCommand? _dataGridDoubleClickedCommand;
 
 		public ViewModelCommand DataGridDoubleClickedCommand
@@ -420,13 +419,13 @@ namespace YukaLister.ViewModels
 			{
 				if (_dataGridDoubleClickedCommand == null)
 				{
-					_dataGridDoubleClickedCommand = new ViewModelCommand(dataGridDoubleClickedCommand);
+					_dataGridDoubleClickedCommand = new ViewModelCommand(DataGridDoubleClicked);
 				}
 				return _dataGridDoubleClickedCommand;
 			}
 		}
 
-		public void dataGridDoubleClickedCommand()
+		public void DataGridDoubleClicked()
 		{
 			try
 			{
@@ -762,19 +761,19 @@ namespace YukaLister.ViewModels
 		private readonly SplashWindowViewModel _splashWindowViewModel;
 
 		// UI 更新用タイマー
-		private DispatcherTimer _timerUpdateUi = new();
+		private readonly DispatcherTimer _timerUpdateUi = new();
 
 		// 前回 UI 更新時のゆかりすたー NEBULA 全体の動作状況
 		private YukaListerStatus _prevYukaListerWholeStatus = YukaListerStatus.__End__;
 
 		// config.ini 監視用
-		private FileSystemWatcher _fileSystemWatcherYukariConfig = new();
+		private readonly FileSystemWatcher _fileSystemWatcherYukariConfig = new();
 
 		// 検索可能ファイル数
 		private Int32 _numFounds;
 
 		// Dispose フラグ
-		private Boolean _isDisposed = false;
+		private Boolean _isDisposed;
 
 		// ====================================================================
 		// private メンバー関数
