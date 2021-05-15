@@ -9,7 +9,7 @@
         xmlns:vm="clr-namespace:YukaLister.ViewModels"
         xmlns:vmsmw="clr-namespace:YukaLister.ViewModels.SearchMasterWindowViewModels"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        SizeToContent="WidthAndHeight" ResizeMode="NoResize" ShowInTaskbar="False" Title="{Binding Title}" Cursor="{Binding Cursor}" >
+        ResizeMode="NoResize" ShowInTaskbar="False" Title="{Binding Title}" Cursor="{Binding Cursor}" Width="420" SizeToContent="Height" >
 
     <Window.DataContext>
         <vmsmw:SearchMasterWindowViewModel />
@@ -42,7 +42,7 @@
         <Label Content="{Binding Description}" Margin="20,15,0,0"/>
         <DockPanel Margin="20,5,20,0">
             <Button Content="検索 (_S)" Style="{StaticResource MaterialDesignRaisedLightButton}" Width="100" Height="Auto" DockPanel.Dock="Right" Command="{Binding ButtonSearchClickedCommand}"/>
-            <TextBox Name="TextBoxKeyword" Text="{Binding Keyword, UpdateSourceTrigger=PropertyChanged}" ToolTip="ここに検索したいキーワードを入力して下さい。" ToolTipService.ShowDuration="10000" materialDesign:HintAssist.Hint="{Binding ElementName=TextBoxKeyword, Path=ToolTip}" sb:IsFocusedAttachedBehavior.IsFocused="{Binding IsKeywordFocused}" VerticalAlignment="Center" Margin="0,0,5,0">
+            <TextBox Name="TextBoxKeyword" Text="{Binding Keyword, UpdateSourceTrigger=PropertyChanged}" ToolTip="ここに検索したいキーワードを入力して下さい。" ToolTipService.ShowDuration="10000" materialDesign:HintAssist.Hint="{Binding ElementName=TextBoxKeyword, Path=ToolTip}" sb:IsFocusedAttachedBehavior.IsFocused="{Binding IsKeywordFocused}" VerticalAlignment="Center" Margin="0,0,5,0" >
                 <TextBox.InputBindings>
                     <KeyBinding Gesture="Enter" Command="{Binding ButtonSearchClickedCommand}" />
                 </TextBox.InputBindings>
@@ -53,7 +53,7 @@
         </DockPanel>
         <Label Content="{Binding FoundsDescription}" Margin="20,5,0,0"/>
         <DataGrid AutoGenerateColumns="False" CanUserReorderColumns="False" CanUserSortColumns="False" CanUserResizeRows="False" SelectionMode="Single" IsReadOnly="True"
-                Width="380" Margin="20,0,20,0" Height="350" materialDesign:DataGridAssist.ColumnHeaderPadding="3 5 3 5" materialDesign:DataGridAssist.CellPadding="3" ItemsSource="{Binding Founds}" SelectedItem="{Binding SelectedFound}" CanUserAddRows="False" CanUserDeleteRows="False" 
+                Margin="20,0,20,0" Height="350" materialDesign:DataGridAssist.ColumnHeaderPadding="3 5 3 5" materialDesign:DataGridAssist.CellPadding="3" ItemsSource="{Binding Founds}" SelectedItem="{Binding SelectedFound}" CanUserAddRows="False" CanUserDeleteRows="False" 
                 sb:IsFocusedAttachedBehavior.IsFocused="{Binding AreFoundsFocused}">
             <DataGrid.Columns>
                 <DataGridTextColumn Header="検索結果" Width="*" Binding="{Binding DisplayName}" />
