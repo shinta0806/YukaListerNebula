@@ -94,9 +94,11 @@
                     <StackPanel Margin="20,10,0,0">
                         <Label Content="リスト出力先は、ゆかり設定ファイルがあるフォルダーの配下となります。"/>
                     </StackPanel>
-                    <DockPanel Margin="0,10,130,0">
+                    <DockPanel Margin="0,10,20,0">
                         <Label Content="リスト出力先フォルダー：" Width="170" HorizontalContentAlignment="Right"/>
-                        <Label Content="{Binding YukariListFolder}" />
+                        <Label ToolTip="{Binding YukariListFolder}" ToolTipService.ShowDuration="10000" >
+                            <TextBlock Text="{Binding YukariListFolder}" TextTrimming="CharacterEllipsis" />
+                        </Label>
                     </DockPanel>
                     <StackPanel Margin="20,10,0,0">
                         <CheckBox Visibility="Hidden" IsChecked="{Binding ConfirmOutputYukariList}" Content="ゆかりリクエスト用リスト出力前に確認する (_N)" />

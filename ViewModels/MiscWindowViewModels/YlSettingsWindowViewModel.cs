@@ -750,7 +750,7 @@ namespace YukaLister.ViewModels.MiscWindowViewModels
 
 				if (YukaListerModel.Instance.EnvModel.YukaListerWholeStatus == YukaListerStatus.Running)
 				{
-					if (MessageBox.Show("検索データ作成途中のため、今すぐリスト出力しても完全なリストにはなりません。\n今すぐリスト出力しますか？",
+					if (MessageBox.Show("データ更新中のため、今すぐリスト出力しても完全なリストにはなりません。\n今すぐリスト出力しますか？",
 							"確認", MessageBoxButton.YesNo, MessageBoxImage.Exclamation) != MessageBoxResult.Yes)
 					{
 						return;
