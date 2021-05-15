@@ -516,8 +516,15 @@ namespace YukaLister.ViewModels.EditMasterWindowViewModels
 			master.Name = YlCommon.NormalizeDbString(Name);
 			master.Ruby = YlCommon.NormalizeDbRubyForMusicInfo(Ruby);
 			master.RubyForSearch = YlCommon.NormalizeDbRubyForSearch(Ruby);
-			master.Keyword = YlCommon.NormalizeDbString(Keyword);
-			master.KeywordRubyForSearch = YlCommon.KeywordRubyForSearch(Keyword);
+
+			// 検索ワードはカンマごとに正規化する
+			Debug.Assert(master.Keyword == null, "PropertiesToRecord() master.Keyword already set");
+			if (!String.IsNullOrEmpty(Keyword))
+			{
+				String[] keywords = Keyword.Split(YlConstants.VAR_VALUE_DELIMITER[0], StringSplitOptions.RemoveEmptyEntries);
+				master.Keyword = String.Join(YlConstants.VAR_VALUE_DELIMITER[0], keywords.Select(x => YlCommon.NormalizeDbString(x)));
+				master.KeywordRubyForSearch = YlCommon.KeywordRubyForSearch(master.Keyword);
+			}
 		}
 
 		// --------------------------------------------------------------------
