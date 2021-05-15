@@ -743,11 +743,21 @@ namespace YukaLister.ViewModels.MiscWindowViewModels
 				// ウィンドウのキャンセルボタンが押された場合でも確定していることになる
 				YukaListerModel.Instance.EnvModel.YlSettings.ListOutputFolder = ListFolder;
 
-				// 出力
 				if (SelectedOutputWriter == null)
 				{
 					throw new Exception("出力形式を選択してください。");
 				}
+
+				if (YukaListerModel.Instance.EnvModel.YukaListerWholeStatus == YukaListerStatus.Running)
+				{
+					if (MessageBox.Show("検索データ作成途中のため、今すぐリスト出力しても完全なリストにはなりません。\n今すぐリスト出力しますか？",
+							"確認", MessageBoxButton.YesNo, MessageBoxImage.Exclamation) != MessageBoxResult.Yes)
+					{
+						return;
+					}
+				}
+
+				// 出力
 				SelectedOutputWriter.Output();
 				YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(TraceEventType.Information, "リスト出力が完了しました。");
 
