@@ -326,6 +326,7 @@ namespace YukaLister.Models.DatabaseAssist
 				MusicInfoContext.CreateDatabaseIfNeeded();
 				ListContextInDisk.CreateDatabase();
 				ListContextInMemory.CreateDatabase();
+				ThumbContext.CreateDatabaseIfNeeded();
 			}
 			catch (Exception excep)
 			{
