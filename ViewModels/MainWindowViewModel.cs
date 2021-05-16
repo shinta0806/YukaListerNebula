@@ -23,6 +23,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
@@ -33,6 +34,7 @@ using YukaLister.Models.Database;
 using YukaLister.Models.DatabaseContexts;
 using YukaLister.Models.SerializableSettings;
 using YukaLister.Models.SharedMisc;
+using YukaLister.Models.WebServer;
 using YukaLister.Models.YukaListerModels;
 using YukaLister.ViewModels.MiscWindowViewModels;
 
@@ -319,7 +321,7 @@ namespace YukaLister.ViewModels
 				{
 					// 再取得が指示された場合は再取得
 					YukaListerModel.Instance.EnvModel.Syclin.IsReget = true;
-					YlCommon.ActivateSyclinIfNeeded();
+					ActivateSyclinIfNeeded();
 				}
 				else
 				{
@@ -331,7 +333,7 @@ namespace YukaLister.ViewModels
 							|| YukaListerModel.Instance.EnvModel.YlSettings.SyncPassword != syncPasswordBak
 							|| musicInfoDbTime != musicInfoDbTimeBak)
 					{
-						YlCommon.ActivateSyclinIfNeeded();
+						ActivateSyclinIfNeeded();
 					}
 				}
 			}
@@ -521,7 +523,7 @@ namespace YukaLister.ViewModels
 				// 楽曲情報データベースが更新された場合は同期を行う
 				if (MusicInfoContext.LastWriteTime() != musicInfoDbTimeBak)
 				{
-					YlCommon.ActivateSyclinIfNeeded();
+					ActivateSyclinIfNeeded();
 				}
 			}
 			catch (Exception excep)
@@ -660,8 +662,11 @@ namespace YukaLister.ViewModels
 				// 時間がかかるかもしれない処理を非同期で実行
 				await AutoTargetAllDrivesAsync();
 
+				// Web サーバー
+				StartWebServerIfNeeded();
+
 				// サーバー同期
-				YlCommon.ActivateSyclinIfNeeded();
+				ActivateSyclinIfNeeded();
 
 #if DEBUGz
 				String hoge = YlCommon.YukaListerStatusFolderPath("D:");
@@ -729,6 +734,7 @@ namespace YukaLister.ViewModels
 
 				// 終了処理
 				await YukaListerModel.Instance.EnvModel.QuitAllCoresAsync();
+				await QuitServerIfNeededAsync();
 				SaveExitStatus();
 				try
 				{
@@ -772,12 +778,29 @@ namespace YukaLister.ViewModels
 		// 検索可能ファイル数
 		private Int32 _numFounds;
 
+		// Web サーバー（null のままのこともあり得る）
+		private WebServer? _webServer;
+
+		// Web サーバー終了用
+		//private CancellationTokenSource? _webServerTokenSource;
+
 		// Dispose フラグ
 		private Boolean _isDisposed;
 
 		// ====================================================================
 		// private メンバー関数
 		// ====================================================================
+
+		// --------------------------------------------------------------------
+		// 必要に応じて待機中の同期担当をアクティブ化
+		// --------------------------------------------------------------------
+		public static void ActivateSyclinIfNeeded()
+		{
+			if (YukaListerModel.Instance.EnvModel.YlSettings.SyncMusicInfoDb)
+			{
+				YukaListerModel.Instance.EnvModel.Syclin.MainEvent.Set();
+			}
+		}
 
 		// --------------------------------------------------------------------
 		// フォルダーを 1 つ追加
@@ -935,7 +958,7 @@ namespace YukaLister.ViewModels
 			// 楽曲情報データベースが更新された場合は同期を行う
 			if (MusicInfoContext.LastWriteTime() != musicInfoDbTimeBak)
 			{
-				YlCommon.ActivateSyclinIfNeeded();
+				ActivateSyclinIfNeeded();
 			}
 		}
 
@@ -1025,6 +1048,21 @@ namespace YukaLister.ViewModels
 		}
 
 		// --------------------------------------------------------------------
+		// プレビュー用サーバーが実行中なら終了
+		// --------------------------------------------------------------------
+		private async ValueTask QuitServerIfNeededAsync()
+		{
+			if (_webServer == null)
+			{
+				return;
+			}
+
+			Task task = _webServer.QuitAsync();
+			_webServer = null;
+			await task;
+		}
+
+		// --------------------------------------------------------------------
 		// 終了時の状態を保存
 		// --------------------------------------------------------------------
 		private void SaveExitStatus()
@@ -1068,6 +1106,24 @@ namespace YukaLister.ViewModels
 				YukaListerStatus.Running => YlConstants.BRUSH_STATUS_RUNNING,
 				_ => YlConstants.BRUSH_STATUS_DONE,
 			};
+		}
+
+		// --------------------------------------------------------------------
+		// Web サーバー設定が有効ならゆかり用の Web サーバーを開始
+		// --------------------------------------------------------------------
+		private void StartWebServerIfNeeded()
+		{
+			if (!YukaListerModel.Instance.EnvModel.YlSettings.ProvideYukariPreview)
+			{
+				return;
+			}
+			if (_webServer != null)
+			{
+				return;
+			}
+
+			_webServer = new WebServer();
+			_webServer.Start();
 		}
 
 		// --------------------------------------------------------------------

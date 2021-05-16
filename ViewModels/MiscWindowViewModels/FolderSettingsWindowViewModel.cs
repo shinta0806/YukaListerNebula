@@ -714,7 +714,7 @@ namespace YukaLister.ViewModels.MiscWindowViewModels
 				SaveSettingsIfNeeded();
 
 				// 検索（async を待機しない）
-				_ = YlCommon.LaunchTaskAsync<Object?>(_semaphoreSlim, UpdatePreviewResult, null);
+				_ = YlCommon.LaunchTaskAsync<Object?>(_semaphoreSlim, UpdatePreviewResultByWorker, null);
 			}
 			catch (Exception excep)
 			{
@@ -749,7 +749,7 @@ namespace YukaLister.ViewModels.MiscWindowViewModels
 			try
 			{
 				// async を待機しない
-				_ = YlCommon.LaunchTaskAsync<Object?>(_semaphoreSlim, JumpToNextCandidate, null);
+				_ = YlCommon.LaunchTaskAsync<Object?>(_semaphoreSlim, JumpToNextCandidateByWorker, null);
 			}
 			catch (Exception excep)
 			{
@@ -1426,8 +1426,9 @@ namespace YukaLister.ViewModels.MiscWindowViewModels
 		// --------------------------------------------------------------------
 		// 編集する必要がありそうなファイルに飛ぶ
 		// （楽曲名・タイアップ名が楽曲情報データベースに未登録なファイル）
+		// ワーカースレッドで実行される前提
 		// --------------------------------------------------------------------
-		private Task JumpToNextCandidate(Object? _)
+		private Task JumpToNextCandidateByWorker(Object? _)
 		{
 			Int32 rowIndex;
 			if (SelectedPreviewInfo == null)
@@ -1839,8 +1840,9 @@ namespace YukaLister.ViewModels.MiscWindowViewModels
 
 		// --------------------------------------------------------------------
 		// 検索結果を更新
+		// ワーカースレッドで実行される前提
 		// --------------------------------------------------------------------
-		private Task UpdatePreviewResult(Object? _)
+		private Task UpdatePreviewResultByWorker(Object? _)
 		{
 			try
 			{

@@ -157,20 +157,6 @@ namespace YukaLister.Models.DatabaseContexts
 			return musicInfoContext;
 		}
 
-#if false
-		// --------------------------------------------------------------------
-		// データベースコンテキスト生成
-		// ＜例外＞ Exception
-		// --------------------------------------------------------------------
-		public static MusicInfoContext CreateContext(out DbSet<TTieUpGroup> tieUpGroups, out DbSet<TTieUpGroupSequence> tieUpGroupSequences)
-		{
-			MusicInfoContext musicInfoContext = new();
-			GetDbSet(musicInfoContext, out tieUpGroups);
-			GetDbSet(musicInfoContext, out tieUpGroupSequences);
-			return musicInfoContext;
-		}
-#endif
-
 		// --------------------------------------------------------------------
 		// データベースコンテキスト生成
 		// ＜例外＞ Exception
@@ -569,8 +555,6 @@ namespace YukaLister.Models.DatabaseContexts
 			modelBuilder.Entity<TTieUp>().HasIndex(x => x.CategoryId);
 
 			modelBuilder.Entity<TCategory>().HasIndex(x => x.Name);
-			// ToDo
-			//InsertCategoryDefaultRecords();
 
 			modelBuilder.Entity<TTieUpGroup>().HasIndex(x => x.Name);
 

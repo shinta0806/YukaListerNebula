@@ -569,6 +569,14 @@ namespace YukaLister.Models.DatabaseAssist
 		}
 
 		// --------------------------------------------------------------------
+		// サムネイルキャッシュデータベースのフルパス
+		// --------------------------------------------------------------------
+		public static String ThumbDatabasePath(YlSettings ylSettings)
+		{
+			return YukariDatabaseFullFolder(ylSettings) + FILE_NAME_THUMB_DATABASE;
+		}
+
+		// --------------------------------------------------------------------
 		// データベースのプロパティーを更新（存在しない場合は新規作成）
 		// --------------------------------------------------------------------
 		public static void UpdateProperty(DbContext context, DbSet<TProperty> properties)
@@ -617,6 +625,7 @@ namespace YukaLister.Models.DatabaseAssist
 
 		// データベースファイル名
 		private const String FILE_NAME_LIST_DATABASE_IN_DISK = "List" + Common.FILE_EXT_SQLITE3;
+		private const String FILE_NAME_THUMB_DATABASE = "Thumb" + Common.FILE_EXT_SQLITE3;
 
 		// ====================================================================
 		// private メンバー関数

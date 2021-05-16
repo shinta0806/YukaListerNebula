@@ -48,6 +48,12 @@ namespace YukaLister.Models.SerializableSettings
 		// ゆかり用のサーバーポート
 		public Int32 WebServerPort { get; set; } = DEFAULT_WEB_SERVER_PORT;
 
+		// サムネイルを作成する動画の位置 [S]
+		public Int32 ThumbSeekPos { get; set; } = DEFAULT_THUMB_SEEK_POS;
+
+		// サムネイルのデフォルトの横幅 [px]
+		public Int32 ThumbDefaultWidth { get; set; } = DEFAULT_THUMB_WIDTH;
+
 		// ID の接頭辞
 		public String? IdPrefix { get; set; }
 
@@ -282,6 +288,12 @@ namespace YukaLister.Models.SerializableSettings
 
 		// ゆかり用のサーバーポート
 		private const Int32 DEFAULT_WEB_SERVER_PORT = 13582;
+
+		// サムネイルを作成する動画の位置 [S]
+		private const Int32 DEFAULT_THUMB_SEEK_POS = 60;
+
+		// サムネイルのデフォルトの横幅 [px]
+		private const Int32 DEFAULT_THUMB_WIDTH = 128;
 
 		// ゆかりの config.ini の項目
 		private const String YUKARI_CONFIG_KEY_NAME_USE_EASY_AUTH = "useeasyauth";

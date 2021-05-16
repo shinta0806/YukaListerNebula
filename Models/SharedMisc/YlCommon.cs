@@ -41,14 +41,6 @@ namespace YukaLister.Models.SharedMisc
 		// public static メンバー関数
 		// ====================================================================
 
-		public static void ActivateSyclinIfNeeded()
-		{
-			if (YukaListerModel.Instance.EnvModel.YlSettings.SyncMusicInfoDb)
-			{
-				YukaListerModel.Instance.EnvModel.Syclin.MainEvent.Set();
-			}
-		}
-
 		// --------------------------------------------------------------------
 		// コンテキストメニューにアイテムを追加
 		// ToDo: MVVM 的なやり方でのコンテキストメニューへのコマンド登録方法が分からなかったのでこの方法としている
