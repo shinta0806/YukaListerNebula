@@ -718,7 +718,7 @@ namespace YukaLister.ViewModels
 		// --------------------------------------------------------------------
 		// リソース解放
 		// --------------------------------------------------------------------
-		protected override async void Dispose(bool disposing)
+		protected override void Dispose(bool disposing)
 		{
 			base.Dispose(disposing);
 
@@ -729,12 +729,16 @@ namespace YukaLister.ViewModels
 
 			try
 			{
+				Debug.WriteLine("MainWindowViewModel.Dispose() a");
 				// アプリケーションの終了を通知
 				YukaListerModel.Instance.EnvModel.AppCancellationTokenSource.Cancel();
 
 				// 終了処理
-				await YukaListerModel.Instance.EnvModel.QuitAllCoresAsync();
-				await QuitServerIfNeededAsync();
+				// await するとその間に強制終了されてしまうようなので、await しない
+				_ = YukaListerModel.Instance.EnvModel.QuitAllCoresAsync();
+				Debug.WriteLine("MainWindowViewModel.Dispose() b");
+				_ = QuitServerIfNeededAsync();
+				Debug.WriteLine("MainWindowViewModel.Dispose() c");
 				SaveExitStatus();
 				try
 				{
@@ -744,6 +748,7 @@ namespace YukaLister.ViewModels
 				{
 				}
 				_isDisposed = true;
+				Debug.WriteLine("MainWindowViewModel.Dispose() END");
 			}
 			catch (Exception excep)
 			{
