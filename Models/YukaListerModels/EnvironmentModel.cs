@@ -196,7 +196,7 @@ namespace YukaLister.Models.YukaListerModels
 		public async Task QuitAllCoresAsync()
 		{
 			Debug.Assert(AppCancellationTokenSource.Token.IsCancellationRequested, "QuitAllCores() not cancelled");
-			Debug.WriteLine("QuitAllCoresAsync()");
+			Debug.WriteLine("QuitAllCoresAsync() a");
 			List<Task> tasks = new();
 			if (Sifolin.MainTask != null)
 			{
@@ -213,7 +213,9 @@ namespace YukaLister.Models.YukaListerModels
 				Syclin.MainEvent.Set();
 				tasks.Add(Syclin.MainTask);
 			}
+			Debug.WriteLine("QuitAllCoresAsync() b");
 			await Task.WhenAll(tasks);
+			Debug.WriteLine("QuitAllCoresAsync() c");
 		}
 
 		// --------------------------------------------------------------------

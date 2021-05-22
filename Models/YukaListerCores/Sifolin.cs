@@ -460,6 +460,7 @@ namespace YukaLister.Models.YukaListerCores
 					out _, out _, out _,
 					out DbSet<TArtistSequence> artistSequencesInMusicInfo, out _, out DbSet<TComposerSequence> composerSequencesInMusicInfo, out _,
 					out DbSet<TTieUpGroupSequence> tieUpGroupSequencesInMusicInfo, out DbSet<TTagSequence> tagSequencesInMusicInfo);
+			musicInfoContext.ChangeTracker.QueryTrackingBehavior = QueryTrackingBehavior.NoTracking;
 			using ListContextInMemory listContextInMemory = ListContextInMemory.CreateContext(out _, out DbSet<TPerson> peopleInMemory,
 					out DbSet<TArtistSequence> artistSequencesInMemory, out DbSet<TComposerSequence> composerSequencesInMemory,
 					out DbSet<TTieUpGroup> tieUpGroupsInMemory, out DbSet<TTieUpGroupSequence> tieUpGroupSequencesInMemory,
@@ -476,13 +477,14 @@ namespace YukaLister.Models.YukaListerCores
 			listContextInMemory.SaveChanges();
 
 			// コピー
-			peopleInMemory.AddRange(peopleInMusicInfo);
-			artistSequencesInMemory.AddRange(artistSequencesInMusicInfo);
-			composerSequencesInMemory.AddRange(composerSequencesInMusicInfo);
-			tieUpGroupsInMemory.AddRange(tieUpGroupsInMusicInfo);
-			tieUpGroupSequencesInMemory.AddRange(tieUpGroupSequencesInMusicInfo);
-			tagsInMemory.AddRange(tagsInMusicInfo);
-			tagSequencesInMemory.AddRange(tagSequencesInMusicInfo);
+			// peopleInMemory.AddRange(peopleInMusicInfo) のように DbSet 全体を追加すると、アプリ終了時にタスクが終了しないため、Where を挟む
+			peopleInMemory.AddRange(peopleInMusicInfo.Where(x => true));
+			artistSequencesInMemory.AddRange(artistSequencesInMusicInfo.Where(x => true));
+			composerSequencesInMemory.AddRange(composerSequencesInMusicInfo.Where(x => true));
+			tieUpGroupsInMemory.AddRange(tieUpGroupsInMusicInfo.Where(x => true));
+			tieUpGroupSequencesInMemory.AddRange(tieUpGroupSequencesInMusicInfo.Where(x => true));
+			tagsInMemory.AddRange(tagsInMusicInfo.Where(x => true));
+			tagSequencesInMemory.AddRange(tagSequencesInMusicInfo.Where(x => true));
 			listContextInMemory.SaveChanges();
 		}
 
