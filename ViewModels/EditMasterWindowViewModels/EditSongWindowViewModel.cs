@@ -1019,7 +1019,7 @@ namespace YukaLister.ViewModels.EditMasterWindowViewModels
 
 			// TSong
 			master.TieUpId = _tieUpId;
-			master.OpEd = OpEd;
+			master.OpEd = YlCommon.NormalizeDbString(OpEd);
 		}
 
 		// --------------------------------------------------------------------
