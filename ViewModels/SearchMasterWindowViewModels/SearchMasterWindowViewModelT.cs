@@ -176,7 +176,7 @@ namespace YukaLister.ViewModels.SearchMasterWindowViewModels
 				String? normalizedKeyword = YlCommon.NormalizeDbString(Keyword);
 				if (String.IsNullOrEmpty(normalizedKeyword))
 				{
-					return;
+					throw new Exception("キーワードを入力してください。");
 				}
 
 				_isSearching = true;
@@ -374,20 +374,28 @@ namespace YukaLister.ViewModels.SearchMasterWindowViewModels
 			List<T>? results = null;
 			await Task.Run(() =>
 			{
-				String? ruby = YlCommon.NormalizeDbRubyForSearch(normalizedKeyword);
-				Boolean isKeywordRuby = !String.IsNullOrEmpty(ruby) && ruby.Length == normalizedKeyword.Length;
-				results = _records.AsNoTracking().Where(x =>
-						(
-							// EF Core では String.Contains() が StringComparison.OrdinalIgnoreCase 付きで動作しないため、EF.Functions.Like() を使う
-							EF.Functions.Like(x.Name, $"%{normalizedKeyword}%")
-							|| EF.Functions.Like(x.Keyword, $"%{normalizedKeyword}%")
+				results = _records.AsNoTracking().Where(x => !x.Invalid).ToList();
+
+				// スペース区切りで AND 検索
+				String[] split = normalizedKeyword.Split(' ', StringSplitOptions.RemoveEmptyEntries);
+				foreach (String oneWord in split)
+				{
+					String? oneRuby = YlCommon.NormalizeDbRubyForSearch(oneWord);
+					Boolean isOneWordRuby = !String.IsNullOrEmpty(oneRuby) && oneRuby.Length == oneWord.Length;
+
+					// EF Core レコード直接の場合は、String.Contains() が StringComparison.OrdinalIgnoreCase 付きで動作しないため、EF.Functions.Like() を使う
+					// ここでは一度 List に変換しているので String.Contains() を使う
+					results = results.Where(x =>
+							(x.Name?.Contains(oneWord, StringComparison.OrdinalIgnoreCase) ?? false)
+							|| (x.Keyword?.Contains(oneWord, StringComparison.OrdinalIgnoreCase) ?? false)
 							// すべてフリガナとして使える文字が入力された場合は、フリガナでも検索
-							|| isKeywordRuby && EF.Functions.Like(x.RubyForSearch, $"%{ruby}%")
-							|| isKeywordRuby && EF.Functions.Like(x.Keyword, $"%{ruby}%")
-							|| isKeywordRuby && EF.Functions.Like(x.KeywordRubyForSearch, $"%{ruby}%")
-						)
-						&& !x.Invalid
-				).ToList();
+							|| isOneWordRuby && (x.RubyForSearch?.Contains(oneRuby!, StringComparison.OrdinalIgnoreCase) ?? false)
+							|| isOneWordRuby && (x.Keyword?.Contains(oneRuby!, StringComparison.OrdinalIgnoreCase) ?? false)
+							|| isOneWordRuby && (x.KeywordRubyForSearch?.Contains(oneRuby!, StringComparison.OrdinalIgnoreCase) ?? false)
+					).ToList();
+				}
+
+				// ソート
 				results.Sort(SearchResultComparison);
 
 				// 同名検出
