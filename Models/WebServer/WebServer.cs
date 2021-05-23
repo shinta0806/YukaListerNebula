@@ -146,9 +146,6 @@ namespace YukaLister.Models.WebServer
 		// サムネイルのアスペクト比
 		private const Double THUMB_ASPECT_RATIO = 16.0 / 9;
 
-		// サムネイルの横幅の最大値
-		private const Int32 THUMB_WIDTH_MAX = 320;
-
 		// ローカルホスト
 		private const String URL_LOCAL_HOST = "http://localhost:";
 
@@ -168,35 +165,35 @@ namespace YukaLister.Models.WebServer
 		private Int32 _webServerTasksLimit;
 
 		// 終了用（サーバー再起動があるためアプリケーションのトークンとは異なるものを使用する）
-		private CancellationTokenSource _tokenSource;
+		private readonly CancellationTokenSource _tokenSource;
 
 		// 多重起動抑止
-		private SemaphoreSlim _semaphoreSlim = new(1);
+		private readonly SemaphoreSlim _semaphoreSlim = new(1);
 
 		// Dispose フラグ
 		private Boolean _isDisposed;
 
 		// ====================================================================
-		// private メンバー関数
+		// private static メンバー関数
 		// ====================================================================
 
 		// --------------------------------------------------------------------
 		// URL 引数を解析
 		// --------------------------------------------------------------------
-		private Dictionary<String, String> AnalyzeCommandOptions(String command)
+		private static Dictionary<String, String> AnalyzeCommandOptions(String command)
 		{
 			Dictionary<String, String> options = new();
 
 			Int32 quesPos = command.IndexOf('?');
 			if (0 <= quesPos && quesPos < command.Length - 1)
 			{
-				String[] optionStrings = command.Substring(quesPos + 1).Split('&');
+				String[] optionStrings = command[(quesPos + 1)..].Split('&');
 				for (Int32 i = 0; i < optionStrings.Length; i++)
 				{
 					Int32 eqPos = optionStrings[i].IndexOf('=');
 					if (0 < eqPos && eqPos < optionStrings[i].Length - 1)
 					{
-						options[optionStrings[i].Substring(0, eqPos)] = optionStrings[i].Substring(eqPos + 1);
+						options[optionStrings[i].Substring(0, eqPos)] = optionStrings[i][(eqPos + 1)..];
 					}
 				}
 			}
@@ -208,7 +205,7 @@ namespace YukaLister.Models.WebServer
 		// 簡易認証を満たしているかどうか
 		// ＜返値＞ 満たしている、または、認証不要の場合は true
 		// --------------------------------------------------------------------
-		private Boolean CheckEasyAuth(Dictionary<String, String> options, HttpListenerRequest request, HttpListenerResponse response)
+		private static Boolean CheckEasyAuth(Dictionary<String, String> options, HttpListenerRequest request, HttpListenerResponse response)
 		{
 			if (!YukaListerModel.Instance.EnvModel.YlSettings.YukariUseEasyAuth)
 			{
@@ -219,7 +216,7 @@ namespace YukaLister.Models.WebServer
 			if (options.ContainsKey(YlConstants.SERVER_OPTION_NAME_EASY_PASS) && options[YlConstants.SERVER_OPTION_NAME_EASY_PASS] == YukaListerModel.Instance.EnvModel.YlSettings.YukariEasyAuthKeyword)
 			{
 				// URL 認証成功
-				Cookie newCookie = new Cookie(YlConstants.SERVER_OPTION_NAME_EASY_PASS, options[YlConstants.SERVER_OPTION_NAME_EASY_PASS]);
+				Cookie newCookie = new(YlConstants.SERVER_OPTION_NAME_EASY_PASS, options[YlConstants.SERVER_OPTION_NAME_EASY_PASS]);
 				newCookie.Path = "/";
 				newCookie.Expires = DateTime.Now.AddDays(1.0);
 				response.Cookies.Add(newCookie);
@@ -240,7 +237,7 @@ namespace YukaLister.Models.WebServer
 		// サムネイルを JPEG 形式で作成
 		// ＜例外＞ Exception
 		// --------------------------------------------------------------------
-		private TCacheThumb CreateThumb(String path, Int32 width)
+		private static TCacheThumb CreateThumb(String path, Int32 width)
 		{
 			// MediaPlayer がいつまで生きていればサムネイルが確定されるか不明のため、最後に Close() できるよう、最初に生成しておく
 			MediaPlayer player = new()
@@ -282,7 +279,7 @@ namespace YukaLister.Models.WebServer
 				// ビットマップに Visual を描画
 				Boolean isSave = true;
 				tick = Environment.TickCount;
-				RenderTargetBitmap origBitmap = new RenderTargetBitmap(player.NaturalVideoWidth, player.NaturalVideoHeight, 96, 96, PixelFormats.Pbgra32);
+				RenderTargetBitmap origBitmap = new(player.NaturalVideoWidth, player.NaturalVideoHeight, 96, 96, PixelFormats.Pbgra32);
 				for (; ; )
 				{
 					origBitmap.Render(origVisual);
@@ -335,7 +332,7 @@ namespace YukaLister.Models.WebServer
 
 				// ビットマップに Visual を描画
 				tick = Environment.TickCount;
-				RenderTargetBitmap thumbBitmap = new RenderTargetBitmap(thumbWidth, aThumbHeight, 96, 96, PixelFormats.Pbgra32);
+				RenderTargetBitmap thumbBitmap = new(thumbWidth, aThumbHeight, 96, 96, PixelFormats.Pbgra32);
 				thumbBitmap.Render(thumbVisual);
 
 				// JPEG にエンコード
@@ -356,7 +353,7 @@ namespace YukaLister.Models.WebServer
 		// --------------------------------------------------------------------
 		// サムネイルキャッシュデータベースを検索
 		// --------------------------------------------------------------------
-		private TCacheThumb? FindCache(String path, Int32 width)
+		private static TCacheThumb? FindCache(String path, Int32 width)
 		{
 			if (!String.IsNullOrEmpty(path))
 			{
@@ -393,7 +390,7 @@ namespace YukaLister.Models.WebServer
 		// URL 引数から動画ファイルのパスを解析
 		// ＜例外＞ Exception
 		// --------------------------------------------------------------------
-		private String GetPathOption(Dictionary<String, String> options)
+		private static String GetPathOption(Dictionary<String, String> options)
 		{
 			if (!options.ContainsKey(YlConstants.SERVER_OPTION_NAME_UID))
 			{
@@ -415,7 +412,7 @@ namespace YukaLister.Models.WebServer
 		// URL 引数からサムネイル用オプションを解析
 		// ＜例外＞ Exception
 		// --------------------------------------------------------------------
-		private (String path, Int32 width) GetThumbOptions(Dictionary<String, String> options)
+		private static (String path, Int32 width) GetThumbOptions(Dictionary<String, String> options)
 		{
 			String path = GetPathOption(options);
 			Int32 width;
@@ -428,7 +425,7 @@ namespace YukaLister.Models.WebServer
 			else
 			{
 				width = Int32.Parse(options[YlConstants.SERVER_OPTION_NAME_WIDTH]);
-				if (width < YlConstants.THUMB_WIDTH_LIST[0] || width > YlConstants.THUMB_WIDTH_LIST[YlConstants.THUMB_WIDTH_LIST.Length - 1])
+				if (width < YlConstants.THUMB_WIDTH_LIST[0] || width > YlConstants.THUMB_WIDTH_LIST[^1])
 				{
 					throw new Exception("Bad width.");
 				}
@@ -453,7 +450,7 @@ namespace YukaLister.Models.WebServer
 		// ビットマップ中央が黒以外になったら転写完了と判断する
 		// 動画そのものが黒い場合もあるため、無限ループにならないよう呼び出し元で注意が必要
 		// --------------------------------------------------------------------
-		private Boolean IsRenderDone(RenderTargetBitmap bitmap)
+		private static Boolean IsRenderDone(RenderTargetBitmap bitmap)
 		{
 			Int32 width = bitmap.PixelWidth;
 			Int32 height = bitmap.PixelHeight;
@@ -473,7 +470,7 @@ namespace YukaLister.Models.WebServer
 		// --------------------------------------------------------------------
 		// キャッシュデータベースにレコードを保存する
 		// --------------------------------------------------------------------
-		private TCacheThumb SaveCache(Boolean isSave, String path, JpegBitmapEncoder jpegEncoder)
+		private static TCacheThumb SaveCache(Boolean isSave, String path, JpegBitmapEncoder jpegEncoder)
 		{
 			TCacheThumb cacheThumb = new();
 			cacheThumb.FileName = Path.GetFileName(path);
@@ -519,7 +516,7 @@ namespace YukaLister.Models.WebServer
 		// クライアントにエラーメッセージを返す
 		// エラーメッセージは ASCII のみを推奨
 		// --------------------------------------------------------------------
-		private void SendErrorResponse(HttpListenerResponse response, String message)
+		private static void SendErrorResponse(HttpListenerResponse response, String message)
 		{
 			try
 			{
@@ -542,38 +539,63 @@ namespace YukaLister.Models.WebServer
 		}
 
 		// --------------------------------------------------------------------
+		// クライアントにサムネイルを返す
+		// ＜例外＞ Exception
+		// --------------------------------------------------------------------
+		private static void SendResponseThumb(HttpListenerResponse response, Dictionary<String, String> options)
+		{
+			// サムネイル対象の確定
+			(String path, Int32 width) = GetThumbOptions(options);
+
+			// キャッシュから探す
+			TCacheThumb? cacheThumb = FindCache(path, width);
+
+			if (cacheThumb == null)
+			{
+				// キャッシュに無い場合は新規作成
+				cacheThumb = CreateThumb(path, width);
+			}
+
+			// 更新日
+			DateTime lastModified = JulianDay.ModifiedJulianDateToDateTime(cacheThumb.ThumbLastWriteTime);
+			String lastModifiedStr = lastModified.ToString("ddd, dd MMM yyyy HH:mm:ss", CultureInfo.CreateSpecificCulture("en-US")) + " GMT";
+			Debug.WriteLine("SendResponseThumb() aLastModifiedStr: " + lastModifiedStr);
+
+			// ヘッダー
+			response.StatusCode = (Int32)HttpStatusCode.OK;
+			response.ContentType = "image/jpeg";
+			response.ContentLength64 = cacheThumb.Image.Length;
+			response.Headers.Add(HttpResponseHeader.LastModified, lastModifiedStr);
+
+			// サムネイルデータ
+			response.OutputStream.Write(cacheThumb.Image, 0, cacheThumb.Image.Length);
+		}
+
+		// ====================================================================
+		// private メンバー関数
+		// ====================================================================
+
+		// --------------------------------------------------------------------
 		// クライアントにファイルの内容を返す
 		// ＜例外＞ Exception, OperationCanceledException
 		// --------------------------------------------------------------------
 		private void SendFile(HttpListenerResponse response, String path)
 		{
 			FileInfo fileInfo = new(path);
-			String aContentType;
 
 			// タイプ
-			switch (Path.GetExtension(path).ToLower())
+			String contentType = Path.GetExtension(path).ToLower() switch
 			{
-				case Common.FILE_EXT_AVI:
-					aContentType = "video/x-msvideo";
-					break;
-				case Common.FILE_EXT_MOV:
-					aContentType = "video/quicktime";
-					break;
-				case Common.FILE_EXT_MP4:
-					aContentType = "video/mp4";
-					break;
-				case Common.FILE_EXT_MPEG:
-				case Common.FILE_EXT_MPG:
-					aContentType = "video/mpeg";
-					break;
-				default:
-					aContentType = "application/octet-stream";
-					break;
-			}
+				Common.FILE_EXT_AVI => "video/x-msvideo",
+				Common.FILE_EXT_MOV => "video/quicktime",
+				Common.FILE_EXT_MP4 => "video/mp4",
+				Common.FILE_EXT_MPEG or Common.FILE_EXT_MPG => "video/mpeg",
+				_ => "application/octet-stream",
+			};
 
 			// ヘッダー
 			response.StatusCode = (Int32)HttpStatusCode.OK;
-			response.ContentType = aContentType;
+			response.ContentType = contentType;
 			response.ContentLength64 = fileInfo.Length;
 
 			// 本体
@@ -581,7 +603,7 @@ namespace YukaLister.Models.WebServer
 			Int32 readSizes = 0;
 #endif
 			Byte[] buf = new Byte[1024 * 1024];
-			using (FileStream fileStream = new FileStream(path, FileMode.Open, FileAccess.Read))
+			using (FileStream fileStream = new(path, FileMode.Open, FileAccess.Read))
 			{
 				for (; ; )
 				{
@@ -674,7 +696,7 @@ namespace YukaLister.Models.WebServer
 						throw new Exception("File is not specified.");
 					}
 
-					String path = HttpUtility.UrlDecode(request.RawUrl, Encoding.UTF8).Substring(1).Replace('/', '\\');
+					String path = HttpUtility.UrlDecode(request.RawUrl, Encoding.UTF8)[1..].Replace('/', '\\');
 					if (String.IsNullOrEmpty(path))
 					{
 						throw new Exception("Path is empty.");
@@ -729,39 +751,6 @@ namespace YukaLister.Models.WebServer
 				throw new Exception("File not found.");
 			}
 			SendFile(response, path!);
-		}
-
-		// --------------------------------------------------------------------
-		// クライアントにサムネイルを返す
-		// ＜例外＞ Exception
-		// --------------------------------------------------------------------
-		private void SendResponseThumb(HttpListenerResponse response, Dictionary<String, String> options)
-		{
-			// サムネイル対象の確定
-			(String path, Int32 width) = GetThumbOptions(options);
-
-			// キャッシュから探す
-			TCacheThumb? cacheThumb = FindCache(path, width);
-
-			if (cacheThumb == null)
-			{
-				// キャッシュに無い場合は新規作成
-				cacheThumb = CreateThumb(path, width);
-			}
-
-			// 更新日
-			DateTime lastModified = JulianDay.ModifiedJulianDateToDateTime(cacheThumb.ThumbLastWriteTime);
-			String lastModifiedStr = lastModified.ToString("ddd, dd MMM yyyy HH:mm:ss", CultureInfo.CreateSpecificCulture("en-US")) + " GMT";
-			Debug.WriteLine("SendResponseThumb() aLastModifiedStr: " + lastModifiedStr);
-
-			// ヘッダー
-			response.StatusCode = (Int32)HttpStatusCode.OK;
-			response.ContentType = "image/jpeg";
-			response.ContentLength64 = cacheThumb.Image.Length;
-			response.Headers.Add(HttpResponseHeader.LastModified, lastModifiedStr);
-
-			// サムネイルデータ
-			response.OutputStream.Write(cacheThumb.Image, 0, cacheThumb.Image.Length);
 		}
 
 		// --------------------------------------------------------------------
