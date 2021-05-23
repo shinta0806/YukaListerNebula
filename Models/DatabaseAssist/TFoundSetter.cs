@@ -50,6 +50,8 @@ namespace YukaLister.Models.DatabaseAssist
 			_ = listTieUpGroupSequences;
 			_ = listTags;
 			_ = listTagSequences;
+
+			// MusicInfoContext は検索専用なので NoTracking にする
 			_musicInfoContext = MusicInfoContext.CreateContext(out _,
 					out _songs, out _people, out _tieUps, out _categories,
 					out _tieUpGroups, out _makers, out _tags,
@@ -57,6 +59,8 @@ namespace YukaLister.Models.DatabaseAssist
 					out _, out _, out _,
 					out _artistSequences, out _lyristSequences, out _composerSequences, out _arrangerSequences,
 					out _tieUpGroupSequences, out _tagSequences);
+			_musicInfoContext.ChangeTracker.QueryTrackingBehavior = QueryTrackingBehavior.NoTracking;
+
 			_categoryNames = DbCommon.SelectCategoryNames(_categories);
 		}
 
@@ -191,7 +195,6 @@ namespace YukaLister.Models.DatabaseAssist
 				return alias;
 			}
 
-			// ToDo: METEOR 時代は SQL で高速化していた
 			TTieUpAlias? tieUpAlias = DbCommon.SelectAliasByAlias(_tieUpAliases, alias);
 			if (tieUpAlias != null)
 			{
