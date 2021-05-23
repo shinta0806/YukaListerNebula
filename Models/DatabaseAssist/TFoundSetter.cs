@@ -41,6 +41,7 @@ namespace YukaLister.Models.DatabaseAssist
 				DbSet<TTieUpGroup> listTieUpGroups, DbSet<TTieUpGroupSequence> listTieUpGroupSequences,
 				DbSet<TTag> listTags, DbSet<TTagSequence> listTagSequences)
 		{
+			Debug.Assert(listContextInMemory.ChangeTracker.QueryTrackingBehavior == QueryTrackingBehavior.TrackAll, "TFoundSetter() bad QueryTrackingBehavior");
 			_listContextInMemory = listContextInMemory;
 			_ = listFounds;
 			_listPeople = listPeople;

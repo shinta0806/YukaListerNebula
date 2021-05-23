@@ -799,6 +799,7 @@ namespace YukaLister.ViewModels.MiscWindowViewModels
 							+ "楽曲名を揃えるのが不要の場合は、「楽曲名を揃える」のチェックを外して下さい。");
 				}
 				using MusicInfoContext musicInfoContext = MusicInfoContext.CreateContext(out DbSet<TSong> songs);
+				musicInfoContext.ChangeTracker.QueryTrackingBehavior = QueryTrackingBehavior.NoTracking;
 				TSong? song = DbCommon.SelectMasterByName(songs, SongOrigin);
 				if (song == null)
 				{
@@ -820,6 +821,7 @@ namespace YukaLister.ViewModels.MiscWindowViewModels
 							+ "タイアップ名を揃えるのが不要の場合は、「タイアップ名を揃える」のチェックを外して下さい。");
 				}
 				using MusicInfoContext musicInfoContext = MusicInfoContext.CreateContext(out DbSet<TTieUp> tieUps);
+				musicInfoContext.ChangeTracker.QueryTrackingBehavior = QueryTrackingBehavior.NoTracking;
 				TTieUp? tieUp = DbCommon.SelectMasterByName(tieUps, TieUpOrigin);
 				if (tieUp == null)
 				{
@@ -846,10 +848,12 @@ namespace YukaLister.ViewModels.MiscWindowViewModels
 		// --------------------------------------------------------------------
 		private void Save(String? songOriginalId, String? tieUpOriginalId)
 		{
+#if false
 			using ListContextInMemory listContextInMemory = ListContextInMemory.CreateContext(out DbSet<TFound> founds,
 					out DbSet<TPerson> people, out DbSet<TArtistSequence> artistSequences, out DbSet<TComposerSequence> composerSequences,
 					out DbSet<TTieUpGroup> tieUpGroups, out DbSet<TTieUpGroupSequence> tieUpGroupSequences,
 					out DbSet<TTag> tags, out DbSet<TTagSequence> tagSequences);
+#endif
 
 			// コンポーネントや楽曲情報データベースによるエイリアスを指定しない状態での情報を使うため、YlCommon を使う
 			Dictionary<String, String?> dicByFilePure = YlCommon.MatchFileNameRulesAndFolderRuleForSearch(_filePath);
