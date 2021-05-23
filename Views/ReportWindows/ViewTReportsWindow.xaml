@@ -1,0 +1,79 @@
+﻿<Window x:Class="YukaLister.Views.ReportWindows.ViewTReportsWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:behaviors="http://schemas.microsoft.com/xaml/behaviors"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:l="http://schemas.livet-mvvm.net/2011/wpf"
+        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:msm="clr-namespace:YukaLister.Models.SharedMisc"
+        xmlns:sb="clr-namespace:Shinta.Behaviors"
+        xmlns:vmrwvm="clr-namespace:YukaLister.ViewModels.ReportWindowViewModels"
+        xmlns:vrw="clr-namespace:YukaLister.Views.ReportWindows"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        mc:Ignorable="d"
+        Title="{Binding Title}" Height="600" Width="1000" ResizeMode="CanResizeWithGrip" ShowInTaskbar="False" >
+
+    <Window.DataContext>
+        <vmrwvm:ViewTReportsWindowViewModel/>
+    </Window.DataContext>
+
+    <behaviors:Interaction.Behaviors>
+        <sb:WindowBindingSupportBehavior IsCascade="True" MinimizeBox="False"/>
+    </behaviors:Interaction.Behaviors>
+
+    <behaviors:Interaction.Triggers>
+        <!-- When ContentRendered event raised, Initialize method of ViewModel would be called. -->
+        <behaviors:EventTrigger EventName="ContentRendered">
+            <l:LivetCallMethodAction MethodTarget="{Binding}" MethodName="Initialize"/>
+        </behaviors:EventTrigger>
+
+        <!-- Dispose method is called, when Window closing. -->
+        <behaviors:EventTrigger EventName="Closed">
+            <l:DataContextDisposeAction/>
+        </behaviors:EventTrigger>
+
+        <!-- If you make user choose 'OK or Cancel' closing Window, then please use Window Close nacel Behavior. -->
+
+        <l:InteractionMessageTrigger MessageKey="{x:Static msm:YlConstants.MESSAGE_KEY_OPEN_EDIT_REPORT_WINDOW}" Messenger="{Binding Messenger}">
+            <l:TransitionInteractionMessageAction WindowType="{x:Type vrw:EditReportWindow}" Mode="Modal" IsOwned="True" />
+        </l:InteractionMessageTrigger>
+
+    </behaviors:Interaction.Triggers>
+
+    <DockPanel>
+        <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" Margin="20,15,20,0">
+            <Label Content="利用者から報告されたリストの問題を一覧で確認できます。"/>
+            <Label >
+                <Hyperlink Command="{Binding HelpClickedCommand}" CommandParameter="Reportichiranwindow" >
+                    <TextBlock Text="詳細情報" />
+                </Hyperlink>
+            </Label>
+            <RadioButton Content="要対応のみ" IsChecked="{Binding ShowOnlyOpened}" Margin="20,0,0,0" VerticalAlignment="Center" />
+            <RadioButton Content="すべて" IsChecked="{Binding ShowAll}" VerticalAlignment="Center" Margin="10,0,0,0" />
+        </StackPanel>
+        <DockPanel DockPanel.Dock="Bottom" Margin="20,0,20,20" LastChildFill="False">
+            <Button Content="詳細 (_D)" Width="140" Height="Auto" ToolTip="問題の詳細を確認・編集" Command="{Binding ButtonEditDetailClickedCommand}"/>
+            <Button Content="閉じる (_C)" Width="100" Height="Auto" IsCancel="True" DockPanel.Dock="Right"/>
+        </DockPanel>
+        <DataGrid x:Name="DataGridList" Margin="20,10,20,20" AutoGenerateColumns="False" CanUserReorderColumns="False" SelectionMode="Single" IsReadOnly="True" DockPanel.Dock="Top" 
+                  ItemsSource="{Binding ReportsVisible}" SelectedItem="{Binding SelectedReport}"
+                  materialDesign:DataGridAssist.ColumnHeaderPadding="3 5 3 5" materialDesign:DataGridAssist.CellPadding="3" CanUserSortColumns="False">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="ファイル名" Binding="{Binding FileName}" Width="*" />
+                <DataGridTextColumn Header="問題項目" Binding="{Binding AdjustKeyName}" Width="80" />
+                <DataGridTextColumn Header="誤" Binding="{Binding BadValue}" Width="80" />
+                <DataGridTextColumn Header="正" Binding="{Binding AdjustValue}" Width="80" />
+                <DataGridTextColumn Header="報告者コメント" Binding="{Binding ReporterComment}" Width="100" />
+                <DataGridTextColumn Header="報告者名" Binding="{Binding By}" Width="80" />
+                <DataGridTextColumn Header="報告日" Binding="{Binding RegistDateString}" Width="100" />
+                <DataGridTextColumn Header="対応コメント" Binding="{Binding StatusComment}" Width="100" />
+                <DataGridTextColumn Header="対応状況" Binding="{Binding StatusName}" Width="80" />
+            </DataGrid.Columns>
+            <DataGrid.InputBindings>
+                <MouseBinding MouseAction="LeftDoubleClick" Command="{Binding DataGridDoubleClickedCommand}" />
+            </DataGrid.InputBindings>
+        </DataGrid>
+
+    </DockPanel>
+
+</Window>

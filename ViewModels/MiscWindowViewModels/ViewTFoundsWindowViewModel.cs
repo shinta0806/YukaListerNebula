@@ -644,7 +644,6 @@ namespace YukaLister.ViewModels.MiscWindowViewModels
 		// 検索ウィンドウのビューモデル
 		FindKeywordWindowViewModel? _findKeywordWindowViewModel;
 
-
 		// ====================================================================
 		// private メンバー関数
 		// ====================================================================

@@ -31,12 +31,14 @@ using System.Windows.Media;
 using System.Windows.Threading;
 
 using YukaLister.Models.Database;
+using YukaLister.Models.DatabaseAssist;
 using YukaLister.Models.DatabaseContexts;
 using YukaLister.Models.SerializableSettings;
 using YukaLister.Models.SharedMisc;
 using YukaLister.Models.WebServer;
 using YukaLister.Models.YukaListerModels;
 using YukaLister.ViewModels.MiscWindowViewModels;
+using YukaLister.ViewModels.ReportWindowViewModels;
 
 namespace YukaLister.ViewModels
 {
@@ -67,6 +69,7 @@ namespace YukaLister.ViewModels
 		// public プロパティー
 		// ====================================================================
 
+		#region View 通信用のプロパティー
 		// --------------------------------------------------------------------
 		// View 通信用のプロパティー
 		// --------------------------------------------------------------------
@@ -127,6 +130,14 @@ namespace YukaLister.ViewModels
 			set => RaisePropertyChangedIfSet(ref _numRecordsLabel, value);
 		}
 
+		// 処理を要するリスト問題の数
+		private String? _reportsBadge;
+		public String? ReportsBadge
+		{
+			get => _reportsBadge;
+			set => RaisePropertyChangedIfSet(ref _reportsBadge, value);
+		}
+
 		// DataGrid の選択
 		private TargetFolderInfo? _selectedTargetFolderInfo;
 		public TargetFolderInfo? SelectedTargetFolderInfo
@@ -165,6 +176,7 @@ namespace YukaLister.ViewModels
 			get => _statusBarForeground;
 			set => RaisePropertyChangedIfSet(ref _statusBarForeground, value);
 		}
+		#endregion
 
 		// --------------------------------------------------------------------
 		// 一般プロパティー
@@ -251,6 +263,38 @@ namespace YukaLister.ViewModels
 			catch (Exception excep)
 			{
 				YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(TraceEventType.Error, "デバイス着脱時エラー：\n" + excep.Message);
+				YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, "　スタックトレース：\n" + excep.StackTrace);
+			}
+		}
+		#endregion
+
+		#region リスト問題報告ボタンの制御
+
+		private ViewModelCommand? _buttonReportsClickedCommand;
+
+		public ViewModelCommand ButtonReportsClickedCommand
+		{
+			get
+			{
+				if (_buttonReportsClickedCommand == null)
+				{
+					_buttonReportsClickedCommand = new ViewModelCommand(ButtonReportsClicked);
+				}
+				return _buttonReportsClickedCommand;
+			}
+		}
+
+		public void ButtonReportsClicked()
+		{
+			try
+			{
+				// ViewModel 経由でウィンドウを開く
+				using ViewTReportsWindowViewModel viewTReportsWindowViewModel = new();
+				Messenger.Raise(new TransitionMessage(viewTReportsWindowViewModel, YlConstants.MESSAGE_KEY_OPEN_VIEW_TREPORTS_WINDOW));
+			}
+			catch (Exception excep)
+			{
+				YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(TraceEventType.Error, "リスト問題報告ボタンクリック時エラー：\n" + excep.Message);
 				YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, "　スタックトレース：\n" + excep.StackTrace);
 			}
 		}
@@ -606,24 +650,6 @@ namespace YukaLister.ViewModels
 				// イベントハンドラー
 				TargetFolderInfo.IsOpenChanged = TargetFolderInfoIsOpenChanged;
 
-				// テンポラリフォルダー準備
-				String tempFolderPath = YlCommon.TempFolderPath();
-				try
-				{
-					// 偶然以前と同じ PID となり、かつ、以前異常終了してテンポラリフォルダーが削除されていない場合に対応
-					Directory.Delete(tempFolderPath, true);
-				}
-				catch
-				{
-				}
-				try
-				{
-					Directory.CreateDirectory(tempFolderPath);
-				}
-				catch
-				{
-				}
-
 				// スプラッシュウィンドウを閉じる
 				_splashWindowViewModel.Close();
 
@@ -654,6 +680,14 @@ namespace YukaLister.ViewModels
 				_fileSystemWatcherYukariConfig.Changed += new FileSystemEventHandler(FileSystemWatcherYukariConfig_Changed);
 				SetFileSystemWatcherYukariConfig();
 
+				// リスト問題報告データベース監視
+				CompositeDisposable.Add(_fileSystemWatcherReportDatabase);
+				_fileSystemWatcherReportDatabase.Created += new FileSystemEventHandler(FileSystemWatcherReportDatabase_Changed);
+				_fileSystemWatcherReportDatabase.Deleted += new FileSystemEventHandler(FileSystemWatcherReportDatabase_Changed);
+				_fileSystemWatcherReportDatabase.Changed += new FileSystemEventHandler(FileSystemWatcherReportDatabase_Changed);
+				SetFileSystemWatcherReportDatabase();
+				UpdateReportsBadge();
+
 				// UI 更新タイマー
 				_timerUpdateUi.Interval = TimeSpan.FromSeconds(1.0);
 				_timerUpdateUi.Tick += new EventHandler(TimerUpdateUi_Tick);
@@ -667,15 +701,6 @@ namespace YukaLister.ViewModels
 
 				// サーバー同期
 				ActivateSyclinIfNeeded();
-
-#if DEBUGz
-				String hoge = YlCommon.YukaListerStatusFolderPath("D:");
-#endif
-
-#if DEBUGz
-				Debug.WriteLine("Exists 1: " + File.Exists(@"D:\TempD\TestYl\1234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890\1234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890\a.txt"));
-				Debug.WriteLine("Exists 2: " + File.Exists(@"D:\TempD\TestYl\1234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890\1234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890\12345678901234567890123456789\FolderNameLength.txt"));
-#endif
 
 				// スタートアップ終了
 				YukaListerModel.Instance.EnvModel.YukaListerPartsStatus[(Int32)YukaListerPartsStatusIndex.Startup] = YukaListerStatus.Ready;
@@ -729,16 +754,13 @@ namespace YukaLister.ViewModels
 
 			try
 			{
-				Debug.WriteLine("MainWindowViewModel.Dispose() a");
 				// アプリケーションの終了を通知
 				YukaListerModel.Instance.EnvModel.AppCancellationTokenSource.Cancel();
 
 				// 終了処理
 				// await するとその間に強制終了されてしまうようなので、await しない
 				_ = YukaListerModel.Instance.EnvModel.QuitAllCoresAsync();
-				Debug.WriteLine("MainWindowViewModel.Dispose() b");
 				_ = QuitServerIfNeededAsync();
-				Debug.WriteLine("MainWindowViewModel.Dispose() c");
 				SaveExitStatus();
 				try
 				{
@@ -748,7 +770,6 @@ namespace YukaLister.ViewModels
 				{
 				}
 				_isDisposed = true;
-				Debug.WriteLine("MainWindowViewModel.Dispose() END");
 			}
 			catch (Exception excep)
 			{
@@ -779,6 +800,9 @@ namespace YukaLister.ViewModels
 
 		// config.ini 監視用
 		private readonly FileSystemWatcher _fileSystemWatcherYukariConfig = new();
+
+		// リスト問題報告データベース監視用
+		private readonly FileSystemWatcher _fileSystemWatcherReportDatabase = new();
 
 		// 検索可能ファイル数
 		private Int32 _numFounds;
@@ -933,6 +957,15 @@ namespace YukaLister.ViewModels
 		// --------------------------------------------------------------------
 		// イベントハンドラー
 		// --------------------------------------------------------------------
+		private void FileSystemWatcherReportDatabase_Changed(Object sender, FileSystemEventArgs fileSystemEventArgs)
+		{
+			SetStatusBarMessageWithInvoke(TraceEventType.Information, "リスト問題報告データベースが更新されました。");
+			UpdateReportsBadge();
+		}
+
+		// --------------------------------------------------------------------
+		// イベントハンドラー
+		// --------------------------------------------------------------------
 		private void FileSystemWatcherYukariConfig_Changed(Object sender, FileSystemEventArgs fileSystemEventArgs)
 		{
 			SetStatusBarMessageWithInvoke(TraceEventType.Information, "ゆかり設定ファイルが更新されました。");
@@ -1080,6 +1113,21 @@ namespace YukaLister.ViewModels
 		}
 
 		// --------------------------------------------------------------------
+		// リスト問題報告データベースの監視設定
+		// --------------------------------------------------------------------
+		private void SetFileSystemWatcherReportDatabase()
+		{
+			String path = DbCommon.ReportDatabasePath(YukaListerModel.Instance.EnvModel.YlSettings);
+			String? folder = Path.GetDirectoryName(path);
+			if (!String.IsNullOrEmpty(folder))
+			{
+				_fileSystemWatcherReportDatabase.Path = folder;
+				_fileSystemWatcherReportDatabase.Filter = Path.GetFileName(path);
+				_fileSystemWatcherReportDatabase.EnableRaisingEvents = true;
+			}
+		}
+
+		// --------------------------------------------------------------------
 		// ゆかり設定ファイルの監視設定
 		// --------------------------------------------------------------------
 		private void SetFileSystemWatcherYukariConfig()
@@ -1195,6 +1243,27 @@ namespace YukaLister.ViewModels
 			_numFounds = founds.Count();
 			NumRecordsLabel = _numFounds.ToString("#,0");
 			ButtonTFoundsClickedCommand.RaiseCanExecuteChanged();
+		}
+
+		// --------------------------------------------------------------------
+		// リスト問題報告のバッジを更新
+		// --------------------------------------------------------------------
+		public void UpdateReportsBadge()
+		{
+			using ReportContext reportContext = ReportContext.CreateContext(out DbSet<TReport> reports);
+			Int32 numProgress = reports.Where(x => x.Status <= (Int32)ReportStatus.Progress).Count();
+
+#if DEBUGz
+			numProgress = 999;
+#endif
+			if (numProgress == 0)
+			{
+				ReportsBadge = null;
+			}
+			else
+			{
+				ReportsBadge = numProgress.ToString();
+			}
 		}
 
 		// --------------------------------------------------------------------

@@ -43,7 +43,7 @@ function	output_result($record)
 </p>
 
 <div class="programs">
-<label>問題の内容</label><br>
+<label>報告内容</label><br>
 <br>
 
 <table>
@@ -52,8 +52,6 @@ function	output_result($record)
  <tr><th>その他コメント等</th><td>{$record[FIELD_NAME_REPORT_REPORTER_COMMENT]}</td></tr>
  <tr><th>報告者名</th><td>{$record[FIELD_NAME_REPORT_BY]}</td></tr>
 </table>
-
-<p class="rightalign"><!-- $Support$ --></p>
 EOD;
 }
 

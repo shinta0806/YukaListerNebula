@@ -19,6 +19,7 @@ using Shinta;
 
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Windows;
 using System.Windows.Threading;
@@ -64,6 +65,24 @@ namespace YukaLister.ViewModels
 				theme.SetSecondaryColor(limeSwatch.ExemplarHue.Color);
 			}
 			paletteHelper.SetTheme(theme);
+
+			// テンポラリフォルダー準備
+			String tempFolderPath = YlCommon.TempFolderPath();
+			try
+			{
+				// 偶然以前と同じ PID となり、かつ、以前異常終了してテンポラリフォルダーが削除されていない場合に対応
+				Directory.Delete(tempFolderPath, true);
+			}
+			catch
+			{
+			}
+			try
+			{
+				Directory.CreateDirectory(tempFolderPath);
+			}
+			catch
+			{
+			}
 
 			// 環境
 			YukaListerModel.Instance.EnvModel.YlSettings.Load();

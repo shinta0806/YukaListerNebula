@@ -151,6 +151,38 @@ namespace YukaLister.Models.SharedMisc
 	}
 
 	// --------------------------------------------------------------------
+	// リスト問題の修正項目インデックス
+	// --------------------------------------------------------------------
+	public enum ReportAdjustKey
+	{
+		Invalid,
+		Misc,
+		CategoryName,
+		TieUpName,
+		OpEd,
+		SongName,
+		ArtistName,
+		Track,
+		Worker,
+		TieUpGroupName,
+		AgeLimit,
+		__End__,
+	}
+
+	// --------------------------------------------------------------------
+	// リスト問題の対応状況
+	// --------------------------------------------------------------------
+	public enum ReportStatus
+	{
+		Registered, // 未対応
+		Progress,   // 対応中
+		Retention,  // 保留
+		Invalid,    // 無効
+		Done,       // 完了
+		__End__,
+	}
+
+	// --------------------------------------------------------------------
 	// ゆかりすたー NEBULA のどのパーツの動作状況を示すか
 	// --------------------------------------------------------------------
 	public enum YukaListerPartsStatusIndex
@@ -310,6 +342,22 @@ namespace YukaLister.Models.SharedMisc
 		public const String FIELD_SUFFIX_AGE_LIMIT = "age_limit";
 
 		// --------------------------------------------------------------------
+		// リスト問題報告データベース
+		// --------------------------------------------------------------------
+
+		// 問題項目名
+		public static readonly String?[] REPORT_ADJUST_KEY_NAMES =
+		{
+			null, "その他", "カテゴリー名", "タイアップ名", "摘要", "楽曲名", "歌手名", "トラック", "制作者", "シリーズ名", "年齢制限",
+		};
+
+		// 対応状況名
+		public static readonly String[] REPORT_STATUS_NAMES =
+		{
+			"未対応", "対応中", "保留", "無効", "完了"
+		};
+
+		// --------------------------------------------------------------------
 		// MessageKey
 		// --------------------------------------------------------------------
 
@@ -327,6 +375,9 @@ namespace YukaLister.Models.SharedMisc
 
 		// 楽曲情報等編集ウィンドウを開く
 		public const String MESSAGE_KEY_OPEN_EDIT_MUSIC_INFO_WINDOW = "OpenEditMusicInfoWindow";
+
+		// リスト問題報告編集ウィンドウを開く
+		public const String MESSAGE_KEY_OPEN_EDIT_REPORT_WINDOW = "OpenEditReportWindow";
 
 		// 紐付編集ウィンドウを開く
 		public const String MESSAGE_KEY_OPEN_EDIT_SEQUENCE_WINDOW = "OpenEditSequenceWindow";
@@ -357,6 +408,9 @@ namespace YukaLister.Models.SharedMisc
 
 		// ファイル一覧ウィンドウを開く
 		public const String MESSAGE_KEY_OPEN_VIEW_TFOUNDS_WINDOW = "OpenViewTFoundsWindow";
+
+		// リスト問題報告ウィンドウを開く
+		public const String MESSAGE_KEY_OPEN_VIEW_TREPORTS_WINDOW = "OpenViewTReportsWindow";
 
 		// 環境設定ウィンドウを開く
 		public const String MESSAGE_KEY_OPEN_YL_SETTINGS_WINDOW = "OpenYlSettingsWindow";

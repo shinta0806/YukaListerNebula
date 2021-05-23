@@ -326,6 +326,7 @@ namespace YukaLister.Models.DatabaseAssist
 				MusicInfoContext.CreateDatabaseIfNeeded();
 				ListContextInDisk.CreateDatabase();
 				ListContextInMemory.CreateDatabase();
+				ReportContext.CreateDatabaseIfNeeded();
 				ThumbContext.CreateDatabaseIfNeeded();
 			}
 			catch (Exception excep)
@@ -412,6 +413,14 @@ namespace YukaLister.Models.DatabaseAssist
 					}
 				}
 			}
+		}
+
+		// --------------------------------------------------------------------
+		// リスト問題報告データベースのフルパス
+		// --------------------------------------------------------------------
+		public static String ReportDatabasePath(YlSettings ylSettings)
+		{
+			return YukariDatabaseFullFolder(ylSettings) + FILE_NAME_REPORT_DATABASE;
 		}
 
 		// --------------------------------------------------------------------
@@ -626,6 +635,7 @@ namespace YukaLister.Models.DatabaseAssist
 
 		// データベースファイル名
 		private const String FILE_NAME_LIST_DATABASE_IN_DISK = "List" + Common.FILE_EXT_SQLITE3;
+		private const String FILE_NAME_REPORT_DATABASE = "Report" + Common.FILE_EXT_SQLITE3;
 		private const String FILE_NAME_THUMB_DATABASE = "Thumb" + Common.FILE_EXT_SQLITE3;
 
 		// ====================================================================

@@ -11,6 +11,7 @@
     xmlns:vdgc="clr-namespace:YukaLister.Views.DataGridControls"
     xmlns:vm="clr-namespace:YukaLister.ViewModels"
     xmlns:vmw="clr-namespace:YukaLister.Views.MiscWindows"
+    xmlns:vrw="clr-namespace:YukaLister.Views.ReportWindows"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     Title="{Binding Title}" Left="{Binding Left, Mode=TwoWay}" Top="{Binding Top, Mode=TwoWay}" Width="{Binding Width, Mode=TwoWay}" Height="{Binding Height, Mode=TwoWay}" 
     MinWidth="600" MinHeight="330" ResizeMode="CanResizeWithGrip" Cursor="{Binding Cursor}" 
@@ -49,6 +50,11 @@
         <l:InteractionMessageTrigger MessageKey="{x:Static msm:YlConstants.MESSAGE_KEY_OPEN_VIEW_TFOUNDS_WINDOW}" Messenger="{Binding Messenger}">
             <l:TransitionInteractionMessageAction WindowType="{x:Type vmw:ViewTFoundsWindow}" Mode="Modal" IsOwned="True" />
         </l:InteractionMessageTrigger>
+
+        <l:InteractionMessageTrigger MessageKey="{x:Static msm:YlConstants.MESSAGE_KEY_OPEN_VIEW_TREPORTS_WINDOW}" Messenger="{Binding Messenger}">
+            <l:TransitionInteractionMessageAction WindowType="{x:Type vrw:ViewTReportsWindow}" Mode="Modal" IsOwned="True" />
+        </l:InteractionMessageTrigger>
+        
         <l:InteractionMessageTrigger MessageKey="{x:Static msm:YlConstants.MESSAGE_KEY_OPEN_YL_SETTINGS_WINDOW}" Messenger="{Binding Messenger}">
             <l:TransitionInteractionMessageAction WindowType="{x:Type vmw:YlSettingsWindow}" Mode="Modal" IsOwned="True" />
         </l:InteractionMessageTrigger>
@@ -77,11 +83,11 @@
                 </Button.ContextMenu>
                 <materialDesign:PackIcon Kind="HelpCircleOutline" Height="18" Width="18" />
             </Button>
-            <Button Style="{StaticResource MaterialDesignRaisedLightButton}" ToolTip="環境設定" Width="50" Height="25" Margin="0,0,10,0" DockPanel.Dock="Right" VerticalAlignment="Center" Command="{Binding ButtonYukaListerSettingsClickedCommand}">
+            <Button Style="{StaticResource MaterialDesignRaisedLightButton}" ToolTip="環境設定" Width="50" Height="25" Margin="0,0,10,0" DockPanel.Dock="Right" VerticalAlignment="Center" Command="{Binding ButtonYukaListerSettingsClickedCommand}" >
                 <materialDesign:PackIcon Kind="SettingsOutline" Height="18" Width="18" />
             </Button>
             <materialDesign:Badged Badge="{Binding ReportsBadge}" BadgeColorZoneMode="Dark" DockPanel.Dock="Right" VerticalAlignment="Center" Margin="0,0,15,0" Padding="0,0,-15,0" >
-                <Button Style="{StaticResource MaterialDesignRaisedLightButton}" ToolTip="報告されたリストの問題を一覧表示" Width="50" Height="25" Margin="0,0,10,0" Command="{Binding ButtonReportsClickedCommand}" Visibility="Hidden" >
+                <Button Style="{StaticResource MaterialDesignRaisedLightButton}" ToolTip="報告されたリストの問題を一覧表示" Width="50" Height="25" Margin="0,0,10,0" Command="{Binding ButtonReportsClickedCommand}" >
                     <materialDesign:PackIcon Kind="MessageWarningOutline" Height="18" Width="18" />
                 </Button>
             </materialDesign:Badged>
