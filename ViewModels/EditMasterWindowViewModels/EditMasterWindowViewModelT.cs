@@ -215,7 +215,7 @@ namespace YukaLister.ViewModels.EditMasterWindowViewModels
 				else
 				{
 					// それ以外の場合は通常の確認
-					if (MessageBox.Show("この" + _caption + "を削除しますか？",
+					if (MessageBox.Show("この" + _caption + "を削除しますか？\n\n【注意】削除すると復活できません。",
 							"確認", MessageBoxButton.YesNo, MessageBoxImage.Exclamation) != MessageBoxResult.Yes)
 					{
 						return;

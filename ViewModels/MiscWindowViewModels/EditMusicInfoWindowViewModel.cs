@@ -271,7 +271,7 @@ namespace YukaLister.ViewModels.MiscWindowViewModels
 			{
 				using MusicInfoContext musicInfoContext = MusicInfoContext.CreateContext(out DbSet<TTieUp> tieUps);
 				using SearchMasterWindowViewModel<TTieUp> searchMasterWindowViewModel = new(tieUps, "タイアップ名の正式名称");
-				searchMasterWindowViewModel.SelectedKeyword = TieUpOrigin;
+				searchMasterWindowViewModel.SelectedKeyword = TieUpOrigin ?? TieUpNameByFileName;
 				Messenger.Raise(new TransitionMessage(searchMasterWindowViewModel, YlConstants.MESSAGE_KEY_OPEN_SEARCH_MASTER_WINDOW));
 
 				_isTieUpSearched = true;
@@ -459,7 +459,7 @@ namespace YukaLister.ViewModels.MiscWindowViewModels
 			{
 				using MusicInfoContext musicInfoContext = MusicInfoContext.CreateContext(out DbSet<TSong> songs);
 				using SearchMasterWindowViewModel<TSong> searchMasterWindowViewModel = new(songs, "楽曲名の正式名称");
-				searchMasterWindowViewModel.SelectedKeyword = SongOrigin;
+				searchMasterWindowViewModel.SelectedKeyword = SongOrigin ?? SongNameByFileName;
 				Messenger.Raise(new TransitionMessage(searchMasterWindowViewModel, YlConstants.MESSAGE_KEY_OPEN_SEARCH_MASTER_WINDOW));
 
 				_isSongSearched = true;
