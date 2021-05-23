@@ -60,12 +60,7 @@ namespace YukaLister.Models.OutputWriters
 			base.PrepareOutput();
 
 			// 出力先フォルダー
-			Debug.Assert(!String.IsNullOrEmpty(YukaListerModel.Instance.EnvModel.YlSettings.ListOutputFolder), "PrepareOutput bad output folder");
-			if (!Directory.Exists(YukaListerModel.Instance.EnvModel.YlSettings.ListOutputFolder))
-			{
-				Directory.CreateDirectory(YukaListerModel.Instance.EnvModel.YlSettings.ListOutputFolder);
-			}
-			_folderPath = YukaListerModel.Instance.EnvModel.YlSettings.ListOutputFolder;
+			SetFolderPathByYlSettings();
 		}
 	}
 }

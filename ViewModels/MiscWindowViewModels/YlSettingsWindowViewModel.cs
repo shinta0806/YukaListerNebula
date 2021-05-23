@@ -1094,9 +1094,9 @@ namespace YukaLister.ViewModels.MiscWindowViewModels
 				HtmlOutputWriter htmlOutputWriter = new();
 				CompositeDisposable.Add(htmlOutputWriter);
 				OutputWriters.Add(htmlOutputWriter);
-#if false
-				mOutputWriters.Add(new CsvOutputWriter(Environment!));
-#endif
+				CsvOutputWriter csvOutputWriter = new();
+				CompositeDisposable.Add(csvOutputWriter);
+				OutputWriters.Add(csvOutputWriter);
 
 				// プログレスバー
 				ProgressBarCheckRssVisibility = Visibility.Hidden;

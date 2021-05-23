@@ -14,6 +14,7 @@ using Shinta;
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 
 using YukaLister.Models.Database;
@@ -56,26 +57,6 @@ namespace YukaLister.Models.OutputWriters
 
 		// 出力形式（表示用）
 		public String FormatName { get; protected set; } = String.Empty;
-
-#if false
-		// 出力先フォルダー（末尾 '\\' 付き）
-		private String? _folderPath;
-		public String? FolderPath
-		{
-			get
-			{
-				return _folderPath;
-			}
-			set
-			{
-				_folderPath = value;
-				if (!String.IsNullOrEmpty(_folderPath) && _folderPath[^1] != '\\')
-				{
-					_folderPath += '\\';
-				}
-			}
-		}
-#endif
 
 		// 出力先インデックスファイル名（パス無し）
 		public String TopFileName { get; protected set; } = String.Empty;
@@ -259,6 +240,19 @@ namespace YukaLister.Models.OutputWriters
 
 			// OutputSettings.OutputAllItems に基づく設定（コンストラクターでは OutputSettings がロードされていない）
 			_runtimeOutputItems = OutputSettings.RuntimeOutputItems();
+		}
+
+		// --------------------------------------------------------------------
+		// 出力先フォルダーを環境設定のものにする
+		// --------------------------------------------------------------------
+		protected void SetFolderPathByYlSettings()
+		{
+			Debug.Assert(!String.IsNullOrEmpty(YukaListerModel.Instance.EnvModel.YlSettings.ListOutputFolder), "SetFolderPathByYlSettings() bad output folder");
+			if (!Directory.Exists(YukaListerModel.Instance.EnvModel.YlSettings.ListOutputFolder))
+			{
+				Directory.CreateDirectory(YukaListerModel.Instance.EnvModel.YlSettings.ListOutputFolder);
+			}
+			_folderPath = YukaListerModel.Instance.EnvModel.YlSettings.ListOutputFolder;
 		}
 
 		// ====================================================================
