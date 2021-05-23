@@ -12,6 +12,7 @@ using Shinta;
 using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+
 using YukaLister.Models.SharedMisc;
 
 namespace YukaLister.Models.Database

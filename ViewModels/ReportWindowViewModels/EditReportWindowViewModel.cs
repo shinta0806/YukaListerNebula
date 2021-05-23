@@ -1,6 +1,6 @@
 ﻿// ============================================================================
 // 
-// リスト問題報告編集ウィンドウの ViewModel
+// 報告されたリスト問題の管理ウィンドウの ViewModel
 // 
 // ============================================================================
 
@@ -41,7 +41,7 @@ namespace YukaLister.ViewModels.ReportWindowViewModels
 		// --------------------------------------------------------------------
 		public EditReportWindowViewModel(TReport report)
 		{
-			_report = report;
+			Report = report;
 		}
 
 		// --------------------------------------------------------------------
@@ -49,7 +49,7 @@ namespace YukaLister.ViewModels.ReportWindowViewModels
 		// --------------------------------------------------------------------
 		public EditReportWindowViewModel()
 		{
-			_report = new TReport();
+			Report = new TReport();
 		}
 
 		// ====================================================================
@@ -61,19 +61,7 @@ namespace YukaLister.ViewModels.ReportWindowViewModels
 		// --------------------------------------------------------------------
 
 		// 報告内容
-		private TReport _report;
-		public TReport Report
-		{
-			get => _report;
-			set
-			{
-				if (RaisePropertyChangedIfSet(ref _report, value))
-				{
-					RaisePropertyChanged(nameof(Folder));
-					RaisePropertyChanged(nameof(RegistTimeString));
-				}
-			}
-		}
+		public TReport Report { get; set; }
 
 		// フォルダー
 		public String? Folder
@@ -285,15 +273,6 @@ namespace YukaLister.ViewModels.ReportWindowViewModels
 				List<String> statusStrings = new();
 				statusStrings.AddRange(YlConstants.REPORT_STATUS_NAMES);
 				StatusStrings = statusStrings;
-
-				// 最新情報読込
-				using ReportContext reportContext = ReportContext.CreateContext(out DbSet<TReport> reports);
-				TReport? latest = DbCommon.SelectBaseById(reports, Report.Id);
-				if (latest == null)
-				{
-					throw new Exception("対象の報告が見つかりません。");
-				}
-				Report = latest;
 
 				// 値反映
 				ReportToProperties();
