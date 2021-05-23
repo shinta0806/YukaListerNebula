@@ -376,7 +376,7 @@ namespace YukaLister.ViewModels.SearchMasterWindowViewModels
 			{
 				String? ruby = YlCommon.NormalizeDbRubyForSearch(normalizedKeyword);
 				Boolean isKeywordRuby = !String.IsNullOrEmpty(ruby) && ruby.Length == normalizedKeyword.Length;
-				results = _records.Where(x =>
+				results = _records.AsNoTracking().Where(x =>
 						(
 							// EF Core では String.Contains() が StringComparison.OrdinalIgnoreCase 付きで動作しないため、EF.Functions.Like() を使う
 							EF.Functions.Like(x.Name, $"%{normalizedKeyword}%")

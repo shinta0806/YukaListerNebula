@@ -93,6 +93,7 @@ namespace YukaLister.ViewModels.MiscWindowViewModels
 					return false;
 				}
 				using MusicInfoContext musicInfoContext = MusicInfoContext.CreateContext(out DbSet<TTieUp> tieUps);
+				musicInfoContext.ChangeTracker.QueryTrackingBehavior = QueryTrackingBehavior.NoTracking;
 				return DbCommon.SelectMasterByName(tieUps, dicByFilePure[YlConstants.RULE_VAR_PROGRAM]) != null;
 			}
 		}
@@ -117,6 +118,7 @@ namespace YukaLister.ViewModels.MiscWindowViewModels
 					return false;
 				}
 				using MusicInfoContext musicInfoContext = MusicInfoContext.CreateContext(out DbSet<TSong> songs);
+				musicInfoContext.ChangeTracker.QueryTrackingBehavior = QueryTrackingBehavior.NoTracking;
 				return DbCommon.SelectMasterByName(songs, dicByFilePure[YlConstants.RULE_VAR_TITLE]) != null;
 			}
 		}

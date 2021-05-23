@@ -41,6 +41,7 @@ namespace YukaLister.ViewModels.EditMasterWindowViewModels
 		// --------------------------------------------------------------------
 		public EditMasterWindowViewModel(MusicInfoContext musicInfoContext, DbSet<T> records)
 		{
+			Debug.Assert(musicInfoContext.ChangeTracker.QueryTrackingBehavior == QueryTrackingBehavior.TrackAll, "EditMasterWindowViewModel() bad QueryTrackingBehavior");
 			_caption = YlConstants.MUSIC_INFO_TABLE_NAME_LABELS[DbCommon.MusicInfoTableIndex<T>()];
 			_musicInfoContext = musicInfoContext;
 			_records = records;

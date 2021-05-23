@@ -50,7 +50,7 @@ namespace YukaLister.ViewModels.EditMasterWindowViewModels
 		// ダミーコンストラクター（Visual Studio・TransitionMessage 用）
 		// --------------------------------------------------------------------
 		public EditSongWindowViewModel()
-				: base(null!, null!)
+				: base(new MusicInfoContext(), null!)
 		{
 		}
 
