@@ -10,14 +10,16 @@
 
 using Livet.Commands;
 using Livet.Messaging;
+
 using Microsoft.EntityFrameworkCore;
+
 using Shinta;
+
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+
 using YukaLister.Models.Database;
 using YukaLister.Models.DatabaseContexts;
 using YukaLister.Models.SharedMisc;

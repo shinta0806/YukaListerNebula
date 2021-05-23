@@ -427,7 +427,7 @@ namespace YukaLister.Models.DatabaseAssist
 		// 楽曲情報データベースから別名を検索
 		// 見つからない場合は null
 		// --------------------------------------------------------------------
-		public static T? SelectAliasByAlias<T>(DbSet<T> records, String? alias, Boolean includesInvalid = false) where T : class, IRcAlias
+		public static T? SelectAliasByAlias<T>(IQueryable<T> records, String? alias, Boolean includesInvalid = false) where T : class, IRcAlias
 		{
 			if (String.IsNullOrEmpty(alias))
 			{
@@ -440,7 +440,7 @@ namespace YukaLister.Models.DatabaseAssist
 		// 楽曲情報データベースから IRcBase を検索
 		// 見つからない場合は null
 		// --------------------------------------------------------------------
-		public static T? SelectBaseById<T>(DbSet<T> records, String? id, Boolean includesInvalid = false) where T : class, IRcBase
+		public static T? SelectBaseById<T>(IQueryable<T> records, String? id, Boolean includesInvalid = false) where T : class, IRcBase
 		{
 			if (String.IsNullOrEmpty(id))
 			{
@@ -452,7 +452,7 @@ namespace YukaLister.Models.DatabaseAssist
 		// --------------------------------------------------------------------
 		// 楽曲情報データベースからカテゴリー名を列挙
 		// --------------------------------------------------------------------
-		public static List<String> SelectCategoryNames(DbSet<TCategory> categories, Boolean includesInvalid = false)
+		public static List<String> SelectCategoryNames(IQueryable<TCategory> categories, Boolean includesInvalid = false)
 		{
 			List<String> categoryNames = new();
 			foreach (TCategory category in categories)
@@ -468,7 +468,7 @@ namespace YukaLister.Models.DatabaseAssist
 		// --------------------------------------------------------------------
 		// 楽曲情報データベースから IRcMaster を 1 つだけ検索
 		// --------------------------------------------------------------------
-		public static T? SelectMasterByName<T>(DbSet<T> records, String? name, Boolean includesInvalid = false) where T : class, IRcMaster
+		public static T? SelectMasterByName<T>(IQueryable<T> records, String? name, Boolean includesInvalid = false) where T : class, IRcMaster
 		{
 			if (String.IsNullOrEmpty(name))
 			{
@@ -480,7 +480,7 @@ namespace YukaLister.Models.DatabaseAssist
 		// --------------------------------------------------------------------
 		// 楽曲情報データベースから IRcMaster をすべて検索
 		// --------------------------------------------------------------------
-		public static List<T> SelectMastersByName<T>(DbSet<T> records, String? name, Boolean includesInvalid = false) where T : class, IRcMaster
+		public static List<T> SelectMastersByName<T>(IQueryable<T> records, String? name, Boolean includesInvalid = false) where T : class, IRcMaster
 		{
 			if (String.IsNullOrEmpty(name))
 			{
@@ -495,7 +495,7 @@ namespace YukaLister.Models.DatabaseAssist
 		// 現時点では includesInvalid == true の用途が思いつかないため引数として includesInvalid は装備しない
 		// 引数として includesInvalid を装備する場合は返値を List<TPerson?> にする必要があると思う
 		// --------------------------------------------------------------------
-		public static List<TPerson> SelectSequencedPeopleBySongId<T>(DbSet<T> sequenceRecords, DbSet<TPerson> personRecords, String songId) where T : class, IRcSequence
+		public static List<TPerson> SelectSequencedPeopleBySongId<T>(IQueryable<T> sequenceRecords, IQueryable<TPerson> personRecords, String songId) where T : class, IRcSequence
 		{
 			List<T> sequences = SelectSequencesById(sequenceRecords, songId);
 			List<TPerson> people = new();
@@ -517,7 +517,7 @@ namespace YukaLister.Models.DatabaseAssist
 		// 現時点では includesInvalid == true の用途が思いつかないため引数として includesInvalid は装備しない
 		// 引数として includesInvalid を装備する場合は返値を List<TTag?> にする必要があると思う
 		// --------------------------------------------------------------------
-		public static List<TTag> SelectSequencedTagsBySongId(DbSet<TTagSequence> tagSequenceRecords, DbSet<TTag> tagRecords, String songId)
+		public static List<TTag> SelectSequencedTagsBySongId(IQueryable<TTagSequence> tagSequenceRecords, IQueryable<TTag> tagRecords, String songId)
 		{
 			List<TTagSequence> sequences = SelectSequencesById(tagSequenceRecords, songId);
 			List<TTag> tags = new();
@@ -539,7 +539,7 @@ namespace YukaLister.Models.DatabaseAssist
 		// 現時点では includesInvalid == true の用途が思いつかないため引数として includesInvalid は装備しない
 		// 引数として includesInvalid を装備する場合は返値を List<TTieUpGroup?> にする必要があると思う
 		// --------------------------------------------------------------------
-		public static List<TTieUpGroup> SelectSequencedTieUpGroupsByTieUpId(DbSet<TTieUpGroupSequence> tieUpGroupSequenceRecords, DbSet<TTieUpGroup> tieUpGroupRecords, String tieUpId)
+		public static List<TTieUpGroup> SelectSequencedTieUpGroupsByTieUpId(IQueryable<TTieUpGroupSequence> tieUpGroupSequenceRecords, IQueryable<TTieUpGroup> tieUpGroupRecords, String tieUpId)
 		{
 			List<TTieUpGroupSequence> sequences = SelectSequencesById(tieUpGroupSequenceRecords, tieUpId);
 			List<TTieUpGroup> tieUpGroups = new();
@@ -560,7 +560,7 @@ namespace YukaLister.Models.DatabaseAssist
 		// 紐付データベースから紐付を検索
 		// 紐付更新時は includesInvalid == true で呼ばれる
 		// --------------------------------------------------------------------
-		public static List<T> SelectSequencesById<T>(DbSet<T> records, String id, Boolean includesInvalid = false) where T : class, IRcSequence
+		public static List<T> SelectSequencesById<T>(IQueryable<T> records, String id, Boolean includesInvalid = false) where T : class, IRcSequence
 		{
 			if (String.IsNullOrEmpty(id))
 			{
@@ -573,7 +573,7 @@ namespace YukaLister.Models.DatabaseAssist
 		// --------------------------------------------------------------------
 		// 同名のレコードがあるかどうかによって AvoidSameName を設定する
 		// --------------------------------------------------------------------
-		public static void SetAvoidSameName<T>(DbSet<T> records, T master) where T : class, IRcMaster
+		public static void SetAvoidSameName<T>(IQueryable<T> records, T master) where T : class, IRcMaster
 		{
 			master.AvoidSameName = SelectMastersByName(records, master.Name).Count > 1;
 		}
