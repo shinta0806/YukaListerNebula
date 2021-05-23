@@ -802,6 +802,11 @@ namespace YukaLister.Models.SharedMisc
 		// --------------------------------------------------------------------
 		public static Double StringsToMjd(String caption, String? yearString, String? monthString, String? dayString)
 		{
+			// 正規化
+			yearString = YlCommon.NormalizeDbString(yearString);
+			monthString = YlCommon.NormalizeDbString(monthString);
+			dayString = YlCommon.NormalizeDbString(dayString);
+
 			if (String.IsNullOrEmpty(yearString))
 			{
 				// 年が入力されていない場合は、月日も空欄でなければならない
