@@ -29,6 +29,7 @@ using YukaLister.Models.Database.Masters;
 using YukaLister.Models.DatabaseAssist;
 using YukaLister.Models.SharedMisc;
 using YukaLister.Models.YukaListerModels;
+using YukaLister.ViewModels.OutputSettingsWindowViewModels;
 
 namespace YukaLister.Models.OutputWriters
 {
@@ -56,15 +57,13 @@ namespace YukaLister.Models.OutputWriters
 		// public メンバー関数
 		// ====================================================================
 
-#if false
 		// --------------------------------------------------------------------
 		// リスト出力設定ウィンドウの ViewModel を生成
 		// --------------------------------------------------------------------
 		public override OutputSettingsWindowViewModel CreateOutputSettingsWindowViewModel()
 		{
-			return new WebOutputSettingsWindowViewModel();
+			return new WebOutputSettingsWindowViewModel(this);
 		}
-#endif
 
 		// --------------------------------------------------------------------
 		// リスト出力

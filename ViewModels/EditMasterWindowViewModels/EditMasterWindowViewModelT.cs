@@ -573,7 +573,7 @@ namespace YukaLister.ViewModels.EditMasterWindowViewModels
 			Debug.Assert(!newRecord.Invalid, "UpdateExistRecord() invalid");
 
 			newRecord.UpdateTime = existRecord.UpdateTime;
-			Common.ShallowCopy(newRecord, existRecord);
+			Common.ShallowCopyFields(newRecord, existRecord);
 			YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS,
 					YlConstants.MUSIC_INFO_TABLE_NAME_LABELS[DbCommon.MusicInfoTableIndex<T>()] + "テーブル更新：" + newRecord.Id + " / " + newRecord.Name);
 		}

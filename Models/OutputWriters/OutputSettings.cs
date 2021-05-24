@@ -64,7 +64,7 @@ namespace YukaLister.Models.OutputWriters
 			{
 				OutputSettings tmp = new();
 				tmp = Common.Deserialize(SettingsPath(), tmp);
-				Common.ShallowCopy(tmp, this);
+				Common.ShallowCopyProperties(tmp, this);
 			}
 			catch (Exception excep)
 			{
@@ -124,7 +124,7 @@ namespace YukaLister.Models.OutputWriters
 			try
 			{
 				OutputSettings tmp = new();
-				Common.ShallowCopy(this, tmp);
+				Common.ShallowCopyProperties(this, tmp);
 				Common.Serialize(SettingsPath(), tmp);
 			}
 			catch (Exception excep)

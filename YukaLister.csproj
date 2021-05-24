@@ -23,6 +23,11 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Page Remove="Views\OutputSettingsControls\OutputSettingsTabItemBasic.xaml" />
+    <Page Remove="Views\OutputSettingsControls\OutputSettingsTabItemWeb.xaml" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Compile Include="..\..\_Common\Behaviors\DataGridBindingSupportBehavior.cs" Link="_Common\Behaviors\DataGridBindingSupportBehavior.cs" />
     <Compile Include="..\..\_Common\Behaviors\DeviceChangeAttachedBehavior.cs" Link="_Common\Behaviors\DeviceChangeAttachedBehavior.cs" />
     <Compile Include="..\..\_Common\Behaviors\FileDropAttachedBehavior.cs" Link="_Common\Behaviors\FileDropAttachedBehavior.cs" />
@@ -39,6 +44,15 @@
     <Compile Include="..\..\_Common\SystemEnvironment.cs" Link="_Common\SystemEnvironment.cs" />
     <Compile Include="..\..\_Common\UpdaterLauncher.cs" Link="_Common\UpdaterLauncher.cs" />
     <Compile Include="..\..\_Common\WindowsApi.cs" Link="_Common\WindowsApi.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="Views\OutputSettingsControls\OutputSettingsTabItemBasic.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Views\OutputSettingsControls\OutputSettingsTabItemWeb.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </EmbeddedResource>
   </ItemGroup>
 
   <ItemGroup>

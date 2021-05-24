@@ -400,6 +400,9 @@ namespace YukaLister.Models.SharedMisc
 		// 開くダイアログを開く
 		public const String MESSAGE_KEY_OPEN_OPEN_FILE_DIALOG = "OpenOpenFileDialog";
 
+		// リスト出力設定ウィンドウを開く
+		public const String MESSAGE_KEY_OPEN_OUTPUT_SETTINGS_WINDOW = "OpenOutputSettingsWindow";
+
 		// 保存ダイアログを開く
 		public const String MESSAGE_KEY_OPEN_SAVE_FILE_DIALOG = "OpenSaveFileDialog";
 

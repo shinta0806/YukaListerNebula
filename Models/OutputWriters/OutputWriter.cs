@@ -24,6 +24,7 @@ using YukaLister.Models.Database.Sequences;
 using YukaLister.Models.DatabaseContexts;
 using YukaLister.Models.SharedMisc;
 using YukaLister.Models.YukaListerModels;
+using YukaLister.ViewModels.OutputSettingsWindowViewModels;
 
 namespace YukaLister.Models.OutputWriters
 {
@@ -77,15 +78,13 @@ namespace YukaLister.Models.OutputWriters
 			GC.SuppressFinalize(this);
 		}
 
-#if false
 		// --------------------------------------------------------------------
 		// リスト出力設定ウィンドウの ViewModel を生成
 		// --------------------------------------------------------------------
 		public virtual OutputSettingsWindowViewModel CreateOutputSettingsWindowViewModel()
 		{
-			return new OutputSettingsWindowViewModel();
+			return new OutputSettingsWindowViewModel(this);
 		}
-#endif
 
 		// --------------------------------------------------------------------
 		// リスト出力

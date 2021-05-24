@@ -9,6 +9,7 @@
 // ----------------------------------------------------------------------------
 
 using Livet.Commands;
+using Livet.Messaging;
 using Livet.Messaging.IO;
 using Livet.Messaging.Windows;
 
@@ -27,6 +28,7 @@ using YukaLister.Models.OutputWriters;
 using YukaLister.Models.SerializableSettings;
 using YukaLister.Models.SharedMisc;
 using YukaLister.Models.YukaListerModels;
+using YukaLister.ViewModels.OutputSettingsWindowViewModels;
 
 namespace YukaLister.ViewModels.MiscWindowViewModels
 {
@@ -629,35 +631,28 @@ namespace YukaLister.ViewModels.MiscWindowViewModels
 
 		public void ButtonYukariListSettingsClicked()
 		{
-#if false
 			try
 			{
-				// どこかに			LoadOutputSettings(); を入れる
+				YukariOutputWriter yukariOutputWriter = new();
+				yukariOutputWriter.OutputSettings.Load();
 
-				YukariOutputWriter aYukariOutputWriter = new YukariOutputWriter(Environment!);
-				aYukariOutputWriter.OutputSettings?.Load();
+				// ViewModel 経由でリスト出力設定ウィンドウを開く
+				using OutputSettingsWindowViewModel outputSettingsWindowViewModel = yukariOutputWriter.CreateOutputSettingsWindowViewModel();
+				Messenger.Raise(new TransitionMessage(outputSettingsWindowViewModel, YlConstants.MESSAGE_KEY_OPEN_OUTPUT_SETTINGS_WINDOW));
 
-				using (OutputSettingsWindowViewModel aOutputSettingsWindowViewModel = aYukariOutputWriter.CreateOutputSettingsWindowViewModel())
+				if (!outputSettingsWindowViewModel.IsOk)
 				{
-					aOutputSettingsWindowViewModel.Environment = Environment;
-					aOutputSettingsWindowViewModel.OutputWriter = aYukariOutputWriter;
-					Messenger.Raise(new TransitionMessage(aOutputSettingsWindowViewModel, "OpenOutputSettingsWindow"));
-
-					if (!aOutputSettingsWindowViewModel.IsOk)
-					{
-						return;
-					}
+					return;
 				}
 
 				// 設定変更をすべての出力者に反映
 				LoadOutputSettings();
 			}
-			catch (Exception oExcep)
+			catch (Exception excep)
 			{
-				Environment!.LogWriter.ShowLogMessage(TraceEventType.Error, "ゆかりリクエスト用リスト出力設定ボタンクリック時エラー：\n" + oExcep.Message);
-				Environment.LogWriter.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, "　スタックトレース：\n" + oExcep.StackTrace);
+				YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(TraceEventType.Error, "ゆかりリクエスト用リスト出力設定ボタンクリック時エラー：\n" + excep.Message);
+				YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, "　スタックトレース：\n" + excep.StackTrace);
 			}
-#endif
 		}
 		#endregion
 

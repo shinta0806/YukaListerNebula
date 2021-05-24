@@ -8,9 +8,12 @@
 // 
 // ----------------------------------------------------------------------------
 
+using System;
+
 namespace YukaLister.Models.OutputWriters
 {
 	public class YukariOutputSettings : WebOutputSettings
 	{
+		public Int32 Dummy { get; set; }
 	}
 }

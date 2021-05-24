@@ -892,7 +892,7 @@ namespace YukaLister.ViewModels.MiscWindowViewModels
 						// 更新（既存のレコードが無効化されている場合は有効化も行う）
 						newSongAlias.Id = existSongAlias.Id;
 						newSongAlias.UpdateTime = existSongAlias.UpdateTime;
-						Common.ShallowCopy(newSongAlias, existSongAlias);
+						Common.ShallowCopyFields(newSongAlias, existSongAlias);
 						YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, "楽曲別名テーブル更新：" + newSongAlias.Id + " / " + newSongAlias.Alias);
 					}
 				}
@@ -944,7 +944,7 @@ namespace YukaLister.ViewModels.MiscWindowViewModels
 						// 更新（既存のレコードが無効化されている場合は有効化も行う）
 						newTieUpAlias.Id = existTieUpAlias.Id;
 						newTieUpAlias.UpdateTime = existTieUpAlias.UpdateTime;
-						Common.ShallowCopy(newTieUpAlias, existTieUpAlias);
+						Common.ShallowCopyFields(newTieUpAlias, existTieUpAlias);
 						YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, "タイアップ別名テーブル更新：" + newTieUpAlias.Id + " / " + newTieUpAlias.Alias);
 					}
 				}

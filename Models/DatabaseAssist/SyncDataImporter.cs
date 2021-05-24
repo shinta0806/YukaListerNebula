@@ -493,7 +493,7 @@ namespace YukaLister.Models.DatabaseAssist
 				else
 				{
 					// 更新日時がサーバーと異なる場合はそのままではアップロードできないのでサーバーデータで上書きする
-					Common.ShallowCopy(newRecord, existRecord);
+					Common.ShallowCopyFields(newRecord, existRecord);
 					_logWriterSyncDetail.LogMessage(Common.TRACE_EVENT_TYPE_STATUS, "更新：" + newRecord.Id + " / " + logName);
 					numImports++;
 				}
@@ -525,7 +525,7 @@ namespace YukaLister.Models.DatabaseAssist
 				else
 				{
 					// 更新日時がサーバーと異なる場合はそのままではアップロードできないのでサーバーデータで上書きする
-					Common.ShallowCopy(newRecord, existRecord);
+					Common.ShallowCopyFields(newRecord, existRecord);
 					_logWriterSyncDetail.LogMessage(Common.TRACE_EVENT_TYPE_STATUS, "更新：" + newRecord.Id + " / " + newRecord.Sequence);
 					numImports++;
 				}

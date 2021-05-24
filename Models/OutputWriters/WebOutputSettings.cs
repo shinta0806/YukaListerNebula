@@ -11,7 +11,8 @@
 using Shinta;
 
 using System;
-
+using System.Reflection;
+using YukaLister.Models.Database.Masters;
 using YukaLister.Models.SharedMisc;
 
 namespace YukaLister.Models.OutputWriters
@@ -57,7 +58,7 @@ namespace YukaLister.Models.OutputWriters
 			{
 				WebOutputSettings tmp = new();
 				tmp = Common.Deserialize(SettingsPath(), tmp);
-				Common.ShallowCopy(tmp, this);
+				Common.ShallowCopyProperties(tmp, this);
 			}
 			catch (Exception)
 			{
@@ -80,7 +81,7 @@ namespace YukaLister.Models.OutputWriters
 			try
 			{
 				WebOutputSettings tmp = new();
-				Common.ShallowCopy(this, tmp);
+				Common.ShallowCopyProperties(this, tmp);
 				Common.Serialize(SettingsPath(), tmp);
 			}
 			catch (Exception)

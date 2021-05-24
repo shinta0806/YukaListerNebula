@@ -382,7 +382,7 @@ namespace YukaLister.Models.DatabaseAssist
 				if (IsRcSequenceUpdated(existSequences[i], newSequences[i]))
 				{
 					newSequences[i].UpdateTime = existSequences[i].UpdateTime;
-					Common.ShallowCopy(newSequences[i], existSequences[i]);
+					Common.ShallowCopyFields(newSequences[i], existSequences[i]);
 					if (!isImport)
 					{
 						YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, typeof(T).Name + " 紐付テーブル更新：" + id + " / " + i.ToString());

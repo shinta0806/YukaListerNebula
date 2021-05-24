@@ -8,6 +8,7 @@
         xmlns:v="clr-namespace:YukaLister.Views"
         xmlns:vm="clr-namespace:YukaLister.ViewModels"
         xmlns:vmmw="clr-namespace:YukaLister.ViewModels.MiscWindowViewModels"
+        xmlns:vosw="clr-namespace:YukaLister.Views.OutputSettingsWindows"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         Title="{Binding Title}" ResizeMode="NoResize" ShowInTaskbar="False" SizeToContent="WidthAndHeight" 
         sb:LaunchUpdaterAttachedBehavior.UpdaterLauncher="{Binding UpdaterLauncher}" sb:LaunchUpdaterAttachedBehavior.Command="{Binding UpdaterUiDisplayedCommand}" >
@@ -39,6 +40,10 @@
 
         <l:InteractionMessageTrigger MessageKey="{x:Static msm:YlConstants.MESSAGE_KEY_OPEN_OPEN_FILE_DIALOG}" Messenger="{Binding Messenger}">
             <l:OpenFileDialogInteractionMessageAction/>
+        </l:InteractionMessageTrigger>
+
+        <l:InteractionMessageTrigger MessageKey="{x:Static msm:YlConstants.MESSAGE_KEY_OPEN_OUTPUT_SETTINGS_WINDOW}" Messenger="{Binding Messenger}">
+            <l:TransitionInteractionMessageAction WindowType="{x:Type vosw:OutputSettingsWindow}" Mode="Modal" IsOwned="True" />
         </l:InteractionMessageTrigger>
 
         <l:InteractionMessageTrigger MessageKey="{x:Static msm:YlConstants.MESSAGE_KEY_OPEN_SAVE_FILE_DIALOG}" Messenger="{Binding Messenger}">
@@ -88,7 +93,7 @@
                         <Border BorderBrush="{DynamicResource {x:Static SystemColors.ControlLightBrushKey}}" BorderThickness="1" Height="3" VerticalAlignment="Center" Margin="0"/>
                     </DockPanel>
                     <DockPanel Margin="20,10,20,0">
-                        <Button Visibility="Hidden" Height="Auto" Content="出力設定 (_S)" Style="{StaticResource MaterialDesignRaisedLightButton}" Margin="0" DockPanel.Dock="Right" Width="100" Padding="0,4" Command="{Binding ButtonYukariListSettingsClickedCommand}"/>
+                        <Button Height="Auto" Content="出力設定 (_S)" Style="{StaticResource MaterialDesignRaisedLightButton}" Margin="0" DockPanel.Dock="Right" Width="100" Padding="0,4" Command="{Binding ButtonYukariListSettingsClickedCommand}"/>
                         <Label Content="ゆかりリクエスト用リストは、常に自動的に出力・更新されます。"/>
                     </DockPanel>
                     <StackPanel Margin="20,10,0,0">
