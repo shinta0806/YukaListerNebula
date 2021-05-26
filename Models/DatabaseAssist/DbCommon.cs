@@ -323,7 +323,7 @@ namespace YukaLister.Models.DatabaseAssist
 			{
 				Directory.CreateDirectory(YukaListerDatabaseFullFolder());
 				Directory.CreateDirectory(YukariDatabaseFullFolder(YukaListerModel.Instance.EnvModel.YlSettings));
-				MusicInfoContext.CreateDatabaseIfNeeded();
+				MusicInfoContextDefault.CreateDatabaseIfNeeded();
 				ListContextInDisk.CreateDatabase();
 				ListContextInMemory.CreateDatabase();
 				ReportContext.CreateDatabaseIfNeeded();

@@ -54,6 +54,7 @@ namespace YukaLister.ViewModels.MiscWindowViewModels
 		// --------------------------------------------------------------------
 		public FolderSettingsWindowViewModel(String folderPath)
 		{
+			Debug.WriteLine("FolderSettingsWindowViewModel() construct with String");
 			Debug.Assert(folderPath[^1] != '\\', "FolderSettingsWindowViewModel() folderPath ends '\\'");
 			FolderPath = folderPath;
 			SettingsToProperties();
@@ -65,7 +66,9 @@ namespace YukaLister.ViewModels.MiscWindowViewModels
 		// --------------------------------------------------------------------
 		public FolderSettingsWindowViewModel()
 		{
+			Debug.WriteLine("FolderSettingsWindowViewModel() construct no arg");
 			FolderPath = String.Empty;
+			CompositeDisposable.Add(_semaphoreSlim);
 		}
 
 		// ====================================================================
@@ -714,11 +717,11 @@ namespace YukaLister.ViewModels.MiscWindowViewModels
 				SaveSettingsIfNeeded();
 
 				// 検索（async を待機しない）
-				_ = YlCommon.LaunchTaskAsync<Object?>(_semaphoreSlim, UpdatePreviewResultByWorker, null);
+				_ = YlCommon.LaunchTaskAsync<Object?>(_semaphoreSlim, UpdatePreviewResultByWorker, null, "ファイル検索");
 			}
 			catch (Exception excep)
 			{
-				YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(TraceEventType.Error, "ファイル検索時時エラー：\n" + excep.Message);
+				YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(TraceEventType.Error, "ファイル検索クリック時エラー：\n" + excep.Message);
 				YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, "　スタックトレース：\n" + excep.StackTrace);
 			}
 		}
@@ -749,7 +752,7 @@ namespace YukaLister.ViewModels.MiscWindowViewModels
 			try
 			{
 				// async を待機しない
-				_ = YlCommon.LaunchTaskAsync<Object?>(_semaphoreSlim, JumpToNextCandidateByWorker, null);
+				_ = YlCommon.LaunchTaskAsync<Object?>(_semaphoreSlim, JumpToNextCandidateByWorker, null, "未登録検出");
 			}
 			catch (Exception excep)
 			{
@@ -1039,7 +1042,7 @@ namespace YukaLister.ViewModels.MiscWindowViewModels
 				}
 
 				// カテゴリー一覧
-				using MusicInfoContext musicInfoContext = MusicInfoContext.CreateContext(out DbSet<TCategory> categories);
+				using MusicInfoContextDefault musicInfoContext = MusicInfoContextDefault.CreateContext(out DbSet<TCategory> categories);
 				_cachedCategoryNames = DbCommon.SelectCategoryNames(categories);
 
 				// 固定値項目（カテゴリー一覧設定後に行う）
@@ -1448,10 +1451,10 @@ namespace YukaLister.ViewModels.MiscWindowViewModels
 					out DbSet<TTieUpGroup> tieUpGroups, out DbSet<TTieUpGroupSequence> tieUpGroupSequences,
 					out DbSet<TTag> tags, out DbSet<TTagSequence> tagSequences);
 			using TFoundSetter foundSetter = new(listContextInMemory, founds, people, artistSequences, composerSequences, tieUpGroups, tieUpGroupSequences, tags, tagSequences);
-			using MusicInfoContext musicInfoContext = MusicInfoContext.CreateContext(out DbSet<TSong> songs);
-			MusicInfoContext.GetDbSet(musicInfoContext, out DbSet<TSongAlias> songAliases);
-			MusicInfoContext.GetDbSet(musicInfoContext, out DbSet<TTieUp> tieUps);
-			MusicInfoContext.GetDbSet(musicInfoContext, out DbSet<TTieUpAlias> tieUpAliases);
+			using MusicInfoContextDefault musicInfoContext = MusicInfoContextDefault.CreateContext(out DbSet<TSong> songs);
+			MusicInfoContextDefault.GetDbSet(musicInfoContext, out DbSet<TSongAlias> songAliases);
+			MusicInfoContextDefault.GetDbSet(musicInfoContext, out DbSet<TTieUp> tieUps);
+			MusicInfoContextDefault.GetDbSet(musicInfoContext, out DbSet<TTieUpAlias> tieUpAliases);
 
 			for (; ; )
 			{

@@ -260,6 +260,7 @@ namespace YukaLister.Models.SharedMisc
 		// --------------------------------------------------------------------
 
 		public const String FILE_EXT_SETTINGS_ARCHIVE = ".sta";
+		public const String FILE_EXT_YL_EXPORT_ARCHIVE = ".ylexa";
 
 		// --------------------------------------------------------------------
 		// ダイアログのフィルター
@@ -267,6 +268,9 @@ namespace YukaLister.Models.SharedMisc
 
 		// 設定ファイル
 		public const String DIALOG_FILTER_SETTINGS_ARCHIVE = "設定ファイル|*" + FILE_EXT_SETTINGS_ARCHIVE;
+
+		// 楽曲情報データベースエクスポートファイル
+		public const String DIALOG_FILTER_YL_EXPORT_ARCHIVE = "ゆかりすたー情報ファイル|*" + FILE_EXT_YL_EXPORT_ARCHIVE;
 
 		// --------------------------------------------------------------------
 		// 楽曲情報データベース
@@ -393,6 +397,9 @@ namespace YukaLister.Models.SharedMisc
 
 		// フォルダー設定ウィンドウを開く
 		public const String MESSAGE_KEY_OPEN_FOLDER_SETTINGS_WINDOW = "OpenFolderSettingsWindow";
+
+		// インポート・エクスポートウィンドウを開く
+		public const String MESSAGE_KEY_OPEN_IMPORT_EXPORT_WINDOW = "OpenImportExportWindow";
 
 		// ID 接頭辞入力ウィンドウを開く
 		public const String MESSAGE_KEY_OPEN_INPUT_ID_PREFIX_WINDOW = "OpenInputIdPrefixWindow";
@@ -607,6 +614,9 @@ namespace YukaLister.Models.SharedMisc
 
 		// 同期詳細ログ ID
 		public const String SYNC_DETAIL_ID = "SyncDetail";
+
+		// インポート・エクスポート詳細ログ ID
+		//public const String IMPORT_EXPORT_DETAIL_ID = "ImportExportDetail";
 
 		// 検索の方向
 		public const String FIND_DIRECTION_BACKWARD = "Backward";

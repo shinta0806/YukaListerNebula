@@ -90,7 +90,7 @@ namespace YukaLister.Models.YukaListerCores
 					LoginToSyncServer();
 
 					// データベースをバックアップ
-					MusicInfoContext.BackupDatabase();
+					MusicInfoContextDefault.BackupDatabase();
 
 					// 再取得の場合は楽曲情報データベース初期化
 					CreateMusicInfoDbIfNeeded();
@@ -201,7 +201,7 @@ namespace YukaLister.Models.YukaListerCores
 			}
 
 			YukaListerModel.Instance.EnvModel.LogWriter.LogMessage(Common.TRACE_EVENT_TYPE_STATUS, "サーバーデータ再取得のため楽曲情報データベースを初期化。");
-			MusicInfoContext.CreateDatabase();
+			MusicInfoContextDefault.CreateDatabase();
 			IsReget = false;
 		}
 

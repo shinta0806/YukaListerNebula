@@ -6,6 +6,7 @@
         xmlns:msm="clr-namespace:YukaLister.Models.SharedMisc"
         xmlns:sb="clr-namespace:Shinta.Behaviors"
         xmlns:v="clr-namespace:YukaLister.Views"
+        xmlns:view="clr-namespace:YukaLister.Views.ImportExportWindows"
         xmlns:vm="clr-namespace:YukaLister.ViewModels"
         xmlns:vmmw="clr-namespace:YukaLister.ViewModels.MiscWindowViewModels"
         xmlns:vosw="clr-namespace:YukaLister.Views.OutputSettingsWindows"
@@ -36,6 +37,10 @@
 
         <l:InteractionMessageTrigger MessageKey="{x:Static msm:YlConstants.MESSAGE_KEY_WINDOW_CLOSE}" Messenger="{Binding Messenger}">
             <l:WindowInteractionMessageAction InvokeActionOnlyWhenWindowIsActive="False" />
+        </l:InteractionMessageTrigger>
+
+        <l:InteractionMessageTrigger MessageKey="{x:Static msm:YlConstants.MESSAGE_KEY_OPEN_IMPORT_EXPORT_WINDOW}" Messenger="{Binding Messenger}">
+            <l:TransitionInteractionMessageAction WindowType="{x:Type view:ImportExportWindow}" Mode="Modal" IsOwned="True" />
         </l:InteractionMessageTrigger>
 
         <l:InteractionMessageTrigger MessageKey="{x:Static msm:YlConstants.MESSAGE_KEY_OPEN_OPEN_FILE_DIALOG}" Messenger="{Binding Messenger}">
@@ -203,7 +208,7 @@
                 </StackPanel>
             </TabItem>
             <TabItem Header="エクスポート">
-                <StackPanel Visibility="Hidden" >
+                <StackPanel >
                     <StackPanel Margin="20,15,20,0">
                         <Label Content="エクスポート先" />
                     </StackPanel>

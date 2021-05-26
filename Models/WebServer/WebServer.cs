@@ -102,7 +102,7 @@ namespace YukaLister.Models.WebServer
 		public void Start()
 		{
 			// async を待機しない
-			_ = YlCommon.LaunchTaskAsync<Object?>(_semaphoreSlim, WebServerByWorker, null);
+			_ = YlCommon.LaunchTaskAsync<Object?>(_semaphoreSlim, WebServerByWorker, null, "Web サーバー");
 		}
 
 		// ====================================================================

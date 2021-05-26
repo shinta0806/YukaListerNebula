@@ -42,7 +42,7 @@ namespace YukaLister.ViewModels.EditSequenceWindowViewModels
 		// --------------------------------------------------------------------
 		// コンストラクター
 		// --------------------------------------------------------------------
-		public EditSequenceWindowViewModel(MusicInfoContext musicInfoContext, DbSet<T> records, Boolean searchOnInitialize, String? captionDetail = null)
+		public EditSequenceWindowViewModel(MusicInfoContextDefault musicInfoContext, DbSet<T> records, Boolean searchOnInitialize, String? captionDetail = null)
 		{
 			_musicInfoContext = musicInfoContext;
 			_records = records;
@@ -482,7 +482,7 @@ namespace YukaLister.ViewModels.EditSequenceWindowViewModels
 		// ====================================================================
 
 		// 楽曲情報データベースのコンテキスト
-		protected MusicInfoContext _musicInfoContext;
+		protected MusicInfoContextDefault _musicInfoContext;
 
 		// 編集対象データベースレコード
 		protected DbSet<T> _records;

@@ -31,7 +31,7 @@ namespace YukaLister.ViewModels.EditSequenceWindowViewModels
 		// --------------------------------------------------------------------
 		// コンストラクター
 		// --------------------------------------------------------------------
-		public EditPeopleWindowViewModel(MusicInfoContext musicInfoContext, DbSet<TPerson> records, Boolean searchOnInitialize, String captionDetail)
+		public EditPeopleWindowViewModel(MusicInfoContextDefault musicInfoContext, DbSet<TPerson> records, Boolean searchOnInitialize, String captionDetail)
 				: base(musicInfoContext, records, searchOnInitialize, captionDetail)
 		{
 		}

@@ -28,6 +28,7 @@ using YukaLister.Models.OutputWriters;
 using YukaLister.Models.SerializableSettings;
 using YukaLister.Models.SharedMisc;
 using YukaLister.Models.YukaListerModels;
+using YukaLister.ViewModels.ImportExportWindowViewModels;
 using YukaLister.ViewModels.OutputSettingsWindowViewModels;
 
 namespace YukaLister.ViewModels.MiscWindowViewModels
@@ -1001,21 +1002,19 @@ namespace YukaLister.ViewModels.MiscWindowViewModels
 
 		public void ButtonBrowseExportYukaListerClicked()
 		{
-#if false
 			try
 			{
-				String? aPath = PathBySavingDialog("エクスポート", "ゆかりすたー情報ファイル|*" + YlConstants.FILE_EXT_YLINFO, "YukaListerInfo_" + DateTime.Now.ToString("yyyy_MM_dd-HH_mm_ss"));
-				if (aPath != null)
+				String? path = PathBySavingDialog("エクスポート", YlConstants.DIALOG_FILTER_YL_EXPORT_ARCHIVE, "YukaListerInfo_" + DateTime.Now.ToString("yyyy_MM_dd-HH_mm_ss"));
+				if (path != null)
 				{
-					ExportYukaListerPath = aPath;
+					ExportYukaListerPath = path;
 				}
 			}
-			catch (Exception oExcep)
+			catch (Exception excep)
 			{
-				Environment!.LogWriter.ShowLogMessage(TraceEventType.Error, "ログ保存時エラー：\n" + oExcep.Message);
-				Environment.LogWriter.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, "　スタックトレース：\n" + oExcep.StackTrace);
+				YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(TraceEventType.Error, "エクスポート先参照時エラー：\n" + excep.Message);
+				YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, "　スタックトレース：\n" + excep.StackTrace);
 			}
-#endif
 		}
 		#endregion
 
@@ -1036,23 +1035,22 @@ namespace YukaLister.ViewModels.MiscWindowViewModels
 
 		public void ButtonExportClicked()
 		{
-#if false
 			try
 			{
-				using (ExportWindowViewModel aExportWindowViewModel = new ExportWindowViewModel())
+				if (String.IsNullOrEmpty(ExportYukaListerPath))
 				{
-					aExportWindowViewModel.Environment = Environment;
-					aExportWindowViewModel.ExportYukaListerPath = ExportYukaListerPath;
-
-					Messenger.Raise(new TransitionMessage(aExportWindowViewModel, "OpenImportExportWindow"));
+					throw new Exception("エクスポート先ファイルを指定してください。");
 				}
+
+				// ViewModel 経由でインポート・エクスポートウィンドウを開く
+				using ExportWindowViewModel exportWindowViewModel = new(ExportYukaListerPath);
+				Messenger.Raise(new TransitionMessage(exportWindowViewModel, YlConstants.MESSAGE_KEY_OPEN_IMPORT_EXPORT_WINDOW));
 			}
-			catch (Exception oExcep)
+			catch (Exception excep)
 			{
-				Environment!.LogWriter.ShowLogMessage(TraceEventType.Error, "エクスポートボタンクリック時エラー：\n" + oExcep.Message);
-				Environment.LogWriter.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, "　スタックトレース：\n" + oExcep.StackTrace);
+				YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(TraceEventType.Error, "エクスポートボタンクリック時エラー：\n" + excep.Message);
+				YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, "　スタックトレース：\n" + excep.StackTrace);
 			}
-#endif
 		}
 		#endregion
 

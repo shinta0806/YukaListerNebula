@@ -33,7 +33,7 @@ namespace YukaLister.ViewModels.EditMasterWindowViewModels
 		// --------------------------------------------------------------------
 		// コンストラクター
 		// --------------------------------------------------------------------
-		public EditTieUpGroupWindowViewModel(MusicInfoContext musicInfoContext, DbSet<TTieUpGroup> records)
+		public EditTieUpGroupWindowViewModel(MusicInfoContextDefault musicInfoContext, DbSet<TTieUpGroup> records)
 				: base(musicInfoContext, records)
 		{
 		}
@@ -73,7 +73,7 @@ namespace YukaLister.ViewModels.EditMasterWindowViewModels
 			base.Invalidate(master);
 
 			// タイアップグループ紐付け
-			MusicInfoContext.GetDbSet(_musicInfoContext, out DbSet<TTieUpGroupSequence> tieUpGroupSequences);
+			MusicInfoContextDefault.GetDbSet(_musicInfoContext, out DbSet<TTieUpGroupSequence> tieUpGroupSequences);
 			DbCommon.InvalidateSequenceByLinkId(tieUpGroupSequences, master.Id);
 			_musicInfoContext.SaveChanges();
 		}

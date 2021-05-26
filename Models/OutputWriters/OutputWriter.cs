@@ -43,7 +43,7 @@ namespace YukaLister.Models.OutputWriters
 					out _peopleInMemory, out _artistSequencesInMemory, out _composerSequencesInMemory,
 					out _tieUpGroupsInMemory, out _tieUpGroupSequencesInMemory,
 					out _tagsInMemory, out _tagSequencesInMemory);
-			_musicInfoContext = MusicInfoContext.CreateContext(out _,
+			_musicInfoContext = MusicInfoContextDefault.CreateContext(out _,
 					out _songsInMusicInfo, out _, out _tieUpsInMusicInfo, out _categoriesInMusicInfo,
 					out _, out _makersInMusicInfo, out _,
 					out _songAliasesInMusicInfo, out _personAliasesInMusicInfo, out _tieUpAliasesInMusicInfo,
@@ -176,7 +176,7 @@ namespace YukaLister.Models.OutputWriters
 		protected readonly ListContextInMemory _listContextInMemory;
 
 		// 楽曲情報データベースのコンテキスト
-		protected readonly MusicInfoContext _musicInfoContext;
+		protected readonly MusicInfoContextDefault _musicInfoContext;
 
 		// 検出ファイルリストテーブル
 		protected readonly DbSet<TFound> _founds;

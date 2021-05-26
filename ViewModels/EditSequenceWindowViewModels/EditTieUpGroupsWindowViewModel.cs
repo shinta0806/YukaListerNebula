@@ -31,7 +31,7 @@ namespace YukaLister.ViewModels.EditSequenceWindowViewModels
 		// --------------------------------------------------------------------
 		// コンストラクター
 		// --------------------------------------------------------------------
-		public EditTieUpGroupsWindowViewModel(MusicInfoContext musicInfoContext, DbSet<TTieUpGroup> records, Boolean searchOnInitialize)
+		public EditTieUpGroupsWindowViewModel(MusicInfoContextDefault musicInfoContext, DbSet<TTieUpGroup> records, Boolean searchOnInitialize)
 				: base(musicInfoContext, records, searchOnInitialize)
 		{
 		}

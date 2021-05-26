@@ -53,7 +53,7 @@ namespace YukaLister.Models.DatabaseAssist
 			_ = listTagSequences;
 
 			// MusicInfoContext は検索専用なので NoTracking にする
-			_musicInfoContext = MusicInfoContext.CreateContext(out _,
+			_musicInfoContext = MusicInfoContextDefault.CreateContext(out _,
 					out _songs, out _people, out _tieUps, out _categories,
 					out _tieUpGroups, out _makers, out _tags,
 					out _songAliases, out _, out _tieUpAliases,
@@ -465,7 +465,7 @@ namespace YukaLister.Models.DatabaseAssist
 		// --------------------------------------------------------------------
 
 		// 楽曲情報データベースのコンテキスト
-		private readonly MusicInfoContext _musicInfoContext;
+		private readonly MusicInfoContextDefault _musicInfoContext;
 
 		// リストデータベース（作業用：インメモリ）のコンテキスト
 		private readonly ListContextInMemory _listContextInMemory;

@@ -89,7 +89,7 @@ namespace YukaLister.Models.Database.Masters
 				if (AvoidSameName)
 				{
 					TCategory? category;
-					using MusicInfoContext musicInfoContext = MusicInfoContext.CreateContext(out DbSet<TCategory> categories);
+					using MusicInfoContextDefault musicInfoContext = MusicInfoContextDefault.CreateContext(out DbSet<TCategory> categories);
 					category = DbCommon.SelectBaseById(categories, CategoryId);
 					return Name + "（" + (String.IsNullOrEmpty(category?.Name) ? "カテゴリー無し" : category?.Name) + ", "
 							+ (String.IsNullOrEmpty(Keyword) ? "キーワード無し" : Keyword) + "）";

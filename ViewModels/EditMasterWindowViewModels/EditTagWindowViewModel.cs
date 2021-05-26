@@ -32,7 +32,7 @@ namespace YukaLister.ViewModels.EditMasterWindowViewModels
 		// --------------------------------------------------------------------
 		// コンストラクター
 		// --------------------------------------------------------------------
-		public EditTagWindowViewModel(MusicInfoContext musicInfoContext, DbSet<TTag> records)
+		public EditTagWindowViewModel(MusicInfoContextDefault musicInfoContext, DbSet<TTag> records)
 				: base(musicInfoContext, records)
 		{
 		}

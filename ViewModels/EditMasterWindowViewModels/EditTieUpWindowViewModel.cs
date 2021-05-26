@@ -41,7 +41,7 @@ namespace YukaLister.ViewModels.EditMasterWindowViewModels
 		// --------------------------------------------------------------------
 		// プログラム中で使うべき引数付きコンストラクター
 		// --------------------------------------------------------------------
-		public EditTieUpWindowViewModel(MusicInfoContext musicInfoContext, DbSet<TTieUp> records)
+		public EditTieUpWindowViewModel(MusicInfoContextDefault musicInfoContext, DbSet<TTieUp> records)
 				: base(musicInfoContext, records)
 		{
 		}
@@ -50,7 +50,7 @@ namespace YukaLister.ViewModels.EditMasterWindowViewModels
 		// ダミーコンストラクター（Visual Studio・TransitionMessage 用）
 		// --------------------------------------------------------------------
 		public EditTieUpWindowViewModel()
-				: base(new MusicInfoContext(), null!)
+				: base(new MusicInfoContextDefault(), null!)
 		{
 		}
 
@@ -216,7 +216,7 @@ namespace YukaLister.ViewModels.EditMasterWindowViewModels
 				}
 
 				// 既存レコードを用意
-				MusicInfoContext.GetDbSet(_musicInfoContext, out DbSet<TMaker> makers);
+				MusicInfoContextDefault.GetDbSet(_musicInfoContext, out DbSet<TMaker> makers);
 				List<TMaker> sameNameMakers = DbCommon.SelectMastersByName(makers, OriginalMakerName());
 
 				// 新規作成用を追加
@@ -277,7 +277,7 @@ namespace YukaLister.ViewModels.EditMasterWindowViewModels
 		{
 			try
 			{
-				MusicInfoContext.GetDbSet(_musicInfoContext, out DbSet<TTieUpGroup> tieUpGroups);
+				MusicInfoContextDefault.GetDbSet(_musicInfoContext, out DbSet<TTieUpGroup> tieUpGroups);
 				using SearchMasterWindowViewModel<TTieUpGroup> searchMasterWindowViewModel = new(tieUpGroups);
 				searchMasterWindowViewModel.SelectedKeyword = HeadName(tieUpGroups, _tieUpGroupIds);
 				Messenger.Raise(new TransitionMessage(searchMasterWindowViewModel, YlConstants.MESSAGE_KEY_OPEN_SEARCH_MASTER_WINDOW));
@@ -392,7 +392,7 @@ namespace YukaLister.ViewModels.EditMasterWindowViewModels
 			base.Invalidate(master);
 
 			// タイアップグループ紐付け
-			MusicInfoContext.GetDbSet(_musicInfoContext, out DbSet<TTieUpGroupSequence> tieUpGroupSequences);
+			MusicInfoContextDefault.GetDbSet(_musicInfoContext, out DbSet<TTieUpGroupSequence> tieUpGroupSequences);
 			DbCommon.RegisterSequence(tieUpGroupSequences, master.Id, new List<String>());
 			_musicInfoContext.SaveChanges();
 		}
@@ -429,13 +429,13 @@ namespace YukaLister.ViewModels.EditMasterWindowViewModels
 			}
 
 			// 制作会社
-			MusicInfoContext.GetDbSet(_musicInfoContext, out DbSet<TMaker> makers);
+			MusicInfoContextDefault.GetDbSet(_musicInfoContext, out DbSet<TMaker> makers);
 			TMaker? maker = DbCommon.SelectBaseById(makers, master.MakerId);
 			SetMaker(true, makers, maker);
 
 			// タイアップグループ
-			MusicInfoContext.GetDbSet(_musicInfoContext, out DbSet<TTieUpGroup> tieUpGroups);
-			MusicInfoContext.GetDbSet(_musicInfoContext, out DbSet<TTieUpGroupSequence> tieUpGroupSequences);
+			MusicInfoContextDefault.GetDbSet(_musicInfoContext, out DbSet<TTieUpGroup> tieUpGroups);
+			MusicInfoContextDefault.GetDbSet(_musicInfoContext, out DbSet<TTieUpGroupSequence> tieUpGroupSequences);
 			List<TTieUpGroup> SequencedTieUpGroups = DbCommon.SelectSequencedTieUpGroupsByTieUpId(tieUpGroupSequences, tieUpGroups, master.Id);
 			if (SequencedTieUpGroups.Count == 0)
 			{
@@ -474,7 +474,7 @@ namespace YukaLister.ViewModels.EditMasterWindowViewModels
 			}
 
 			// タイアップグループ紐付け
-			MusicInfoContext.GetDbSet(_musicInfoContext, out DbSet<TTieUpGroupSequence> tieUpGroupSequences);
+			MusicInfoContextDefault.GetDbSet(_musicInfoContext, out DbSet<TTieUpGroupSequence> tieUpGroupSequences);
 			DbCommon.RegisterSequence(tieUpGroupSequences, master.Id, YlCommon.SplitIds(_tieUpGroupIds));
 			_musicInfoContext.SaveChanges();
 		}
@@ -534,7 +534,7 @@ namespace YukaLister.ViewModels.EditMasterWindowViewModels
 		// --------------------------------------------------------------------
 		private void EditTieUpGroup(Boolean searchOnInitialize)
 		{
-			MusicInfoContext.GetDbSet(_musicInfoContext, out DbSet<TTieUpGroup> tieUpGroups);
+			MusicInfoContextDefault.GetDbSet(_musicInfoContext, out DbSet<TTieUpGroup> tieUpGroups);
 			using EditTieUpGroupsWindowViewModel editTieUpGroupsWindowViewModel = new(_musicInfoContext, tieUpGroups, searchOnInitialize);
 			List<String> splitIds = YlCommon.SplitIds(_tieUpGroupIds);
 			foreach (String id in splitIds)
@@ -565,7 +565,7 @@ namespace YukaLister.ViewModels.EditMasterWindowViewModels
 		// --------------------------------------------------------------------
 		private String? OriginalMakerName()
 		{
-			MusicInfoContext.GetDbSet(_musicInfoContext, out DbSet<TMaker> makers);
+			MusicInfoContextDefault.GetDbSet(_musicInfoContext, out DbSet<TMaker> makers);
 			return DbCommon.SelectBaseById(makers, _makerId)?.Name;
 		}
 
@@ -574,7 +574,7 @@ namespace YukaLister.ViewModels.EditMasterWindowViewModels
 		// --------------------------------------------------------------------
 		private void SearchMaker()
 		{
-			MusicInfoContext.GetDbSet(_musicInfoContext, out DbSet<TMaker> makers);
+			MusicInfoContextDefault.GetDbSet(_musicInfoContext, out DbSet<TMaker> makers);
 			using SearchMasterWindowViewModel<TMaker> searchMasterWindowViewModel = new(makers);
 			searchMasterWindowViewModel.SelectedKeyword = OriginalMakerName();
 			Messenger.Raise(new TransitionMessage(searchMasterWindowViewModel, YlConstants.MESSAGE_KEY_OPEN_SEARCH_MASTER_WINDOW));

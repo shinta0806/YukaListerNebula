@@ -1,0 +1,51 @@
+﻿<Window x:Class="YukaLister.Views.ImportExportWindows.ImportExportWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:behaviors="http://schemas.microsoft.com/xaml/behaviors"
+        xmlns:l="http://schemas.livet-mvvm.net/2011/wpf"
+        xmlns:msm="clr-namespace:YukaLister.Models.SharedMisc"
+        xmlns:sb="clr-namespace:Shinta.Behaviors"
+        xmlns:v="clr-namespace:YukaLister.Views"
+        xmlns:vm="clr-namespace:YukaLister.ViewModels"
+        xmlns:vmiewvm="clr-namespace:YukaLister.ViewModels.ImportExportWindowViewModels"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="{Binding Title}" Width="730" Height="330" ShowInTaskbar="False" ResizeMode="CanResizeWithGrip" >
+
+    <Window.DataContext>
+        <vmiewvm:ImportExportWindowViewModel />
+    </Window.DataContext>
+
+    <behaviors:Interaction.Behaviors>
+        <sb:WindowBindingSupportBehavior ClosingCommand="{Binding WindowClosingCommand}" IsCascade="True" MinimizeBox="False"/>
+    </behaviors:Interaction.Behaviors>
+
+    <behaviors:Interaction.Triggers>
+        <!-- When ContentRendered event raised, Initialize method of ViewModel would be called. -->
+        <behaviors:EventTrigger EventName="ContentRendered">
+            <l:LivetCallMethodAction MethodTarget="{Binding}" MethodName="Initialize" />
+        </behaviors:EventTrigger>
+
+        <!-- Dispose method is called, when Window closing. -->
+        <behaviors:EventTrigger EventName="Closed">
+            <l:DataContextDisposeAction />
+        </behaviors:EventTrigger>
+
+        <!-- If you make user choose 'OK or Cancel' closing Window, then please use Window Close cancel Behavior. -->
+
+        <l:InteractionMessageTrigger MessageKey="{x:Static msm:YlConstants.MESSAGE_KEY_WINDOW_CLOSE}" Messenger="{Binding Messenger}">
+            <l:WindowInteractionMessageAction InvokeActionOnlyWhenWindowIsActive="False" />
+        </l:InteractionMessageTrigger>
+
+    </behaviors:Interaction.Triggers>
+
+    <DockPanel>
+        <DockPanel Margin="20,20,20,0" DockPanel.Dock="Top">
+            <Button Height="Auto" Content="中止 (_A)" Style="{StaticResource MaterialDesignRaisedLightButton}" Margin="0" DockPanel.Dock="Right" Width="100" Command="{Binding ButtonAbortClickedCommand}"/>
+            <Label Content="{Binding Progress}" Width="120" DockPanel.Dock="Right" Margin="0,0,10,0"/>
+            <Label Content="{Binding Description}"/>
+        </DockPanel>
+        <DockPanel Margin="20,10,20,20">
+            <ListBox ItemsSource="{Binding Logs}" ScrollViewer.VerticalScrollBarVisibility="Visible"/>
+        </DockPanel>
+    </DockPanel>
+
+</Window>

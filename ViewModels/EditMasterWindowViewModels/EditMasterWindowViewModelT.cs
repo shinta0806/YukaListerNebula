@@ -39,7 +39,7 @@ namespace YukaLister.ViewModels.EditMasterWindowViewModels
 		// --------------------------------------------------------------------
 		// コンストラクター
 		// --------------------------------------------------------------------
-		public EditMasterWindowViewModel(MusicInfoContext musicInfoContext, DbSet<T> records)
+		public EditMasterWindowViewModel(MusicInfoContextDefault musicInfoContext, DbSet<T> records)
 		{
 			Debug.Assert(musicInfoContext.ChangeTracker.QueryTrackingBehavior == QueryTrackingBehavior.TrackAll, "EditMasterWindowViewModel() bad QueryTrackingBehavior");
 			_caption = YlConstants.MUSIC_INFO_TABLE_NAME_LABELS[DbCommon.MusicInfoTableIndex<T>()];
@@ -223,7 +223,7 @@ namespace YukaLister.ViewModels.EditMasterWindowViewModels
 				}
 
 				// データベースをバックアップ
-				MusicInfoContext.BackupDatabase();
+				MusicInfoContextDefault.BackupDatabase();
 
 				// 無効化
 				T master = new();
@@ -265,7 +265,7 @@ namespace YukaLister.ViewModels.EditMasterWindowViewModels
 				CheckInput();
 
 				// データベースをバックアップ
-				MusicInfoContext.BackupDatabase();
+				MusicInfoContextDefault.BackupDatabase();
 
 				// 保存
 				T master = new();
@@ -370,7 +370,7 @@ namespace YukaLister.ViewModels.EditMasterWindowViewModels
 		protected String _caption;
 
 		// 楽曲情報データベースのコンテキスト
-		protected MusicInfoContext _musicInfoContext;
+		protected MusicInfoContextDefault _musicInfoContext;
 
 		// 検索対象データベースレコード
 		protected DbSet<T> _records;

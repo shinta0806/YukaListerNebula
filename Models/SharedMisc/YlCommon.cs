@@ -527,7 +527,7 @@ namespace YukaLister.Models.SharedMisc
 		// --------------------------------------------------------------------
 		// 関数を非同期駆動
 		// --------------------------------------------------------------------
-		public static async Task LaunchTaskAsync<T>(SemaphoreSlim semaphoreSlim, TaskAsyncDelegate<T> deleg, T vari) where T : class?
+		public static async Task LaunchTaskAsync<T>(SemaphoreSlim semaphoreSlim, TaskAsyncDelegate<T> deleg, T vari, String taskName) where T : class?
 		{
 			await Task.Run(async () =>
 			{
@@ -537,17 +537,17 @@ namespace YukaLister.Models.SharedMisc
 					// 終了時に強制終了されないように設定
 					Thread.CurrentThread.IsBackground = false;
 
-					YukaListerModel.Instance.EnvModel.LogWriter.LogMessage(Common.TRACE_EVENT_TYPE_STATUS, "バックグラウンド処理開始：" + deleg.Method.Name);
+					YukaListerModel.Instance.EnvModel.LogWriter.LogMessage(Common.TRACE_EVENT_TYPE_STATUS, "バックグラウンド処理開始：" + taskName);
 					await deleg(vari);
-					YukaListerModel.Instance.EnvModel.LogWriter.LogMessage(Common.TRACE_EVENT_TYPE_STATUS, "バックグラウンド処理終了：" + deleg.Method.Name);
+					YukaListerModel.Instance.EnvModel.LogWriter.LogMessage(Common.TRACE_EVENT_TYPE_STATUS, "バックグラウンド処理終了：" + taskName);
 				}
 				catch (OperationCanceledException)
 				{
-					YukaListerModel.Instance.EnvModel.LogWriter.LogMessage(TraceEventType.Error, "バックグラウンド処理中止：" + deleg.Method.Name);
+					YukaListerModel.Instance.EnvModel.LogWriter.LogMessage(TraceEventType.Error, "バックグラウンド処理中止：" + taskName);
 				}
 				catch (Exception excep)
 				{
-					YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(TraceEventType.Error, "バックグラウンド処理 " + deleg.Method.Name + " 実行時エラー：\n" + excep.Message);
+					YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(TraceEventType.Error, taskName + " 実行時エラー：\n" + excep.Message);
 					YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, "　スタックトレース：\n" + excep.StackTrace);
 				}
 				finally
@@ -752,7 +752,7 @@ namespace YukaLister.Models.SharedMisc
 		// --------------------------------------------------------------------
 		public static void SetContextMenuItemCategories(List<MenuItem> menuItems, RoutedEventHandler click)
 		{
-			using MusicInfoContext musicInfoContext = MusicInfoContext.CreateContext(out DbSet<TCategory> categories);
+			using MusicInfoContextDefault musicInfoContext = MusicInfoContextDefault.CreateContext(out DbSet<TCategory> categories);
 			List<String> categoryNames = DbCommon.SelectCategoryNames(categories);
 			foreach (String categoryName in categoryNames)
 			{

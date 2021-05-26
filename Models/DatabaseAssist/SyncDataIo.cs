@@ -37,7 +37,7 @@ namespace YukaLister.Models.DatabaseAssist
 			// 最初にログの設定
 			YlCommon.SetLogWriterSyncDetail(_logWriterSyncDetail);
 
-			_musicInfoContext = MusicInfoContext.CreateContext(out _properties,
+			_musicInfoContext = MusicInfoContextDefault.CreateContext(out _properties,
 					out _songs, out _people, out _tieUps, out _categories,
 					out _tieUpGroups, out _makers, out _tags,
 					out _songAliases, out _personAliases, out _tieUpAliases,
@@ -144,7 +144,7 @@ namespace YukaLister.Models.DatabaseAssist
 		// --------------------------------------------------------------------
 
 		// 楽曲情報データベースのコンテキスト
-		protected readonly MusicInfoContext _musicInfoContext;
+		protected readonly MusicInfoContextDefault _musicInfoContext;
 
 		// 詳細ログ（同期専用）
 		protected LogWriter _logWriterSyncDetail = new(YlConstants.APP_ID + YlConstants.SYNC_DETAIL_ID);

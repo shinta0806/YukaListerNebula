@@ -39,7 +39,7 @@ namespace YukaLister.ViewModels.EditMasterWindowViewModels
 		// --------------------------------------------------------------------
 		// コンストラクター
 		// --------------------------------------------------------------------
-		public EditCategorizableWindowViewModel(MusicInfoContext musicInfoContext, DbSet<T> records)
+		public EditCategorizableWindowViewModel(MusicInfoContextDefault musicInfoContext, DbSet<T> records)
 				: base(musicInfoContext, records)
 		{
 		}
@@ -246,7 +246,7 @@ namespace YukaLister.ViewModels.EditMasterWindowViewModels
 			{
 				HasCategory = true;
 
-				MusicInfoContext.GetDbSet(_musicInfoContext, out DbSet<TCategory> categories);
+				MusicInfoContextDefault.GetDbSet(_musicInfoContext, out DbSet<TCategory> categories);
 				TCategory? category = DbCommon.SelectBaseById(categories, master.CategoryId);
 				if (category != null)
 				{
@@ -276,7 +276,7 @@ namespace YukaLister.ViewModels.EditMasterWindowViewModels
 			try
 			{
 				MenuItem item = (MenuItem)sender;
-				MusicInfoContext.GetDbSet(_musicInfoContext, out DbSet<TCategory> categories);
+				MusicInfoContextDefault.GetDbSet(_musicInfoContext, out DbSet<TCategory> categories);
 				TCategory? category = DbCommon.SelectMasterByName(categories, (String)item.Header);
 				if (category != null)
 				{

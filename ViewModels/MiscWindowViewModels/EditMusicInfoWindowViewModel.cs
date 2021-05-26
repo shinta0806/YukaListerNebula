@@ -92,7 +92,7 @@ namespace YukaLister.ViewModels.MiscWindowViewModels
 				{
 					return false;
 				}
-				using MusicInfoContext musicInfoContext = MusicInfoContext.CreateContext(out DbSet<TTieUp> tieUps);
+				using MusicInfoContextDefault musicInfoContext = MusicInfoContextDefault.CreateContext(out DbSet<TTieUp> tieUps);
 				musicInfoContext.ChangeTracker.QueryTrackingBehavior = QueryTrackingBehavior.NoTracking;
 				return DbCommon.SelectMasterByName(tieUps, dicByFilePure[YlConstants.RULE_VAR_PROGRAM]) != null;
 			}
@@ -117,7 +117,7 @@ namespace YukaLister.ViewModels.MiscWindowViewModels
 				{
 					return false;
 				}
-				using MusicInfoContext musicInfoContext = MusicInfoContext.CreateContext(out DbSet<TSong> songs);
+				using MusicInfoContextDefault musicInfoContext = MusicInfoContextDefault.CreateContext(out DbSet<TSong> songs);
 				musicInfoContext.ChangeTracker.QueryTrackingBehavior = QueryTrackingBehavior.NoTracking;
 				return DbCommon.SelectMasterByName(songs, dicByFilePure[YlConstants.RULE_VAR_TITLE]) != null;
 			}
@@ -269,7 +269,7 @@ namespace YukaLister.ViewModels.MiscWindowViewModels
 		{
 			try
 			{
-				using MusicInfoContext musicInfoContext = MusicInfoContext.CreateContext(out DbSet<TTieUp> tieUps);
+				using MusicInfoContextDefault musicInfoContext = MusicInfoContextDefault.CreateContext(out DbSet<TTieUp> tieUps);
 				using SearchMasterWindowViewModel<TTieUp> searchMasterWindowViewModel = new(tieUps, "タイアップ名の正式名称");
 				searchMasterWindowViewModel.SelectedKeyword = TieUpOrigin ?? TieUpNameByFileName;
 				Messenger.Raise(new TransitionMessage(searchMasterWindowViewModel, YlConstants.MESSAGE_KEY_OPEN_SEARCH_MASTER_WINDOW));
@@ -310,8 +310,8 @@ namespace YukaLister.ViewModels.MiscWindowViewModels
 					throw new Exception("ファイル名・フォルダー固定値からタイアップ名を取得できなかったため、詳細編集できません。");
 				}
 
-				using MusicInfoContext musicInfoContext = MusicInfoContext.CreateContext(out DbSet<TTieUp> tieUps);
-				MusicInfoContext.GetDbSet(musicInfoContext, out DbSet<TCategory> categories);
+				using MusicInfoContextDefault musicInfoContext = MusicInfoContextDefault.CreateContext(out DbSet<TTieUp> tieUps);
+				MusicInfoContextDefault.GetDbSet(musicInfoContext, out DbSet<TCategory> categories);
 
 				using ListContextInMemory listContextInMemory = ListContextInMemory.CreateContext(out DbSet<TFound> founds,
 						out DbSet<TPerson> people, out DbSet<TArtistSequence> artistSequences, out DbSet<TComposerSequence> composerSequences,
@@ -339,7 +339,7 @@ namespace YukaLister.ViewModels.MiscWindowViewModels
 
 				// 情報準備
 				List<TTieUp> sameNameTieUps = DbCommon.SelectMastersByName(tieUps, dicByFile[YlConstants.RULE_VAR_PROGRAM]);
-				MusicInfoContext.GetDbSet(musicInfoContext, out DbSet<TSong> songs);
+				MusicInfoContextDefault.GetDbSet(musicInfoContext, out DbSet<TSong> songs);
 				TSong? song = DbCommon.SelectMasterByName(songs, dicByFile[YlConstants.RULE_VAR_TITLE]);
 				TCategory? category = DbCommon.SelectMasterByName(categories, dicByFile[YlConstants.RULE_VAR_CATEGORY]);
 
@@ -457,7 +457,7 @@ namespace YukaLister.ViewModels.MiscWindowViewModels
 		{
 			try
 			{
-				using MusicInfoContext musicInfoContext = MusicInfoContext.CreateContext(out DbSet<TSong> songs);
+				using MusicInfoContextDefault musicInfoContext = MusicInfoContextDefault.CreateContext(out DbSet<TSong> songs);
 				using SearchMasterWindowViewModel<TSong> searchMasterWindowViewModel = new(songs, "楽曲名の正式名称");
 				searchMasterWindowViewModel.SelectedKeyword = SongOrigin ?? SongNameByFileName;
 				Messenger.Raise(new TransitionMessage(searchMasterWindowViewModel, YlConstants.MESSAGE_KEY_OPEN_SEARCH_MASTER_WINDOW));
@@ -498,7 +498,7 @@ namespace YukaLister.ViewModels.MiscWindowViewModels
 					throw new Exception("ファイル名・フォルダー固定値から楽曲名を取得できなかったため、詳細編集できません。");
 				}
 
-				using MusicInfoContext musicInfoContext = MusicInfoContext.CreateContext(out DbSet<TSong> songs);
+				using MusicInfoContextDefault musicInfoContext = MusicInfoContextDefault.CreateContext(out DbSet<TSong> songs);
 
 				using ListContextInMemory listContextInMemory = ListContextInMemory.CreateContext(out DbSet<TFound> founds,
 						out DbSet<TPerson> people, out DbSet<TArtistSequence> artistSequences, out DbSet<TComposerSequence> composerSequences,
@@ -526,9 +526,9 @@ namespace YukaLister.ViewModels.MiscWindowViewModels
 
 				// 情報準備
 				List<TSong> sameNameSongs = DbCommon.SelectMastersByName(songs, dicByFile[YlConstants.RULE_VAR_TITLE]);
-				MusicInfoContext.GetDbSet(musicInfoContext, out DbSet<TTieUp> tieUps);
+				MusicInfoContextDefault.GetDbSet(musicInfoContext, out DbSet<TTieUp> tieUps);
 				TTieUp? tieUp = DbCommon.SelectMasterByName(tieUps, dicByFile[YlConstants.RULE_VAR_PROGRAM]);
-				MusicInfoContext.GetDbSet(musicInfoContext, out DbSet<TCategory> categories);
+				MusicInfoContextDefault.GetDbSet(musicInfoContext, out DbSet<TCategory> categories);
 				TCategory? category = DbCommon.SelectMasterByName(categories, dicByFile[YlConstants.RULE_VAR_CATEGORY]);
 
 				// 新規作成用の追加
@@ -798,7 +798,7 @@ namespace YukaLister.ViewModels.MiscWindowViewModels
 					throw new Exception("ファイル名・フォルダー固定値から取得した楽曲名と正式名称が同じです。\n"
 							+ "楽曲名を揃えるのが不要の場合は、「楽曲名を揃える」のチェックを外して下さい。");
 				}
-				using MusicInfoContext musicInfoContext = MusicInfoContext.CreateContext(out DbSet<TSong> songs);
+				using MusicInfoContextDefault musicInfoContext = MusicInfoContextDefault.CreateContext(out DbSet<TSong> songs);
 				musicInfoContext.ChangeTracker.QueryTrackingBehavior = QueryTrackingBehavior.NoTracking;
 				TSong? song = DbCommon.SelectMasterByName(songs, SongOrigin);
 				if (song == null)
@@ -820,7 +820,7 @@ namespace YukaLister.ViewModels.MiscWindowViewModels
 					throw new Exception("ファイル名・フォルダー固定値から取得したタイアップ名と正式名称が同じです。\n"
 							+ "タイアップ名を揃えるのが不要の場合は、「タイアップ名を揃える」のチェックを外して下さい。");
 				}
-				using MusicInfoContext musicInfoContext = MusicInfoContext.CreateContext(out DbSet<TTieUp> tieUps);
+				using MusicInfoContextDefault musicInfoContext = MusicInfoContextDefault.CreateContext(out DbSet<TTieUp> tieUps);
 				musicInfoContext.ChangeTracker.QueryTrackingBehavior = QueryTrackingBehavior.NoTracking;
 				TTieUp? tieUp = DbCommon.SelectMasterByName(tieUps, TieUpOrigin);
 				if (tieUp == null)
@@ -861,7 +861,7 @@ namespace YukaLister.ViewModels.MiscWindowViewModels
 			// 楽曲別名
 			if (!String.IsNullOrEmpty(dicByFilePure[YlConstants.RULE_VAR_TITLE]))
 			{
-				using MusicInfoContext musicInfoContext = MusicInfoContext.CreateContext(out DbSet<TSongAlias> songAliases);
+				using MusicInfoContextDefault musicInfoContext = MusicInfoContextDefault.CreateContext(out DbSet<TSongAlias> songAliases);
 				if (UseSongAlias && !String.IsNullOrEmpty(songOriginalId))
 				{
 					TSongAlias? existSongAlias = DbCommon.SelectAliasByAlias(songAliases, dicByFilePure[YlConstants.RULE_VAR_TITLE], true);
@@ -913,7 +913,7 @@ namespace YukaLister.ViewModels.MiscWindowViewModels
 			// タイアップ別名
 			if (!String.IsNullOrEmpty(dicByFilePure[YlConstants.RULE_VAR_PROGRAM]))
 			{
-				using MusicInfoContext musicInfoContext = MusicInfoContext.CreateContext(out DbSet<TTieUpAlias> tieUpAliases);
+				using MusicInfoContextDefault musicInfoContext = MusicInfoContextDefault.CreateContext(out DbSet<TTieUpAlias> tieUpAliases);
 				if (UseTieUpAlias && !String.IsNullOrEmpty(tieUpOriginalId))
 				{
 					TTieUpAlias? existTieUpAlias = DbCommon.SelectAliasByAlias(tieUpAliases, dicByFilePure[YlConstants.RULE_VAR_PROGRAM], true);

@@ -41,7 +41,7 @@ namespace YukaLister.ViewModels.EditMasterWindowViewModels
 		// --------------------------------------------------------------------
 		// プログラム中で使うべき引数付きコンストラクター
 		// --------------------------------------------------------------------
-		public EditSongWindowViewModel(MusicInfoContext musicInfoContext, DbSet<TSong> records)
+		public EditSongWindowViewModel(MusicInfoContextDefault musicInfoContext, DbSet<TSong> records)
 				: base(musicInfoContext, records)
 		{
 		}
@@ -50,7 +50,7 @@ namespace YukaLister.ViewModels.EditMasterWindowViewModels
 		// ダミーコンストラクター（Visual Studio・TransitionMessage 用）
 		// --------------------------------------------------------------------
 		public EditSongWindowViewModel()
-				: base(new MusicInfoContext(), null!)
+				: base(new MusicInfoContextDefault(), null!)
 		{
 		}
 
@@ -398,7 +398,7 @@ namespace YukaLister.ViewModels.EditMasterWindowViewModels
 				}
 
 				// 既存レコードを用意
-				MusicInfoContext.GetDbSet(_musicInfoContext, out DbSet<TTieUp> tieUps);
+				MusicInfoContextDefault.GetDbSet(_musicInfoContext, out DbSet<TTieUp> tieUps);
 				List<TTieUp> sameNameTieUps = DbCommon.SelectMastersByName(tieUps, OriginalTieUpName());
 
 				// 新規作成用を追加
@@ -461,7 +461,7 @@ namespace YukaLister.ViewModels.EditMasterWindowViewModels
 			try
 			{
 				// タグが複数指定されている場合は先頭のみで検索
-				MusicInfoContext.GetDbSet(_musicInfoContext, out DbSet<TTag> tags);
+				MusicInfoContextDefault.GetDbSet(_musicInfoContext, out DbSet<TTag> tags);
 				using SearchMasterWindowViewModel<TTag> searchMasterWindowViewModel = new(tags);
 				searchMasterWindowViewModel.SelectedKeyword = HeadName(tags, _tagIds);
 				Messenger.Raise(new TransitionMessage(searchMasterWindowViewModel, YlConstants.MESSAGE_KEY_OPEN_SEARCH_MASTER_WINDOW));
@@ -994,17 +994,17 @@ namespace YukaLister.ViewModels.EditMasterWindowViewModels
 			base.Invalidate(master);
 
 			// タグ紐付け
-			MusicInfoContext.GetDbSet(_musicInfoContext, out DbSet<TTagSequence> tagSequences);
+			MusicInfoContextDefault.GetDbSet(_musicInfoContext, out DbSet<TTagSequence> tagSequences);
 			DbCommon.RegisterSequence(tagSequences, master.Id, new List<String>());
 
 			// 人物紐付け
-			MusicInfoContext.GetDbSet(_musicInfoContext, out DbSet<TArtistSequence> artistSequences);
+			MusicInfoContextDefault.GetDbSet(_musicInfoContext, out DbSet<TArtistSequence> artistSequences);
 			DbCommon.RegisterSequence(artistSequences, master.Id, new List<String>());
-			MusicInfoContext.GetDbSet(_musicInfoContext, out DbSet<TLyristSequence> lyristSequences);
+			MusicInfoContextDefault.GetDbSet(_musicInfoContext, out DbSet<TLyristSequence> lyristSequences);
 			DbCommon.RegisterSequence(lyristSequences, master.Id, new List<String>());
-			MusicInfoContext.GetDbSet(_musicInfoContext, out DbSet<TComposerSequence> composerSequences);
+			MusicInfoContextDefault.GetDbSet(_musicInfoContext, out DbSet<TComposerSequence> composerSequences);
 			DbCommon.RegisterSequence(composerSequences, master.Id, new List<String>());
-			MusicInfoContext.GetDbSet(_musicInfoContext, out DbSet<TArrangerSequence> arrangerSequences);
+			MusicInfoContextDefault.GetDbSet(_musicInfoContext, out DbSet<TArrangerSequence> arrangerSequences);
 			DbCommon.RegisterSequence(arrangerSequences, master.Id, new List<String>());
 
 			_musicInfoContext.SaveChanges();
@@ -1032,7 +1032,7 @@ namespace YukaLister.ViewModels.EditMasterWindowViewModels
 			_isAutoSearchAllowed = false;
 
 			// タイアップ関係
-			MusicInfoContext.GetDbSet(_musicInfoContext, out DbSet<TTieUp> tieUps);
+			MusicInfoContextDefault.GetDbSet(_musicInfoContext, out DbSet<TTieUp> tieUps);
 			TTieUp? tieUp = DbCommon.SelectBaseById(tieUps, master.TieUpId);
 			SetTieUp(true, tieUps, tieUp);
 
@@ -1040,22 +1040,22 @@ namespace YukaLister.ViewModels.EditMasterWindowViewModels
 			OpEd = master.OpEd;
 
 			// タグ
-			MusicInfoContext.GetDbSet(_musicInfoContext, out DbSet<TTagSequence> tagSequences);
-			MusicInfoContext.GetDbSet(_musicInfoContext, out DbSet<TTag> tags);
+			MusicInfoContextDefault.GetDbSet(_musicInfoContext, out DbSet<TTagSequence> tagSequences);
+			MusicInfoContextDefault.GetDbSet(_musicInfoContext, out DbSet<TTag> tags);
 			(HasTag, _tagIds, TagDisplayNames) = ConcatMasterIdsAndNames(tags, DbCommon.SelectSequencedTagsBySongId(tagSequences, tags, master.Id));
 
 			// 人物関係
-			MusicInfoContext.GetDbSet(_musicInfoContext, out DbSet<TArtistSequence> artistSequences);
-			MusicInfoContext.GetDbSet(_musicInfoContext, out DbSet<TPerson> people);
+			MusicInfoContextDefault.GetDbSet(_musicInfoContext, out DbSet<TArtistSequence> artistSequences);
+			MusicInfoContextDefault.GetDbSet(_musicInfoContext, out DbSet<TPerson> people);
 			(HasArtist, _artistIds, ArtistDisplayNames) = ConcatMasterIdsAndNames(people, DbCommon.SelectSequencedPeopleBySongId(artistSequences, people, master.Id));
 
-			MusicInfoContext.GetDbSet(_musicInfoContext, out DbSet<TLyristSequence> lyristSequences);
+			MusicInfoContextDefault.GetDbSet(_musicInfoContext, out DbSet<TLyristSequence> lyristSequences);
 			(HasLyrist, _lyristIds, LyristDisplayNames) = ConcatMasterIdsAndNames(people, DbCommon.SelectSequencedPeopleBySongId(lyristSequences, people, master.Id));
 
-			MusicInfoContext.GetDbSet(_musicInfoContext, out DbSet<TComposerSequence> composerSequences);
+			MusicInfoContextDefault.GetDbSet(_musicInfoContext, out DbSet<TComposerSequence> composerSequences);
 			(HasComposer, _composerIds, ComposerDisplayNames) = ConcatMasterIdsAndNames(people, DbCommon.SelectSequencedPeopleBySongId(composerSequences, people, master.Id));
 
-			MusicInfoContext.GetDbSet(_musicInfoContext, out DbSet<TArrangerSequence> arrangerSequences);
+			MusicInfoContextDefault.GetDbSet(_musicInfoContext, out DbSet<TArrangerSequence> arrangerSequences);
 			(HasArranger, _arrangerIds, ArrangerDisplayNames) = ConcatMasterIdsAndNames(people, DbCommon.SelectSequencedPeopleBySongId(arrangerSequences, people, master.Id));
 
 			SetIsTieUpEnabled();
@@ -1089,20 +1089,20 @@ namespace YukaLister.ViewModels.EditMasterWindowViewModels
 			}
 
 			// タグ紐付け
-			MusicInfoContext.GetDbSet(_musicInfoContext, out DbSet<TTagSequence> tagSequences);
+			MusicInfoContextDefault.GetDbSet(_musicInfoContext, out DbSet<TTagSequence> tagSequences);
 			DbCommon.RegisterSequence(tagSequences, master.Id, YlCommon.SplitIds(_tagIds));
 
 			// 人物紐付け
-			MusicInfoContext.GetDbSet(_musicInfoContext, out DbSet<TArtistSequence> artistSequences);
+			MusicInfoContextDefault.GetDbSet(_musicInfoContext, out DbSet<TArtistSequence> artistSequences);
 			DbCommon.RegisterSequence(artistSequences, master.Id, YlCommon.SplitIds(_artistIds));
 
-			MusicInfoContext.GetDbSet(_musicInfoContext, out DbSet<TLyristSequence> lyristSequences);
+			MusicInfoContextDefault.GetDbSet(_musicInfoContext, out DbSet<TLyristSequence> lyristSequences);
 			DbCommon.RegisterSequence(lyristSequences, master.Id, YlCommon.SplitIds(_lyristIds));
 
-			MusicInfoContext.GetDbSet(_musicInfoContext, out DbSet<TComposerSequence> composerSequences);
+			MusicInfoContextDefault.GetDbSet(_musicInfoContext, out DbSet<TComposerSequence> composerSequences);
 			DbCommon.RegisterSequence(composerSequences, master.Id, YlCommon.SplitIds(_composerIds));
 
-			MusicInfoContext.GetDbSet(_musicInfoContext, out DbSet<TArrangerSequence> arrangerSequences);
+			MusicInfoContextDefault.GetDbSet(_musicInfoContext, out DbSet<TArrangerSequence> arrangerSequences);
 			DbCommon.RegisterSequence(arrangerSequences, master.Id, YlCommon.SplitIds(_arrangerIds));
 
 			_musicInfoContext.SaveChanges();
@@ -1172,7 +1172,7 @@ namespace YukaLister.ViewModels.EditMasterWindowViewModels
 		// --------------------------------------------------------------------
 		private (Boolean has, String? ids, String? names) EditPeople(Boolean searchOnInitialize, String captionDetail, Boolean srcHas, String? srcIds, String? srcNames)
 		{
-			MusicInfoContext.GetDbSet(_musicInfoContext, out DbSet<TPerson> people);
+			MusicInfoContextDefault.GetDbSet(_musicInfoContext, out DbSet<TPerson> people);
 			using EditPeopleWindowViewModel editPeopleWindowViewModel = new(_musicInfoContext, people, searchOnInitialize, captionDetail);
 			List<String> splitIds = YlCommon.SplitIds(srcIds);
 			foreach (String id in splitIds)
@@ -1202,7 +1202,7 @@ namespace YukaLister.ViewModels.EditMasterWindowViewModels
 		// --------------------------------------------------------------------
 		private void EditTag(Boolean searchOnInitialize)
 		{
-			MusicInfoContext.GetDbSet(_musicInfoContext, out DbSet<TTag> tags);
+			MusicInfoContextDefault.GetDbSet(_musicInfoContext, out DbSet<TTag> tags);
 			using EditTagsWindowViewModel editTagsWindowViewModel = new(_musicInfoContext, tags, searchOnInitialize);
 			List<String> splitIds = YlCommon.SplitIds(_tagIds);
 			foreach (String id in splitIds)
@@ -1234,7 +1234,7 @@ namespace YukaLister.ViewModels.EditMasterWindowViewModels
 		// --------------------------------------------------------------------
 		private void ExceptInvalidPeople()
 		{
-			MusicInfoContext.GetDbSet(_musicInfoContext, out DbSet<TPerson> people);
+			MusicInfoContextDefault.GetDbSet(_musicInfoContext, out DbSet<TPerson> people);
 			(_, _artistIds, ArtistDisplayNames) = ConcatMasterIdsAndNames(people, DbCommon.ExceptInvalid(people, YlCommon.SplitIds(_artistIds)));
 			(_, _lyristIds, LyristDisplayNames) = ConcatMasterIdsAndNames(people, DbCommon.ExceptInvalid(people, YlCommon.SplitIds(_lyristIds)));
 			(_, _composerIds, ComposerDisplayNames) = ConcatMasterIdsAndNames(people, DbCommon.ExceptInvalid(people, YlCommon.SplitIds(_composerIds)));
@@ -1246,7 +1246,7 @@ namespace YukaLister.ViewModels.EditMasterWindowViewModels
 		// --------------------------------------------------------------------
 		private String? OriginalTieUpName()
 		{
-			MusicInfoContext.GetDbSet(_musicInfoContext, out DbSet<TTieUp> tieUps);
+			MusicInfoContextDefault.GetDbSet(_musicInfoContext, out DbSet<TTieUp> tieUps);
 			return DbCommon.SelectBaseById(tieUps, _tieUpId)?.Name;
 		}
 
@@ -1256,7 +1256,7 @@ namespace YukaLister.ViewModels.EditMasterWindowViewModels
 		private (String? id, String? name) SearchPerson(String caption, String? srcIds, String? srcNames)
 		{
 			// 人物が複数指定されている場合は先頭のみで検索
-			MusicInfoContext.GetDbSet(_musicInfoContext, out DbSet<TPerson> people);
+			MusicInfoContextDefault.GetDbSet(_musicInfoContext, out DbSet<TPerson> people);
 			using SearchMasterWindowViewModel<TPerson> searchMasterWindowViewModel = new(people, caption);
 			searchMasterWindowViewModel.SelectedKeyword = HeadName(people, srcIds);
 			Messenger.Raise(new TransitionMessage(searchMasterWindowViewModel, YlConstants.MESSAGE_KEY_OPEN_SEARCH_MASTER_WINDOW));
@@ -1275,7 +1275,7 @@ namespace YukaLister.ViewModels.EditMasterWindowViewModels
 		// --------------------------------------------------------------------
 		private void SearchTieUp()
 		{
-			MusicInfoContext.GetDbSet(_musicInfoContext, out DbSet<TTieUp> tieUps);
+			MusicInfoContextDefault.GetDbSet(_musicInfoContext, out DbSet<TTieUp> tieUps);
 			using SearchMasterWindowViewModel<TTieUp> searchMasterWindowViewModel = new(tieUps);
 			searchMasterWindowViewModel.SelectedKeyword = OriginalTieUpName();
 			Messenger.Raise(new TransitionMessage(searchMasterWindowViewModel, YlConstants.MESSAGE_KEY_OPEN_SEARCH_MASTER_WINDOW));

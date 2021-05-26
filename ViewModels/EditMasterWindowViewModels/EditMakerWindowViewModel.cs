@@ -30,7 +30,7 @@ namespace YukaLister.ViewModels.EditMasterWindowViewModels
 		// --------------------------------------------------------------------
 		// コンストラクター
 		// --------------------------------------------------------------------
-		public EditMakerWindowViewModel(MusicInfoContext musicInfoContext, DbSet<TMaker> records)
+		public EditMakerWindowViewModel(MusicInfoContextDefault musicInfoContext, DbSet<TMaker> records)
 				: base(musicInfoContext, records)
 		{
 		}

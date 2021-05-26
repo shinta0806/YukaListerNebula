@@ -32,7 +32,7 @@ namespace YukaLister.ViewModels.EditMasterWindowViewModels
 		// --------------------------------------------------------------------
 		// コンストラクター
 		// --------------------------------------------------------------------
-		public EditPersonWindowViewModel(MusicInfoContext musicInfoContext, DbSet<TPerson> records)
+		public EditPersonWindowViewModel(MusicInfoContextDefault musicInfoContext, DbSet<TPerson> records)
 				: base(musicInfoContext, records)
 		{
 		}
@@ -72,13 +72,13 @@ namespace YukaLister.ViewModels.EditMasterWindowViewModels
 			base.Invalidate(master);
 
 			// タイアップグループ紐付け
-			MusicInfoContext.GetDbSet(_musicInfoContext, out DbSet<TArtistSequence> artistSequences);
+			MusicInfoContextDefault.GetDbSet(_musicInfoContext, out DbSet<TArtistSequence> artistSequences);
 			DbCommon.InvalidateSequenceByLinkId(artistSequences, master.Id);
-			MusicInfoContext.GetDbSet(_musicInfoContext, out DbSet<TLyristSequence> lyristSequences);
+			MusicInfoContextDefault.GetDbSet(_musicInfoContext, out DbSet<TLyristSequence> lyristSequences);
 			DbCommon.InvalidateSequenceByLinkId(lyristSequences, master.Id);
-			MusicInfoContext.GetDbSet(_musicInfoContext, out DbSet<TComposerSequence> composerSequences);
+			MusicInfoContextDefault.GetDbSet(_musicInfoContext, out DbSet<TComposerSequence> composerSequences);
 			DbCommon.InvalidateSequenceByLinkId(composerSequences, master.Id);
-			MusicInfoContext.GetDbSet(_musicInfoContext, out DbSet<TArrangerSequence> arrangerSequences);
+			MusicInfoContextDefault.GetDbSet(_musicInfoContext, out DbSet<TArrangerSequence> arrangerSequences);
 			DbCommon.InvalidateSequenceByLinkId(arrangerSequences, master.Id);
 			_musicInfoContext.SaveChanges();
 		}

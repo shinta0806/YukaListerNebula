@@ -453,7 +453,7 @@ namespace YukaLister.Models.YukaListerCores
 		// --------------------------------------------------------------------
 		private static void MusicInfoDatabaseToMemory()
 		{
-			using MusicInfoContext musicInfoContext = MusicInfoContext.CreateContext(out _,
+			using MusicInfoContextDefault musicInfoContext = MusicInfoContextDefault.CreateContext(out _,
 					out _, out DbSet<TPerson> peopleInMusicInfo, out _, out _,
 					out DbSet<TTieUpGroup> tieUpGroupsInMusicInfo, out _, out DbSet<TTag> tagsInMusicInfo,
 					out _, out _, out _,

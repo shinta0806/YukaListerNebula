@@ -325,7 +325,7 @@ namespace YukaLister.ViewModels
 				String? syncServerBak = YukaListerModel.Instance.EnvModel.YlSettings.SyncServer;
 				String? syncAccountBak = YukaListerModel.Instance.EnvModel.YlSettings.SyncAccount;
 				String? syncPasswordBak = YukaListerModel.Instance.EnvModel.YlSettings.SyncPassword;
-				DateTime musicInfoDbTimeBak = MusicInfoContext.LastWriteTime();
+				DateTime musicInfoDbTimeBak = MusicInfoContextDefault.LastWriteTime();
 				Boolean regetSyncDataNeeded;
 
 				// ViewModel 経由でウィンドウを開く
@@ -370,7 +370,7 @@ namespace YukaLister.ViewModels
 				else
 				{
 					// 同期設定が変更された場合・インポートで楽曲情報データベースが更新された場合は同期を行う
-					DateTime musicInfoDbTime = MusicInfoContext.LastWriteTime();
+					DateTime musicInfoDbTime = MusicInfoContextDefault.LastWriteTime();
 					if (YukaListerModel.Instance.EnvModel.YlSettings.SyncMusicInfoDb != syncMusicInfoDbBak
 							|| YukaListerModel.Instance.EnvModel.YlSettings.SyncServer != syncServerBak
 							|| YukaListerModel.Instance.EnvModel.YlSettings.SyncAccount != syncAccountBak
@@ -558,14 +558,14 @@ namespace YukaLister.ViewModels
 		{
 			try
 			{
-				DateTime musicInfoDbTimeBak = MusicInfoContext.LastWriteTime();
+				DateTime musicInfoDbTimeBak = MusicInfoContextDefault.LastWriteTime();
 
 				// ViewModel 経由でウィンドウを開く
 				using ViewTFoundsWindowViewModel viewTFoundsWindowViewModel = new();
 				Messenger.Raise(new TransitionMessage(viewTFoundsWindowViewModel, YlConstants.MESSAGE_KEY_OPEN_VIEW_TFOUNDS_WINDOW));
 
 				// 楽曲情報データベースが更新された場合は同期を行う
-				if (MusicInfoContext.LastWriteTime() != musicInfoDbTimeBak)
+				if (MusicInfoContextDefault.LastWriteTime() != musicInfoDbTimeBak)
 				{
 					ActivateSyclinIfNeeded();
 				}
@@ -982,7 +982,7 @@ namespace YukaLister.ViewModels
 				return;
 			}
 
-			DateTime musicInfoDbTimeBak = MusicInfoContext.LastWriteTime();
+			DateTime musicInfoDbTimeBak = MusicInfoContextDefault.LastWriteTime();
 
 			// ViewModel 経由でフォルダー設定ウィンドウを開く
 			using FolderSettingsWindowViewModel folderSettingsWindowViewModel = new(SelectedTargetFolderInfo.TargetPath);
@@ -994,7 +994,7 @@ namespace YukaLister.ViewModels
 			UpdateDataGrid();
 
 			// 楽曲情報データベースが更新された場合は同期を行う
-			if (MusicInfoContext.LastWriteTime() != musicInfoDbTimeBak)
+			if (MusicInfoContextDefault.LastWriteTime() != musicInfoDbTimeBak)
 			{
 				ActivateSyclinIfNeeded();
 			}
