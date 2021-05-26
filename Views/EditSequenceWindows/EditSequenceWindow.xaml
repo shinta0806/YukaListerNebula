@@ -52,7 +52,7 @@
         <StackPanel Margin="20,15,0,0" Orientation="Horizontal">
             <Label Content="{Binding Description}" VerticalAlignment="Top" Margin="0" FlowDirection="LeftToRight" HorizontalAlignment="Left"/>
             <Label Margin="0" VerticalAlignment="Top" HorizontalAlignment="Left">
-                <Hyperlink Command="{Binding HelpClickedCommand}" CommandParameter="{Binding HelpCommandParameter}" >
+                <Hyperlink Command="{Binding HelpClickedCommand}" CommandParameter="{Binding HelpCommandParameter}" Cursor="Hand" >
                     <TextBlock Text="詳細情報" />
                 </Hyperlink>
             </Label>

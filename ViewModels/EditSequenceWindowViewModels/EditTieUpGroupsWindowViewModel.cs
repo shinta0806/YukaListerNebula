@@ -50,7 +50,7 @@ namespace YukaLister.ViewModels.EditSequenceWindowViewModels
 			try
 			{
 				// ヘルプ
-				HelpCommandParameter = String.Empty;
+				HelpCommandParameter = "SeriesnoSentaku";
 			}
 			catch (Exception excep)
 			{
