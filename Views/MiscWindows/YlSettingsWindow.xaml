@@ -188,16 +188,16 @@
                 </StackPanel>
             </TabItem>
             <TabItem Header="インポート">
-                <StackPanel Visibility="Hidden" >
-                    <StackPanel Margin="20,20,0,0">
-                        <RadioButton Content="ゆかりすたー情報ファイル（ゆかりすたーでエクスポートしたファイル）をインポート (_Y)" IsChecked="{Binding ImportYukaListerMode}" GroupName="Import" />
+                <StackPanel >
+                    <StackPanel Margin="20,15,20,0">
+                        <Label Content="インポート元" />
                     </StackPanel>
                     <DockPanel Margin="40,10,20,0">
                         <Button Height="Auto" Content="参照 (_1)" Style="{StaticResource MaterialDesignRaisedLightButton}" Margin="0" DockPanel.Dock="Right" Width="100" Command="{Binding ButtonBrowseImportYukaListerClickedCommand}"/>
-                        <TextBox Text="{Binding ImportYukaListerPath}" IsEnabled="{Binding ImportYukaListerMode}" VerticalAlignment="Center" Margin="0,0,10,0"/>
+                        <TextBox Text="{Binding ImportYukaListerPath}" VerticalAlignment="Center" Margin="0,0,10,0"/>
                     </DockPanel>
                     <StackPanel Margin="40,10,0,0">
-                        <CheckBox Content="タグ情報をインポートする" IsChecked="{Binding ImportTag}" IsEnabled="{Binding ImportYukaListerMode}" />
+                        <CheckBox Content="タグ情報をインポートする" IsChecked="{Binding ImportTag}" />
                     </StackPanel>
                     <DockPanel Margin="0,20,0,0">
                         <Border BorderBrush="{DynamicResource {x:Static SystemColors.ControlLightBrushKey}}" BorderThickness="1" Height="3" VerticalAlignment="Center" Margin="0"/>

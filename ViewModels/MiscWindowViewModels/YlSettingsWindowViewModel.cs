@@ -906,34 +906,27 @@ namespace YukaLister.ViewModels.MiscWindowViewModels
 			{
 				if (_buttonBrowseImportYukaListerClickedCommand == null)
 				{
-					_buttonBrowseImportYukaListerClickedCommand = new ViewModelCommand(ButtonBrowseImportYukaListerClicked, CanButtonBrowseImportYukaListerClicked);
+					_buttonBrowseImportYukaListerClickedCommand = new ViewModelCommand(ButtonBrowseImportYukaListerClicked);
 				}
 				return _buttonBrowseImportYukaListerClickedCommand;
 			}
 		}
 
-		public Boolean CanButtonBrowseImportYukaListerClicked()
-		{
-			return ImportYukaListerMode;
-		}
-
 		public void ButtonBrowseImportYukaListerClicked()
 		{
-#if false
 			try
 			{
-				String? aPath = PathByOpeningDialog("ゆかりすたー情報ファイル", "ゆかりすたー情報ファイル|*" + YlConstants.FILE_EXT_YLINFO + "|楽曲情報データベースバックアップ|*" + Common.FILE_EXT_BAK);
-				if (aPath != null)
+				String? path = PathByOpeningDialog("インポート", YlConstants.DIALOG_FILTER_YL_EXPORT_ARCHIVE, null);
+				if (path != null)
 				{
-					ImportYukaListerPath = aPath;
+					ImportYukaListerPath = path;
 				}
 			}
-			catch (Exception oExcep)
+			catch (Exception excep)
 			{
-				Environment!.LogWriter.ShowLogMessage(TraceEventType.Error, "ゆかりすたー情報ファイル参照ボタンクリック時エラー：\n" + oExcep.Message);
-				Environment.LogWriter.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, "　スタックトレース：\n" + oExcep.StackTrace);
+				YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(TraceEventType.Error, "インポート元参照ボタンクリック時エラー：\n" + excep.Message);
+				YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, "　スタックトレース：\n" + excep.StackTrace);
 			}
-#endif
 		}
 		#endregion
 
@@ -954,30 +947,25 @@ namespace YukaLister.ViewModels.MiscWindowViewModels
 
 		public void ButtonImportClicked()
 		{
-#if false
 			try
 			{
-				using (ImportWindowViewModel aImportWindowViewModel = new ImportWindowViewModel())
+				if (String.IsNullOrEmpty(ImportYukaListerPath))
 				{
-					aImportWindowViewModel.Environment = Environment;
-
-					// ゆかりすたーでエクスポートしたファイルをインポート
-					aImportWindowViewModel.ImportYukaListerMode = ImportYukaListerMode;
-					aImportWindowViewModel.ImportYukaListerPath = ImportYukaListerPath;
-					aImportWindowViewModel.ImportTag = ImportTag;
-
-					Messenger.Raise(new TransitionMessage(aImportWindowViewModel, "OpenImportExportWindow"));
-
-					// IdPrefix の更新を反映
-					IdPrefix = Environment!.YukaListerSettings.IdPrefix;
+					throw new Exception("インポート元ファイルを指定して下さい。");
 				}
+
+				// ViewModel 経由でインポート・エクスポートウィンドウを開く
+				using ImportWindowViewModel importWindowViewModel = new(ImportYukaListerPath, ImportTag);
+				Messenger.Raise(new TransitionMessage(importWindowViewModel, YlConstants.MESSAGE_KEY_OPEN_IMPORT_EXPORT_WINDOW));
+
+				// IdPrefix の更新を反映
+				IdPrefix = YukaListerModel.Instance.EnvModel.YlSettings.IdPrefix;
 			}
-			catch (Exception oExcep)
+			catch (Exception excep)
 			{
-				Environment!.LogWriter.ShowLogMessage(TraceEventType.Error, "インポートボタンクリック時エラー：\n" + oExcep.Message);
-				Environment.LogWriter.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, "　スタックトレース：\n" + oExcep.StackTrace);
+				YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(TraceEventType.Error, "インポートボタンクリック時エラー：\n" + excep.Message);
+				YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, "　スタックトレース：\n" + excep.StackTrace);
 			}
-#endif
 		}
 		#endregion
 
@@ -1012,7 +1000,7 @@ namespace YukaLister.ViewModels.MiscWindowViewModels
 			}
 			catch (Exception excep)
 			{
-				YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(TraceEventType.Error, "エクスポート先参照時エラー：\n" + excep.Message);
+				YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(TraceEventType.Error, "エクスポート先参照ボタンクリック時エラー：\n" + excep.Message);
 				YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, "　スタックトレース：\n" + excep.StackTrace);
 			}
 		}

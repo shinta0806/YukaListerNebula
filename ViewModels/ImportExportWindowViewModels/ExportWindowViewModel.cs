@@ -9,28 +9,20 @@
 // そのまま楽曲情報データベースとして使われることは想定しておらず、あくまでもインポートして使う。
 // ----------------------------------------------------------------------------
 
-using Livet;
-using Livet.Commands;
-using Livet.EventListeners;
-using Livet.Messaging;
-using Livet.Messaging.IO;
-using Livet.Messaging.Windows;
 using Microsoft.EntityFrameworkCore;
+
 using Shinta;
+
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
-using YukaLister.Models;
+
 using YukaLister.Models.Database;
 using YukaLister.Models.Database.Aliases;
 using YukaLister.Models.Database.Masters;
 using YukaLister.Models.Database.Sequences;
-using YukaLister.Models.DatabaseAssist;
 using YukaLister.Models.DatabaseContexts;
 using YukaLister.Models.SharedMisc;
 
@@ -140,49 +132,5 @@ namespace YukaLister.ViewModels.ImportExportWindowViewModels
 
 		// エクスポート先
 		private String _exportYukaListerPath;
-
-		// ====================================================================
-		// private メンバー関数
-		// ====================================================================
-
-#if false
-		// --------------------------------------------------------------------
-		// エクスポート用の設定確認
-		// ＜例外＞ Exception
-		// --------------------------------------------------------------------
-		private void CheckExportInfo()
-		{
-			if (String.IsNullOrEmpty(_exportYukaListerPath))
-			{
-				throw new Exception("エクスポート先ファイルを指定してください。");
-			}
-		}
-#endif
-
-#if false
-		// --------------------------------------------------------------------
-		// 1 つのテーブルをエクスポート
-		// --------------------------------------------------------------------
-		private void ExportTable<T>(String oName, DataContext oMusicInfoDbContext, SQLiteCommand oExportDbCmd, DataContext oExportDbContext) where T : class, IRcBase
-		{
-			Description = oName + "情報をエクスポート中...";
-
-			LinqUtils.CreateTable(oExportDbCmd, typeof(T));
-			oExportDbContext.SubmitChanges();
-
-			Table<T> aMusicInfoDbTable = oMusicInfoDbContext.GetTable<T>();
-			IQueryable<T> aQueryResult =
-					from x in aMusicInfoDbTable
-					where !x.Invalid
-					select x;
-
-			Table<T> aExportDbTable = oExportDbContext.GetTable<T>();
-			aExportDbTable.InsertAllOnSubmit(aQueryResult);
-
-			mAbortCancellationTokenSource.Token.ThrowIfCancellationRequested();
-
-			oExportDbContext.SubmitChanges();
-		}
-#endif
 	}
 }
