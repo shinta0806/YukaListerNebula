@@ -673,39 +673,31 @@ namespace YukaLister.ViewModels.MiscWindowViewModels
 
 		public void ButtonListSettingsClicked()
 		{
-#if false
 			try
 			{
-				// どこかに			LoadOutputSettings(); を入れる
-
-
-				OutputWriter? aSelectedOutputWriter = SelectedOutputWriter();
-				if (aSelectedOutputWriter == null)
+				if (SelectedOutputWriter == null)
 				{
 					return;
 				}
+				SelectedOutputWriter.OutputSettings.Load();
 
-				using (OutputSettingsWindowViewModel aOutputSettingsWindowViewModel = aSelectedOutputWriter.CreateOutputSettingsWindowViewModel())
+				// ViewModel 経由でリスト出力設定ウィンドウを開く
+				using OutputSettingsWindowViewModel outputSettingsWindowViewModel = SelectedOutputWriter.CreateOutputSettingsWindowViewModel();
+				Messenger.Raise(new TransitionMessage(outputSettingsWindowViewModel, YlConstants.MESSAGE_KEY_OPEN_OUTPUT_SETTINGS_WINDOW));
+
+				if (!outputSettingsWindowViewModel.IsOk)
 				{
-					aOutputSettingsWindowViewModel.Environment = Environment;
-					aOutputSettingsWindowViewModel.OutputWriter = aSelectedOutputWriter;
-					Messenger.Raise(new TransitionMessage(aOutputSettingsWindowViewModel, "OpenOutputSettingsWindow"));
-
-					if (!aOutputSettingsWindowViewModel.IsOk)
-					{
-						return;
-					}
+					return;
 				}
 
 				// 設定変更をすべての出力者に反映
 				LoadOutputSettings();
 			}
-			catch (Exception oExcep)
+			catch (Exception excep)
 			{
-				Environment!.LogWriter.ShowLogMessage(TraceEventType.Error, "閲覧用リスト出力設定ボタンクリック時エラー：\n" + oExcep.Message);
-				Environment.LogWriter.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, "　スタックトレース：\n" + oExcep.StackTrace);
+				YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(TraceEventType.Error, "閲覧用出力設定ボタンクリック時エラー：\n" + excep.Message);
+				YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, "　スタックトレース：\n" + excep.StackTrace);
 			}
-#endif
 		}
 		#endregion
 
