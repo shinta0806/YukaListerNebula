@@ -555,7 +555,7 @@ namespace YukaLister.ViewModels.MiscWindowViewModels
 				sameNameSongs.Insert(0, newSong);
 
 				// ウィンドウの準備
-				using EditSongWindowViewModel editSongWindowViewModel = new EditSongWindowViewModel(musicInfoContext, songs);
+				using EditSongWindowViewModel editSongWindowViewModel = new(musicInfoContext, songs);
 				editSongWindowViewModel.SetMasters(sameNameSongs);
 
 				// デフォルト ID の指定
@@ -609,7 +609,7 @@ namespace YukaLister.ViewModels.MiscWindowViewModels
 		#endregion
 
 		#region ヘルプリンクの制御
-		public ListenerCommand<String>? HelpClickedCommand
+		public static ListenerCommand<String>? HelpClickedCommand
 		{
 			get => YukaListerModel.Instance.EnvModel.HelpClickedCommand;
 		}
@@ -701,7 +701,7 @@ namespace YukaLister.ViewModels.MiscWindowViewModels
 		// ====================================================================
 
 		// パス
-		private String _filePath;
+		private readonly String _filePath;
 
 		// タイアップを検索したかどうか
 		private Boolean _isTieUpSearched;

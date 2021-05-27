@@ -95,16 +95,11 @@ namespace YukaLister.ViewModels.MiscWindowViewModels
 			}
 		}
 
-		public void LinkClicked(String parameter)
+		public static void LinkClicked(String parameter)
 		{
 			try
 			{
-				ProcessStartInfo psi = new()
-				{
-					FileName = parameter,
-					UseShellExecute = true,
-				};
-				Process.Start(psi);
+				YlCommon.ShellExecute(parameter);
 			}
 			catch (Exception excep)
 			{
