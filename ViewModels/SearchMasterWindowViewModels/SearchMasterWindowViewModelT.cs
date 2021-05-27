@@ -376,8 +376,14 @@ namespace YukaLister.ViewModels.SearchMasterWindowViewModels
 			{
 				results = _records.AsNoTracking().Where(x => !x.Invalid).ToList();
 
-				// スペース区切りで AND 検索
-				String[] split = normalizedKeyword.Split(' ', StringSplitOptions.RemoveEmptyEntries);
+				// スペース等区切りで AND 検索
+				String[] split = normalizedKeyword.Split(new Char[] { ' ', '!', '"', '#', '$', '%', '&', '\'', '(', ')', '*', '+', ',', '-', '.', '/', ':', ';', '<', '=', '>', '?', '@', '[', '\\', ']', '^', '_', '{', '|', '}', '～' },
+						StringSplitOptions.RemoveEmptyEntries);
+				if (split.Length == 0)
+				{
+					// 区切り文字のみの場合はスペースのみ区切りで AND 検索
+					split = normalizedKeyword.Split(' ', StringSplitOptions.RemoveEmptyEntries);
+				}
 				foreach (String oneWord in split)
 				{
 					String? oneRuby = YlCommon.NormalizeDbRubyForSearch(oneWord);
