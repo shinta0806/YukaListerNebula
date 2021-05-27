@@ -85,10 +85,10 @@ namespace YukaLister.ViewModels.ImportExportWindowViewModels
 		// ====================================================================
 
 		// インポート元
-		private String _importYukaListerPath;
+		private readonly String _importYukaListerPath;
 
 		// タグをインポートするかどうか
-		private Boolean _importTag;
+		private readonly Boolean _importTag;
 
 		// ====================================================================
 		// private メンバー関数
@@ -223,19 +223,19 @@ namespace YukaLister.ViewModels.ImportExportWindowViewModels
 			}
 			String file = files[0];
 
-			MusicInfoContextExport musicInfoContextExport = MusicInfoContextExport.CreateContext(file, out DbSet<TProperty> propertiesExport,
-					out DbSet<TSong> songsExport, out DbSet<TPerson> peopleExport, out DbSet<TTieUp> tieUpsExport, out DbSet<TCategory> categoriesExport,
+			MusicInfoContextExport musicInfoContextExport = MusicInfoContextExport.CreateContext(file, out _,
+					out DbSet<TSong> songsExport, out DbSet<TPerson> peopleExport, out DbSet<TTieUp> tieUpsExport, out _,
 					out DbSet<TTieUpGroup> tieUpGroupsExport, out DbSet<TMaker> makersExport, out DbSet<TTag> tagsExport,
-					out DbSet<TSongAlias> songAliasesExport, out DbSet<TPersonAlias> personAliasesExport, out DbSet<TTieUpAlias> tieUpAliasesExport,
-					out DbSet<TCategoryAlias> categoryAliasesExport, out DbSet<TTieUpGroupAlias> tieUpGroupAliasesExport, out DbSet<TMakerAlias> makerAliasesExport,
+					out DbSet<TSongAlias> songAliasesExport, out _, out DbSet<TTieUpAlias> tieUpAliasesExport,
+					out _, out _, out _,
 					out DbSet<TArtistSequence> artistSequencesExport, out DbSet<TLyristSequence> lyristSequencesExport, out DbSet<TComposerSequence> composerSequencesExport, out DbSet<TArrangerSequence> arrangerSequencesExport,
 					out DbSet<TTieUpGroupSequence> tieUpGroupSequencesExport, out DbSet<TTagSequence> tagSequencesExport);
 			musicInfoContextExport.ChangeTracker.QueryTrackingBehavior = QueryTrackingBehavior.NoTracking;
-			MusicInfoContextDefault musicInfoContextDefault = MusicInfoContextDefault.CreateContext(out DbSet<TProperty> propertiesDefault,
-					out DbSet<TSong> songsDefault, out DbSet<TPerson> peopleDefault, out DbSet<TTieUp> tieUpsDefault, out DbSet<TCategory> categoriesDefault,
+			MusicInfoContextDefault musicInfoContextDefault = MusicInfoContextDefault.CreateContext(out _,
+					out DbSet<TSong> songsDefault, out DbSet<TPerson> peopleDefault, out DbSet<TTieUp> tieUpsDefault, out _,
 					out DbSet<TTieUpGroup> tieUpGroupsDefault, out DbSet<TMaker> makersDefault, out DbSet<TTag> tagsDefault,
-					out DbSet<TSongAlias> songAliasesDefault, out DbSet<TPersonAlias> personAliasesDefault, out DbSet<TTieUpAlias> tieUpAliasesDefault,
-					out DbSet<TCategoryAlias> categoryAliasesDefault, out DbSet<TTieUpGroupAlias> tieUpGroupAliasesDefault, out DbSet<TMakerAlias> makerAliasesDefault,
+					out DbSet<TSongAlias> songAliasesDefault, out _, out DbSet<TTieUpAlias> tieUpAliasesDefault,
+					out _, out _, out _,
 					out DbSet<TArtistSequence> artistSequencesDefault, out DbSet<TLyristSequence> lyristSequencesDefault, out DbSet<TComposerSequence> composerSequencesDefault, out DbSet<TArrangerSequence> arrangerSequencesDefault,
 					out DbSet<TTieUpGroupSequence> tieUpGroupSequencesDefault, out DbSet<TTagSequence> tagSequencesDefault);
 

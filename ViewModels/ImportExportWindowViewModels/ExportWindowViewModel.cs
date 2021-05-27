@@ -131,6 +131,6 @@ namespace YukaLister.ViewModels.ImportExportWindowViewModels
 		// ====================================================================
 
 		// エクスポート先
-		private String _exportYukaListerPath;
+		private readonly String _exportYukaListerPath;
 	}
 }
