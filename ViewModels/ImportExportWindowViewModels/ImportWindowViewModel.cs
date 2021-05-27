@@ -90,18 +90,6 @@ namespace YukaLister.ViewModels.ImportExportWindowViewModels
 		// タグをインポートするかどうか
 		private Boolean _importTag;
 
-
-
-
-		// 挿入待ちの TPerson
-		//private Dictionary<String, String> mInsertingPersons = new Dictionary<String, String>();
-
-		// 挿入待ちの TSong
-		//private Dictionary<String, String> mInsertingSongs = new Dictionary<String, String>();
-
-		// 挿入待ちの TTieUp
-		//private Dictionary<String, String> mInsertingTieUps = new Dictionary<String, String>();
-
 		// ====================================================================
 		// private メンバー関数
 		// ====================================================================

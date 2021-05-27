@@ -67,7 +67,7 @@ namespace YukaLister.Models.OutputWriters
 						break;
 				}
 			}
-			stringBuilder.Append("\n");
+			stringBuilder.Append('\n');
 
 			IQueryable<TFound> queryResult = _founds.OrderBy(x => x.Category).ThenBy(x => x.Head).ThenBy(x => x.TieUpRuby).ThenBy(x => x.TieUpName).ThenBy(x => x.SongRuby).ThenBy(x => x.SongName);
 
@@ -75,7 +75,7 @@ namespace YukaLister.Models.OutputWriters
 			Int32 index = 1;
 			foreach (TFound found in queryResult)
 			{
-				stringBuilder.Append(index.ToString());
+				stringBuilder.Append(index);
 				foreach (OutputItems outputItem in _runtimeOutputItems)
 				{
 					switch (outputItem)
@@ -121,7 +121,7 @@ namespace YukaLister.Models.OutputWriters
 						case OutputItems.SongReleaseDate:
 							if (found.SongReleaseDate <= YlConstants.INVALID_MJD)
 							{
-								stringBuilder.Append(",");
+								stringBuilder.Append(',');
 							}
 							else
 							{
@@ -182,7 +182,7 @@ namespace YukaLister.Models.OutputWriters
 					}
 
 				}
-				stringBuilder.Append("\n");
+				stringBuilder.Append('\n');
 
 				index++;
 

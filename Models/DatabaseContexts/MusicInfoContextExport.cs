@@ -130,6 +130,6 @@ namespace YukaLister.Models.DatabaseContexts
 		// ====================================================================
 
 		// データベースパス
-		private String _databasePath;
+		private readonly String _databasePath;
 	}
 }
