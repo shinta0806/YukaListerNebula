@@ -90,6 +90,7 @@ namespace YukaLister.Models.Database.Masters
 				{
 					TCategory? category;
 					using MusicInfoContextDefault musicInfoContext = MusicInfoContextDefault.CreateContext(out DbSet<TCategory> categories);
+					musicInfoContext.ChangeTracker.QueryTrackingBehavior = QueryTrackingBehavior.NoTracking;
 					category = DbCommon.SelectBaseById(categories, CategoryId);
 					return Name + "（" + (String.IsNullOrEmpty(category?.Name) ? "カテゴリー無し" : category?.Name) + ", "
 							+ (String.IsNullOrEmpty(Keyword) ? "キーワード無し" : Keyword) + "）";

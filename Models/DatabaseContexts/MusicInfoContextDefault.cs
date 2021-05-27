@@ -150,10 +150,6 @@ namespace YukaLister.Models.DatabaseContexts
 			// クリア
 			using MusicInfoContextDefault musicInfoContext = CreateContext(out DbSet<TProperty> properties);
 			musicInfoContext.Database.EnsureDeleted();
-#if DEBUGz
-			DbConnection connection = musicInfoContext.Database.GetDbConnection();
-			SqliteConnection? sqliteConnection = connection as SqliteConnection;
-#endif
 
 			// 新規作成
 			musicInfoContext.Database.EnsureCreated();

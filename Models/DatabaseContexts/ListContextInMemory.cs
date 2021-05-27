@@ -84,12 +84,6 @@ namespace YukaLister.Models.DatabaseContexts
 			_listContextInMemory.Database.EnsureCreated();
 			DbCommon.UpdateProperty(_listContextInMemory, properties);
 
-#if DEBUGz
-			Debug.WriteLine("CreateDatabase() count: " + properties.Count());
-			using ListContextInMemory listContext2 = CreateContext(out DbSet<TProperty> properties2);
-			Debug.WriteLine("CreateDatabase() count2: " + properties2.Count());
-#endif
-
 			YukaListerModel.Instance.EnvModel.LogWriter.LogMessage(Common.TRACE_EVENT_TYPE_STATUS, "インメモリデータベースを初期化しました。");
 		}
 
@@ -139,6 +133,5 @@ namespace YukaLister.Models.DatabaseContexts
 		{
 			return FILE_NAME_LIST_DATABASE_IN_MEMORY;
 		}
-
 	}
 }
