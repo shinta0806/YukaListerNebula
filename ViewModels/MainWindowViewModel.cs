@@ -390,7 +390,7 @@ namespace YukaLister.ViewModels
 		#endregion
 
 		#region ヘルプメニューアイテムの制御
-		public ListenerCommand<String>? MehuItemHelpClickedCommand
+		public static ListenerCommand<String>? MehuItemHelpClickedCommand
 		{
 			get => YukaListerModel.Instance.EnvModel.HelpClickedCommand;
 		}
@@ -411,7 +411,7 @@ namespace YukaLister.ViewModels
 			}
 		}
 
-		public void MenuItemHistoryClicked()
+		public static void MenuItemHistoryClicked()
 		{
 			try
 			{
@@ -760,7 +760,7 @@ namespace YukaLister.ViewModels
 				// 終了処理
 				// await するとその間に強制終了されてしまうようなので、await しない
 				_ = YukaListerModel.Instance.EnvModel.QuitAllCoresAsync();
-				_ = QuitServerIfNeededAsync();
+				_ = QuitServerIfNeededAsync().AsTask();
 				SaveExitStatus();
 				try
 				{
@@ -815,6 +815,58 @@ namespace YukaLister.ViewModels
 
 		// Dispose フラグ
 		private Boolean _isDisposed;
+
+		// ====================================================================
+		// private static メンバー関数
+		// ====================================================================
+
+		// --------------------------------------------------------------------
+		// デバイスが接続された
+		// ＜引数＞ driveLetter: "D:" のようにコロンまで
+		// --------------------------------------------------------------------
+		private static async Task DeviceArrivalCoreAsync(String driveLetter)
+		{
+			Debug.Assert(driveLetter.Length == 2, "DeviceArrivalCoreAsync() bad driveLetter: " + driveLetter);
+			AutoTargetInfo autoTargetInfo = new(driveLetter);
+			autoTargetInfo.Load();
+			foreach (String folder in autoTargetInfo.Folders)
+			{
+				await YukaListerModel.Instance.ProjModel.AddTargetFolderAsync(driveLetter + folder);
+			}
+		}
+
+		// --------------------------------------------------------------------
+		// インストールフォルダーについての警告メッセージ
+		// --------------------------------------------------------------------
+		private static String? InstallWarningMessage()
+		{
+			if (YukaListerModel.Instance.EnvModel.ExeFullPath.StartsWith(Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles))
+					|| YukaListerModel.Instance.EnvModel.ExeFullPath.StartsWith(Environment.GetFolderPath(Environment.SpecialFolder.ProgramFilesX86)))
+			{
+				// 自動更新できない
+				return YlConstants.APP_NAME_J + " が Program Files フォルダー配下にインストールされているため、正常に動作しません。\n"
+						+ "他のフォルダー（例えば C:\\xampp\\htdocs）配下にインストールしてください。";
+			}
+			return null;
+		}
+
+		// --------------------------------------------------------------------
+		// ちょちょいと自動更新を起動
+		// --------------------------------------------------------------------
+		private static void LaunchUpdaterIfNeeded()
+		{
+			if (!YukaListerModel.Instance.EnvModel.YlSettings.IsCheckRssNeeded())
+			{
+				return;
+			}
+
+			UpdaterLauncher updaterLauncher = YlCommon.CreateUpdaterLauncher(true, false, false, false);
+			if (updaterLauncher.Launch(updaterLauncher.ForceShow))
+			{
+				YukaListerModel.Instance.EnvModel.YlSettings.RssCheckDate = DateTime.Now.Date;
+				YukaListerModel.Instance.EnvModel.YlSettings.Save();
+			}
+		}
 
 		// ====================================================================
 		// private メンバー関数
@@ -888,20 +940,6 @@ namespace YukaLister.ViewModels
 
 			// 次回 UI 更新タイミングまでに追加が完了してしまっていても検索可能ファイル数が更新されるようにする
 			_prevYukaListerWholeStatus = YukaListerStatus.__End__;
-		}
-
-		// --------------------------------------------------------------------
-		// デバイスが接続された
-		// ＜引数＞ driveLetter: "D:" のようにコロンまで
-		// --------------------------------------------------------------------
-		private async Task DeviceArrivalCoreAsync(String driveLetter)
-		{
-			AutoTargetInfo autoTargetInfo = new(driveLetter);
-			autoTargetInfo.Load();
-			foreach (String folder in autoTargetInfo.Folders)
-			{
-				await YukaListerModel.Instance.ProjModel.AddTargetFolderAsync(driveLetter + folder);
-			}
 		}
 
 		// --------------------------------------------------------------------
@@ -997,39 +1035,6 @@ namespace YukaLister.ViewModels
 			if (MusicInfoContextDefault.LastWriteTime() != musicInfoDbTimeBak)
 			{
 				ActivateSyclinIfNeeded();
-			}
-		}
-
-		// --------------------------------------------------------------------
-		// インストールフォルダーについての警告メッセージ
-		// --------------------------------------------------------------------
-		private String? InstallWarningMessage()
-		{
-			if (YukaListerModel.Instance.EnvModel.ExeFullPath.StartsWith(Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles))
-					|| YukaListerModel.Instance.EnvModel.ExeFullPath.StartsWith(Environment.GetFolderPath(Environment.SpecialFolder.ProgramFilesX86)))
-			{
-				// 自動更新できない
-				return YlConstants.APP_NAME_J + " が Program Files フォルダー配下にインストールされているため、正常に動作しません。\n"
-						+ "他のフォルダー（例えば C:\\xampp\\htdocs）配下にインストールしてください。";
-			}
-			return null;
-		}
-
-		// --------------------------------------------------------------------
-		// ちょちょいと自動更新を起動
-		// --------------------------------------------------------------------
-		private void LaunchUpdaterIfNeeded()
-		{
-			if (!YukaListerModel.Instance.EnvModel.YlSettings.IsCheckRssNeeded())
-			{
-				return;
-			}
-
-			UpdaterLauncher updaterLauncher = YlCommon.CreateUpdaterLauncher(true, false, false, false);
-			if (updaterLauncher.Launch(updaterLauncher.ForceShow))
-			{
-				YukaListerModel.Instance.EnvModel.YlSettings.RssCheckDate = DateTime.Now.Date;
-				YukaListerModel.Instance.EnvModel.YlSettings.Save();
 			}
 		}
 
