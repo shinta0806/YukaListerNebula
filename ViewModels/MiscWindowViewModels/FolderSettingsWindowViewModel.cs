@@ -318,7 +318,7 @@ namespace YukaLister.ViewModels.MiscWindowViewModels
 		// --------------------------------------------------------------------
 
 		#region ヘルプリンクの制御
-		public ListenerCommand<String>? HelpClickedCommand
+		public static ListenerCommand<String>? HelpClickedCommand
 		{
 			get => YukaListerModel.Instance.EnvModel.HelpClickedCommand;
 		}
@@ -912,13 +912,13 @@ namespace YukaLister.ViewModels.MiscWindowViewModels
 			{
 				if (_dataGridDoubleClickedCommand == null)
 				{
-					_dataGridDoubleClickedCommand = new ViewModelCommand(dataGridDoubleClickedCommand);
+					_dataGridDoubleClickedCommand = new ViewModelCommand(DataGridDoubleClicked);
 				}
 				return _dataGridDoubleClickedCommand;
 			}
 		}
 
-		public void dataGridDoubleClickedCommand()
+		public void DataGridDoubleClicked()
 		{
 			try
 			{
@@ -1079,7 +1079,116 @@ namespace YukaLister.ViewModels.MiscWindowViewModels
 		private Boolean _isDirty = false;
 
 		// フォルダー設定ウィンドウ上で時間のかかるタスクが多重起動されるのを抑止する
-		private SemaphoreSlim _semaphoreSlim = new(1);
+		private readonly SemaphoreSlim _semaphoreSlim = new(1);
+
+		// ====================================================================
+		// private static メンバー関数
+		// ====================================================================
+
+		// --------------------------------------------------------------------
+		// ファイル命名規則の変数の表示用文字列を生成
+		// --------------------------------------------------------------------
+		private static List<String> CreateRuleVarLabels()
+		{
+			List<String> labels = new();
+			TextInfo textInfo = Thread.CurrentThread.CurrentCulture.TextInfo;
+			Dictionary<String, String> varMap = YlCommon.CreateRuleDictionaryWithDescription();
+			foreach (KeyValuePair<String, String> kvp in varMap)
+			{
+				String key;
+				if (kvp.Key == YlConstants.RULE_VAR_ANY)
+				{
+					key = kvp.Key;
+				}
+				else
+				{
+					key = YlConstants.RULE_VAR_BEGIN + textInfo.ToTitleCase(kvp.Key) + YlConstants.RULE_VAR_END;
+				}
+				labels.Add(key + "（" + kvp.Value + "）");
+			}
+			return labels;
+		}
+
+		// --------------------------------------------------------------------
+		// <Name>=Value 形式の文字列から Value を返す
+		// --------------------------------------------------------------------
+		private static String FindRuleValue(String str)
+		{
+			Int32 equalPos = str.IndexOf('=');
+			return str[(equalPos + 1)..];
+		}
+
+		// --------------------------------------------------------------------
+		// 文字列の中に含まれている命名規則の変数名を返す
+		// 文字列の中には <Name> 形式で変数名を含んでいる必要がある
+		// 返す変数名には <> は含まない
+		// --------------------------------------------------------------------
+		private static String? FindRuleVarName(String str)
+		{
+			Dictionary<String, String?> varMap = YlCommon.CreateRuleDictionary();
+			foreach (String kvp in varMap.Keys)
+			{
+				if (str.Contains(YlConstants.RULE_VAR_BEGIN + kvp + YlConstants.RULE_VAR_END, StringComparison.CurrentCultureIgnoreCase))
+				{
+					return kvp;
+				}
+			}
+			if (str.Contains(YlConstants.RULE_VAR_ANY))
+			{
+				return YlConstants.RULE_VAR_ANY;
+			}
+			return null;
+		}
+
+		// --------------------------------------------------------------------
+		// フォルダー固定値一覧の中からタグの行を探す
+		// --------------------------------------------------------------------
+		private static Int32 FindTagRule(List<String> folderNameRules)
+		{
+			for (Int32 i = 0; i < folderNameRules.Count; i++)
+			{
+				if (FindRuleVarName(folderNameRules[i]) == YlConstants.RULE_VAR_TAG)
+				{
+					return i;
+				}
+			}
+
+			return -1;
+		}
+
+		// --------------------------------------------------------------------
+		// 命名規則の変数部分を全てワイルドカードにする
+		// --------------------------------------------------------------------
+		private static String NormalizeRule(String rule)
+		{
+			return Regex.Replace(rule, @"\<.*?\>", YlConstants.RULE_VAR_ANY);
+		}
+
+		// --------------------------------------------------------------------
+		// リストの 2 つのアイテムを入れ替える
+		// --------------------------------------------------------------------
+		private static void SwapListItem<T>(IList<T> list, Int32 lhsIndex, Int32 rhsIndex)
+		{
+			T tmp = list[lhsIndex];
+			list[lhsIndex] = list[rhsIndex];
+			list[rhsIndex] = tmp;
+		}
+
+		// --------------------------------------------------------------------
+		// 変数名を <> で囲む
+		// --------------------------------------------------------------------
+		private static String WrapVarName(String varName)
+		{
+			if (varName == YlConstants.RULE_VAR_ANY)
+			{
+				return YlConstants.RULE_VAR_ANY;
+			}
+			else
+			{
+				TextInfo textInfo = Thread.CurrentThread.CurrentCulture.TextInfo;
+				return YlConstants.RULE_VAR_BEGIN + textInfo.ToTitleCase(varName) + YlConstants.RULE_VAR_END;
+			}
+		}
 
 		// ====================================================================
 		// private メンバー関数
@@ -1172,7 +1281,7 @@ namespace YukaLister.ViewModels.MiscWindowViewModels
 				previewInfo.LastWriteTime = JulianDay.DateTimeToModifiedJulianDate(new FileInfo(filePath).LastWriteTime);
 				if (folderPath.Length > FolderPath.Length)
 				{
-					previewInfo.SubFolder = folderPath.Substring(FolderPath.Length + 1);
+					previewInfo.SubFolder = folderPath[(FolderPath.Length + 1)..];
 				}
 
 				// 項目と値
@@ -1274,8 +1383,8 @@ namespace YukaLister.ViewModels.MiscWindowViewModels
 				}
 				else
 				{
-					FileNameRule = FileNameRule!.Substring(0, FileNameRuleSelectionStart) + wrappedVarName
-							+ FileNameRule.Substring(FileNameRuleSelectionStart + FileNameRuleSelectionLength);
+					FileNameRule = FileNameRule.Substring(0, FileNameRuleSelectionStart) + wrappedVarName
+							+ FileNameRule[(FileNameRuleSelectionStart + FileNameRuleSelectionLength)..];
 				}
 
 				// タグボタンにフォーカスが移っているので戻す
@@ -1293,30 +1402,6 @@ namespace YukaLister.ViewModels.MiscWindowViewModels
 		}
 
 		// --------------------------------------------------------------------
-		// ファイル命名規則の変数の表示用文字列を生成
-		// --------------------------------------------------------------------
-		private List<String> CreateRuleVarLabels()
-		{
-			List<String> labels = new();
-			TextInfo textInfo = Thread.CurrentThread.CurrentCulture.TextInfo;
-			Dictionary<String, String> varMap = YlCommon.CreateRuleDictionaryWithDescription();
-			foreach (KeyValuePair<String, String> kvp in varMap)
-			{
-				String key;
-				if (kvp.Key == YlConstants.RULE_VAR_ANY)
-				{
-					key = kvp.Key;
-				}
-				else
-				{
-					key = YlConstants.RULE_VAR_BEGIN + textInfo.ToTitleCase(kvp.Key) + YlConstants.RULE_VAR_END;
-				}
-				labels.Add(key + "（" + kvp.Value + "）");
-			}
-			return labels;
-		}
-
-		// --------------------------------------------------------------------
 		// 名称の編集ウィンドウを開く
 		// --------------------------------------------------------------------
 		private void EditInfo()
@@ -1330,53 +1415,6 @@ namespace YukaLister.ViewModels.MiscWindowViewModels
 			String filePath = FolderPath + "\\" + SelectedPreviewInfo.FileName;
 			using EditMusicInfoWindowViewModel editMusicInfoWindowViewModel = new(filePath);
 			Messenger.Raise(new TransitionMessage(editMusicInfoWindowViewModel, YlConstants.MESSAGE_KEY_OPEN_EDIT_MUSIC_INFO_WINDOW));
-		}
-
-		// --------------------------------------------------------------------
-		// <Name>=Value 形式の文字列から Value を返す
-		// --------------------------------------------------------------------
-		private String FindRuleValue(String str)
-		{
-			Int32 equalPos = str.IndexOf('=');
-			return str.Substring(equalPos + 1);
-		}
-
-		// --------------------------------------------------------------------
-		// 文字列の中に含まれている命名規則の変数名を返す
-		// 文字列の中には <Name> 形式で変数名を含んでいる必要がある
-		// 返す変数名には <> は含まない
-		// --------------------------------------------------------------------
-		private String? FindRuleVarName(String str)
-		{
-			Dictionary<String, String?> varMap = YlCommon.CreateRuleDictionary();
-			foreach (String kvp in varMap.Keys)
-			{
-				if (str.Contains(YlConstants.RULE_VAR_BEGIN + kvp + YlConstants.RULE_VAR_END, StringComparison.CurrentCultureIgnoreCase))
-				{
-					return kvp;
-				}
-			}
-			if (str.Contains(YlConstants.RULE_VAR_ANY))
-			{
-				return YlConstants.RULE_VAR_ANY;
-			}
-			return null;
-		}
-
-		// --------------------------------------------------------------------
-		// フォルダー固定値一覧の中からタグの行を探す
-		// --------------------------------------------------------------------
-		private Int32 FindTagRule(List<String> folderNameRules)
-		{
-			for (Int32 i = 0; i < folderNameRules.Count; i++)
-			{
-				if (FindRuleVarName(folderNameRules[i]) == YlConstants.RULE_VAR_TAG)
-				{
-					return i;
-				}
-			}
-
-			return -1;
 		}
 
 		// --------------------------------------------------------------------
@@ -1524,14 +1562,6 @@ namespace YukaLister.ViewModels.MiscWindowViewModels
 				SelectedPreviewInfo = null;
 			}
 			return Task.CompletedTask;
-		}
-
-		// --------------------------------------------------------------------
-		// 命名規則の変数部分を全てワイルドカードにする
-		// --------------------------------------------------------------------
-		private String NormalizeRule(String rule)
-		{
-			return Regex.Replace(rule, @"\<.*?\>", YlConstants.RULE_VAR_ANY);
 		}
 
 		// --------------------------------------------------------------------
@@ -1787,16 +1817,6 @@ namespace YukaLister.ViewModels.MiscWindowViewModels
 		}
 
 		// --------------------------------------------------------------------
-		// リストの 2 つのアイテムを入れ替える
-		// --------------------------------------------------------------------
-		private void SwapListItem<T>(IList<T> list, Int32 lhsIndex, Int32 rhsIndex)
-		{
-			T tmp = list[lhsIndex];
-			list[lhsIndex] = list[rhsIndex];
-			list[rhsIndex] = tmp;
-		}
-
-		// --------------------------------------------------------------------
 		// SelectedFolderNameRuleName の状況に紐付くプロパティーを更新
 		// --------------------------------------------------------------------
 		private void UpdateFolderNameRuleProperties()
@@ -1872,22 +1892,6 @@ namespace YukaLister.ViewModels.MiscWindowViewModels
 				ProgressBarPreviewVisibility = Visibility.Hidden;
 			}
 			return Task.CompletedTask;
-		}
-
-		// --------------------------------------------------------------------
-		// 変数名を <> で囲む
-		// --------------------------------------------------------------------
-		private String WrapVarName(String varName)
-		{
-			if (varName == YlConstants.RULE_VAR_ANY)
-			{
-				return YlConstants.RULE_VAR_ANY;
-			}
-			else
-			{
-				TextInfo textInfo = Thread.CurrentThread.CurrentCulture.TextInfo;
-				return YlConstants.RULE_VAR_BEGIN + textInfo.ToTitleCase(varName) + YlConstants.RULE_VAR_END;
-			}
 		}
 	}
 }
