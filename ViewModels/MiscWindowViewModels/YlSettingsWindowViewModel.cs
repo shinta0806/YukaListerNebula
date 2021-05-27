@@ -1195,7 +1195,7 @@ namespace YukaLister.ViewModels.MiscWindowViewModels
 		private Task OutputListByWorker(OutputWriter outputWriter)
 		{
 			outputWriter.Output();
-#if DEBUG
+#if DEBUGz
 			Thread.Sleep(3000);
 #endif
 			return Task.CompletedTask;

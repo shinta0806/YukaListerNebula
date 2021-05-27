@@ -43,6 +43,7 @@ namespace YukaLister.Models.OutputWriters
 					out _peopleInMemory, out _artistSequencesInMemory, out _composerSequencesInMemory,
 					out _tieUpGroupsInMemory, out _tieUpGroupSequencesInMemory,
 					out _tagsInMemory, out _tagSequencesInMemory);
+			_listContextInMemory.ChangeTracker.QueryTrackingBehavior = QueryTrackingBehavior.NoTracking;
 			_musicInfoContext = MusicInfoContextDefault.CreateContext(out _,
 					out _songsInMusicInfo, out _, out _tieUpsInMusicInfo, out _categoriesInMusicInfo,
 					out _, out _makersInMusicInfo, out _,
@@ -50,6 +51,7 @@ namespace YukaLister.Models.OutputWriters
 					out _categoryAliasesInMusicInfo, out _tieUpGroupAliasesInMusicInfo, out _makerAliasesInMusicInfo,
 					out _, out _lyristSequencesInMusicInfo, out _, out _arrangerSequencesInMusicInfo,
 					out _, out _);
+			_musicInfoContext.ChangeTracker.QueryTrackingBehavior = QueryTrackingBehavior.NoTracking;
 		}
 
 		// ====================================================================

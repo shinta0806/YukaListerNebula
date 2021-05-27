@@ -505,7 +505,7 @@ namespace YukaLister.Models.OutputWriters
 			// pageInfoTree を調整
 			if (!String.IsNullOrEmpty(pageInfoTree.Content))
 			{
-				pageInfoTree.Content = pageInfoTree.Content!.Replace(HTML_VAR_TITLE, pageInfoTree.DirectoryText());
+				pageInfoTree.Content = pageInfoTree.Content.Replace(HTML_VAR_TITLE, pageInfoTree.DirectoryText());
 				pageInfoTree.Content = pageInfoTree.Content.Replace(HTML_VAR_DIRECTORY, pageInfoTree.DirectoryLink(_listLinkArg));
 				pageInfoTree.Content = pageInfoTree.Content.Replace(HTML_VAR_NUM_SONGS, pageInfoTree.NumTotalSongs.ToString("#,0"));
 
