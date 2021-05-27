@@ -60,7 +60,7 @@ namespace YukaLister.ViewModels.ImportExportWindowViewModels
 		// --------------------------------------------------------------------
 		// インポート処理
 		// --------------------------------------------------------------------
-		protected override Task ImportExport(Object? _)
+		protected override Task ImportExportByWorker(Object? _)
 		{
 			// 楽曲情報データベースバックアップ
 			MusicInfoContextDefault.BackupDatabase();
@@ -72,13 +72,6 @@ namespace YukaLister.ViewModels.ImportExportWindowViewModels
 			ImportYukaLister();
 			return Task.CompletedTask;
 		}
-
-		// ====================================================================
-		// private 定数
-		// ====================================================================
-
-		// CSV 登録進捗表示間隔
-		//private const Int32 NUM_CSV_IMPORT_PROGRESS = 1000;
 
 		// ====================================================================
 		// private メンバー変数

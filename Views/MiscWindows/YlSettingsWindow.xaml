@@ -138,9 +138,10 @@
                         </Button>
                         <TextBox Text="{Binding ListFolder}" VerticalAlignment="Center" Margin="0,0,10,0"/>
                     </DockPanel>
-                    <StackPanel Margin="0,10,20,0" HorizontalAlignment="Right">
-                        <Button Height="Auto" Content="閲覧用リスト出力 (_O)" Style="{StaticResource MaterialDesignRaisedLightButton}" Margin="0" Width="200" Command="{Binding ButtonOutputListClickedCommand}"/>
-                    </StackPanel>
+                    <DockPanel Margin="170,10,20,0" >
+                        <Button Height="Auto" Content="閲覧用リスト出力 (_O)" Style="{StaticResource MaterialDesignRaisedLightButton}" Margin="0" Width="200" DockPanel.Dock="Right" Command="{Binding ButtonOutputListClickedCommand}" />
+                        <ProgressBar Height="Auto" Margin="0,0,10,0" Visibility="{Binding ProgressBarOutputListVisibility}" IsIndeterminate="True" />
+                    </DockPanel>
                 </StackPanel>
             </TabItem>
             <TabItem Header="メンテナンス">
@@ -152,7 +153,7 @@
                         <Button Height="Auto" Content="今すぐ最新情報を確認する (_A)" Style="{StaticResource MaterialDesignRaisedLightButton}" Margin="0" Width="210" DockPanel.Dock="Right" Padding="4" Command="{Binding ButtonCheckRssClickedCommand}"/>
                         <ProgressBar Height="Auto" Margin="0,0,10,0" Visibility="{Binding ProgressBarCheckRssVisibility}" IsIndeterminate="True"/>
                     </DockPanel>
-                    <Label Content="（「セルフ再起動したため終了します」というメッセージの後に確認結果が表示されます）" Foreground="{DynamicResource MaterialDesignBodyLight}" HorizontalContentAlignment="Right" />
+                    <Label Content="（「セルフ再起動したため終了します」というメッセージの後、しばらくしてから確認結果が表示されます）" Foreground="{DynamicResource MaterialDesignBodyLight}" HorizontalContentAlignment="Right" />
                     <StackPanel Margin="20,10,0,0">
                         <Label Content="設定のバックアップ（ファイルに保存）"/>
                     </StackPanel>

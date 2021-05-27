@@ -39,8 +39,8 @@ namespace YukaLister.ViewModels.ImportExportWindowViewModels
 		// --------------------------------------------------------------------
 		public ImportExportWindowViewModel(String kind)
 		{
-			CompositeDisposable.Add(_semaphoreSlim);
 			_kind = kind;
+			CompositeDisposable.Add(_semaphoreSlim);
 		}
 
 		// --------------------------------------------------------------------
@@ -48,8 +48,8 @@ namespace YukaLister.ViewModels.ImportExportWindowViewModels
 		// --------------------------------------------------------------------
 		public ImportExportWindowViewModel()
 		{
-			CompositeDisposable.Add(_semaphoreSlim);
 			_kind = String.Empty;
+			CompositeDisposable.Add(_semaphoreSlim);
 		}
 
 		// ====================================================================
@@ -222,7 +222,7 @@ namespace YukaLister.ViewModels.ImportExportWindowViewModels
 		// インポート・エクスポート処理
 		// ワーカースレッドで実行される前提
 		// --------------------------------------------------------------------
-		protected virtual Task ImportExport(Object? _)
+		protected virtual Task ImportExportByWorker(Object? _)
 		{
 			return Task.CompletedTask;
 		}
@@ -280,7 +280,7 @@ namespace YukaLister.ViewModels.ImportExportWindowViewModels
 		{
 			try
 			{
-				await YlCommon.LaunchTaskAsync<Object?>(_semaphoreSlim, ImportExport, null, _kind);
+				await YlCommon.LaunchTaskAsync<Object?>(_semaphoreSlim, ImportExportByWorker, null, _kind);
 				_abortCancellationTokenSource.Token.ThrowIfCancellationRequested();
 				YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(TraceEventType.Information, _kind + "完了。");
 			}

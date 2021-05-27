@@ -59,7 +59,7 @@ namespace YukaLister.ViewModels.ImportExportWindowViewModels
 		// エクスポート処理
 		// ワーカースレッドで実行される前提
 		// --------------------------------------------------------------------
-		protected override Task ImportExport(Object? _)
+		protected override Task ImportExportByWorker(Object? _)
 		{
 			String tempExportPath = YlCommon.TempPath();
 			MusicInfoContextDefault musicInfoContextDefault = MusicInfoContextDefault.CreateContext(out DbSet<TProperty> propertiesDefault,

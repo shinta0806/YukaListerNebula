@@ -21,6 +21,8 @@ using System.Diagnostics;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 using System.Windows;
 
 using YukaLister.Models.DatabaseAssist;
@@ -44,6 +46,7 @@ namespace YukaLister.ViewModels.MiscWindowViewModels
 		// --------------------------------------------------------------------
 		public YlSettingsWindowViewModel()
 		{
+			CompositeDisposable.Add(_semaphoreSlim);
 		}
 
 		// ====================================================================
@@ -210,6 +213,20 @@ namespace YukaLister.ViewModels.MiscWindowViewModels
 			set => RaisePropertyChangedIfSet(ref _listFolder, value);
 		}
 
+		// プログレスバー表示
+		private Visibility _progressBarOutputListVisibility;
+		public Visibility ProgressBarOutputListVisibility
+		{
+			get => _progressBarOutputListVisibility;
+			set
+			{
+				if (RaisePropertyChangedIfSet(ref _progressBarOutputListVisibility, value))
+				{
+					ButtonOutputListClickedCommand.RaiseCanExecuteChanged();
+				}
+			}
+		}
+
 		#endregion
 
 		#region メンテナンスタブのプロパティー
@@ -247,15 +264,6 @@ namespace YukaLister.ViewModels.MiscWindowViewModels
 				}
 			}
 		}
-
-#if false
-		// デフォルトログファイル名
-		public String DefaultLogFileName
-		{
-			get => "YukaListerLog_" + DateTime.Now.ToString("yyyy_MM_dd-HH_mm_ss");
-			set { }
-		}
-#endif
 
 		// 楽曲情報データベースを同期する
 		private Boolean _syncMusicInfoDb;
@@ -346,9 +354,6 @@ namespace YukaLister.ViewModels.MiscWindowViewModels
 		// --------------------------------------------------------------------
 		// 一般のプロパティー
 		// --------------------------------------------------------------------
-
-		// ゆかり用リストデータベース（作業用インメモリ）
-		//public YukariListDatabaseInMemory? YukariListDbInMemory { get; set; }
 
 		// 強制再取得をユーザーから指示されたか
 		public Boolean RegetSyncDataNeeded { get; set; }
@@ -711,13 +716,18 @@ namespace YukaLister.ViewModels.MiscWindowViewModels
 			{
 				if (_buttonOutputListClickedCommand == null)
 				{
-					_buttonOutputListClickedCommand = new ViewModelCommand(ButtonOutputListClicked);
+					_buttonOutputListClickedCommand = new ViewModelCommand(ButtonOutputListClicked, CanButtonOutputListClicked);
 				}
 				return _buttonOutputListClickedCommand;
 			}
 		}
 
-		public void ButtonOutputListClicked()
+		public Boolean CanButtonOutputListClicked()
+		{
+			return ProgressBarOutputListVisibility != Visibility.Visible;
+		}
+
+		public async void ButtonOutputListClicked()
 		{
 			try
 			{
@@ -746,7 +756,8 @@ namespace YukaLister.ViewModels.MiscWindowViewModels
 				}
 
 				// 出力
-				SelectedOutputWriter.Output();
+				ProgressBarOutputListVisibility = Visibility.Visible;
+				await YlCommon.LaunchTaskAsync(_semaphoreSlim, OutputListByWorker, SelectedOutputWriter, "閲覧用リスト出力");
 				YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(TraceEventType.Information, "リスト出力が完了しました。");
 
 				// 表示
@@ -764,6 +775,10 @@ namespace YukaLister.ViewModels.MiscWindowViewModels
 			{
 				YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(TraceEventType.Error, "リスト出力ボタンクリック時エラー：\n" + excep.Message);
 				YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, "　スタックトレース：\n" + excep.StackTrace);
+			}
+			finally
+			{
+				ProgressBarOutputListVisibility = Visibility.Hidden;
 			}
 		}
 		#endregion
@@ -1072,6 +1087,7 @@ namespace YukaLister.ViewModels.MiscWindowViewModels
 				OutputWriters.Add(csvOutputWriter);
 
 				// プログレスバー
+				ProgressBarOutputListVisibility = Visibility.Hidden;
 				ProgressBarCheckRssVisibility = Visibility.Hidden;
 
 				SettingsToProperties();
@@ -1102,6 +1118,13 @@ namespace YukaLister.ViewModels.MiscWindowViewModels
 				YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, "　スタックトレース：\n" + excep.StackTrace);
 			}
 		}
+
+		// ====================================================================
+		// private メンバー変数
+		// ====================================================================
+
+		// タスクが多重起動されるのを抑止する
+		private SemaphoreSlim _semaphoreSlim = new(1);
 
 		// ====================================================================
 		// private メンバー関数
@@ -1163,6 +1186,19 @@ namespace YukaLister.ViewModels.MiscWindowViewModels
 			{
 				outputWriter.OutputSettings.Load();
 			}
+		}
+
+		// --------------------------------------------------------------------
+		// インポート・エクスポート処理
+		// ワーカースレッドで実行される前提
+		// --------------------------------------------------------------------
+		private Task OutputListByWorker(OutputWriter outputWriter)
+		{
+			outputWriter.Output();
+#if DEBUG
+			Thread.Sleep(3000);
+#endif
+			return Task.CompletedTask;
 		}
 
 		// --------------------------------------------------------------------
