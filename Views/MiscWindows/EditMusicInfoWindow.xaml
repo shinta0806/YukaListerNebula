@@ -88,7 +88,9 @@
                         <ColumnDefinition Width="210"/>
                     </Grid.ColumnDefinitions>
                     <Label Content="タイアップ名：" Margin="0" HorizontalAlignment="Right" Grid.Row="1"/>
-                    <Label Content="{Binding TieUpNameByFileName}" Margin="0" Grid.Row="1" Grid.Column="1"/>
+                    <Label Margin="0" Grid.Row="1" Grid.Column="1">
+                        <TextBlock Text="{Binding TieUpNameByFileName}" />
+                    </Label>
                     <Label Margin="0" Grid.Row="2" Grid.Column="1">
                         <Label.Style>
                             <Style TargetType="{x:Type Label}">
@@ -106,7 +108,9 @@
                         </Label.Style>
                     </Label>
                     <Label Content="楽曲名：" Margin="0" HorizontalAlignment="Right" Grid.Row="4"/>
-                    <Label Content="{Binding SongNameByFileName}" Margin="0" Grid.Row="4" Grid.Column="1"/>
+                    <Label Margin="0" Grid.Row="4" Grid.Column="1">
+                        <TextBlock Text="{Binding SongNameByFileName}" />
+                    </Label>
                     <Label Margin="0" Grid.Row="5" Grid.Column="1">
                         <Label.Style>
                             <Style TargetType="{x:Type Label}">
@@ -143,11 +147,15 @@
                     <CheckBox Content="タイアップ名を揃える" Grid.ColumnSpan="3" IsChecked="{Binding UseTieUpAlias}" />
                     <Label Content="正式名称：" Margin="0" HorizontalAlignment="Right" Grid.Row="1"/>
                     <Button Content="検索" Grid.Row="1" Grid.Column="1" Height="Auto" FontSize="12" Padding="2" Style="{StaticResource MaterialDesignRaisedLightButton}" Margin="0,5,5,5" Command="{Binding ButtonSearchTieUpOriginClickedCommand}"/>
-                    <Label Content="{Binding TieUpOrigin}" Margin="0" Grid.Row="1" Grid.Column="2"/>
+                    <Label Margin="0" Grid.Row="1" Grid.Column="2">
+                        <TextBlock Text="{Binding TieUpOrigin}" />
+                    </Label>
                     <CheckBox Content="楽曲名を揃える" Grid.Row="3" Grid.ColumnSpan="3" IsChecked="{Binding UseSongAlias}" />
                     <Label Content="正式名称：" Margin="0" HorizontalAlignment="Right" Grid.Row="4"/>
                     <Button Content="検索" Grid.Row="4" Grid.Column="1" Height="Auto" FontSize="12" Padding="2" Style="{StaticResource MaterialDesignRaisedLightButton}" Margin="0,5,5,5" Command="{Binding ButtonSearchSongOriginClickedCommand}"/>
-                    <Label Content="{Binding SongOrigin}" Margin="0" Grid.Row="4" Grid.Column="2"/>
+                    <Label Margin="0" Grid.Row="4" Grid.Column="2">
+                        <TextBlock Text="{Binding SongOrigin}" />
+                    </Label>
                 </Grid>
             </GroupBox>
             <GroupBox Header="データベース編集" Padding="5" Margin="10,0,0,0" materialDesign:ColorZoneAssist.Mode="SecondaryMid" >
@@ -173,19 +181,27 @@
         </StackPanel>
         <StackPanel Margin="40,0,20,0" Orientation="Horizontal">
             <Label Content="カテゴリー：" Width="90" HorizontalContentAlignment="Right" />
-            <Label Content="{Binding ListCategoryName}" />
+            <Label >
+                <TextBlock Text="{Binding ListCategoryName}" />
+            </Label>
         </StackPanel>
         <StackPanel Margin="40,0,20,0" Orientation="Horizontal">
             <Label Content="タイアップ名：" Width="90" HorizontalContentAlignment="Right" />
-            <Label Content="{Binding ListTieUpName}" Width="740" />
+            <Label Width="740" >
+                <TextBlock Text="{Binding ListTieUpName}" />
+            </Label>
         </StackPanel>
         <StackPanel Margin="40,0,20,0" Orientation="Horizontal">
             <Label Content="楽曲名：" Width="90" HorizontalContentAlignment="Right" />
-            <Label Content="{Binding ListSongName}" Width="740" />
+            <Label Width="740" >
+                <TextBlock Text="{Binding ListSongName}" />
+            </Label>
         </StackPanel>
         <StackPanel Margin="40,0,20,0" Orientation="Horizontal">
             <Label Content="歌手名：" Width="90" HorizontalContentAlignment="Right" />
-            <Label Content="{Binding ListArtistName}" Width="740" />
+            <Label Width="740" >
+                <TextBlock Text="{Binding ListArtistName}" />
+            </Label>
         </StackPanel>
         <StackPanel Margin="20,0,0,0">
             <Label Content="※ファイル名等から取得したタイアップ名と、楽曲名に紐付くタイアップ名が異なる場合、楽曲名に紐付くタイアップ名が優先されています。" Foreground="Gray" />

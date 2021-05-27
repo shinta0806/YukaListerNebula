@@ -44,7 +44,7 @@
         <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" Margin="20,15,20,0">
             <Label Content="利用者から報告されたリストの問題を一覧で確認できます。"/>
             <Label >
-                <Hyperlink Command="{Binding HelpClickedCommand}" CommandParameter="HoukokusaretamondainoKakunin" Cursor="Hand" >
+                <Hyperlink Command="{Binding HelpClickedCommand}" CommandParameter="HoukokusaretamondainoKakunin" >
                     <TextBlock Text="詳細情報" />
                 </Hyperlink>
             </Label>
