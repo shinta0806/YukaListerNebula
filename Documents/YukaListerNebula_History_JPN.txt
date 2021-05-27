@@ -83,3 +83,4 @@
                           同期時の検索を高速化。
 2021/05/27 (Thu) (2.31)   タイアップ名表示時の検索を高速化。
 2021/05/28 (Fri) (2.32)   リスト出力時の検索を高速化。
+2021/05/28 (Fri) (2.33)   パッケージを最新版に更新（MaterialDesignColors、MaterialDesignThemes、Microsoft.EntityFrameworkCore.Sqlite）。
