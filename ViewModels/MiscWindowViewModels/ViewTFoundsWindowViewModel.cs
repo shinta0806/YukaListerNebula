@@ -97,7 +97,7 @@ namespace YukaLister.ViewModels.MiscWindowViewModels
 		// --------------------------------------------------------------------
 
 		#region ヘルプリンクの制御
-		public ListenerCommand<String>? HelpClickedCommand
+		public static ListenerCommand<String>? HelpClickedCommand
 		{
 			get => YukaListerModel.Instance.EnvModel.HelpClickedCommand;
 		}
@@ -645,6 +645,18 @@ namespace YukaLister.ViewModels.MiscWindowViewModels
 		FindKeywordWindowViewModel? _findKeywordWindowViewModel;
 
 		// ====================================================================
+		// private static メンバー関数
+		// ====================================================================
+
+		// --------------------------------------------------------------------
+		// SmartTrackOnVocal / SmartTrackOffVocal を数値化
+		// --------------------------------------------------------------------
+		private static Int32 SmartTrackToInt32(TFound found)
+		{
+			return (found.SmartTrackOnVocal ? 2 : 0) + (found.SmartTrackOffVocal ? 1 : 0);
+		}
+
+		// ====================================================================
 		// private メンバー関数
 		// ====================================================================
 
@@ -836,14 +848,6 @@ namespace YukaLister.ViewModels.MiscWindowViewModels
 
 			// ウィンドウを前面に出すなど
 			_findKeywordWindowViewModel.Messenger.Raise(new InteractionMessage(YlConstants.MESSAGE_KEY_WINDOW_ACTIVATE));
-		}
-
-		// --------------------------------------------------------------------
-		// SmartTrackOnVocal / SmartTrackOffVocal を数値化
-		// --------------------------------------------------------------------
-		private Int32 SmartTrackToInt32(TFound found)
-		{
-			return (found.SmartTrackOnVocal ? 2 : 0) + (found.SmartTrackOffVocal ? 1 : 0);
 		}
 	}
 }
