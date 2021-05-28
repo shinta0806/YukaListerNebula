@@ -135,8 +135,7 @@ namespace YukaLister.ViewModels.OutputSettingsWindowViewModels
 		{
 			base.PropertiesToSettings();
 
-			WebOutputSettings? webOutputSettings = _outputWriter.OutputSettings as WebOutputSettings;
-			if (webOutputSettings == null)
+			if (_outputWriter.OutputSettings is not WebOutputSettings webOutputSettings)
 			{
 				return;
 			}
@@ -158,8 +157,7 @@ namespace YukaLister.ViewModels.OutputSettingsWindowViewModels
 		{
 			base.SettingsToProperties();
 
-			WebOutputSettings? webOutputSettings = _outputWriter.OutputSettings as WebOutputSettings;
-			if (webOutputSettings == null)
+			if (_outputWriter.OutputSettings is not WebOutputSettings webOutputSettings)
 			{
 				return;
 			}
