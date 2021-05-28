@@ -105,7 +105,7 @@ namespace YukaLister.ViewModels.ReportWindowViewModels
 		// --------------------------------------------------------------------
 
 		#region ヘルプリンクの制御
-		public ListenerCommand<String>? HelpClickedCommand
+		public static ListenerCommand<String>? HelpClickedCommand
 		{
 			get => YukaListerModel.Instance.EnvModel.HelpClickedCommand;
 		}
@@ -207,10 +207,10 @@ namespace YukaLister.ViewModels.ReportWindowViewModels
 		// ====================================================================
 
 		// リスト問題報告データベース
-		private ReportContext _reportContext;
+		private readonly ReportContext _reportContext;
 
 		// リスト問題テーブル
-		private DbSet<TReport> _reports;
+		private readonly DbSet<TReport> _reports;
 
 		// ====================================================================
 		// private メンバー関数
@@ -242,7 +242,7 @@ namespace YukaLister.ViewModels.ReportWindowViewModels
 		// --------------------------------------------------------------------
 		private void UpdateTReports()
 		{
-			ReportsVisible = _reports.Where(x => ShowAll ? true : x.Status <= (Int32)ReportStatus.Progress).OrderByDescending(x => x.RegistTime).ToList();
+			ReportsVisible = _reports.Where(x => ShowAll || x.Status <= (Int32)ReportStatus.Progress).OrderByDescending(x => x.RegistTime).ToList();
 		}
 	}
 }
