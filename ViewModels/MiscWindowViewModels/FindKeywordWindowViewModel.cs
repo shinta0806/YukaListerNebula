@@ -271,6 +271,6 @@ namespace YukaLister.ViewModels.MiscWindowViewModels
 		// ====================================================================
 
 		// ファイル一覧ウィンドウの ViewModel
-		private ViewModel _viewTFoundsWindowViewModel;
+		private readonly ViewModel _viewTFoundsWindowViewModel;
 	}
 }

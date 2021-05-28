@@ -43,7 +43,7 @@ namespace YukaLister.Views.DataGridControls
 			{
 				if (_defaultElementStyle == null)
 				{
-					Style style = new Style(typeof(FolderTreeControl));
+					Style style = new(typeof(FolderTreeControl));
 					style.Seal();
 					_defaultElementStyle = style;
 				}

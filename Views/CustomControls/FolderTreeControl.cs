@@ -173,25 +173,10 @@ namespace YukaLister.Views.CustomControls
 		// ====================================================================
 
 		// --------------------------------------------------------------------
-		// ViewModel 側で DependencyProperty が変更された（TargetFolderInfoProperty）
-		// --------------------------------------------------------------------
-		private static void SourceTargetFolderInfoPropertyChanged(DependencyObject obj, DependencyPropertyChangedEventArgs args)
-		{
-			if (obj is FolderTreeControl folderTreeControl)
-			{
-				folderTreeControl.InvalidateVisual();
-			}
-		}
-
-		// ====================================================================
-		// private メンバー関数
-		// ====================================================================
-
-		// --------------------------------------------------------------------
 		// FontFamily の中でデフォルトの Typeface を取得
 		// フォールバックした場合は指定された FontFamily とは異なることに注意
 		// --------------------------------------------------------------------
-		private Typeface CreateDefaultTypeface(FontFamily fontFamily)
+		private static Typeface CreateDefaultTypeface(FontFamily fontFamily)
 		{
 			FamilyTypeface? familyTypeface;
 
@@ -219,6 +204,35 @@ namespace YukaLister.Views.CustomControls
 			// 見つかった情報で Typeface 生成
 			return new Typeface(fontFamily, familyTypeface.Style, familyTypeface.Weight, familyTypeface.Stretch);
 		}
+
+		// --------------------------------------------------------------------
+		// エキスパンダーの「>」部分を描画
+		// --------------------------------------------------------------------
+		private static void DrawExpanderStroke(DrawingContext drawingContext, Rect _, Point p1, Point p2, Point p3, Pen pen)
+		{
+			StreamGeometry geometry = new();
+			using StreamGeometryContext geometryContext = geometry.Open();
+			geometryContext.BeginFigure(p1, false, false);
+			geometryContext.LineTo(p2, true, true);
+			geometryContext.LineTo(p3, true, true);
+			geometry.Freeze();
+			drawingContext.DrawGeometry(null, pen, geometry);
+		}
+
+		// --------------------------------------------------------------------
+		// ViewModel 側で DependencyProperty が変更された（TargetFolderInfoProperty）
+		// --------------------------------------------------------------------
+		private static void SourceTargetFolderInfoPropertyChanged(DependencyObject obj, DependencyPropertyChangedEventArgs args)
+		{
+			if (obj is FolderTreeControl folderTreeControl)
+			{
+				folderTreeControl.InvalidateVisual();
+			}
+		}
+
+		// ====================================================================
+		// private メンバー関数
+		// ====================================================================
 
 		// --------------------------------------------------------------------
 		// エキスパンダーを描画
@@ -261,20 +275,6 @@ namespace YukaLister.Views.CustomControls
 						new Point(expanderRect.Left + expanderRect.Width / 4, expanderRect.Top), new Point(expanderRect.Left + expanderRect.Width * 3 / 4, expanderRect.Top + expanderRect.Height / 2),
 						new Point(expanderRect.Left + expanderRect.Width / 4, expanderRect.Bottom), pen);
 			}
-		}
-
-		// --------------------------------------------------------------------
-		// エキスパンダーの「>」部分を描画
-		// --------------------------------------------------------------------
-		private void DrawExpanderStroke(DrawingContext drawingContext, Rect expanderRect, Point p1, Point p2, Point p3, Pen pen)
-		{
-			StreamGeometry geometry = new();
-			using StreamGeometryContext geometryContext = geometry.Open();
-			geometryContext.BeginFigure(p1, false, false);
-			geometryContext.LineTo(p2, true, true);
-			geometryContext.LineTo(p3, true, true);
-			geometry.Freeze();
-			drawingContext.DrawGeometry(null, pen, geometry);
 		}
 
 		// --------------------------------------------------------------------
