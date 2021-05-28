@@ -365,7 +365,7 @@ namespace YukaLister.ViewModels.MiscWindowViewModels
 		#region ウィンドウのコマンド
 
 		#region ヘルプリンクの制御
-		public ListenerCommand<String>? HelpClickedCommand
+		public static ListenerCommand<String>? HelpClickedCommand
 		{
 			get => YukaListerModel.Instance.EnvModel.HelpClickedCommand;
 		}
@@ -1124,7 +1124,33 @@ namespace YukaLister.ViewModels.MiscWindowViewModels
 		// ====================================================================
 
 		// タスクが多重起動されるのを抑止する
-		private SemaphoreSlim _semaphoreSlim = new(1);
+		private readonly SemaphoreSlim _semaphoreSlim = new(1);
+
+		// ====================================================================
+		// private static メンバー関数
+		// ====================================================================
+
+		// --------------------------------------------------------------------
+		// インポートタブのファイルドロップ
+		// --------------------------------------------------------------------
+		private static void TabItemImportFileDrop(String[] files)
+		{
+			String? notHandledFiles = null;
+			foreach (String file in files)
+			{
+				if (!File.Exists(file))
+				{
+					continue;
+				}
+
+				// ToDo: 未実装
+				notHandledFiles += Path.GetFileName(file) + "\n";
+			}
+			if (!String.IsNullOrEmpty(notHandledFiles))
+			{
+				throw new Exception("ドロップされたファイルの種類を自動判定できませんでした。\n参照ボタンからファイルを指定して下さい。\n" + notHandledFiles);
+			}
+		}
 
 		// ====================================================================
 		// private メンバー関数
@@ -1170,7 +1196,7 @@ namespace YukaLister.ViewModels.MiscWindowViewModels
 				}
 
 				// 補完
-				if (SyncServer[SyncServer.Length - 1] != '/')
+				if (SyncServer[^1] != '/')
 				{
 					SyncServer += "/";
 				}
@@ -1260,28 +1286,6 @@ namespace YukaLister.ViewModels.MiscWindowViewModels
 
 			// インポートタブ
 			ImportYukaListerMode = true;
-		}
-
-		// --------------------------------------------------------------------
-		// インポートタブのファイルドロップ
-		// --------------------------------------------------------------------
-		private void TabItemImportFileDrop(String[] files)
-		{
-			String? notHandledFiles = null;
-			foreach (String file in files)
-			{
-				if (!File.Exists(file))
-				{
-					continue;
-				}
-
-				// ToDo: 未実装
-				notHandledFiles += Path.GetFileName(file) + "\n";
-			}
-			if (!String.IsNullOrEmpty(notHandledFiles))
-			{
-				throw new Exception("ドロップされたファイルの種類を自動判定できませんでした。\n参照ボタンからファイルを指定して下さい。\n" + notHandledFiles);
-			}
 		}
 
 		// --------------------------------------------------------------------
