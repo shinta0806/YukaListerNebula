@@ -63,7 +63,7 @@ namespace YukaLister.ViewModels.MiscWindowViewModels
 		// --------------------------------------------------------------------
 
 		#region ヘルプリンクの制御
-		public ListenerCommand<String>? HelpClickedCommand
+		public static ListenerCommand<String>? HelpClickedCommand
 		{
 			get => YukaListerModel.Instance.EnvModel.HelpClickedCommand;
 		}

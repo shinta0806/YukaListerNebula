@@ -232,10 +232,10 @@ namespace YukaLister.ViewModels.ImportExportWindowViewModels
 		// ====================================================================
 
 		// インポートまたはエクスポート
-		private String _kind;
+		private readonly String _kind;
 
 		// タスクが多重起動されるのを抑止する
-		private SemaphoreSlim _semaphoreSlim = new(1);
+		private readonly SemaphoreSlim _semaphoreSlim = new(1);
 
 		// ====================================================================
 		// private メンバー関数

@@ -195,7 +195,7 @@ namespace YukaLister.ViewModels.OutputSettingsWindowViewModels
 		#region 基本設定タブのコマンド
 
 		#region ヘルプリンクの制御
-		public ListenerCommand<String>? HelpClickedCommand
+		public static ListenerCommand<String>? HelpClickedCommand
 		{
 			get => YukaListerModel.Instance.EnvModel.HelpClickedCommand;
 		}

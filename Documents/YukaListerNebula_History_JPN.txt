@@ -85,3 +85,4 @@
 2021/05/28 (Fri) (2.32)   リスト出力時の検索を高速化。
 2021/05/28 (Fri) (2.33)   パッケージを最新版に更新（MaterialDesignColors、MaterialDesignThemes、Microsoft.EntityFrameworkCore.Sqlite）。
 2021/05/28 (Fri) (2.34)   ツリー表示機能のコードの改善に関する内部変更。
+2021/05/28 (Fri) (2.35)   検索ウィンドウのコードの改善に関する内部変更。

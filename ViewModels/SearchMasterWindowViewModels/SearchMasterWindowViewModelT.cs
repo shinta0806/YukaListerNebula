@@ -310,10 +310,10 @@ namespace YukaLister.ViewModels.SearchMasterWindowViewModels
 		// ====================================================================
 
 		// 検索対象データベースレコード
-		private DbSet<T> _records;
+		private readonly DbSet<T> _records;
 
 		// 検索項目名
-		private String _itemName;
+		private readonly String _itemName;
 
 		// 検索中
 		private Boolean _isSearching;
