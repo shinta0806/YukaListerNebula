@@ -102,7 +102,7 @@
             <Border BorderBrush="{DynamicResource {x:Static SystemColors.ControlLightBrushKey}}" BorderThickness="1" Height="3" VerticalAlignment="Center" Margin="0"/>
         </DockPanel>
         <StackPanel Orientation="Horizontal" FlowDirection="RightToLeft" Margin="0,20,20,20">
-            <Button Content="キャンセル" Margin="0" Height="Auto" Style="{StaticResource MaterialDesignRaisedLightButton}" IsCancel="True" Width="100" Padding="4"/>
+            <Button Content="キャンセル" Margin="0" Height="Auto" Style="{StaticResource MaterialDesignRaisedLightButton}" IsCancel="True" Width="100" Padding="4" />
             <Button Content="_OK" Margin="20,0,0,0" Height="Auto" IsDefault="True" Width="100" Command="{Binding ButtonOkClickedCommand}" sb:IsFocusedAttachedBehavior.IsFocused="{Binding IsButtonOkFocused}"/>
         </StackPanel>
     </StackPanel>

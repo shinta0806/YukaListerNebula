@@ -48,8 +48,8 @@
                     <TextBlock Text="詳細情報" />
                 </Hyperlink>
             </Label>
-            <RadioButton Content="要対応のみ" IsChecked="{Binding ShowOnlyOpened}" Margin="20,0,0,0" VerticalAlignment="Center" />
-            <RadioButton Content="すべて" IsChecked="{Binding ShowAll}" VerticalAlignment="Center" Margin="10,0,0,0" />
+            <RadioButton Content="要対応のみ (_N)" IsChecked="{Binding ShowOnlyOpened}" Margin="20,0,0,0" VerticalAlignment="Center" />
+            <RadioButton Content="すべて (_A)" IsChecked="{Binding ShowAll}" VerticalAlignment="Center" Margin="10,0,0,0" />
         </StackPanel>
         <DockPanel DockPanel.Dock="Bottom" Margin="20,0,20,20" LastChildFill="False">
             <Button Content="詳細 (_D)" Width="140" Height="Auto" ToolTip="問題の詳細を確認・編集" Command="{Binding ButtonEditDetailClickedCommand}"/>
