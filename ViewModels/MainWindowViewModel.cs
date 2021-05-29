@@ -514,7 +514,7 @@ namespace YukaLister.ViewModels
 					return;
 				}
 
-				if (MessageBox.Show(SelectedTargetFolderInfo.ParentPath + "\nおよびサブフォルダーをゆかり検索対象から削除しますか？",
+				if (MessageBox.Show(SelectedTargetFolderInfo.ParentPath + "\nおよびサブフォルダーをゆかり検索対象から除外しますか？",
 						"確認", MessageBoxButton.YesNo, MessageBoxImage.Exclamation) != MessageBoxResult.Yes)
 				{
 					return;
