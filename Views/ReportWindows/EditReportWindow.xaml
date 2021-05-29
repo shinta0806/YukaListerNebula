@@ -84,26 +84,26 @@
             <Border BorderBrush="{DynamicResource {x:Static SystemColors.ControlLightBrushKey}}" BorderThickness="1" Height="3" VerticalAlignment="Center" Margin="0"/>
         </DockPanel>
         <StackPanel Orientation="Horizontal" FlowDirection="RightToLeft" Margin="0,20,20,20">
-            <Button Content="(フォルダー設定 (_S" Margin="0" Height="Auto" Style="{StaticResource MaterialDesignRaisedLightButton}" Width="140" Padding="4" Command="{Binding ButtonFolderSettingsClickedCommand}"/>
+            <Button Content="(フォルダー設定 (_F" Margin="0" Height="Auto" Style="{StaticResource MaterialDesignRaisedLightButton}" Width="140" Padding="4" Command="{Binding ButtonFolderSettingsClickedCommand}"/>
             <Button Content="(名称の編集 (_E" Margin="20,0,0,0" Height="Auto" Style="{StaticResource MaterialDesignRaisedLightButton}" Width="140" Padding="4" Command="{Binding ButtonEditMusicInfoClickedCommand}" />
         </StackPanel>
         <DockPanel Margin="0,5,0,0">
             <Border BorderBrush="{DynamicResource {x:Static SystemColors.ControlLightBrushKey}}" BorderThickness="1" Height="3" VerticalAlignment="Center" Margin="0"/>
         </DockPanel>
         <StackPanel Margin="20,5,20,0" Orientation="Horizontal">
-            <Label Content="対応コメント：" Width="100" HorizontalContentAlignment="Right" />
-            <TextBox Text="{Binding StatusComment}" Width="500" Height="75" VerticalScrollBarVisibility="Auto" VerticalContentAlignment="Top" TextWrapping="Wrap" AcceptsReturn="True" />
+            <Label Content="対応コメント (_C)：" Target="{Binding ElementName=TextBoxStatusComment}" Width="100" HorizontalContentAlignment="Right" />
+            <TextBox Name="TextBoxStatusComment" Text="{Binding StatusComment}" Width="500" Height="75" VerticalScrollBarVisibility="Auto" VerticalContentAlignment="Top" TextWrapping="Wrap" AcceptsReturn="True" />
         </StackPanel>
         <StackPanel Margin="20,5,20,0" Orientation="Horizontal">
-            <Label Content="対応状況：" Width="100" HorizontalContentAlignment="Right" />
-            <ComboBox ItemsSource="{Binding StatusStrings}" SelectedItem="{Binding SelectedStatusString}" materialDesign:ComboBoxAssist.ClassicMode="True" />
+            <Label Content="対応状況 (_S)：" Target="{Binding ElementName=ComboBoxStatusStrings}" Width="100" HorizontalContentAlignment="Right" />
+            <ComboBox Name="ComboBoxStatusStrings" ItemsSource="{Binding StatusStrings}" SelectedItem="{Binding SelectedStatusString}" materialDesign:ComboBoxAssist.ClassicMode="True" />
         </StackPanel>
         <DockPanel Margin="0,5,0,0">
             <Border BorderBrush="{DynamicResource {x:Static SystemColors.ControlLightBrushKey}}" BorderThickness="1" Height="3" VerticalAlignment="Center" Margin="0"/>
         </DockPanel>
         <StackPanel Orientation="Horizontal" FlowDirection="RightToLeft" Margin="0,20,20,20">
-            <Button x:Name="ButtonCancel" Content="キャンセル" Margin="0" Height="Auto" Style="{StaticResource MaterialDesignRaisedLightButton}" IsCancel="True" Width="100" Padding="4"/>
-            <Button x:Name="ButtonOK" Content="OK" Margin="20,0,0,0" Height="Auto" IsDefault="True" Width="100" Command="{Binding ButtonOkClickedCommand}" sb:IsFocusedAttachedBehavior.IsFocused="{Binding IsButtonOkFocused}"/>
+            <Button Content="キャンセル" Margin="0" Height="Auto" Style="{StaticResource MaterialDesignRaisedLightButton}" IsCancel="True" Width="100" Padding="4"/>
+            <Button Content="_OK" Margin="20,0,0,0" Height="Auto" IsDefault="True" Width="100" Command="{Binding ButtonOkClickedCommand}" sb:IsFocusedAttachedBehavior.IsFocused="{Binding IsButtonOkFocused}"/>
         </StackPanel>
     </StackPanel>
 
