@@ -62,14 +62,14 @@
             <TabItem Header="設定" >
                 <StackPanel >
                     <DockPanel Margin="20,20,20,0">
-                        <Label Content="ゆかり設定ファイル (_Y)：" VerticalAlignment="Center" Width="140" HorizontalContentAlignment="Right" />
+                        <Label Content="ゆかり設定ファイル (_Y)：" Target="{Binding ElementName=TextBoxYukariConfigPathSeed}" VerticalAlignment="Center" Width="140" HorizontalContentAlignment="Right" />
                         <Button Height="Auto" Content="参照 (_B)" Style="{StaticResource MaterialDesignRaisedLightButton}" Margin="0" DockPanel.Dock="Right" Width="100" Command="{Binding ButtonBrowseYukariConfigPathSeedClickedCommand}"/>
-                        <TextBox Text="{Binding YukariConfigPathSeed}" VerticalAlignment="Center" Margin="0,0,10,0" />
+                        <TextBox Name="TextBoxYukariConfigPathSeed" Text="{Binding YukariConfigPathSeed}" VerticalAlignment="Center" Margin="0,0,10,0" />
                     </DockPanel>
-                    <CheckBox Content="起動時やリムーバブルメディア接続時、前回のフォルダーを自動的に追加する" IsChecked="{Binding AddFolderOnDeviceArrived}" Margin="20,20,0,0" />
-                    <CheckBox Visibility="Hidden" Content="ゆかり用サーバー機能（プレビュー等）を提供する" IsChecked="{Binding ProvideYukariPreview}" Margin="20,10,0,0" />
+                    <CheckBox Content="起動時やリムーバブルメディア接続時、前回のフォルダーを自動的に追加する (_A)" IsChecked="{Binding AddFolderOnDeviceArrived}" Margin="20,20,0,0" />
+                    <CheckBox Visibility="Hidden" Content="ゆかり用サーバー機能（プレビュー等）を提供する (_P)" IsChecked="{Binding ProvideYukariPreview}" Margin="20,10,0,0" />
                     <DockPanel Margin="20,10,20,0" >
-                        <Label Content="ID 先頭付与文字列 (_I)：" VerticalAlignment="Center" Width="140" HorizontalContentAlignment="Right" />
+                        <Label Content="ID 先頭付与文字列 (_I)：" Target="{Binding ElementName=TextBoxIdPrefix}" VerticalAlignment="Center" Width="140" HorizontalContentAlignment="Right" />
                         <TextBox Name="TextBoxIdPrefix" Text="{Binding IdPrefix}" Margin="0,0,110,0" ToolTip="お好きな文字列で構いませんが、パソコンごとに異なる文字列を指定してください。" ToolTipService.ShowDuration="10000" materialDesign:HintAssist.Hint="{Binding ElementName=TextBoxIdPrefix, Path=ToolTip}" />
                     </DockPanel>
                 </StackPanel>
@@ -77,16 +77,16 @@
             <TabItem Header="リスト対象">
                 <StackPanel>
                     <StackPanel Orientation="Horizontal" Margin="0,20,0,0">
-                        <Label Content="リスト化対象ファイルの拡張子 (_E)：" Width="220" HorizontalContentAlignment="Right"/>
-                        <ListBox ItemsSource="{Binding TargetExts}" SelectedItem="{Binding SelectedTargetExt}" Width="220" Height="200" />
+                        <Label Content="リスト化対象ファイルの拡張子 (_E)：" Target="{Binding ElementName=ListBoxTargetExts}" Width="220" HorizontalContentAlignment="Right"/>
+                        <ListBox Name="ListBoxTargetExts" ItemsSource="{Binding TargetExts}" SelectedItem="{Binding SelectedTargetExt}" Width="220" Height="200" />
                     </StackPanel>
                     <StackPanel Orientation="Horizontal" Margin="220,10,0,0">
                         <Button Height="Auto" Content="↑ 追加 (_A)" Style="{StaticResource MaterialDesignRaisedLightButton}" Margin="0" DockPanel.Dock="Right" Width="100" Padding="4" Command="{Binding ButtonAddExtClickedCommand}"/>
                         <Button Height="Auto" Content="× 削除 (_R)" Style="{StaticResource MaterialDesignRaisedLightButton}" Margin="20,0,0,0" DockPanel.Dock="Right" Width="100" Padding="4" Command="{Binding ButtonRemoveExtClickedCommand}"/>
                     </StackPanel>
                     <StackPanel Orientation="Horizontal" Margin="0,10,0,0">
-                        <Label Content="（追加したい拡張子）" Width="220" HorizontalContentAlignment="Right"/>
-                        <TextBox Text="{Binding AddingTargetExt, UpdateSourceTrigger=PropertyChanged}" Width="220" VerticalAlignment="Center" />
+                        <Label Content="追加したい拡張子 (_X)：" Target="{Binding ElementName=TextBoxAddingTargetExt}" Width="220" HorizontalContentAlignment="Right"/>
+                        <TextBox Name="TextBoxAddingTargetExt" Text="{Binding AddingTargetExt, UpdateSourceTrigger=PropertyChanged}" Width="220" VerticalAlignment="Center" />
                     </StackPanel>
                 </StackPanel>
             </TabItem>
@@ -119,12 +119,12 @@
                         <Border BorderBrush="{DynamicResource {x:Static SystemColors.ControlLightBrushKey}}" BorderThickness="1" Height="3" VerticalAlignment="Center" Margin="0"/>
                     </DockPanel>
                     <DockPanel Margin="0,10,20,0">
-                        <Label Content="リスト出力形式 (_F)：" Width="170" HorizontalContentAlignment="Right"/>
+                        <Label Content="リスト出力形式 (_R)：" Target="{Binding ElementName=ComboBoxOutputWriters}" Width="170" HorizontalContentAlignment="Right"/>
                         <Button Height="Auto" Content="出力設定 (_T)" Style="{StaticResource MaterialDesignRaisedLightButton}" Margin="0" DockPanel.Dock="Right" Width="100" Padding="0,4" Command="{Binding ButtonListSettingsClickedCommand}"/>
-                        <ComboBox ItemsSource="{Binding OutputWriters}" SelectedItem="{Binding SelectedOutputWriter}" DisplayMemberPath="FormatName" Margin="0,0,10,0" materialDesign:ComboBoxAssist.ClassicMode="True" />
+                        <ComboBox Name="ComboBoxOutputWriters" ItemsSource="{Binding OutputWriters}" SelectedItem="{Binding SelectedOutputWriter}" DisplayMemberPath="FormatName" Margin="0,0,10,0" materialDesign:ComboBoxAssist.ClassicMode="True" />
                     </DockPanel>
                     <DockPanel Margin="0,10,20,0">
-                        <Label Content="リスト出力先フォルダー (_O)：" Width="170" HorizontalContentAlignment="Right"/>
+                        <Label Content="リスト出力先フォルダー (_F)：" Target="{Binding ElementName=TextBoxListFolder}" Width="170" HorizontalContentAlignment="Right"/>
                         <Button Height="Auto" Content="参照 (_B)" Style="{StaticResource MaterialDesignRaisedLightButton}" Margin="0" DockPanel.Dock="Right" Width="100" Padding="0,4" >
                             <behaviors:Interaction.Triggers>
                                 <behaviors:EventTrigger EventName="Click">
@@ -136,10 +136,10 @@
                                 </behaviors:EventTrigger>
                             </behaviors:Interaction.Triggers>
                         </Button>
-                        <TextBox Text="{Binding ListFolder}" VerticalAlignment="Center" Margin="0,0,10,0"/>
+                        <TextBox Name="TextBoxListFolder" Text="{Binding ListFolder}" VerticalAlignment="Center" Margin="0,0,10,0"/>
                     </DockPanel>
                     <DockPanel Margin="170,10,20,0" >
-                        <Button Height="Auto" Content="閲覧用リスト出力 (_O)" Style="{StaticResource MaterialDesignRaisedLightButton}" Margin="0" Width="200" DockPanel.Dock="Right" Command="{Binding ButtonOutputListClickedCommand}" />
+                        <Button Height="Auto" Content="閲覧用リスト出力 (_L)" Style="{StaticResource MaterialDesignRaisedLightButton}" Margin="0" Width="200" DockPanel.Dock="Right" Command="{Binding ButtonOutputListClickedCommand}" />
                         <ProgressBar Height="Auto" Margin="0,0,10,0" Visibility="{Binding ProgressBarOutputListVisibility}" IsIndeterminate="True" />
                     </DockPanel>
                 </StackPanel>
@@ -150,7 +150,7 @@
                         <CheckBox Content="ゆかりすたーの最新情報・更新版を自動的に確認する (_L)" IsChecked="{Binding CheckRss}" />
                     </StackPanel>
                     <DockPanel Margin="20,10,20,0">
-                        <Button Height="Auto" Content="今すぐ最新情報を確認する (_A)" Style="{StaticResource MaterialDesignRaisedLightButton}" Margin="0" Width="210" DockPanel.Dock="Right" Padding="4" Command="{Binding ButtonCheckRssClickedCommand}"/>
+                        <Button Height="Auto" Content="今すぐ最新情報を確認する (_N)" Style="{StaticResource MaterialDesignRaisedLightButton}" Margin="0" Width="210" DockPanel.Dock="Right" Padding="4" Command="{Binding ButtonCheckRssClickedCommand}"/>
                         <ProgressBar Height="Auto" Margin="0,0,10,0" Visibility="{Binding ProgressBarCheckRssVisibility}" IsIndeterminate="True"/>
                     </DockPanel>
                     <Label Content="（「セルフ再起動したため終了します」というメッセージの後、しばらくしてから確認結果が表示されます）" Foreground="{DynamicResource MaterialDesignBodyLight}" HorizontalContentAlignment="Right" />
@@ -165,16 +165,16 @@
                         <CheckBox Content="楽曲情報データベースを同期する (_S)" IsChecked="{Binding SyncMusicInfoDb}" />
                     </StackPanel>
                     <DockPanel Margin="0,10,20,0" IsEnabled="{Binding SyncMusicInfoDb}">
-                        <Label Content="サーバー URL (_U)：" Width="170" HorizontalContentAlignment="Right"/>
-                        <TextBox Text="{Binding SyncServer}" VerticalAlignment="Center"/>
+                        <Label Content="サーバー URL (_U)：" Target="{Binding ElementName=TextBoxSyncServer}" Width="170" HorizontalContentAlignment="Right"/>
+                        <TextBox Name="TextBoxSyncServer" Text="{Binding SyncServer}" VerticalAlignment="Center"/>
                     </DockPanel>
                     <DockPanel Margin="0,10,20,0" IsEnabled="{Binding SyncMusicInfoDb}">
-                        <Label Content="アカウント名 (_A)：" Width="170" HorizontalContentAlignment="Right"/>
-                        <TextBox Text="{Binding SyncAccount}" VerticalAlignment="Center"/>
+                        <Label Content="アカウント名 (_A)：" Target="{Binding ElementName=TextBoxSyncAccount}" Width="170" HorizontalContentAlignment="Right"/>
+                        <TextBox Name="TextBoxSyncAccount" Text="{Binding SyncAccount}" VerticalAlignment="Center"/>
                     </DockPanel>
                     <DockPanel Margin="0,10,20,0" IsEnabled="{Binding SyncMusicInfoDb}">
-                        <Label Content="パスワード (_P)：" Width="170" HorizontalContentAlignment="Right"/>
-                        <PasswordBox VerticalAlignment="Center">
+                        <Label Content="パスワード (_P)：" Target="{Binding ElementName=PasswordBoxSyncPassword}" Width="170" HorizontalContentAlignment="Right"/>
+                        <PasswordBox Name="PasswordBoxSyncPassword" VerticalAlignment="Center">
                             <behaviors:Interaction.Behaviors>
                                 <l:PasswordBoxBindingSupportBehavior Password="{Binding SyncPassword}" />
                             </behaviors:Interaction.Behaviors>
@@ -191,14 +191,14 @@
             <TabItem Header="インポート">
                 <StackPanel >
                     <StackPanel Margin="20,15,20,0">
-                        <Label Content="インポート元" />
+                        <Label Content="インポート元 (_S)" Target="{Binding ElementName=TextBoxImportYukaListerPath}" />
                     </StackPanel>
                     <DockPanel Margin="40,10,20,0">
-                        <Button Height="Auto" Content="参照 (_1)" Style="{StaticResource MaterialDesignRaisedLightButton}" Margin="0" DockPanel.Dock="Right" Width="100" Command="{Binding ButtonBrowseImportYukaListerClickedCommand}"/>
-                        <TextBox Text="{Binding ImportYukaListerPath}" VerticalAlignment="Center" Margin="0,0,10,0"/>
+                        <Button Height="Auto" Content="参照 (_B)" Style="{StaticResource MaterialDesignRaisedLightButton}" Margin="0" DockPanel.Dock="Right" Width="100" Command="{Binding ButtonBrowseImportYukaListerClickedCommand}"/>
+                        <TextBox Name="TextBoxImportYukaListerPath" Text="{Binding ImportYukaListerPath}" VerticalAlignment="Center" Margin="0,0,10,0"/>
                     </DockPanel>
                     <StackPanel Margin="40,10,0,0">
-                        <CheckBox Content="タグ情報をインポートする" IsChecked="{Binding ImportTag}" />
+                        <CheckBox Content="タグ情報をインポートする (_T)" IsChecked="{Binding ImportTag}" />
                     </StackPanel>
                     <DockPanel Margin="0,20,0,0">
                         <Border BorderBrush="{DynamicResource {x:Static SystemColors.ControlLightBrushKey}}" BorderThickness="1" Height="3" VerticalAlignment="Center" Margin="0"/>
@@ -211,11 +211,11 @@
             <TabItem Header="エクスポート">
                 <StackPanel >
                     <StackPanel Margin="20,15,20,0">
-                        <Label Content="エクスポート先" />
+                        <Label Content="エクスポート先 (_T)" Target="{Binding ElementName=TextBoxExportYukaListerPath}" />
                     </StackPanel>
                     <DockPanel Margin="40,10,20,0">
                         <Button Height="Auto" Content="参照 (_B)" Style="{StaticResource MaterialDesignRaisedLightButton}" Margin="0" DockPanel.Dock="Right" Width="100" Command="{Binding ButtonBrowseExportYukaListerClickedCommand}"/>
-                        <TextBox Text="{Binding ExportYukaListerPath}" VerticalAlignment="Center" Margin="0,0,10,0"/>
+                        <TextBox Name="TextBoxExportYukaListerPath" Text="{Binding ExportYukaListerPath}" VerticalAlignment="Center" Margin="0,0,10,0"/>
                     </DockPanel>
                     <DockPanel Margin="0,20,0,0">
                         <Border BorderBrush="{DynamicResource {x:Static SystemColors.ControlLightBrushKey}}" BorderThickness="1" Height="3" VerticalAlignment="Center" Margin="0"/>
@@ -228,7 +228,7 @@
         </TabControl>
         <DockPanel Margin="20">
             <Button Content="キャンセル" Margin="0" Height="Auto" Style="{StaticResource MaterialDesignRaisedLightButton}" IsCancel="True" Width="100" DockPanel.Dock="Right" Padding="4"/>
-            <Button Content="OK" Margin="0,0,20,0" Height="Auto" IsDefault="True" Width="100" DockPanel.Dock="Right" Command="{Binding ButtonOkClickedCommand}" sb:IsFocusedAttachedBehavior.IsFocused="{Binding IsButtonOkFocused}"/>
+            <Button Content="_OK" Margin="0,0,20,0" Height="Auto" IsDefault="True" Width="100" DockPanel.Dock="Right" Command="{Binding ButtonOkClickedCommand}" sb:IsFocusedAttachedBehavior.IsFocused="{Binding IsButtonOkFocused}"/>
             <Label Content="設定やデータベースメンテナンス等を行います。" HorizontalAlignment="Left" Margin="0" VerticalAlignment="Center"/>
             <Label Grid.Column="1" Margin="0" VerticalAlignment="Center" HorizontalAlignment="Left">
                 <Hyperlink Command="{Binding HelpClickedCommand}" CommandParameter="Kankyousettei" >
