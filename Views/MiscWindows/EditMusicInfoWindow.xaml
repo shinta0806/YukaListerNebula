@@ -144,15 +144,15 @@
                         <ColumnDefinition Width="70"/>
                         <ColumnDefinition Width="210"/>
                     </Grid.ColumnDefinitions>
-                    <CheckBox Content="タイアップ名を揃える" Grid.ColumnSpan="3" IsChecked="{Binding UseTieUpAlias}" />
+                    <CheckBox Content="タイアップ名を揃える (_I)" Grid.ColumnSpan="3" IsChecked="{Binding UseTieUpAlias}" />
                     <Label Content="正式名称：" Margin="0" HorizontalAlignment="Right" Grid.Row="1"/>
-                    <Button Content="検索" Grid.Row="1" Grid.Column="1" Height="Auto" FontSize="12" Padding="2" Style="{StaticResource MaterialDesignRaisedLightButton}" Margin="0,5,5,5" Command="{Binding ButtonSearchTieUpOriginClickedCommand}"/>
+                    <Button Content="検索 (_1)" Grid.Row="1" Grid.Column="1" Height="Auto" FontSize="12" Padding="2" Style="{StaticResource MaterialDesignRaisedLightButton}" Margin="0,5,5,5" Command="{Binding ButtonSearchTieUpOriginClickedCommand}"/>
                     <Label Margin="0" Grid.Row="1" Grid.Column="2">
                         <TextBlock Text="{Binding TieUpOrigin}" />
                     </Label>
-                    <CheckBox Content="楽曲名を揃える" Grid.Row="3" Grid.ColumnSpan="3" IsChecked="{Binding UseSongAlias}" />
+                    <CheckBox Content="楽曲名を揃える (_N)" Grid.Row="3" Grid.ColumnSpan="3" IsChecked="{Binding UseSongAlias}" />
                     <Label Content="正式名称：" Margin="0" HorizontalAlignment="Right" Grid.Row="4"/>
-                    <Button Content="検索" Grid.Row="4" Grid.Column="1" Height="Auto" FontSize="12" Padding="2" Style="{StaticResource MaterialDesignRaisedLightButton}" Margin="0,5,5,5" Command="{Binding ButtonSearchSongOriginClickedCommand}"/>
+                    <Button Content="検索 (_2)" Grid.Row="4" Grid.Column="1" Height="Auto" FontSize="12" Padding="2" Style="{StaticResource MaterialDesignRaisedLightButton}" Margin="0,5,5,5" Command="{Binding ButtonSearchSongOriginClickedCommand}"/>
                     <Label Margin="0" Grid.Row="4" Grid.Column="2">
                         <TextBlock Text="{Binding SongOrigin}" />
                     </Label>
@@ -169,10 +169,10 @@
                         <RowDefinition Height="30"/>
                     </Grid.RowDefinitions>
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="130"/>
+                        <ColumnDefinition Width="140"/>
                     </Grid.ColumnDefinitions>
-                    <Button Content="タイアップ詳細編集" Grid.Row="1" Height="20" FontSize="12" Padding="2" Margin="5,0" Style="{StaticResource MaterialDesignRaisedLightButton}" Command="{Binding ButtonEditTieUpClickedCommand}"/>
-                    <Button Content="楽曲詳細編集" Grid.Row="4" Height="20" FontSize="12" Padding="2" Margin="5,0" Style="{StaticResource MaterialDesignRaisedLightButton}" Command="{Binding ButtonEditSongClickedCommand}"/>
+                    <Button Content="タイアップ詳細編集 (_T)" Grid.Row="1" Height="20" FontSize="12" Padding="2" Margin="5,0" Style="{StaticResource MaterialDesignRaisedLightButton}" Command="{Binding ButtonEditTieUpClickedCommand}"/>
+                    <Button Content="楽曲詳細編集 (_S)" Grid.Row="4" Height="20" FontSize="12" Padding="2" Margin="5,0" Style="{StaticResource MaterialDesignRaisedLightButton}" Command="{Binding ButtonEditSongClickedCommand}"/>
                 </Grid>
             </GroupBox>
         </StackPanel>
@@ -208,7 +208,7 @@
         </StackPanel>
         <StackPanel Margin="20" Orientation="Horizontal" FlowDirection="RightToLeft">
             <Button Content="キャンセル" Margin="0" Height="Auto" Style="{StaticResource MaterialDesignRaisedLightButton}" IsCancel="True" Width="100" DockPanel.Dock="Right" Padding="4"/>
-            <Button Content="OK" Margin="20,0,0,0" Height="Auto" IsDefault="True" Width="100" DockPanel.Dock="Right" Command="{Binding ButtonOkClickedCommand}"/>
+            <Button Content="_OK" Margin="20,0,0,0" Height="Auto" IsDefault="True" Width="100" DockPanel.Dock="Right" Command="{Binding ButtonOkClickedCommand}"/>
         </StackPanel>
     </StackPanel>
 
