@@ -174,6 +174,7 @@ namespace YukaLister.Models.DatabaseContexts
 		protected override void OnModelCreating(ModelBuilder modelBuilder)
 		{
 			// 検出ファイルリストテーブル
+			// TieUpAgeLimit はインデックス化しないほうが HTML リスト作成が高速だった
 			modelBuilder.Entity<TFound>().HasIndex(x => x.Path);
 			modelBuilder.Entity<TFound>().HasIndex(x => x.Folder);
 			modelBuilder.Entity<TFound>().HasIndex(x => x.ParentFolder);

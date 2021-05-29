@@ -60,8 +60,8 @@
 
     <StackPanel>
         <StackPanel Margin="20,20,20,0" Orientation="Horizontal">
-            <Label Content="タイアップ ID (_I)：" Width="100" HorizontalContentAlignment="Right"/>
-            <ComboBox ItemsSource="{Binding Masters}" SelectedItem="{Binding SelectedMaster}" DisplayMemberPath="Id" VerticalAlignment="Center" Width="300" materialDesign:ComboBoxAssist.ClassicMode="True" />
+            <Label Content="タイアップ ID (_I)：" Target="{Binding ElementName=ComboBoxId}" Width="100" HorizontalContentAlignment="Right"/>
+            <ComboBox Name="ComboBoxId" ItemsSource="{Binding Masters}" SelectedItem="{Binding SelectedMaster}" DisplayMemberPath="Id" VerticalAlignment="Center" Width="300" materialDesign:ComboBoxAssist.ClassicMode="True" />
             <Label Content="{Binding IdInfo}" Margin="10,0,0,0" Foreground="Red"/>
         </StackPanel>
         <Border BorderBrush="{DynamicResource {x:Static SystemColors.ControlLightBrushKey}}" BorderThickness="1" Height="3" Margin="0,20,0,0"/>
@@ -79,23 +79,23 @@
                 <ColumnDefinition Width="20"/>
                 <ColumnDefinition Width="75"/>
                 <ColumnDefinition Width="200"/>
-                <ColumnDefinition Width="125"/>
+                <ColumnDefinition Width="130"/>
                 <ColumnDefinition Width="20"/>
             </Grid.ColumnDefinitions>
-            <Label Content="フリガナ (_F)：" Margin="0" Grid.Row="0" Grid.Column="0" HorizontalAlignment="Right"/>
-            <TextBox Text="{Binding Ruby}" Grid.Column="1" Margin="0" Grid.Row="0" VerticalAlignment="Center"/>
-            <Label Content="タイアップ名 (_N)：" Margin="0" Grid.Row="1" Grid.Column="0" HorizontalAlignment="Right"/>
-            <TextBox Text="{Binding Name}" Grid.Column="1" Margin="0" Grid.Row="1" VerticalAlignment="Center"/>
-            <Label Content="制作会社あり (_C)：" Margin="0" Grid.Row="0" Grid.Column="3" HorizontalAlignment="Right"/>
-            <CheckBox IsChecked="{Binding HasMaker}" Grid.Row="0" Grid.Column="4" />
-            <Button Content="検索" Grid.Row="0" Grid.Column="5" Height="Auto" FontSize="12" Padding="2" Style="{StaticResource MaterialDesignRaisedLightButton}" Margin="5" Command="{Binding ButtonSearchMakerClickedCommand}" />
+            <Label Content="フリガナ (_F)：" Target="{Binding ElementName=TextBoxRuby}" Margin="0" Grid.Row="0" Grid.Column="0" HorizontalAlignment="Right"/>
+            <TextBox Name="TextBoxRuby" Text="{Binding Ruby}" Grid.Column="1" Margin="0" Grid.Row="0" VerticalAlignment="Center"/>
+            <Label Content="タイアップ名 (_N)：" Target="{Binding ElementName=TextBoxName}" Margin="0" Grid.Row="1" Grid.Column="0" HorizontalAlignment="Right"/>
+            <TextBox Name="TextBoxName" Text="{Binding Name}" Grid.Column="1" Margin="0" Grid.Row="1" VerticalAlignment="Center"/>
+            <Label Content="制作会社あり (_K)：" Target="{Binding ElementName=CheckBoxHasMaker}" Margin="0" Grid.Row="0" Grid.Column="3" HorizontalAlignment="Right"/>
+            <CheckBox Name="CheckBoxHasMaker" IsChecked="{Binding HasMaker}" Grid.Row="0" Grid.Column="4" />
+            <Button Content="検索 (_3)" Grid.Row="0" Grid.Column="5" Height="Auto" FontSize="12" Padding="2" Style="{StaticResource MaterialDesignRaisedLightButton}" Margin="5" Command="{Binding ButtonSearchMakerClickedCommand}" />
             <Label Content="{Binding MakerDisplayName}" Margin="0" Grid.Row="0" Grid.Column="6"/>
-            <Button Content="制作会社詳細編集" Grid.Row="0" Grid.Column="7" Height="Auto" FontSize="12" Padding="2" Style="{StaticResource MaterialDesignRaisedLightButton}" Margin="5,5,0,5" Command="{Binding ButtonEditMakerClickedCommand}"/>
-            <Label Content="シリーズあり (_S)：" Margin="0" Grid.Row="2" Grid.Column="3" HorizontalAlignment="Right"/>
-            <CheckBox IsChecked="{Binding HasTieUpGroup}" Grid.Row="2" Grid.Column="4" Height="30" VerticalAlignment="Top" />
-            <Button Content="検索" Grid.Row="2" Grid.Column="5" Height="Auto" FontSize="12" Padding="2" Style="{StaticResource MaterialDesignRaisedLightButton}" Margin="5" Command="{Binding ButtonSearchTieUpGroupClickedCommand}"/>
+            <Button Content="制作会社詳細編集 (_M)" Grid.Row="0" Grid.Column="7" Height="Auto" FontSize="12" Padding="2" Style="{StaticResource MaterialDesignRaisedLightButton}" Margin="5,5,0,5" Command="{Binding ButtonEditMakerClickedCommand}"/>
+            <Label Content="シリーズあり (_E)：" Target="{Binding ElementName=CheckBoxHasTieUpGroup}" Margin="0" Grid.Row="2" Grid.Column="3" HorizontalAlignment="Right"/>
+            <CheckBox Name="CheckBoxHasTieUpGroup" IsChecked="{Binding HasTieUpGroup}" Grid.Row="2" Grid.Column="4" Height="30" VerticalAlignment="Top" />
+            <Button Content="検索 (_4)" Grid.Row="2" Grid.Column="5" Height="Auto" FontSize="12" Padding="2" Style="{StaticResource MaterialDesignRaisedLightButton}" Margin="5" Command="{Binding ButtonSearchTieUpGroupClickedCommand}"/>
             <Label Content="{Binding TieUpGroupDisplayNames}" Margin="0" Grid.Row="2" Grid.Column="6"/>
-            <Button Content="複数シリーズ検索" Grid.Row="2" Grid.Column="7" Height="Auto" FontSize="12" Padding="2" Style="{StaticResource MaterialDesignRaisedLightButton}" Margin="5,5,0,5" Command="{Binding ButtonEditTieUpGroupClickedCommand}" />
+            <Button Content="複数シリーズ検索 (_S)" Grid.Row="2" Grid.Column="7" Height="Auto" FontSize="12" Padding="2" Style="{StaticResource MaterialDesignRaisedLightButton}" Margin="5,5,0,5" Command="{Binding ButtonEditTieUpGroupClickedCommand}" />
         </Grid>
         <Grid>
             <Grid.RowDefinitions>
@@ -119,9 +119,9 @@
                 <ColumnDefinition Width="230"/>
                 <ColumnDefinition Width="20"/>
             </Grid.ColumnDefinitions>
-            <Label Content="カテゴリーあり (_C)：" Margin="0" Grid.Row="0" Grid.Column="0" HorizontalAlignment="Right"/>
-            <CheckBox IsChecked="{Binding HasCategory}" Grid.Row="0" Grid.Column="1" HorizontalAlignment="Right" Width="20"/>
-            <Button Name="ButtonSelectCategory" Content="選択" Grid.Row="0" Grid.Column="2" Height="Auto" FontSize="12" Padding="2" Style="{StaticResource MaterialDesignRaisedLightButton}" Margin="5" Command="{Binding ButtonSelectCategoryClickedCommand}" >
+            <Label Content="カテゴリーあり (_C)：" Target="{Binding ElementName=CheckBoxHasCategory}" Margin="0" Grid.Row="0" Grid.Column="0" HorizontalAlignment="Right"/>
+            <CheckBox Name="CheckBoxHasCategory" IsChecked="{Binding HasCategory}" Grid.Row="0" Grid.Column="1" HorizontalAlignment="Right" Width="20"/>
+            <Button Name="ButtonSelectCategory" Content="選択 (_1)" Grid.Row="0" Grid.Column="2" Height="Auto" FontSize="12" Padding="2" Style="{StaticResource MaterialDesignRaisedLightButton}" Margin="5" Command="{Binding ButtonSelectCategoryClickedCommand}" >
                 <behaviors:Interaction.Triggers>
                     <behaviors:EventTrigger EventName="Click">
                         <behaviors:ChangePropertyAction TargetObject="{Binding ContextMenu, ElementName=ButtonSelectCategory}" PropertyName="IsOpen" Value="True"/>
@@ -134,8 +134,8 @@
                 </Button.ContextMenu>
             </Button>
             <Label Content="{Binding CategoryName}" Tag="{Binding CategoryId}" Margin="0" Grid.Row="0" Grid.Column="3" Grid.ColumnSpan="2"/>
-            <Label Content="年齢制限 (_A)：" Margin="0" Grid.Row="1" Grid.Column="0" HorizontalAlignment="Right"/>
-            <Button Name="ButtonSelectAgeLimit" Content="選択" Grid.Row="1" Grid.Column="2" Height="Auto" FontSize="12" Padding="2" Style="{StaticResource MaterialDesignRaisedLightButton}" Margin="5" >
+            <Label Content="年齢制限 (_A)：" Target="{Binding ElementName=TextBoxAgeLimit}" Margin="0" Grid.Row="1" Grid.Column="0" HorizontalAlignment="Right"/>
+            <Button Name="ButtonSelectAgeLimit" Content="選択 (_2)" Grid.Row="1" Grid.Column="2" Height="Auto" FontSize="12" Padding="2" Style="{StaticResource MaterialDesignRaisedLightButton}" Margin="5" >
                 <behaviors:Interaction.Triggers>
                     <behaviors:EventTrigger EventName="Click">
                         <behaviors:ChangePropertyAction TargetObject="{Binding ContextMenu, ElementName=ButtonSelectAgeLimit}" PropertyName="IsOpen" Value="True"/>
@@ -147,21 +147,21 @@
                     </ContextMenu>
                 </Button.ContextMenu>
             </Button>
-            <TextBox Text="{Binding AgeLimit}" Grid.Column="3" Margin="0" Grid.Row="1" VerticalAlignment="Center" HorizontalContentAlignment="Right"/>
+            <TextBox Name="TextBoxAgeLimit" Text="{Binding AgeLimit}" Grid.Column="3" Margin="0" Grid.Row="1" VerticalAlignment="Center" HorizontalContentAlignment="Right"/>
             <Label Content="才以上対象" Margin="0" Grid.Row="1" Grid.Column="4"/>
-            <Label Content="リリース日 (_R)：" Margin="0" Grid.Row="1" Grid.Column="6" HorizontalAlignment="Right"/>
-            <TextBox Text="{Binding ReleaseYear}" Grid.Column="7" Margin="0" Grid.Row="1" VerticalAlignment="Center" HorizontalContentAlignment="Right"/>
+            <Label Content="リリース日 (_R)：" Target="{Binding ElementName=TextBoxReleaseYear}" Margin="0" Grid.Row="1" Grid.Column="6" HorizontalAlignment="Right"/>
+            <TextBox Name="TextBoxReleaseYear" Text="{Binding ReleaseYear}" Grid.Column="7" Margin="0" Grid.Row="1" VerticalAlignment="Center" HorizontalContentAlignment="Right"/>
             <Label Content="年" Margin="0" Grid.Row="1" Grid.Column="8"/>
             <TextBox Text="{Binding ReleaseMonth}" Grid.Column="9" Margin="0" Grid.Row="1" VerticalAlignment="Center" HorizontalContentAlignment="Right"/>
             <Label Content="月" Margin="0" Grid.Row="1" Grid.Column="10"/>
             <TextBox Text="{Binding ReleaseDay}" Grid.Column="11" Margin="0" Grid.Row="1" VerticalAlignment="Center" HorizontalContentAlignment="Right"/>
             <Label Content="日" Margin="0" Grid.Row="1" Grid.Column="12"/>
-            <Label Content="検索ワード (_W)：" Margin="0" Grid.Row="2" Grid.Column="6" HorizontalAlignment="Right"/>
+            <Label Content="検索ワード (_W)：" Target="{Binding ElementName=TextBoxKeyword}" Margin="0" Grid.Row="2" Grid.Column="6" HorizontalAlignment="Right"/>
             <TextBox Name="TextBoxKeyword" Text="{Binding Keyword}" ToolTip="{Binding KeywordHint}" ToolTipService.ShowDuration="10000" materialDesign:HintAssist.Hint="{Binding ElementName=TextBoxKeyword, Path=ToolTip}" Grid.Column="7" Margin="0" Grid.Row="2" VerticalAlignment="Center" Grid.ColumnSpan="6" />
         </Grid>
         <Border BorderBrush="{DynamicResource {x:Static SystemColors.ControlLightBrushKey}}" BorderThickness="1" Height="3" Margin="0,20,0,0"/>
         <DockPanel Margin="20" LastChildFill="False" >
-            <Button Content="削除" Style="{StaticResource MaterialDesignRaisedLightButton}" Width="100" Height="Auto" Padding="4" Command="{Binding ButtonDeleteClickedCommand}" />
+            <Button Content="削除 (_D)" Style="{StaticResource MaterialDesignRaisedLightButton}" Width="100" Height="Auto" Padding="4" Command="{Binding ButtonDeleteClickedCommand}" />
             <Button Content="キャンセル" Style="{StaticResource MaterialDesignRaisedLightButton}" IsCancel="True" Width="100" Height="Auto" Padding="4" DockPanel.Dock="Right"/>
             <Button Content="OK" Height="Auto" IsDefault="True" Width="100" Command="{Binding ButtonOkClickedCommand}" sb:IsFocusedAttachedBehavior.IsFocused="{Binding IsButtonOkFocused}" DockPanel.Dock="Right" Margin="0,0,20,0"/>
         </DockPanel>

@@ -114,7 +114,7 @@
                     </behaviors:EventTrigger>
                 </behaviors:Interaction.Triggers>
             </Button>
-            <Button Content="削除 (_D)" Style="{StaticResource MaterialDesignRaisedLightButton}" Width="100" Height="Auto" Margin="20,0,0,0" ToolTip="ゆかり検索対象フォルダーを削除" Command="{Binding ButtonRemoveTargetFolderClickedCommand}" />
+            <Button Content="除外 (_X)" Style="{StaticResource MaterialDesignRaisedLightButton}" Width="100" Height="Auto" Margin="20,0,0,0" ToolTip="ゆかり検索対象フォルダーから除外" Command="{Binding ButtonRemoveTargetFolderClickedCommand}" />
             <Button Content="フォルダー設定 (_F)" Style="{StaticResource MaterialDesignRaisedLightButton}" Width="140" Height="Auto" ToolTip="フォルダーの検索設定" DockPanel.Dock="Right" Padding="4" Command="{Binding ButtonFolderSettingsClickedCommand}" />
             <Button Content="ファイル一覧 (_L)" Style="{StaticResource MaterialDesignRaisedLightButton}" Width="140" Height="Auto" Margin="0,0,20,0" ToolTip="ゆかり検索対象のファイルを一覧表示" DockPanel.Dock="Right" Padding="4" Command="{Binding ButtonTFoundsClickedCommand}" />
         </DockPanel>
