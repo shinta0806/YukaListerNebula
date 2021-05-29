@@ -13,9 +13,9 @@
 
     <StackPanel Margin="20">
         <StackPanel Orientation="Horizontal">
-            <CheckBox IsChecked="{Binding EnableNew}"/>
+            <CheckBox Name="CheckBoxEnableNew" IsChecked="{Binding EnableNew}"/>
             <TextBox Text="{Binding NewDays}" IsEnabled="{Binding EnableNew}" Width="40" Margin="10,0,10,0" VerticalAlignment="Center" HorizontalContentAlignment="Right"/>
-            <Label Content="日以内に更新されたファイルを NEW （新着）に記載する"/>
+            <Label Content="日以内に更新されたファイルを NEW （新着）に記載する (_N)" Target="{Binding ElementName=CheckBoxEnableNew}" />
         </StackPanel>
     </StackPanel>
 
