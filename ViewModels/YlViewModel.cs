@@ -81,7 +81,7 @@ namespace YukaLister.ViewModels
 		// --------------------------------------------------------------------
 		protected String? PathByOpeningDialog(String title, String filter, String? path)
 		{
-			OpeningFileSelectionMessage message = new OpeningFileSelectionMessage(YlConstants.MESSAGE_KEY_OPEN_OPEN_FILE_DIALOG);
+			OpeningFileSelectionMessage message = new(YlConstants.MESSAGE_KEY_OPEN_OPEN_FILE_DIALOG);
 			message.Title = title;
 			message.Filter = filter + "|すべてのファイル|*.*";
 			if (!String.IsNullOrEmpty(path))
@@ -103,7 +103,7 @@ namespace YukaLister.ViewModels
 		// --------------------------------------------------------------------
 		protected String? PathBySavingDialog(String title, String filter, String? path)
 		{
-			SavingFileSelectionMessage message = new SavingFileSelectionMessage(YlConstants.MESSAGE_KEY_OPEN_SAVE_FILE_DIALOG);
+			SavingFileSelectionMessage message = new(YlConstants.MESSAGE_KEY_OPEN_SAVE_FILE_DIALOG);
 			message.Title = title;
 			message.Filter = filter + "|すべてのファイル|*.*";
 			if (!String.IsNullOrEmpty(path))
