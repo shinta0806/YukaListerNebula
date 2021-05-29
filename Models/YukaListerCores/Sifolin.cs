@@ -429,6 +429,7 @@ namespace YukaLister.Models.YukaListerCores
 		private static void MemoryToCache()
 		{
 			using ListContextInMemory listContextInMemory = ListContextInMemory.CreateContext(out DbSet<TFound> founds);
+			listContextInMemory.ChangeTracker.QueryTrackingBehavior = QueryTrackingBehavior.NoTracking;
 			IQueryable<String> parentFolders = founds.GroupBy(x => x.ParentFolder).Select(x => x.Key);
 			foreach (String parentFolder in parentFolders)
 			{

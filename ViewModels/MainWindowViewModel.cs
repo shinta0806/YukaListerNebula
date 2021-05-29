@@ -1261,6 +1261,7 @@ namespace YukaLister.ViewModels
 		public void UpdateReportsBadge()
 		{
 			using ReportContext reportContext = ReportContext.CreateContext(out DbSet<TReport> reports);
+			reportContext.ChangeTracker.QueryTrackingBehavior = QueryTrackingBehavior.NoTracking;
 			Int32 numProgress = reports.Where(x => x.Status <= (Int32)ReportStatus.Progress).Count();
 
 #if DEBUGz
