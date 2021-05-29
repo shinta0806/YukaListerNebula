@@ -122,7 +122,7 @@
             <Label Content="{Binding LyristDisplayNames}" Margin="0" Grid.Row="1" Grid.Column="9"/>
             <Button Content="複数作詞者検索 (_L)" Grid.Row="1" Grid.Column="10" Height="Auto" FontSize="12" Padding="2" Style="{StaticResource MaterialDesignRaisedLightButton}" Margin="5,5,0,5" Command="{Binding ButtonEditLyristClickedCommand}"/>
             <Button Content="同上 (_V)" Grid.Row="1" Grid.Column="11" Height="Auto" FontSize="12" Padding="2" Style="{StaticResource MaterialDesignRaisedLightButton}" Margin="5,5,0,5" Command="{Binding ButtonSameLyristClickedCommand}"/>
-            <Label Content="作曲者あり (_O)：" Target="{Binding ElementName=CheckBoxHasComposer}" Margin="0" Grid.Row="2" Grid.Column="6" HorizontalAlignment="Right"/>
+            <Label Content="作曲者あり (_P)：" Target="{Binding ElementName=CheckBoxHasComposer}" Margin="0" Grid.Row="2" Grid.Column="6" HorizontalAlignment="Right"/>
             <CheckBox Name="CheckBoxHasComposer" IsChecked="{Binding HasComposer}" Grid.Row="2" Grid.Column="7" />
             <Button Content="検索 (_7)" Grid.Row="2" Grid.Column="8" Height="Auto" FontSize="12" Padding="2" Style="{StaticResource MaterialDesignRaisedLightButton}" Margin="5" Command="{Binding ButtonSearchComposerClickedCommand}"/>
             <Label Content="{Binding ComposerDisplayNames}" Margin="0" Grid.Row="2" Grid.Column="9"/>
@@ -190,7 +190,7 @@
         <DockPanel Margin="20" LastChildFill="False" >
             <Button Content="削除 (_D)" Style="{StaticResource MaterialDesignRaisedLightButton}" Width="100" Height="Auto" Padding="4" Command="{Binding ButtonDeleteClickedCommand}" />
             <Button Content="キャンセル" Style="{StaticResource MaterialDesignRaisedLightButton}" IsCancel="True" Width="100" Height="Auto" Padding="4" DockPanel.Dock="Right"/>
-            <Button Content="OK" Height="Auto" IsDefault="True" Width="100" Command="{Binding ButtonOkClickedCommand}" sb:IsFocusedAttachedBehavior.IsFocused="{Binding IsButtonOkFocused}" DockPanel.Dock="Right" Margin="0,0,20,0"/>
+            <Button Content="_OK" Height="Auto" IsDefault="True" Width="100" Command="{Binding ButtonOkClickedCommand}" sb:IsFocusedAttachedBehavior.IsFocused="{Binding IsButtonOkFocused}" DockPanel.Dock="Right" Margin="0,0,20,0"/>
         </DockPanel>
     </StackPanel>
 

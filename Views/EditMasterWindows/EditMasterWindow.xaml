@@ -64,7 +64,7 @@
         <DockPanel Margin="20" LastChildFill="False" >
             <Button Content="削除 (_D)" Style="{StaticResource MaterialDesignRaisedLightButton}" Width="100" Height="Auto" Padding="4" Command="{Binding ButtonDeleteClickedCommand}" />
             <Button Content="キャンセル" Style="{StaticResource MaterialDesignRaisedLightButton}" IsCancel="True" Width="100" Height="Auto" Padding="4" DockPanel.Dock="Right"/>
-            <Button Content="OK" Height="Auto" IsDefault="True" Width="100" Command="{Binding ButtonOkClickedCommand}" sb:IsFocusedAttachedBehavior.IsFocused="{Binding IsButtonOkFocused}" DockPanel.Dock="Right" Margin="0,0,20,0"/>
+            <Button Content="_OK" Height="Auto" IsDefault="True" Width="100" Command="{Binding ButtonOkClickedCommand}" sb:IsFocusedAttachedBehavior.IsFocused="{Binding IsButtonOkFocused}" DockPanel.Dock="Right" Margin="0,0,20,0" Cursor="Hand"/>
         </DockPanel>
     </StackPanel>
 

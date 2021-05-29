@@ -17,6 +17,11 @@
         <vmesw:EditSequenceWindowViewModel />
     </Window.DataContext>
 
+    <Window.InputBindings>
+        <KeyBinding Gesture="Alt+Up" Command="{Binding ButtonUpClickedCommand}" />
+        <KeyBinding Gesture="Alt+Down" Command="{Binding ButtonDownClickedCommand}" />
+    </Window.InputBindings>
+
     <behaviors:Interaction.Behaviors>
         <sb:WindowBindingSupportBehavior IsCascade="True" MinimizeBox="False"/>
     </behaviors:Interaction.Behaviors>
@@ -74,10 +79,10 @@
             <StackPanel Margin="0" VerticalAlignment="Center">
                 <Button Height="Auto" VerticalAlignment="Center" Content="検索して追加 (_A)" HorizontalAlignment="Left" Margin="0" Width="160" Padding="4" Command="{Binding ButtonAddClickedCommand}" />
                 <Button Height="Auto" VerticalAlignment="Center" Content="除外 (_R)" Style="{StaticResource MaterialDesignRaisedLightButton}" Margin="0,10,0,0" Command="{Binding ButtonRemoveClickedCommand}"/>
-                <Button Style="{StaticResource MaterialDesignRaisedLightButton}" ToolTip="命名規則を上へ" Height="Auto" VerticalAlignment="Bottom" Margin="0,20,0,0" Width="60" HorizontalAlignment="Left" Command="{Binding ButtonUpClickedCommand}">
+                <Button Style="{StaticResource MaterialDesignRaisedLightButton}" ToolTip="上へ移動 (Alt+↑)" Height="Auto" VerticalAlignment="Bottom" Margin="0,20,0,0" Width="60" HorizontalAlignment="Left" Command="{Binding ButtonUpClickedCommand}" >
                     <materialDesign:PackIcon Kind="ArrowUpThick" Height="18" Width="18" />
                 </Button>
-                <Button Style="{StaticResource MaterialDesignRaisedLightButton}" ToolTip="命名規則を下へ" Height="Auto" VerticalAlignment="Top" Margin="0,10,0,0" Width="60" HorizontalAlignment="Left" Command="{Binding ButtonDownClickedCommand}">
+                <Button Style="{StaticResource MaterialDesignRaisedLightButton}" ToolTip="下へ移動 (Alt+↓)" Height="Auto" VerticalAlignment="Top" Margin="0,10,0,0" Width="60" HorizontalAlignment="Left" Command="{Binding ButtonDownClickedCommand}">
                     <materialDesign:PackIcon Kind="ArrowDownThick" Height="18" Width="18" />
                 </Button>
                 <Button Height="Auto" VerticalAlignment="Center" Content="{Binding ButtonEditContent}" Style="{StaticResource MaterialDesignRaisedLightButton}" Margin="0,20,0,0" Command="{Binding ButtonEditClickedCommand}"/>
@@ -86,8 +91,8 @@
         </StackPanel>
         <Border BorderBrush="{DynamicResource {x:Static SystemColors.ControlLightBrushKey}}" BorderThickness="1" Height="3" Margin="0,20,0,0"/>
         <StackPanel Orientation="Horizontal" FlowDirection="RightToLeft" Margin="20">
-            <Button Content="キャンセル" Margin="0" Height="Auto" Style="{StaticResource MaterialDesignRaisedLightButton}" IsCancel="True" Width="100" Padding="4"/>
-            <Button Content="OK" Margin="20,0,0,0" Height="Auto" IsDefault="True" Width="100" Command="{Binding ButtonOkClickedCommand}"/>
+            <Button Content="キャンセル" Margin="0" Height="Auto" Style="{StaticResource MaterialDesignRaisedLightButton}" IsCancel="True" Width="100" Padding="4" Cursor="Hand" />
+            <Button Content="_OK" Margin="20,0,0,0" Height="Auto" IsDefault="True" Width="100" Command="{Binding ButtonOkClickedCommand}"/>
         </StackPanel>
     </StackPanel>
 
