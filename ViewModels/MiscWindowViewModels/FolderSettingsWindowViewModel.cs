@@ -1043,6 +1043,7 @@ namespace YukaLister.ViewModels.MiscWindowViewModels
 
 				// カテゴリー一覧
 				using MusicInfoContextDefault musicInfoContext = MusicInfoContextDefault.CreateContext(out DbSet<TCategory> categories);
+				musicInfoContext.ChangeTracker.QueryTrackingBehavior = QueryTrackingBehavior.NoTracking;
 				_cachedCategoryNames = DbCommon.SelectCategoryNames(categories);
 
 				// 固定値項目（カテゴリー一覧設定後に行う）
@@ -1490,6 +1491,7 @@ namespace YukaLister.ViewModels.MiscWindowViewModels
 					out DbSet<TTag> tags, out DbSet<TTagSequence> tagSequences);
 			using TFoundSetter foundSetter = new(listContextInMemory, founds, people, artistSequences, composerSequences, tieUpGroups, tieUpGroupSequences, tags, tagSequences);
 			using MusicInfoContextDefault musicInfoContext = MusicInfoContextDefault.CreateContext(out DbSet<TSong> songs);
+			musicInfoContext.ChangeTracker.QueryTrackingBehavior = QueryTrackingBehavior.NoTracking;
 			MusicInfoContextDefault.GetDbSet(musicInfoContext, out DbSet<TSongAlias> songAliases);
 			MusicInfoContextDefault.GetDbSet(musicInfoContext, out DbSet<TTieUp> tieUps);
 			MusicInfoContextDefault.GetDbSet(musicInfoContext, out DbSet<TTieUpAlias> tieUpAliases);

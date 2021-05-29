@@ -621,6 +621,7 @@ namespace YukaLister.ViewModels.MiscWindowViewModels
 				// データベース読み込み
 				// キャッシュも利用できるよう、メモリではなくディスクの方を使用する
 				using ListContextInDisk listContextInDisk = ListContextInDisk.CreateContext(out DbSet<TFound> founds);
+				listContextInDisk.ChangeTracker.QueryTrackingBehavior = QueryTrackingBehavior.NoTracking;
 				Founds = founds.ToList();
 
 				// カーソルを左上にする（変更検知のため一旦ダミーを設定する）
