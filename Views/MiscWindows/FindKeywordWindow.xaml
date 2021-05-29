@@ -48,12 +48,12 @@
                 <l:TextBoxBindingSupportBehavior SelectedText="{Binding SelectedKeyword}" />
             </behaviors:Interaction.Behaviors>
         </TextBox>
-        <CheckBox Content="大文字と小文字を区別する (_C)" Margin="20,10,20,0" IsChecked="{Binding CaseSensitive}"/>
+        <CheckBox Content="大文字と小文字を区別する (_I)" Margin="20,10,20,0" IsChecked="{Binding CaseSensitive}"/>
         <CheckBox Content="セルの内容全体が一致するものを検索する (_W)" Margin="20,10,20,0" IsChecked="{Binding WholeMatch}"/>
         <DockPanel Margin="20">
             <Button Content="前を検索 (_P)" Width="120" Height="Auto" Style="{StaticResource MaterialDesignRaisedLightButton}" Command="{Binding ButtonFindClickedCommand}" CommandParameter="{x:Static msm:YlConstants.FIND_DIRECTION_BACKWARD}"/>
             <Button Content="次を検索 (_N)" Margin="20,0,0,0" Width="120" Height="Auto" IsDefault="True" Command="{Binding ButtonFindClickedCommand}"/>
-            <Button Content="閉じる" HorizontalAlignment="Right" Width="100" Height="Auto" Style="{StaticResource MaterialDesignRaisedLightButton}" IsCancel="True" Command="{Binding ButtonCancelClickedCommand}" />
+            <Button Content="閉じる (_C)" HorizontalAlignment="Right" Width="100" Height="Auto" Style="{StaticResource MaterialDesignRaisedLightButton}" IsCancel="True" Command="{Binding ButtonCancelClickedCommand}" />
         </DockPanel>
     </StackPanel>
 

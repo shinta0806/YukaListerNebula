@@ -65,8 +65,12 @@
         <Border BorderBrush="{DynamicResource {x:Static SystemColors.ControlLightBrushKey}}" BorderThickness="1" Height="3" Margin="0,10,0,0" DockPanel.Dock="Top"/>
         <TabControl Height="265" Margin="10,10,10,0" DockPanel.Dock="Top" IsEnabled="{Binding IsExcluded, Converter={StaticResource BooleanInvertConverter}}" >
             <TabItem Header="ファイル命名規則">
+                <TabItem.InputBindings>
+                    <KeyBinding Gesture="Alt+Up" Command="{Binding ButtonUpFileNameRuleClickedCommand}" />
+                    <KeyBinding Gesture="Alt+Down" Command="{Binding ButtonDownFileNameRuleClickedCommand}" />
+                </TabItem.InputBindings>
                 <DockPanel>
-                    <Label Content="このフォルダー内にあるカラオケ動画ファイルの命名規則 (_R)　※拡張子は除きます" Margin="20,10,0,0" DockPanel.Dock="Top"/>
+                    <Label Content="このフォルダー内にあるカラオケ動画ファイルの命名規則 (_R)　※拡張子は除きます" Target="{Binding ElementName=TextBoxFileNameRule}" Margin="20,10,0,0" DockPanel.Dock="Top"/>
                     <DockPanel DockPanel.Dock="Top" Margin="20,0">
                         <Button Name="ButtonVar" Style="{StaticResource MaterialDesignRaisedLightButton}" ToolTip="タグ" Width="50" Height="25" DockPanel.Dock="Right" >
                             <behaviors:Interaction.Triggers>
@@ -81,7 +85,7 @@
                             </Button.ContextMenu>
                             <materialDesign:PackIcon Kind="Tag" Height="18" Width="18" />
                         </Button>
-                        <TextBox materialDesign:HintAssist.Hint="ここに命名規則を入力して下さい。右側のタグボタンでタグを追加できます。" VerticalAlignment="Center" Margin="0,0,10,0" Text="{Binding FileNameRule, UpdateSourceTrigger=PropertyChanged}" sb:IsFocusedAttachedBehavior.IsFocused="{Binding IsFileNameRuleFocused}" >
+                        <TextBox Name="TextBoxFileNameRule" materialDesign:HintAssist.Hint="ここに命名規則を入力して下さい。右側のタグボタンでタグを追加できます。" VerticalAlignment="Center" Margin="0,0,10,0" Text="{Binding FileNameRule, UpdateSourceTrigger=PropertyChanged}" sb:IsFocusedAttachedBehavior.IsFocused="{Binding IsFileNameRuleFocused}" >
                             <behaviors:Interaction.Behaviors>
                                 <l:TextBoxBindingSupportBehavior SelectionStart="{Binding FileNameRuleSelectionStart}" SelectionLength="{Binding FileNameRuleSelectionLength}" />
                             </behaviors:Interaction.Behaviors>
@@ -94,7 +98,7 @@
                     </StackPanel>
                     <DockPanel Margin="20,10,20,20" DockPanel.Dock="Top">
                         <StackPanel DockPanel.Dock="Right" VerticalAlignment="Center">
-                            <Button Style="{StaticResource MaterialDesignRaisedLightButton}" ToolTip="命名規則を上へ" Width="50" Height="25" Command="{Binding ButtonUpFileNameRuleClickedCommand}">
+                            <Button Style="{StaticResource MaterialDesignRaisedLightButton}" ToolTip="命名規則を上へ" Width="50" Height="25" Command="{Binding ButtonUpFileNameRuleClickedCommand}" >
                                 <materialDesign:PackIcon Kind="ArrowUpThick" Height="18" Width="18" />
                             </Button>
                             <Button Style="{StaticResource MaterialDesignRaisedLightButton}" ToolTip="命名規則を下へ" Width="50" Height="25" Margin="0,10,0,0" Command="{Binding ButtonDownFileNameRuleClickedCommand}">
@@ -112,6 +116,10 @@
                 </DockPanel>
             </TabItem>
             <TabItem Header="固定値項目">
+                <TabItem.InputBindings>
+                    <KeyBinding Gesture="Alt+Up" Command="{Binding ButtonUpFolderNameRuleClickedCommand}" />
+                    <KeyBinding Gesture="Alt+Down" Command="{Binding ButtonDownFolderNameRuleClickedCommand}" />
+                </TabItem.InputBindings>
                 <DockPanel>
                     <Label Content="このフォルダー内にあるカラオケ動画ファイルに一律で適用する値" Margin="20,10,0,0" DockPanel.Dock="Top"/>
                     <Grid VerticalAlignment="Top" DockPanel.Dock="Top">
@@ -121,10 +129,10 @@
                             <ColumnDefinition Width="80"/>
                             <ColumnDefinition/>
                         </Grid.ColumnDefinitions>
-                        <Label Grid.Column="0" Content="項目 (_K)：" HorizontalAlignment="Right"/>
-                        <ComboBox Grid.Column="1" Margin="0,0,20,0" VerticalAlignment="Center" ItemsSource="{Binding FolderNameRuleNames}" SelectedItem="{Binding SelectedFolderNameRuleName}" materialDesign:ComboBoxAssist.ClassicMode="True" />
-                        <Label Grid.Column="2" Content="値 (_V)：" HorizontalAlignment="Right"/>
-                        <ComboBox Grid.Column="3" Margin="0,0,20,0" VerticalAlignment="Center" ItemsSource="{Binding FolderNameRuleValues}" SelectedItem="{Binding SelectedFolderNameRuleValue}" Visibility="{Binding SelectedFolderNameRuleValueVisibility}" materialDesign:ComboBoxAssist.ClassicMode="True" />
+                        <Label Grid.Column="0" Content="項目 (_K)：" Target="{Binding ElementName=ComboBoxSelectedFolderNameRuleName}" HorizontalAlignment="Right"/>
+                        <ComboBox Grid.Column="1" Name="ComboBoxSelectedFolderNameRuleName" Margin="0,0,20,0" VerticalAlignment="Center" ItemsSource="{Binding FolderNameRuleNames}" SelectedItem="{Binding SelectedFolderNameRuleName}" materialDesign:ComboBoxAssist.ClassicMode="True" />
+                        <Label Grid.Column="2" Content="値 (_V)：" Target="{Binding ElementName=ComboBoxSelectedFolderNameRuleValue}" HorizontalAlignment="Right"/>
+                        <ComboBox Grid.Column="3" Name="ComboBoxSelectedFolderNameRuleValue" Margin="0,0,20,0" VerticalAlignment="Center" ItemsSource="{Binding FolderNameRuleValues}" SelectedItem="{Binding SelectedFolderNameRuleValue}" Visibility="{Binding SelectedFolderNameRuleValueVisibility}" materialDesign:ComboBoxAssist.ClassicMode="True" />
                         <TextBox Grid.Column="3" Margin="0,0,20,0" VerticalAlignment="Center" Text="{Binding InputFolderNameRuleValue, UpdateSourceTrigger=PropertyChanged}" Visibility="{Binding InputFolderNameRuleValueVisibility}" />
                     </Grid>
                     <StackPanel DockPanel.Dock="Top" HorizontalAlignment="Center" Orientation="Horizontal" Margin="0,10,0,0">
@@ -154,7 +162,7 @@
         <DockPanel Margin="20" LastChildFill="False" DockPanel.Dock="Bottom">
             <Button Content="設定削除 (_D)" Height="Auto" Style="{StaticResource MaterialDesignRaisedLightButton}" ToolTip="フォルダー設定を削除" Width="140" Command="{Binding ButtonDeleteSettingsClickedCommand}"/>
             <Button Content="キャンセル" Height="Auto" Style="{StaticResource MaterialDesignRaisedLightButton}" Width="100" IsCancel="True" DockPanel.Dock="Right" Padding="4"/>
-            <Button Content="OK" Margin="0,0,20,0" Height="Auto" Width="100" IsDefault="True" DockPanel.Dock="Right" Command="{Binding ButtonOKClickedCommand}"/>
+            <Button Content="_OK" Margin="0,0,20,0" Height="Auto" Width="100" IsDefault="True" DockPanel.Dock="Right" Command="{Binding ButtonOKClickedCommand}"/>
         </DockPanel>
         <Border BorderBrush="{DynamicResource {x:Static SystemColors.ControlLightBrushKey}}" BorderThickness="1" Height="3" Margin="0,10,0,0" DockPanel.Dock="Bottom"/>
         <CheckBox Content="このフォルダーを検索対象としない (_X)" Margin="20,10,0,0" DockPanel.Dock="Bottom" IsChecked="{Binding IsExcluded}"/>
