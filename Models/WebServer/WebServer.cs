@@ -400,6 +400,7 @@ namespace YukaLister.Models.WebServer
 
 			// ゆかり用データベースから UID を検索
 			using ListContextInMemory listContextInMemory = ListContextInMemory.CreateContext(out DbSet<TFound> founds);
+			listContextInMemory.ChangeTracker.QueryTrackingBehavior = QueryTrackingBehavior.NoTracking;
 			TFound? target = founds.SingleOrDefault(x => x.Uid == uid);
 			if (target == null)
 			{

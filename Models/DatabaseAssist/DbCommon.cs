@@ -454,15 +454,7 @@ namespace YukaLister.Models.DatabaseAssist
 		// --------------------------------------------------------------------
 		public static List<String> SelectCategoryNames(IQueryable<TCategory> categories, Boolean includesInvalid = false)
 		{
-			List<String> categoryNames = new();
-			foreach (TCategory category in categories)
-			{
-				if ((includesInvalid || !category.Invalid) && !String.IsNullOrEmpty(category.Name))
-				{
-					categoryNames.Add(category.Name);
-				}
-			}
-			return categoryNames;
+			return categories.Where(x => (includesInvalid || !x.Invalid) && !String.IsNullOrEmpty(x.Name)).Select(x => x.Name)!.ToList<String>();
 		}
 
 		// --------------------------------------------------------------------

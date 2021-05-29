@@ -753,6 +753,7 @@ namespace YukaLister.Models.SharedMisc
 		public static void SetContextMenuItemCategories(List<MenuItem> menuItems, RoutedEventHandler click)
 		{
 			using MusicInfoContextDefault musicInfoContext = MusicInfoContextDefault.CreateContext(out DbSet<TCategory> categories);
+			musicInfoContext.ChangeTracker.QueryTrackingBehavior = QueryTrackingBehavior.NoTracking;
 			List<String> categoryNames = DbCommon.SelectCategoryNames(categories);
 			foreach (String categoryName in categoryNames)
 			{
