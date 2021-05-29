@@ -44,7 +44,7 @@
 
     <DockPanel>
         <DockPanel Margin="20,20,20,0" DockPanel.Dock="Top">
-            <Button Height="Auto" Content="中止 (_A)" Style="{StaticResource MaterialDesignRaisedLightButton}" Margin="0" DockPanel.Dock="Right" Width="100" Command="{Binding ButtonAbortClickedCommand}"/>
+            <Button Height="Auto" Content="中止 (_A)" Style="{StaticResource MaterialDesignRaisedLightButton}" Margin="0" DockPanel.Dock="Right" Width="100" Command="{Binding ButtonAbortClickedCommand}" Cursor="Hand" />
             <Label Content="{Binding Progress}" Width="120" DockPanel.Dock="Right" Margin="0,0,10,0"/>
             <Label Content="{Binding Description}"/>
         </DockPanel>
