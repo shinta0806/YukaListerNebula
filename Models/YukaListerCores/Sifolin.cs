@@ -436,7 +436,7 @@ namespace YukaLister.Models.YukaListerCores
 				try
 				{
 					using CacheContext cacheContext = new(YlCommon.DriveLetter(parentFolder));
-					IQueryable<TFound> records = founds.Where(x => x.ParentFolder == parentFolder);
+					List<TFound> records = founds.Where(x => x.ParentFolder == parentFolder).ToList();
 					cacheContext.UpdateCache(records);
 				}
 				catch (Exception excep)

@@ -13,6 +13,7 @@ using Microsoft.EntityFrameworkCore;
 using Shinta;
 
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -84,7 +85,7 @@ namespace YukaLister.Models.DatabaseContexts
 		// キャッシュ更新（追加）
 		// records の ParentFolder はすべて同じ前提
 		// --------------------------------------------------------------------
-		public void UpdateCache(IQueryable<TFound> records)
+		public void UpdateCache(List<TFound> records)
 		{
 			String parentFolder = records.First().ParentFolder;
 
@@ -96,6 +97,7 @@ namespace YukaLister.Models.DatabaseContexts
 			// 追加しようとしているキャッシュとドライブレターが異なるキャッシュ削除
 			removes = founds.Where(x => !x.ParentFolder.Contains(YlCommon.DriveLetter(parentFolder)));
 			founds.RemoveRange(removes);
+			SaveChanges();
 
 			// 新キャッシュ追加
 			foreach (TFound record in records)
