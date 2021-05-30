@@ -37,7 +37,7 @@
         </l:InteractionMessageTrigger>
 
         <l:InteractionMessageTrigger MessageKey="{x:Static msm:YlConstants.MESSAGE_KEY_OPEN_INPUT_ID_PREFIX_WINDOW}" Messenger="{Binding Messenger}">
-            <l:TransitionInteractionMessageAction WindowType="{x:Type vmw:InputIdPrefixWindow}" Mode="Modal" IsOwned="True" />
+            <l:TransitionInteractionMessageAction WindowType="{x:Type vmw:InputIdPrefixWindow}" Mode="Modal" IsOwned="True" InvokeActionOnlyWhenWindowIsActive="False" />
         </l:InteractionMessageTrigger>
 
     </behaviors:Interaction.Triggers>

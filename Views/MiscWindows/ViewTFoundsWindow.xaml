@@ -46,15 +46,15 @@
         </l:InteractionMessageTrigger>
 
         <l:InteractionMessageTrigger MessageKey="{x:Static msm:YlConstants.MESSAGE_KEY_OPEN_EDIT_MUSIC_INFO_WINDOW}" Messenger="{Binding Messenger}">
-            <l:TransitionInteractionMessageAction WindowType="{x:Type vmw:EditMusicInfoWindow}" Mode="Modal" IsOwned="True" />
+            <l:TransitionInteractionMessageAction WindowType="{x:Type vmw:EditMusicInfoWindow}" Mode="Modal" IsOwned="True" InvokeActionOnlyWhenWindowIsActive="False" />
         </l:InteractionMessageTrigger>
 
         <l:InteractionMessageTrigger MessageKey="{x:Static msm:YlConstants.MESSAGE_KEY_OPEN_FIND_KEYWORD_WINDOW}" Messenger="{Binding Messenger}">
-            <l:TransitionInteractionMessageAction WindowType="{x:Type vmw:FindKeywordWindow}" Mode="Normal" IsOwned="True" />
+            <l:TransitionInteractionMessageAction WindowType="{x:Type vmw:FindKeywordWindow}" Mode="Normal" IsOwned="True" InvokeActionOnlyWhenWindowIsActive="False" />
         </l:InteractionMessageTrigger>
 
         <l:InteractionMessageTrigger MessageKey="{x:Static msm:YlConstants.MESSAGE_KEY_OPEN_FOLDER_SETTINGS_WINDOW}" Messenger="{Binding Messenger}">
-            <l:TransitionInteractionMessageAction WindowType="{x:Type vmw:FolderSettingsWindow}" Mode="Modal" IsOwned="True" />
+            <l:TransitionInteractionMessageAction WindowType="{x:Type vmw:FolderSettingsWindow}" Mode="Modal" IsOwned="True" InvokeActionOnlyWhenWindowIsActive="False" />
         </l:InteractionMessageTrigger>
 
     </behaviors:Interaction.Triggers>

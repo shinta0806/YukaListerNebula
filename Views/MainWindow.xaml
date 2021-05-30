@@ -36,27 +36,27 @@
         <!--  If you make user choose 'OK or Cancel' closing Window, then please use Window Close cancel Behavior.  -->
 
         <l:InteractionMessageTrigger MessageKey="{x:Static msm:YlConstants.MESSAGE_KEY_OPEN_ABOUT_WINDOW}" Messenger="{Binding Messenger}">
-            <l:TransitionInteractionMessageAction WindowType="{x:Type vmw:AboutWindow}" Mode="Modal" IsOwned="True" />
+            <l:TransitionInteractionMessageAction WindowType="{x:Type vmw:AboutWindow}" Mode="Modal" IsOwned="True" InvokeActionOnlyWhenWindowIsActive="False" />
         </l:InteractionMessageTrigger>
 
         <l:InteractionMessageTrigger MessageKey="{x:Static msm:YlConstants.MESSAGE_KEY_OPEN_FOLDER_SETTINGS_WINDOW}" Messenger="{Binding Messenger}">
-            <l:TransitionInteractionMessageAction WindowType="{x:Type vmw:FolderSettingsWindow}" Mode="Modal" IsOwned="True" />
+            <l:TransitionInteractionMessageAction WindowType="{x:Type vmw:FolderSettingsWindow}" Mode="Modal" IsOwned="True" InvokeActionOnlyWhenWindowIsActive="False" />
         </l:InteractionMessageTrigger>
 
         <l:InteractionMessageTrigger MessageKey="{x:Static msm:YlConstants.MESSAGE_KEY_OPEN_INPUT_ID_PREFIX_WINDOW}" Messenger="{Binding Messenger}">
-            <l:TransitionInteractionMessageAction WindowType="{x:Type vmw:InputIdPrefixWindow}" Mode="Modal" IsOwned="True" />
+            <l:TransitionInteractionMessageAction WindowType="{x:Type vmw:InputIdPrefixWindow}" Mode="Modal" IsOwned="True" InvokeActionOnlyWhenWindowIsActive="False" />
         </l:InteractionMessageTrigger>
 
         <l:InteractionMessageTrigger MessageKey="{x:Static msm:YlConstants.MESSAGE_KEY_OPEN_VIEW_TFOUNDS_WINDOW}" Messenger="{Binding Messenger}">
-            <l:TransitionInteractionMessageAction WindowType="{x:Type vmw:ViewTFoundsWindow}" Mode="Modal" IsOwned="True" />
+            <l:TransitionInteractionMessageAction WindowType="{x:Type vmw:ViewTFoundsWindow}" Mode="Modal" IsOwned="True" InvokeActionOnlyWhenWindowIsActive="False" />
         </l:InteractionMessageTrigger>
 
         <l:InteractionMessageTrigger MessageKey="{x:Static msm:YlConstants.MESSAGE_KEY_OPEN_VIEW_TREPORTS_WINDOW}" Messenger="{Binding Messenger}">
-            <l:TransitionInteractionMessageAction WindowType="{x:Type vrw:ViewTReportsWindow}" Mode="Modal" IsOwned="True" />
+            <l:TransitionInteractionMessageAction WindowType="{x:Type vrw:ViewTReportsWindow}" Mode="Modal" IsOwned="True" InvokeActionOnlyWhenWindowIsActive="False" />
         </l:InteractionMessageTrigger>
         
         <l:InteractionMessageTrigger MessageKey="{x:Static msm:YlConstants.MESSAGE_KEY_OPEN_YL_SETTINGS_WINDOW}" Messenger="{Binding Messenger}">
-            <l:TransitionInteractionMessageAction WindowType="{x:Type vmw:YlSettingsWindow}" Mode="Modal" IsOwned="True" />
+            <l:TransitionInteractionMessageAction WindowType="{x:Type vmw:YlSettingsWindow}" Mode="Modal" IsOwned="True" InvokeActionOnlyWhenWindowIsActive="False" />
         </l:InteractionMessageTrigger>
 
     </behaviors:Interaction.Triggers>

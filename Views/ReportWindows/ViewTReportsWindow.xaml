@@ -35,7 +35,7 @@
         <!-- If you make user choose 'OK or Cancel' closing Window, then please use Window Close nacel Behavior. -->
 
         <l:InteractionMessageTrigger MessageKey="{x:Static msm:YlConstants.MESSAGE_KEY_OPEN_EDIT_REPORT_WINDOW}" Messenger="{Binding Messenger}">
-            <l:TransitionInteractionMessageAction WindowType="{x:Type vrw:EditReportWindow}" Mode="Modal" IsOwned="True" />
+            <l:TransitionInteractionMessageAction WindowType="{x:Type vrw:EditReportWindow}" Mode="Modal" IsOwned="True" InvokeActionOnlyWhenWindowIsActive="False" />
         </l:InteractionMessageTrigger>
 
     </behaviors:Interaction.Triggers>
