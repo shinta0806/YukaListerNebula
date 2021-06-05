@@ -96,6 +96,10 @@ namespace YukaLister.Models.SerializableSettings
 		// 新着情報を確認するかどうか
 		public Boolean CheckRss { get; set; } = true;
 
+		// --------------------------------------------------------------------
+		// 楽曲情報データベース
+		// --------------------------------------------------------------------
+
 		// 楽曲情報データベースを同期するかどうか
 		public Boolean SyncMusicInfoDb { get; set; }
 

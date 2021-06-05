@@ -227,7 +227,7 @@ namespace YukaLister.Models.SharedMisc
 		public const String APP_ID = "YukaLister";
 		public const String APP_GENERATION = "NEBULA";
 		public const String APP_NAME_J = "ゆかりすたー " + APP_GENERATION + " ";
-		public const String APP_VER = "Ver 2.56";
+		public const String APP_VER = "Ver 2.57";
 		public const String COPYRIGHT_J = "Copyright (C) 2021 by SHINTA";
 
 		// --------------------------------------------------------------------

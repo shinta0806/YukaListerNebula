@@ -38,11 +38,12 @@ namespace YukaLister.ViewModels.ImportExportWindowViewModels
 		// --------------------------------------------------------------------
 		// プログラム中で使うべき引数付きコンストラクター
 		// --------------------------------------------------------------------
-		public ImportWindowViewModel(String importYukaListerPath, Boolean importTag)
+		public ImportWindowViewModel(String importYukaListerPath, Boolean importTag, Boolean importSameName)
 				: base("インポート")
 		{
 			_importYukaListerPath = importYukaListerPath;
 			_importTag = importTag;
+			_importSameName = importSameName;
 		}
 
 		// --------------------------------------------------------------------
@@ -80,8 +81,11 @@ namespace YukaLister.ViewModels.ImportExportWindowViewModels
 		// インポート元
 		private readonly String _importYukaListerPath;
 
-		// タグをインポートするかどうか
+		// タグ情報をインポートする
 		private readonly Boolean _importTag;
+
+		// 同名の情報も極力インポートする
+		private readonly Boolean _importSameName;
 
 		// ====================================================================
 		// private メンバー関数
@@ -104,8 +108,11 @@ namespace YukaLister.ViewModels.ImportExportWindowViewModels
 				T? sameIdRecord = DbCommon.SelectBaseById(recordsDefault, resultExport.Id, true);
 				if (sameIdRecord != null)
 				{
-					// 同じ Id がある場合は上書き
-					Common.ShallowCopyFields(resultExport, sameIdRecord);
+					// 同じ Id がある場合、_importSameName なら上書き
+					if (_importSameName)
+					{
+						Common.ShallowCopyFields(resultExport, sameIdRecord);
+					}
 					continue;
 				}
 
@@ -113,8 +120,12 @@ namespace YukaLister.ViewModels.ImportExportWindowViewModels
 				T? sameAliasRecord = DbCommon.SelectAliasByAlias(recordsDefault, resultExport.Alias, true);
 				if (sameAliasRecord != null)
 				{
-					// 同じ別名がある場合は上書き
-					Common.ShallowCopyFields(resultExport, sameAliasRecord);
+					// 同じ別名がある場合、_importSameName なら上書き
+					if (_importSameName)
+					{
+						Common.ShallowCopyFields(resultExport, sameAliasRecord);
+
+					}
 					continue;
 				}
 
@@ -144,19 +155,37 @@ namespace YukaLister.ViewModels.ImportExportWindowViewModels
 				T? sameIdRecord = DbCommon.SelectBaseById(recordsDefault, resultExport.Id, true);
 				if (sameIdRecord != null)
 				{
-					// 同じ Id がある場合は上書き
-					Common.ShallowCopyFields(resultExport, sameIdRecord);
+					// 同じ Id がある場合、_importSameName なら上書き
+					if (_importSameName)
+					{
+						Common.ShallowCopyFields(resultExport, sameIdRecord);
+					}
 					continue;
 				}
 
-				// 同じ名前かつ同じキーワードがあるか
-				T? sameNameRecord = recordsDefault.FirstOrDefault(x => x.Name == resultExport.Name
-						&& (x.Keyword == null && resultExport.Keyword == null || x.Keyword != null && x.Keyword == resultExport.Keyword));
-				if (sameNameRecord != null)
+				// 同じ名前があるか
+				List<T> sameNameRecords = recordsDefault.Where(x => x.Name == resultExport.Name).ToList();
+				if (sameNameRecords.Any())
 				{
-					// 同じ名前かつ同じキーワードがある場合は上書き
-					Common.ShallowCopyFields(resultExport, sameNameRecord);
-					continue;
+					if (_importSameName)
+					{
+						T? sameKeywordRecord = sameNameRecords.FirstOrDefault(x => x.Keyword == null && resultExport.Keyword == null || x.Keyword != null && x.Keyword == resultExport.Keyword);
+						if (sameKeywordRecord != null)
+						{
+							// _importSameName かつ同じキーワードがある場合は上書き
+							Common.ShallowCopyFields(resultExport, sameKeywordRecord);
+							continue;
+						}
+						else
+						{
+							// _importSameName かつ同じキーワードがない場合は、ここでは何もせず新規挿入に進む
+						}
+					}
+					else
+					{
+						// _importSameName でない場合は何もしない
+						continue;
+					}
 				}
 
 				// 新規挿入
@@ -182,7 +211,6 @@ namespace YukaLister.ViewModels.ImportExportWindowViewModels
 				resultExport.Dirty = true;
 
 				// 同じ Id かつ同じ連番があるか
-				// where で == を使うと FirstOrDefault() でエラーが発生するため Equals() を使う
 				T? sameIdRecord = recordsDefault.FirstOrDefault(x => x.Id == resultExport.Id && x.Sequence == resultExport.Sequence);
 				if (sameIdRecord != null)
 				{

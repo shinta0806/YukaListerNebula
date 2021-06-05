@@ -265,6 +265,56 @@ namespace YukaLister.ViewModels.MiscWindowViewModels
 			}
 		}
 
+		#endregion
+
+		#region 楽曲情報データベースタブのプロパティー
+
+		// ゆかりすたーでエクスポートしたファイルをインポート
+		private Boolean _importYukaListerMode;
+		public Boolean ImportYukaListerMode
+		{
+			get => _importYukaListerMode;
+			set
+			{
+				if (RaisePropertyChangedIfSet(ref _importYukaListerMode, value))
+				{
+					ButtonBrowseImportYukaListerClickedCommand.RaiseCanExecuteChanged();
+				}
+			}
+		}
+
+		// ゆかりすたーでエクスポートしたファイルのパス
+		private String? _importYukaListerPath;
+		public String? ImportYukaListerPath
+		{
+			get => _importYukaListerPath;
+			set => RaisePropertyChangedIfSet(ref _importYukaListerPath, value);
+		}
+
+		// タグ情報をインポートする
+		private Boolean _importTag;
+		public Boolean ImportTag
+		{
+			get => _importTag;
+			set => RaisePropertyChangedIfSet(ref _importTag, value);
+		}
+
+		// 同名の情報も極力インポートする
+		private Boolean _importSameName;
+		public Boolean ImportSameName
+		{
+			get => _importSameName;
+			set => RaisePropertyChangedIfSet(ref _importSameName, value);
+		}
+
+		// ゆかりすたー情報ファイルのパス
+		private String? _exportYukaListerPath;
+		public String? ExportYukaListerPath
+		{
+			get => _exportYukaListerPath;
+			set => RaisePropertyChangedIfSet(ref _exportYukaListerPath, value);
+		}
+
 		// 楽曲情報データベースを同期する
 		private Boolean _syncMusicInfoDb;
 		public Boolean SyncMusicInfoDb
@@ -301,52 +351,6 @@ namespace YukaLister.ViewModels.MiscWindowViewModels
 		{
 			get => _syncPassword;
 			set => RaisePropertyChangedIfSet(ref _syncPassword, value);
-		}
-
-		#endregion
-
-		#region インポートタブのプロパティー
-
-		// ゆかりすたーでエクスポートしたファイルをインポート
-		private Boolean _importYukaListerMode;
-		public Boolean ImportYukaListerMode
-		{
-			get => _importYukaListerMode;
-			set
-			{
-				if (RaisePropertyChangedIfSet(ref _importYukaListerMode, value))
-				{
-					ButtonBrowseImportYukaListerClickedCommand.RaiseCanExecuteChanged();
-				}
-			}
-		}
-
-		// ゆかりすたーでエクスポートしたファイルのパス
-		private String? _importYukaListerPath;
-		public String? ImportYukaListerPath
-		{
-			get => _importYukaListerPath;
-			set => RaisePropertyChangedIfSet(ref _importYukaListerPath, value);
-		}
-
-		// タグ情報をインポートする
-		private Boolean _importTag;
-		public Boolean ImportTag
-		{
-			get => _importTag;
-			set => RaisePropertyChangedIfSet(ref _importTag, value);
-		}
-
-		#endregion
-
-		#region エクスポートタブのプロパティー
-
-		// ゆかりすたー情報ファイルのパス
-		private String? _exportYukaListerPath;
-		public String? ExportYukaListerPath
-		{
-			get => _exportYukaListerPath;
-			set => RaisePropertyChangedIfSet(ref _exportYukaListerPath, value);
 		}
 
 		#endregion
@@ -970,7 +974,7 @@ namespace YukaLister.ViewModels.MiscWindowViewModels
 				}
 
 				// ViewModel 経由でインポート・エクスポートウィンドウを開く
-				using ImportWindowViewModel importWindowViewModel = new(ImportYukaListerPath, ImportTag);
+				using ImportWindowViewModel importWindowViewModel = new(ImportYukaListerPath, ImportTag, ImportSameName);
 				Messenger.Raise(new TransitionMessage(importWindowViewModel, YlConstants.MESSAGE_KEY_OPEN_IMPORT_EXPORT_WINDOW));
 
 				// IdPrefix の更新を反映
