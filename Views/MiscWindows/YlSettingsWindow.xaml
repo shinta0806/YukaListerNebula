@@ -178,15 +178,17 @@
                         </StackPanel>
                         <Button Height="Auto" Content="インポート (_I)" Style="{StaticResource MaterialDesignRaisedLightButton}" Margin="0" Width="160" HorizontalAlignment="Right" Command="{Binding ButtonImportClickedCommand}" VerticalAlignment="Bottom"/>
                     </DockPanel>
-                    <StackPanel Margin="20,15,20,0">
-                        <Label Content="楽曲情報データベースをファイルへエクスポートする (_X)" Target="{Binding ElementName=TextBoxExportYukaListerPath}" Margin="0,10,0,0" />
-                    </StackPanel>
+                    <Label Content="楽曲情報データベースをファイルへエクスポートする (_X)" Target="{Binding ElementName=TextBoxExportYukaListerPath}" Margin="20,15,20,0" />
                     <DockPanel Margin="40,0,20,0">
                         <Button Height="Auto" Content="参照 (_2)" Style="{StaticResource MaterialDesignRaisedLightButton}" Margin="0" DockPanel.Dock="Right" Width="100" Command="{Binding ButtonBrowseExportYukaListerClickedCommand}"/>
                         <TextBox Name="TextBoxExportYukaListerPath" Text="{Binding ExportYukaListerPath}" ToolTip="エクスポート先ファイル" ToolTipService.ShowDuration="{x:Static msm:YlConstants.TOOL_TIP_LONG_DURATION}" materialDesign:HintAssist.Hint="{Binding ElementName=TextBoxExportYukaListerPath, Path=ToolTip}" VerticalAlignment="Center" Margin="0,0,10,0"/>
                     </DockPanel>
                     <StackPanel Margin="0,10,20,0">
                         <Button Height="Auto" Content="エクスポート (_E)" Style="{StaticResource MaterialDesignRaisedLightButton}" Margin="0" Width="160" HorizontalAlignment="Right" Command="{Binding ButtonExportClickedCommand}"/>
+                    </StackPanel>
+                    <Label Content="楽曲情報データベースの内容をすべて削除する" Margin="20,15,20,0" />
+                    <StackPanel Margin="0,0,20,0">
+                        <Button Height="Auto" Content="すべて削除する (_D)" Style="{StaticResource MaterialDesignRaisedLightButton}" Margin="0" Width="160" HorizontalAlignment="Right" Command="{Binding ButtonDeleteAllClickedCommand}"/>
                     </StackPanel>
                     <CheckBox Content="楽曲情報データベースを同期する (_S)" IsChecked="{Binding SyncMusicInfoDb}" Margin="20,15,0,0"/>
                     <DockPanel Margin="0,10,20,0" IsEnabled="{Binding SyncMusicInfoDb}">

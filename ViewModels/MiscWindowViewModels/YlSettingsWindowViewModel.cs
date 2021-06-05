@@ -26,6 +26,7 @@ using System.Threading.Tasks;
 using System.Windows;
 
 using YukaLister.Models.DatabaseAssist;
+using YukaLister.Models.DatabaseContexts;
 using YukaLister.Models.OutputWriters;
 using YukaLister.Models.SerializableSettings;
 using YukaLister.Models.SharedMisc;
@@ -863,60 +864,11 @@ namespace YukaLister.ViewModels.MiscWindowViewModels
 		}
 		#endregion
 
-		#region 強制的に合わせるボタンの制御
-		private ViewModelCommand? _buttonRegetClickedCommand;
-
-		public ViewModelCommand ButtonRegetClickedCommand
-		{
-			get
-			{
-				if (_buttonRegetClickedCommand == null)
-				{
-					_buttonRegetClickedCommand = new ViewModelCommand(ButtonRegetClicked, CanButtonRegetClicked);
-				}
-				return _buttonRegetClickedCommand;
-			}
-		}
-
-		public Boolean CanButtonRegetClicked()
-		{
-			return SyncMusicInfoDb;
-		}
-
-		public void ButtonRegetClicked()
-		{
-			try
-			{
-				if (YukaListerModel.Instance.EnvModel.Syclin.IsActive)
-				{
-					throw new Exception("現在、同期処理を実行中のため、合わせられません。\n同期処理が終了してから合わせてください。");
-				}
-
-				if (MessageBox.Show("ローカルの楽曲情報データベースを全て削除してから、内容をサーバーに合わせます。\n"
-						+ "タグ情報および、サーバーにアップロードしていないデータは全て失われます。\n"
-						+ "事前にエクスポートすることをお薦めします。\n内容をサーバーに合わせてよろしいですか？", "確認",
-						MessageBoxButton.YesNo, MessageBoxImage.Exclamation) == MessageBoxResult.No)
-				{
-					return;
-				}
-
-				YukaListerModel.Instance.EnvModel.YlSettings.LastSyncDownloadDate = 0.0;
-				RegetSyncDataNeeded = true;
-				YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(TraceEventType.Information, "環境設定ウィンドウを閉じると処理を開始します。");
-			}
-			catch (Exception excep)
-			{
-				YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(TraceEventType.Error, "強制的に合わせる時エラー：\n" + excep.Message);
-				YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, "　スタックトレース：\n" + excep.StackTrace);
-			}
-		}
 		#endregion
 
-		#endregion
+		#region 楽曲情報データベースタブのコマンド
 
-		#region インポートタブのコマンド
-
-		#region ゆかりすたーファイル参照ボタンの制御
+		#region インポート参照ボタンの制御
 		private ViewModelCommand? _buttonBrowseImportYukaListerClickedCommand;
 
 		public ViewModelCommand ButtonBrowseImportYukaListerClickedCommand
@@ -988,11 +940,7 @@ namespace YukaLister.ViewModels.MiscWindowViewModels
 		}
 		#endregion
 
-		#endregion
-
-		#region エクスポートタブのコマンド
-
-		#region 参照ボタンの制御
+		#region エクスポート参照ボタンの制御
 		private ViewModelCommand? _buttonBrowseExportYukaListerClickedCommand;
 
 		public ViewModelCommand ButtonBrowseExportYukaListerClickedCommand
@@ -1056,6 +1004,97 @@ namespace YukaLister.ViewModels.MiscWindowViewModels
 			catch (Exception excep)
 			{
 				YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(TraceEventType.Error, "エクスポートボタンクリック時エラー：\n" + excep.Message);
+				YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, "　スタックトレース：\n" + excep.StackTrace);
+			}
+		}
+		#endregion
+
+		#region すべて削除ボタンの制御
+
+		private ViewModelCommand _buttonDeleteAllClickedCommand;
+
+		public ViewModelCommand ButtonDeleteAllClickedCommand
+		{
+			get
+			{
+				if (_buttonDeleteAllClickedCommand == null)
+				{
+					_buttonDeleteAllClickedCommand = new ViewModelCommand(ButtonDeleteAllClicked);
+				}
+				return _buttonDeleteAllClickedCommand;
+			}
+		}
+
+		public void ButtonDeleteAllClicked()
+		{
+			try
+			{
+				if (YukaListerModel.Instance.EnvModel.Syclin.IsActive)
+				{
+					throw new Exception("現在、同期処理を実行中のため、削除できません。\n同期処理が終了してから削除してください。");
+				}
+
+				if (MessageBox.Show("楽曲情報データベースをすべて削除します。\n復活できません。事前にエクスポートすることをお薦めします。\nすべて削除してよろしいですか？", "確認",
+						MessageBoxButton.YesNo, MessageBoxImage.Exclamation) == MessageBoxResult.No)
+				{
+					return;
+				}
+
+				MusicInfoContextDefault.CreateDatabase();
+				YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(TraceEventType.Information, "楽曲情報データベースを削除しました。");
+			}
+			catch (Exception excep)
+			{
+				YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(TraceEventType.Error, "すべて削除ボタンクリック時エラー：\n" + excep.Message);
+				YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, "　スタックトレース：\n" + excep.StackTrace);
+			}
+		}
+		#endregion
+
+		#region 強制的に合わせるボタンの制御
+		private ViewModelCommand? _buttonRegetClickedCommand;
+
+		public ViewModelCommand ButtonRegetClickedCommand
+		{
+			get
+			{
+				if (_buttonRegetClickedCommand == null)
+				{
+					_buttonRegetClickedCommand = new ViewModelCommand(ButtonRegetClicked, CanButtonRegetClicked);
+				}
+				return _buttonRegetClickedCommand;
+			}
+		}
+
+		public Boolean CanButtonRegetClicked()
+		{
+			return SyncMusicInfoDb;
+		}
+
+		public void ButtonRegetClicked()
+		{
+			try
+			{
+				if (YukaListerModel.Instance.EnvModel.Syclin.IsActive)
+				{
+					throw new Exception("現在、同期処理を実行中のため、合わせられません。\n同期処理が終了してから合わせてください。");
+				}
+
+				if (MessageBox.Show("ローカルの楽曲情報データベースをすべて削除してから、内容をサーバーに合わせます。\n"
+						+ "タグ情報および、サーバーにアップロードしていないデータは全て失われます。\n"
+						+ "事前にエクスポートすることをお薦めします。\n内容をサーバーに合わせてよろしいですか？", "確認",
+						MessageBoxButton.YesNo, MessageBoxImage.Exclamation) == MessageBoxResult.No)
+				{
+					return;
+				}
+
+				YukaListerModel.Instance.EnvModel.YlSettings.LastSyncDownloadDate = 0.0;
+				RegetSyncDataNeeded = true;
+				YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(TraceEventType.Information, "環境設定ウィンドウを閉じると処理を開始します。");
+			}
+			catch (Exception excep)
+			{
+				YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(TraceEventType.Error, "強制的に合わせるボタンクリック時エラー：\n" + excep.Message);
 				YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, "　スタックトレース：\n" + excep.StackTrace);
 			}
 		}
