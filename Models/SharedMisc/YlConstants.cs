@@ -609,6 +609,9 @@ namespace YukaLister.Models.SharedMisc
 		// 一時的に付与する ID の接頭辞
 		public const String TEMP_ID_PREFIX = "!";
 
+		// ツールチップを長く表示する場合の時間 [ms]
+		public const Int32 TOOL_TIP_LONG_DURATION = 20 * 1000;
+
 		// DPI
 		public const Single DPI = 96.0f;
 

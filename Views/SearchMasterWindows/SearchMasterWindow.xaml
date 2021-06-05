@@ -42,7 +42,7 @@
         <Label Content="{Binding Description}" Margin="20,15,0,0"/>
         <DockPanel Margin="20,5,20,0">
             <Button Content="検索 (_S)" Style="{StaticResource MaterialDesignRaisedLightButton}" Width="100" Height="Auto" DockPanel.Dock="Right" Command="{Binding ButtonSearchClickedCommand}"/>
-            <TextBox Name="TextBoxKeyword" Text="{Binding Keyword, UpdateSourceTrigger=PropertyChanged}" ToolTip="ここに検索したいキーワードを入力して下さい。" ToolTipService.ShowDuration="10000" materialDesign:HintAssist.Hint="{Binding ElementName=TextBoxKeyword, Path=ToolTip}" sb:IsFocusedAttachedBehavior.IsFocused="{Binding IsKeywordFocused}" VerticalAlignment="Center" Margin="0,0,5,0" >
+            <TextBox Name="TextBoxKeyword" Text="{Binding Keyword, UpdateSourceTrigger=PropertyChanged}" ToolTip="ここに検索したいキーワードを入力して下さい。" ToolTipService.ShowDuration="{x:Static msm:YlConstants.TOOL_TIP_LONG_DURATION}" materialDesign:HintAssist.Hint="{Binding ElementName=TextBoxKeyword, Path=ToolTip}" sb:IsFocusedAttachedBehavior.IsFocused="{Binding IsKeywordFocused}" VerticalAlignment="Center" Margin="0,0,5,0" >
                 <TextBox.InputBindings>
                     <KeyBinding Gesture="Enter" Command="{Binding ButtonSearchClickedCommand}" />
                 </TextBox.InputBindings>
