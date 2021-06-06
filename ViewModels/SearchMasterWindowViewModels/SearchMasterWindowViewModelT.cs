@@ -386,8 +386,7 @@ namespace YukaLister.ViewModels.SearchMasterWindowViewModels
 				}
 				foreach (String oneWord in split)
 				{
-					String? oneRuby = YlCommon.NormalizeDbRubyForSearch(oneWord);
-					Boolean isOneWordRuby = !String.IsNullOrEmpty(oneRuby) && oneRuby.Length == oneWord.Length;
+					(String? oneRuby, Boolean isOneWordRuby) = YlCommon.NormalizeDbRubyForSearch(oneWord);
 
 					// EF Core レコード直接の場合は、String.Contains() が StringComparison.OrdinalIgnoreCase 付きで動作しないため、EF.Functions.Like() を使う
 					// ここでは一度 List に変換しているので String.Contains() を使う
@@ -465,8 +464,8 @@ namespace YukaLister.ViewModels.SearchMasterWindowViewModels
 			}
 
 			// ルビ
-			String? rubyForSearch = YlCommon.NormalizeDbRubyForSearch(normalizedKeyword);
-			if (!String.IsNullOrEmpty(rubyForSearch) && rubyForSearch.Length == normalizedKeyword.Length)
+			(String? rubyForSearch, Boolean keywordIsRuby) = YlCommon.NormalizeDbRubyForSearch(normalizedKeyword);
+			if (!String.IsNullOrEmpty(rubyForSearch) && keywordIsRuby)
 			{
 				SelectedFound = Founds.FirstOrDefault(x => x.RubyForSearch == rubyForSearch);
 				if (SelectedFound != null)

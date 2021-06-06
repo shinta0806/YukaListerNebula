@@ -398,7 +398,7 @@ namespace YukaLister.ViewModels.EditMasterWindowViewModels
 		protected virtual void CheckInput()
 		{
 			String? normalizedName = YlCommon.NormalizeDbString(Name);
-			String? normalizedRuby = YlCommon.NormalizeDbRubyForMusicInfo(Ruby);
+			(String? normalizedRuby, Boolean allRuby) = YlCommon.NormalizeDbRubyForMusicInfo(Ruby);
 			String? normalizedKeyword = YlCommon.NormalizeDbString(Keyword);
 
 			// 名前が入力されているか
@@ -443,7 +443,7 @@ namespace YukaLister.ViewModels.EditMasterWindowViewModels
 			}
 
 			// フリガナとして使えない文字がある場合は警告
-			WarnRubyDeletedIfNeeded(Ruby, normalizedRuby);
+			WarnRubyDeletedIfNeeded(allRuby, Ruby, normalizedRuby);
 		}
 
 		// --------------------------------------------------------------------
@@ -515,8 +515,8 @@ namespace YukaLister.ViewModels.EditMasterWindowViewModels
 
 			// IRcMaster
 			master.Name = YlCommon.NormalizeDbString(Name);
-			master.Ruby = YlCommon.NormalizeDbRubyForMusicInfo(Ruby);
-			master.RubyForSearch = YlCommon.NormalizeDbRubyForSearch(Ruby);
+			(master.Ruby, _) = YlCommon.NormalizeDbRubyForMusicInfo(Ruby);
+			(master.RubyForSearch, _) = YlCommon.NormalizeDbRubyForSearch(Ruby);
 
 			// 検索ワードはカンマごとに正規化する
 			Debug.Assert(master.Keyword == null, "PropertiesToRecord() master.Keyword already set");
@@ -586,13 +586,12 @@ namespace YukaLister.ViewModels.EditMasterWindowViewModels
 		// ルビの一部が削除されたら警告
 		// ＜例外＞ OperationCanceledException
 		// --------------------------------------------------------------------
-		private static void WarnRubyDeletedIfNeeded(String? originalRuby, String? normalizedRuby)
+		private static void WarnRubyDeletedIfNeeded(Boolean allRuby, String? originalRuby, String? normalizedRuby)
 		{
-			if (!String.IsNullOrEmpty(originalRuby)
-					&& (String.IsNullOrEmpty(normalizedRuby) || originalRuby.Length != normalizedRuby.Length))
+			if (!String.IsNullOrEmpty(originalRuby) && !allRuby)
 			{
 				if (MessageBox.Show("フリガナはカタカナのみ登録可能のため、カタカナ以外は削除されます。\n"
-						+ originalRuby + " → " + normalizedRuby + "\nよろしいですか？", "確認",
+						+ originalRuby + " →\n" + normalizedRuby + "\nよろしいですか？", "確認",
 						MessageBoxButton.YesNo, MessageBoxImage.Exclamation) == MessageBoxResult.No)
 				{
 					throw new OperationCanceledException();

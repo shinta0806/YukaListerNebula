@@ -508,8 +508,8 @@ namespace YukaLister.Models.SharedMisc
 			List<String> forSearchElements = new();
 			foreach (String element in elements)
 			{
-				String? ruby = NormalizeDbRubyForSearch(element);
-				if (!String.IsNullOrEmpty(ruby) && ruby.Length == element.Length && ruby != element)
+				(String? ruby, Boolean allRuby) = NormalizeDbRubyForSearch(element);
+				if (!String.IsNullOrEmpty(ruby) && allRuby && ruby != element)
 				{
 					forSearchElements.Add(ruby);
 				}
@@ -670,9 +670,9 @@ namespace YukaLister.Models.SharedMisc
 		// --------------------------------------------------------------------
 		// 楽曲情報データベースに登録するフリガナの表記揺れを減らす
 		// 最低限の表記揺れのみ減らす
-		// ＜返値＞ フリガナ表記 or null（空になる場合）
+		// ＜返値＞ フリガナ表記 or null（空になる場合）, 元の文字はすべてフリガナ対応文字だったか
 		// --------------------------------------------------------------------
-		public static String? NormalizeDbRubyForMusicInfo(String? str)
+		public static (String? normalizedRuby, Boolean fromAllRuby) NormalizeDbRubyForMusicInfo(String? str)
 		{
 			Debug.Assert(NORMALIZE_DB_RUBY_FOR_MUSIC_INFO_FROM.Length == NORMALIZE_DB_RUBY_FOR_MUSIC_INFO_TO.Length,
 					"NormalizeDbRubyForMusicInfo() different from/to length");
@@ -682,13 +682,24 @@ namespace YukaLister.Models.SharedMisc
 		// --------------------------------------------------------------------
 		// 検索用（検索で使用されるリストデータベース登録用を含む）にフリガナの表記揺れを減らす
 		// NormalizeDbRubyForMusicInfo() よりも強力に揺れを減らす
-		// ＜返値＞ フリガナ表記 or null（空になる場合）
+		// ＜返値＞ フリガナ表記 or null（空になる場合）, 元の文字はすべてフリガナ対応文字だったか
 		// --------------------------------------------------------------------
-		public static String? NormalizeDbRubyForSearch(String? str)
+		public static (String? normalizedRuby, Boolean fromAllRuby) NormalizeDbRubyForSearch(String? str)
 		{
 			Debug.Assert(NORMALIZE_DB_RUBY_FOR_SEARCH_FROM.Length == NORMALIZE_DB_RUBY_FOR_SEARCH_TO.Length,
 					"NormalizeDbRubyForListContext() different from/to length");
-			return NormalizeDbRubyCore(str, NORMALIZE_DB_RUBY_FOR_SEARCH_FROM, NORMALIZE_DB_RUBY_FOR_SEARCH_TO);
+			(String? normalizedRuby, Boolean fromAllRuby) = NormalizeDbRubyCore(str, NORMALIZE_DB_RUBY_FOR_SEARCH_FROM, NORMALIZE_DB_RUBY_FOR_SEARCH_TO);
+
+			// 長音はすべて削除
+			if (!String.IsNullOrEmpty(normalizedRuby))
+			{
+				normalizedRuby = normalizedRuby.Replace("ー", null, StringComparison.Ordinal);
+				if (String.IsNullOrEmpty(normalizedRuby))
+				{
+					normalizedRuby = null;
+				}
+			}
+			return (normalizedRuby, fromAllRuby);
 		}
 
 		// --------------------------------------------------------------------
@@ -1175,22 +1186,6 @@ namespace YukaLister.Models.SharedMisc
 			return dic;
 		}
 
-#if false
-		// --------------------------------------------------------------------
-		// ファイル名とファイル命名規則がマッチするか確認し、マッチしたマップを返す（ルビは楽曲情報データベース登録用に正規化）
-		// ＜引数＞ fileNameBody: 拡張子無し
-		// --------------------------------------------------------------------
-		private static Dictionary<String, String?> MatchFileNameRulesForMusicInfo(String fileNameBody, FolderSettingsInMemory folderSettingsInMemory)
-		{
-			Dictionary<String, String?> dic = MatchFileNameRulesCore(fileNameBody, folderSettingsInMemory);
-
-			// 正規化（差異部分のみ）
-			dic[YlConstants.RULE_VAR_TITLE_RUBY] = NormalizeDbRubyForMusicInfo(dic[YlConstants.RULE_VAR_TITLE_RUBY]);
-
-			return dic;
-		}
-#endif
-
 		// --------------------------------------------------------------------
 		// ファイル名とファイル命名規則がマッチするか確認し、マッチしたマップを返す（ルビは検索用に正規化）
 		// ＜引数＞ fileNameBody: 拡張子無し
@@ -1200,23 +1195,24 @@ namespace YukaLister.Models.SharedMisc
 			Dictionary<String, String?> dic = MatchFileNameRulesCore(fileNameBody, folderSettingsInMemory);
 
 			// 正規化（差異部分のみ）
-			dic[YlConstants.RULE_VAR_TITLE_RUBY] = NormalizeDbRubyForSearch(dic[YlConstants.RULE_VAR_TITLE_RUBY]);
+			(dic[YlConstants.RULE_VAR_TITLE_RUBY], _) = NormalizeDbRubyForSearch(dic[YlConstants.RULE_VAR_TITLE_RUBY]);
 
 			return dic;
 		}
 
 		// --------------------------------------------------------------------
 		// フリガナの表記揺れを減らす
-		// ＜返値＞ フリガナ表記 or null（空になる場合）
+		// ＜返値＞ フリガナ表記 or null（空になる場合）, 元の文字はすべてフリガナ対応文字だったか
 		// --------------------------------------------------------------------
-		private static String? NormalizeDbRubyCore(String? str, String from, String to)
+		private static (String? normalizedRuby, Boolean fromAllRuby) NormalizeDbRubyCore(String? str, String from, String to)
 		{
 			if (String.IsNullOrEmpty(str))
 			{
-				return null;
+				return (null, false);
 			}
 
 			StringBuilder katakana = new();
+			Boolean fromAllRuby = true;
 
 			for (Int32 i = 0; i < str.Length; i++)
 			{
@@ -1245,15 +1241,16 @@ namespace YukaLister.Models.SharedMisc
 				}
 
 				// その他の文字は無視する
+				fromAllRuby = false;
 			}
 
 			String katakanaString = katakana.ToString();
 			if (String.IsNullOrEmpty(katakanaString))
 			{
-				return null;
+				return (null, false);
 			}
 
-			return katakanaString;
+			return (katakanaString, fromAllRuby);
 		}
 	}
 }

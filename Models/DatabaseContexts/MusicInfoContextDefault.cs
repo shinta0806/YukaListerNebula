@@ -253,12 +253,12 @@ namespace YukaLister.Models.DatabaseContexts
 		private static TCategory CreateCategoryRecord(Int32 idNumber, String name, String? ruby = null)
 		{
 			String? normalizedName = YlCommon.NormalizeDbString(name);
-			String? normalizedRubyForMusicInfo = YlCommon.NormalizeDbRubyForMusicInfo(ruby);
+			(String? normalizedRubyForMusicInfo, _) = YlCommon.NormalizeDbRubyForMusicInfo(ruby);
 			if (String.IsNullOrEmpty(normalizedRubyForMusicInfo))
 			{
 				normalizedRubyForMusicInfo = normalizedName;
 			}
-			String? normalizedRubyForSearch = YlCommon.NormalizeDbRubyForSearch(normalizedRubyForMusicInfo);
+			(String? normalizedRubyForSearch, _) = YlCommon.NormalizeDbRubyForSearch(normalizedRubyForMusicInfo);
 
 			return new TCategory()
 			{

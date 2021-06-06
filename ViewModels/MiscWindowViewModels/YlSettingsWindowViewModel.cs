@@ -1011,7 +1011,7 @@ namespace YukaLister.ViewModels.MiscWindowViewModels
 
 		#region すべて削除ボタンの制御
 
-		private ViewModelCommand _buttonDeleteAllClickedCommand;
+		private ViewModelCommand? _buttonDeleteAllClickedCommand;
 
 		public ViewModelCommand ButtonDeleteAllClickedCommand
 		{
@@ -1025,7 +1025,7 @@ namespace YukaLister.ViewModels.MiscWindowViewModels
 			}
 		}
 
-		public void ButtonDeleteAllClicked()
+		public static void ButtonDeleteAllClicked()
 		{
 			try
 			{
