@@ -670,25 +670,29 @@ namespace YukaLister.Models.SharedMisc
 		// --------------------------------------------------------------------
 		// 楽曲情報データベースに登録するフリガナの表記揺れを減らす
 		// 最低限の表記揺れのみ減らす
-		// ＜返値＞ フリガナ表記 or null（空になる場合）, 元の文字はすべてフリガナ対応文字だったか
+		// ＜返値＞ フリガナ表記 or null（空になる場合）, 元の文字はすべてフリガナ対応文字だったか（null の場合は false）
 		// --------------------------------------------------------------------
 		public static (String? normalizedRuby, Boolean fromAllRuby) NormalizeDbRubyForMusicInfo(String? str)
 		{
 			Debug.Assert(NORMALIZE_DB_RUBY_FOR_MUSIC_INFO_FROM.Length == NORMALIZE_DB_RUBY_FOR_MUSIC_INFO_TO.Length,
 					"NormalizeDbRubyForMusicInfo() different from/to length");
-			return NormalizeDbRubyCore(str, NORMALIZE_DB_RUBY_FOR_MUSIC_INFO_FROM, NORMALIZE_DB_RUBY_FOR_MUSIC_INFO_TO);
+			return NormalizeDbRubyCore(str, NORMALIZE_DB_RUBY_FOR_MUSIC_INFO_FROM, NORMALIZE_DB_RUBY_FOR_MUSIC_INFO_TO, Array.Empty<String>(), Array.Empty<String>());
 		}
 
 		// --------------------------------------------------------------------
 		// 検索用（検索で使用されるリストデータベース登録用を含む）にフリガナの表記揺れを減らす
 		// NormalizeDbRubyForMusicInfo() よりも強力に揺れを減らす
-		// ＜返値＞ フリガナ表記 or null（空になる場合）, 元の文字はすべてフリガナ対応文字だったか
+		// ＜返値＞ フリガナ表記 or null（空になる場合）, 元の文字はすべてフリガナ対応文字だったか（null の場合は false）
 		// --------------------------------------------------------------------
 		public static (String? normalizedRuby, Boolean fromAllRuby) NormalizeDbRubyForSearch(String? str)
 		{
 			Debug.Assert(NORMALIZE_DB_RUBY_FOR_SEARCH_FROM.Length == NORMALIZE_DB_RUBY_FOR_SEARCH_TO.Length,
-					"NormalizeDbRubyForListContext() different from/to length");
-			(String? normalizedRuby, Boolean fromAllRuby) = NormalizeDbRubyCore(str, NORMALIZE_DB_RUBY_FOR_SEARCH_FROM, NORMALIZE_DB_RUBY_FOR_SEARCH_TO);
+					"NormalizeDbRubyForListContext() different one from/to length");
+			Debug.Assert(NORMALIZE_DB_RUBY_FOR_SEARCH_MULTI_FROM.Length == NORMALIZE_DB_RUBY_FOR_SEARCH_MULTI_TO.Length,
+					"NormalizeDbRubyForListContext() different multi from/to length");
+
+			(String? normalizedRuby, Boolean fromAllRuby) = NormalizeDbRubyCore(str, NORMALIZE_DB_RUBY_FOR_SEARCH_FROM, NORMALIZE_DB_RUBY_FOR_SEARCH_TO,
+					NORMALIZE_DB_RUBY_FOR_SEARCH_MULTI_FROM, NORMALIZE_DB_RUBY_FOR_SEARCH_MULTI_TO);
 
 			// 長音はすべて削除
 			if (!String.IsNullOrEmpty(normalizedRuby))
@@ -697,6 +701,7 @@ namespace YukaLister.Models.SharedMisc
 				if (String.IsNullOrEmpty(normalizedRuby))
 				{
 					normalizedRuby = null;
+					fromAllRuby = false;
 				}
 			}
 			return (normalizedRuby, fromAllRuby);
@@ -970,6 +975,10 @@ namespace YukaLister.Models.SharedMisc
 		// DB 変換
 		// --------------------------------------------------------------------
 
+		// NormalizeDbRubyForSearch() 用：フリガナ正規化対象文字（複数文字）
+		private static readonly String[] NORMALIZE_DB_RUBY_FOR_SEARCH_MULTI_FROM = { "ヴァ", "ヴィ", "ヴェ", "ヴォ" };
+		private static readonly String[] NORMALIZE_DB_RUBY_FOR_SEARCH_MULTI_TO = { "ハ", "ヒ", "ヘ", "ホ" };
+
 		// NormalizeDbRubyForSearch() 用：フリガナ正規化対象文字（小文字・濁点→大文字・清音）
 		private const String NORMALIZE_DB_RUBY_FOR_SEARCH_FROM = "ァィゥェォッャュョヮヵヶヲガギグゲゴザジズゼゾダヂヅデドバビブベボパピプペポヰヱヴヷヸヹヺｧｨｩｪｫｯｬｭｮｦ"
 				+ "ぁぃぅぇぉっゃゅょゎゕゖをがぎぐげござじずぜぞだぢづでどばびぶべぼぱぴぷぺぽゐゑゔ" + NORMALIZE_DB_RUBY_COMMON_FROM + NORMALIZE_DB_FORBIDDEN_FROM;
@@ -1032,6 +1041,24 @@ namespace YukaLister.Models.SharedMisc
 		// ====================================================================
 		// private static メンバー関数
 		// ====================================================================
+
+		// --------------------------------------------------------------------
+		// ルビ正規化において複数対複数変換対象であれば追加
+		// ＜返値＞ 追加したら true
+		// --------------------------------------------------------------------
+		private static Boolean AppendMulti(String str, ref Int32 pos, String[] multiFrom, String[] multiTo, StringBuilder katakana)
+		{
+			for (Int32 i = 0; i < multiFrom.Length; i++)
+			{
+				if (str[pos..].StartsWith(multiFrom[i], StringComparison.Ordinal))
+				{
+					katakana.Append(multiTo[i]);
+					pos += multiFrom[i].Length - 1;
+					return true;
+				}
+			}
+			return false;
+		}
 
 		// --------------------------------------------------------------------
 		// 設定ファイルのルール表記を正規表現に変換
@@ -1202,9 +1229,9 @@ namespace YukaLister.Models.SharedMisc
 
 		// --------------------------------------------------------------------
 		// フリガナの表記揺れを減らす
-		// ＜返値＞ フリガナ表記 or null（空になる場合）, 元の文字はすべてフリガナ対応文字だったか
+		// ＜返値＞ フリガナ表記 or null（空になる場合）, 元の文字はすべてフリガナ対応文字だったか（null の場合は false）
 		// --------------------------------------------------------------------
-		private static (String? normalizedRuby, Boolean fromAllRuby) NormalizeDbRubyCore(String? str, String from, String to)
+		private static (String? normalizedRuby, Boolean fromAllRuby) NormalizeDbRubyCore(String? str, String oneFrom, String oneTo, String[] multiFrom, String[] multiTo)
 		{
 			if (String.IsNullOrEmpty(str))
 			{
@@ -1216,13 +1243,19 @@ namespace YukaLister.Models.SharedMisc
 
 			for (Int32 i = 0; i < str.Length; i++)
 			{
+				// 複数対複数変換テーブルを用いた変換
+				if (AppendMulti(str, ref i, multiFrom, multiTo, katakana))
+				{
+					continue;
+				}
+
 				Char chara = str[i];
 
-				// 変換テーブルを用いた変換
-				Int32 pos = from.IndexOf(chara);
+				// 1 対 1 変換テーブルを用いた変換
+				Int32 pos = oneFrom.IndexOf(chara);
 				if (pos >= 0)
 				{
-					katakana.Append(to[pos]);
+					katakana.Append(oneTo[pos]);
 					continue;
 				}
 
