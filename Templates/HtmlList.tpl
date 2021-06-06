@@ -17,6 +17,7 @@
 <p>
 <!-- $Directory$ -->　（<!-- $NumSongs$ --> 曲）<br>
 <br>
+<!-- $AdditionalNotice$ -->
 <!-- $ChapterName$ -->をクリックすると、曲が一覧表示されます。<br>
 全ての<!-- $ChapterName$ -->を <a href="javascript:void(0)" onClick="set_all_programs(true);">開く</a> / <a href="javascript:void(0)" onClick="set_all_programs(false);">閉じる</a><br>
 <!-- $AdditionalDescription$ -->

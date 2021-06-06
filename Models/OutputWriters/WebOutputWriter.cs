@@ -126,7 +126,7 @@ namespace YukaLister.Models.OutputWriters
 		// トップページ
 		protected WebPageInfoTree _topPage = new();
 
-		// 追加説明
+		// 追加説明（派生クラスごとに設定）
 		protected String? _additionalDescription;
 
 		// 追加 HTML ヘッダー
@@ -355,6 +355,7 @@ namespace YukaLister.Models.OutputWriters
 		// HTML テンプレートに記載されている変数
 		private const String HTML_VAR_ADDITIONAL_DESCRIPTION = "<!-- $AdditionalDescription$ -->";
 		private const String HTML_VAR_ADDITIONAL_HEADER = "<!-- $AdditionalHeader$ -->";
+		private const String HTML_VAR_ADDITIONAL_NOTICE = "<!-- $AdditionalNotice$ -->";
 		private const String HTML_VAR_CATEGORY = "<!-- $Category$ -->";
 		private const String HTML_VAR_CATEGORY_INDEX = "<!-- $CategoryIndex$ -->";
 		private const String HTML_VAR_CHAPTER_NAME = "<!-- $ChapterName$ -->";
@@ -1101,6 +1102,23 @@ namespace YukaLister.Models.OutputWriters
 			// テンプレート適用
 			try
 			{
+				// 各頭文字専用の追加案内
+				String? additionalNode = pageName switch
+				{
+					"う" => "「ヴァ（バ）」「ヴィ（ビ）」「ヴ（ブ）」「ヴェ（ベ）」「ヴォ（ボ）」から始まる" + YlConstants.OUTPUT_ITEM_NAMES[(Int32)chapterItem]
+							+ "一覧については、「は」「ひ」「ふ」「へ」「ほ」をご覧ください。<br>",
+					"は" => "「ヴァ（バ）」から始まる" + YlConstants.OUTPUT_ITEM_NAMES[(Int32)chapterItem] + "一覧もここに掲載されています。<br>",
+					"ひ" => "「ヴィ（ビ）」から始まる" + YlConstants.OUTPUT_ITEM_NAMES[(Int32)chapterItem] + "一覧もここに掲載されています。<br>",
+					"ふ" => "「ヴ（ブ）」から始まる" + YlConstants.OUTPUT_ITEM_NAMES[(Int32)chapterItem] + "一覧もここに掲載されています。<br>",
+					"へ" => "「ヴェ（ベ）」から始まる" + YlConstants.OUTPUT_ITEM_NAMES[(Int32)chapterItem] + "一覧もここに掲載されています。<br>",
+					"ほ" => "「ヴォ（ボ）」から始まる" + YlConstants.OUTPUT_ITEM_NAMES[(Int32)chapterItem] + "一覧もここに掲載されています。<br>",
+					_ => null,
+				};
+				if (additionalNode != null)
+				{
+					template = template.Replace(HTML_VAR_ADDITIONAL_NOTICE, additionalNode);
+				}
+
 				template = template.Replace(HTML_VAR_ADDITIONAL_DESCRIPTION, _additionalDescription);
 				template = template.Replace(HTML_VAR_CHAPTER_NAME, YlConstants.OUTPUT_ITEM_NAMES[(Int32)chapterItem]);
 				template = template.Replace(HTML_VAR_PROGRAMS, stringBuilder.ToString());
