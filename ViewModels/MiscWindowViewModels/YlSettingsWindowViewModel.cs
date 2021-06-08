@@ -133,6 +133,14 @@ namespace YukaLister.ViewModels.MiscWindowViewModels
 			set => RaisePropertyChangedIfSet(ref _provideYukariPreview, value);
 		}
 
+		// ゆかり用のさらなる検索支援データを出力するか
+		private Boolean _outputAdditionalYukariAssist;
+		public Boolean OutputAdditionalYukariAssist
+		{
+			get => _outputAdditionalYukariAssist;
+			set => RaisePropertyChangedIfSet(ref _outputAdditionalYukariAssist, value);
+		}
+
 		// ID 接頭辞
 		private String? _idPrefix;
 		public String? IdPrefix
@@ -1279,6 +1287,7 @@ namespace YukaLister.ViewModels.MiscWindowViewModels
 			YukaListerModel.Instance.EnvModel.YlSettings.YukariConfigPathSeed = YukariConfigPathSeed;
 			YukaListerModel.Instance.EnvModel.YlSettings.AddFolderOnDeviceArrived = AddFolderOnDeviceArrived;
 			YukaListerModel.Instance.EnvModel.YlSettings.ProvideYukariPreview = ProvideYukariPreview;
+			YukaListerModel.Instance.EnvModel.YlSettings.OutputAdditionalYukariAssist = OutputAdditionalYukariAssist;
 			YukaListerModel.Instance.EnvModel.YlSettings.IdPrefix = IdPrefix;
 
 			// リスト対象タブ
@@ -1307,6 +1316,7 @@ namespace YukaLister.ViewModels.MiscWindowViewModels
 			YukariConfigPathSeed = YukaListerModel.Instance.EnvModel.YlSettings.YukariConfigPathSeed;
 			AddFolderOnDeviceArrived = YukaListerModel.Instance.EnvModel.YlSettings.AddFolderOnDeviceArrived;
 			ProvideYukariPreview = YukaListerModel.Instance.EnvModel.YlSettings.ProvideYukariPreview;
+			OutputAdditionalYukariAssist = YukaListerModel.Instance.EnvModel.YlSettings.OutputAdditionalYukariAssist;
 			IdPrefix = YukaListerModel.Instance.EnvModel.YlSettings.IdPrefix;
 
 			// リスト対象タブ

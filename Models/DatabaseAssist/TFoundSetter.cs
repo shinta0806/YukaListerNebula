@@ -24,6 +24,7 @@ using YukaLister.Models.Database.Masters;
 using YukaLister.Models.Database.Sequences;
 using YukaLister.Models.DatabaseContexts;
 using YukaLister.Models.SharedMisc;
+using YukaLister.Models.YukaListerModels;
 
 namespace YukaLister.Models.DatabaseAssist
 {
@@ -582,6 +583,11 @@ namespace YukaLister.Models.DatabaseAssist
 		// --------------------------------------------------------------------
 		private static String? KeywordToComment(IRcMaster master)
 		{
+			if (!YukaListerModel.Instance.EnvModel.YlSettings.OutputAdditionalYukariAssist)
+			{
+				return null;
+			}
+
 			String? comment = null;
 			if (!String.IsNullOrEmpty(master.Keyword))
 			{

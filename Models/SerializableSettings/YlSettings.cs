@@ -48,6 +48,9 @@ namespace YukaLister.Models.SerializableSettings
 		// ゆかり用のサーバーポート
 		public Int32 WebServerPort { get; set; } = DEFAULT_WEB_SERVER_PORT;
 
+		// ゆかり用のさらなる検索支援データを出力するか
+		public Boolean OutputAdditionalYukariAssist { get; set; } = true;
+
 		// サムネイルを作成する動画の位置 [S]
 		public Int32 ThumbSeekPos { get; set; } = DEFAULT_THUMB_SEEK_POS;
 
