@@ -136,10 +136,10 @@ namespace YukaLister.Models.DatabaseAssist
 				// 年齢制限で絞り込み
 				if (songs.Count > 1 && dicByFile[YlConstants.RULE_VAR_AGE_LIMIT] != null)
 				{
+					Int32 dicAgeLimt = Common.StringToInt32(dicByFile[YlConstants.RULE_VAR_AGE_LIMIT]);
 					List<TSong> songsWithAgeLimit = new();
 					foreach (KeyValuePair<TSong, TTieUp> kvp in songsAndTieUps)
 					{
-						Int32 dicAgeLimt = Common.StringToInt32(dicByFile[YlConstants.RULE_VAR_AGE_LIMIT]);
 						if (0 <= kvp.Value.AgeLimit && kvp.Value.AgeLimit < YlConstants.AGE_LIMIT_CERO_Z && 0 <= dicAgeLimt && dicAgeLimt < YlConstants.AGE_LIMIT_CERO_Z
 								|| kvp.Value.AgeLimit == YlConstants.AGE_LIMIT_CERO_Z && dicAgeLimt == YlConstants.AGE_LIMIT_CERO_Z)
 						{
@@ -585,6 +585,58 @@ namespace YukaLister.Models.DatabaseAssist
 		// ====================================================================
 
 		// --------------------------------------------------------------------
+		// dicByFile に合致するタイアップを、楽曲情報データベースから検索
+		// --------------------------------------------------------------------
+		private TTieUp? FindTieUpByMusicInfoDatabase(Dictionary<String, String?> dicByFile)
+		{
+			if (dicByFile[YlConstants.RULE_VAR_PROGRAM] == null)
+			{
+				return null;
+			}
+
+			List<TTieUp> tieUps = DbCommon.SelectMastersByName(_tieUps, dicByFile[YlConstants.RULE_VAR_PROGRAM]);
+
+			// カテゴリーで絞り込み
+			if (tieUps.Count > 1 && dicByFile[YlConstants.RULE_VAR_CATEGORY] != null)
+			{
+				List<TTieUp> tieUpsWithCategory = new();
+				foreach (TTieUp tieUp in tieUps)
+				{
+					TCategory? category = DbCommon.SelectBaseById(_categories, tieUp.CategoryId);
+					if (category != null && category.Name == dicByFile[YlConstants.RULE_VAR_CATEGORY])
+					{
+						tieUpsWithCategory.Add(tieUp);
+					}
+				}
+				if (tieUpsWithCategory.Any())
+				{
+					tieUps = tieUpsWithCategory;
+				}
+			}
+
+			// 年齢制限で絞り込み
+			if (tieUps.Count > 1 && dicByFile[YlConstants.RULE_VAR_AGE_LIMIT] != null)
+			{
+				Int32 dicAgeLimt = Common.StringToInt32(dicByFile[YlConstants.RULE_VAR_AGE_LIMIT]);
+				List<TTieUp> tieUpsWithAgeLimit = new();
+				foreach (TTieUp tieUp in tieUps)
+				{
+					if (0 <= tieUp.AgeLimit && tieUp.AgeLimit < YlConstants.AGE_LIMIT_CERO_Z && 0 <= dicAgeLimt && dicAgeLimt < YlConstants.AGE_LIMIT_CERO_Z
+							|| tieUp.AgeLimit == YlConstants.AGE_LIMIT_CERO_Z && dicAgeLimt == YlConstants.AGE_LIMIT_CERO_Z)
+					{
+						tieUpsWithAgeLimit.Add(tieUp);
+					}
+				}
+				if (tieUpsWithAgeLimit.Any())
+				{
+					tieUps = tieUpsWithAgeLimit;
+				}
+			}
+
+			return tieUps.FirstOrDefault();
+		}
+
+		// --------------------------------------------------------------------
 		// （dicByFile から取得した）人物情報をゆかり用リストデータベースに登録
 		// --------------------------------------------------------------------
 		private void RegisterPerson<T>(DbSet<T> listSequences, TFound found, TPerson person) where T : class, IRcSequence, new()
@@ -751,10 +803,7 @@ namespace YukaLister.Models.DatabaseAssist
 			if (selectedTieUp == null)
 			{
 				// 曲に紐付くタイアップが無い場合は、ファイル名からタイアップを取得
-				if (dicByFile[YlConstants.RULE_VAR_PROGRAM] != null)
-				{
-					selectedTieUp = DbCommon.SelectMasterByName(_tieUps, dicByFile[YlConstants.RULE_VAR_PROGRAM]);
-				}
+				selectedTieUp = FindTieUpByMusicInfoDatabase(dicByFile);
 			}
 			if (selectedSong == null && selectedTieUp == null)
 			{
