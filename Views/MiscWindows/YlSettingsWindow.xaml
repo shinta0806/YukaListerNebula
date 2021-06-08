@@ -67,7 +67,7 @@
                         <TextBox Name="TextBoxYukariConfigPathSeed" Text="{Binding YukariConfigPathSeed}" VerticalAlignment="Center" Margin="0,0,10,0" />
                     </DockPanel>
                     <CheckBox Content="起動時やリムーバブルメディア接続時、前回のフォルダーを自動的に追加する (_A)" IsChecked="{Binding AddFolderOnDeviceArrived}" Margin="20,20,0,0" />
-                    <CheckBox Visibility="Hidden" Content="ゆかり用サーバー機能（プレビュー等）を提供する (_P)" IsChecked="{Binding ProvideYukariPreview}" Margin="20,10,0,0" />
+                    <CheckBox Content="ゆかり用サーバー機能（プレビュー等）を提供する (_P)" IsChecked="{Binding ProvideYukariPreview}" Margin="20,10,0,0" />
                     <DockPanel Margin="20,10,20,0" >
                         <Label Content="ID 先頭付与文字列 (_I)：" Target="{Binding ElementName=TextBoxIdPrefix}" VerticalAlignment="Center" Width="140" HorizontalContentAlignment="Right" />
                         <TextBox Name="TextBoxIdPrefix" Text="{Binding IdPrefix}" Margin="0,0,110,0" ToolTip="お好きな文字列で構いませんが、パソコンごとに異なる文字列を指定してください。" ToolTipService.ShowDuration="{x:Static msm:YlConstants.TOOL_TIP_LONG_DURATION}" materialDesign:HintAssist.Hint="{Binding ElementName=TextBoxIdPrefix, Path=ToolTip}" />

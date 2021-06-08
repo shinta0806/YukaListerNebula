@@ -315,7 +315,7 @@ namespace YukaLister.ViewModels
 			}
 		}
 
-		public void ButtonYukaListerSettingsClicked()
+		public async void ButtonYukaListerSettingsClicked()
 		{
 			try
 			{
@@ -346,20 +346,18 @@ namespace YukaLister.ViewModels
 					SetFileSystemWatcherYukariConfig();
 				}
 
-#if false
 				// サーバー設定が変更された場合は起動・終了を行う
-				if (Environment.YukaListerSettings.ProvideYukariPreview != provideYukariPreviewBak)
+				if (YukaListerModel.Instance.EnvModel.YlSettings.ProvideYukariPreview != provideYukariPreviewBak)
 				{
-					if (Environment.YukaListerSettings.ProvideYukariPreview)
+					if (YukaListerModel.Instance.EnvModel.YlSettings.ProvideYukariPreview)
 					{
-						RunPreviewServerIfNeeded();
+						StartWebServerIfNeeded();
 					}
 					else
 					{
-						StopPreviewServerIfNeeded();
+						await QuitServerIfNeededAsync();
 					}
 				}
-#endif
 
 				if (regetSyncDataNeeded)
 				{
