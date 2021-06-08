@@ -594,6 +594,9 @@ namespace YukaLister.Models.SharedMisc
 		// 変数の値を区切る文字
 		public const String VAR_VALUE_DELIMITER = ",";
 
+		// 年齢制限のデフォルト値
+		public const Int32 AGE_LIMIT_DEFAULT = -1;
+
 		// RULE_VAR_ON_VOCAL / RULE_VAR_OFF_VOCAL のデフォルト値
 		public const Int32 RULE_VALUE_VOCAL_DEFAULT = 1;
 

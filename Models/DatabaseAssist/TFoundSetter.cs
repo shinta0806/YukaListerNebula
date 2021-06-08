@@ -96,28 +96,60 @@ namespace YukaLister.Models.DatabaseAssist
 
 		// --------------------------------------------------------------------
 		// dicByFile に合致する楽曲群を、楽曲情報データベースから検索
-		// 楽曲名、タイアップ名、カテゴリー、歌手名で絞り込むが、複数候補となることがあり得る
+		// 楽曲名、タイアップ名、年齢制限、カテゴリー、歌手名で絞り込むが、複数候補となることがあり得る
 		// --------------------------------------------------------------------
 		public List<TSong> FindSongsByMusicInfoDatabase(Dictionary<String, String?> dicByFile)
 		{
 			// 楽曲名で検索
 			List<TSong> songs = DbCommon.SelectMastersByName(_songs, dicByFile[YlConstants.RULE_VAR_TITLE]);
 
-			// タイアップ名で絞り込み
-			if (songs.Count > 1 && dicByFile[YlConstants.RULE_VAR_PROGRAM] != null)
+			// タイアップ名・年齢制限で絞り込み
+			if (songs.Count > 1)
 			{
-				List<TSong> songsWithTieUp = new();
+				Dictionary<TSong, TTieUp> songsAndTieUps = new();
 				foreach (TSong song in songs)
 				{
-					TTieUp? tieUp = DbCommon.SelectBaseById(_tieUps, song.TieUpId);
-					if (tieUp != null && tieUp.Name == dicByFile[YlConstants.RULE_VAR_PROGRAM])
+					TTieUp? tieUpOfSong = DbCommon.SelectBaseById(_tieUps, song.TieUpId);
+					if (tieUpOfSong != null)
 					{
-						songsWithTieUp.Add(song);
+						songsAndTieUps[song] = tieUpOfSong;
 					}
 				}
-				if (songsWithTieUp.Any())
+
+				// タイアップ名で絞り込み
+				if (songs.Count > 1 && dicByFile[YlConstants.RULE_VAR_PROGRAM] != null)
 				{
-					songs = songsWithTieUp;
+					List<TSong> songsWithTieUpName = new();
+					foreach (KeyValuePair<TSong, TTieUp> kvp in songsAndTieUps)
+					{
+						if (kvp.Value.Name == dicByFile[YlConstants.RULE_VAR_PROGRAM])
+						{
+							songsWithTieUpName.Add(kvp.Key);
+						}
+					}
+					if (songsWithTieUpName.Any())
+					{
+						songs = songsWithTieUpName;
+					}
+				}
+
+				// 年齢制限で絞り込み
+				if (songs.Count > 1 && dicByFile[YlConstants.RULE_VAR_AGE_LIMIT] != null)
+				{
+					List<TSong> songsWithAgeLimit = new();
+					foreach (KeyValuePair<TSong, TTieUp> kvp in songsAndTieUps)
+					{
+						Int32 dicAgeLimt = Common.StringToInt32(dicByFile[YlConstants.RULE_VAR_AGE_LIMIT]);
+						if (0 <= kvp.Value.AgeLimit && kvp.Value.AgeLimit < YlConstants.AGE_LIMIT_CERO_Z && 0 <= dicAgeLimt && dicAgeLimt < YlConstants.AGE_LIMIT_CERO_Z
+								|| kvp.Value.AgeLimit == YlConstants.AGE_LIMIT_CERO_Z && dicAgeLimt == YlConstants.AGE_LIMIT_CERO_Z)
+						{
+							songsWithAgeLimit.Add(kvp.Key);
+						}
+					}
+					if (songsWithAgeLimit.Any())
+					{
+						songs = songsWithAgeLimit;
+					}
 				}
 			}
 

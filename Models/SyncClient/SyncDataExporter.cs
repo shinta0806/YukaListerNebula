@@ -22,7 +22,7 @@ using YukaLister.Models.Database.Sequences;
 using YukaLister.Models.DatabaseContexts;
 using YukaLister.Models.SharedMisc;
 
-namespace YukaLister.Models.DatabaseAssist
+namespace YukaLister.Models.SyncClient
 {
 	public class SyncDataExporter : SyncDataIo
 	{

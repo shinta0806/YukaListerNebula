@@ -23,11 +23,12 @@ using YukaLister.Models.Database;
 using YukaLister.Models.Database.Aliases;
 using YukaLister.Models.Database.Masters;
 using YukaLister.Models.Database.Sequences;
+using YukaLister.Models.DatabaseAssist;
 using YukaLister.Models.SharedMisc;
 using YukaLister.Models.YukaListerModels;
 using YukaLister.ViewModels;
 
-namespace YukaLister.Models.DatabaseAssist
+namespace YukaLister.Models.SyncClient
 {
 	public class SyncDataImporter : SyncDataIo
 	{

@@ -19,9 +19,9 @@ using System.IO.Compression;
 using System.Text;
 using System.Threading;
 
-using YukaLister.Models.DatabaseAssist;
 using YukaLister.Models.DatabaseContexts;
 using YukaLister.Models.SharedMisc;
+using YukaLister.Models.SyncClient;
 using YukaLister.Models.YukaListerModels;
 using YukaLister.ViewModels;
 

@@ -165,7 +165,7 @@ namespace YukaLister.Models.Database
 
 		// 年齢制限（○歳以上対象）
 		[Column(TTieUp.FIELD_NAME_TIE_UP_AGE_LIMIT)]
-		public Int32 TieUpAgeLimit { get; set; }
+		public Int32 TieUpAgeLimit { get; set; } = YlConstants.AGE_LIMIT_DEFAULT;
 
 		// --------------------------------------------------------------------
 		// TTieUpGroup
