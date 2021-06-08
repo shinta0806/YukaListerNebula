@@ -471,7 +471,7 @@ namespace YukaLister.Models.OutputWriters
 		// --------------------------------------------------------------------
 		private static String ZoneName(Boolean isAdult)
 		{
-			return isAdult ? "アダルト " : "一般 ";
+			return isAdult ? "成人向け " : "一般 ";
 		}
 
 		// ====================================================================
