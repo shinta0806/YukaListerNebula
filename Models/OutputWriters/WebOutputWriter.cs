@@ -846,7 +846,7 @@ namespace YukaLister.Models.OutputWriters
 			// その他以外
 			for (Int32 i = 0; i < indexPage.Children.Count; i++)
 			{
-				if (indexPage.Children[i].Name == YlConstants.GROUP_MISC)
+				if (indexPage.Children[i].Name == YlConstants.HEAD_MISC)
 				{
 					miscGroup = indexPage.Children[i];
 					continue;
