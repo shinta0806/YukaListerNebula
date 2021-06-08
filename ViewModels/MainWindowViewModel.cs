@@ -774,6 +774,10 @@ namespace YukaLister.ViewModels
 				catch
 				{
 				}
+
+				YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, "終了しました：" + YlConstants.APP_NAME_J + " "
+						+ YlConstants.APP_VER + " --------------------");
+
 				_isDisposed = true;
 			}
 			catch (Exception excep)
