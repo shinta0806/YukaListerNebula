@@ -574,10 +574,10 @@ namespace YukaLister.Models.SharedMisc
 		public static readonly String[] FOLDER_SETTINGS_STATUS_LABELS = { "無", "有", "親に有", "未確認" };
 
 		// グループの「その他」
-		public const String GROUP_MISC = "その他";
+		public const String GROUP_MISC = "未分類";
 
 		// 頭文字の「その他」
-		public const String HEAD_MISC = GROUP_MISC;
+		public const String HEAD_MISC = "その他";
 
 		// タイアップグループ名を表示する際に末尾に付与する文字列
 		public const String TIE_UP_GROUP_SUFFIX = "シリーズ";

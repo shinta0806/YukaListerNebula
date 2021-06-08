@@ -133,7 +133,25 @@ namespace YukaLister.Models.DatabaseAssist
 					}
 				}
 
-				// 年齢制限で絞り込み
+				// タイアップのカテゴリーで絞り込み
+				if (songs.Count > 1 && dicByFile[YlConstants.RULE_VAR_CATEGORY] != null)
+				{
+					List<TSong> songsWithTieUpCategory = new();
+					foreach (KeyValuePair<TSong, TTieUp> kvp in songsAndTieUps)
+					{
+						TCategory? category = DbCommon.SelectBaseById(_categories, kvp.Value.CategoryId);
+						if (category != null && category.Name == dicByFile[YlConstants.RULE_VAR_CATEGORY])
+						{
+							songsWithTieUpCategory.Add(kvp.Key);
+						}
+					}
+					if (songsWithTieUpCategory.Any())
+					{
+						songs = songsWithTieUpCategory;
+					}
+				}
+
+				// タイアップの年齢制限で絞り込み
 				if (songs.Count > 1 && dicByFile[YlConstants.RULE_VAR_AGE_LIMIT] != null)
 				{
 					Int32 dicAgeLimt = Common.StringToInt32(dicByFile[YlConstants.RULE_VAR_AGE_LIMIT]);
@@ -153,7 +171,7 @@ namespace YukaLister.Models.DatabaseAssist
 				}
 			}
 
-			// カテゴリーで絞り込み
+			// 楽曲のカテゴリーで絞り込み
 			if (songs.Count > 1 && dicByFile[YlConstants.RULE_VAR_CATEGORY] != null)
 			{
 				List<TSong> songsWithCategory = new();
