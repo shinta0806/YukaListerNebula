@@ -348,7 +348,8 @@ namespace YukaLister.ViewModels.SearchMasterWindowViewModels
 				}
 				else
 				{
-					return String.Compare(lhs.Name, rhs.Name, true);
+					// 大文字小文字は区別するが、"A～" の後ろにすべて "a～" が来るわけではなく、きちんと "AA", "Aa", "AB", "Ab" のように並べてくれる模様
+					return String.Compare(lhs.Name, rhs.Name);
 				}
 			}
 		}
@@ -407,7 +408,7 @@ namespace YukaLister.ViewModels.SearchMasterWindowViewModels
 				// ソート済みのため簡単に検出できるため、DbCommon.SetAvoidSameName() よりも高速と思う
 				for (Int32 i = 1; i < results.Count; i++)
 				{
-					if (results[i].Name == results[i - 1].Name)
+					if (String.Compare(results[i].Name, results[i - 1].Name, true) == 0)
 					{
 						results[i].AvoidSameName = true;
 						results[i - 1].AvoidSameName = true;

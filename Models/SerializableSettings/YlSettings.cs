@@ -49,6 +49,7 @@ namespace YukaLister.Models.SerializableSettings
 		public Int32 WebServerPort { get; set; } = DEFAULT_WEB_SERVER_PORT;
 
 		// ゆかり用のさらなる検索支援データを出力するか
+		// ゆかり側が対応するまでの暫定オプション
 		public Boolean OutputAdditionalYukariAssist { get; set; } = true;
 
 		// サムネイルを作成する動画の位置 [S]
