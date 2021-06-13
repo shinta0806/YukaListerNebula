@@ -53,7 +53,7 @@
         </StackPanel>
         <DockPanel DockPanel.Dock="Bottom" Margin="20,0,20,20" LastChildFill="False">
             <Button Content="詳細 (_D)" Width="140" Height="Auto" ToolTip="問題の詳細を確認・編集" Command="{Binding ButtonEditDetailClickedCommand}"/>
-            <Button Content="閉じる (_C)" Style="{StaticResource MaterialDesignRaisedLightButton}" Width="100" Height="Auto" IsCancel="True" DockPanel.Dock="Right" Cursor="Hand"/>
+            <Button Content="閉じる (_C)" Style="{StaticResource MaterialDesignRaisedLightButton}" Width="100" Height="Auto" IsCancel="True" DockPanel.Dock="Right" />
         </DockPanel>
         <DataGrid x:Name="DataGridList" Margin="20,10,20,20" AutoGenerateColumns="False" CanUserReorderColumns="False" SelectionMode="Single" IsReadOnly="True" DockPanel.Dock="Top" 
                   ItemsSource="{Binding ReportsVisible}" SelectedItem="{Binding SelectedReport}"

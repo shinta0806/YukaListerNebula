@@ -159,8 +159,8 @@
                         <Label Content="設定のバックアップ（ファイルに保存）"/>
                     </StackPanel>
                     <StackPanel Margin="0,10,20,0">
-                        <Button Height="Auto" Content="設定のバックアップ(_B)" Style="{StaticResource MaterialDesignRaisedLightButton}" Margin="0" Width="210" DockPanel.Dock="Right" HorizontalAlignment="Right" Command="{Binding ButtonBackupClickedCommand}"/>
-                        <Button Visibility="Hidden" Height="Auto" Content="設定の復元(_R)" Style="{StaticResource MaterialDesignRaisedLightButton}" Margin="0,10,0,0" Width="210" DockPanel.Dock="Right" HorizontalAlignment="Right" Command="{Binding ButtonRestoreClickedCommand}"/>
+                        <Button Height="Auto" Content="設定のバックアップ(_B)" Style="{StaticResource MaterialDesignRaisedLightButton}" Margin="0" Width="210" DockPanel.Dock="Right" HorizontalAlignment="Right" Command="{Binding ButtonBackupClickedCommand}" />
+                        <Button Height="Auto" Content="設定の復元(_R)" Style="{StaticResource MaterialDesignRaisedLightButton}" Margin="0,10,0,0" Width="210" DockPanel.Dock="Right" HorizontalAlignment="Right" Command="{Binding ButtonRestoreClickedCommand}" />
                     </StackPanel>
                 </StackPanel>
             </TabItem>
@@ -169,7 +169,7 @@
                     <Label Content="ファイルから楽曲情報データベースをインポートする (_M)" Margin="20,15,20,0" Target="{Binding ElementName=TextBoxImportYukaListerPath}" />
                     <DockPanel Margin="40,0,20,0">
                         <Button Height="Auto" Content="参照 (_1)" Style="{StaticResource MaterialDesignRaisedLightButton}" Margin="0" DockPanel.Dock="Right" Width="100" Command="{Binding ButtonBrowseImportYukaListerClickedCommand}"/>
-                        <TextBox Name="TextBoxImportYukaListerPath" Text="{Binding ImportYukaListerPath}" ToolTip="インポート元ファイル" ToolTipService.ShowDuration="{x:Static msm:YlConstants.TOOL_TIP_LONG_DURATION}" materialDesign:HintAssist.Hint="{Binding ElementName=TextBoxImportYukaListerPath, Path=ToolTip}" VerticalAlignment="Center" Margin="0,0,10,0" Cursor="IBeam"/>
+                        <TextBox Name="TextBoxImportYukaListerPath" Text="{Binding ImportYukaListerPath}" ToolTip="インポート元ファイル" ToolTipService.ShowDuration="{x:Static msm:YlConstants.TOOL_TIP_LONG_DURATION}" materialDesign:HintAssist.Hint="{Binding ElementName=TextBoxImportYukaListerPath, Path=ToolTip}" VerticalAlignment="Center" Margin="0,0,10,0" />
                     </DockPanel>
                     <DockPanel Margin="40,10,20,0">
                         <StackPanel>

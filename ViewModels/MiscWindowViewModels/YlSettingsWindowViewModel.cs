@@ -866,7 +866,59 @@ namespace YukaLister.ViewModels.MiscWindowViewModels
 			}
 			catch (Exception excep)
 			{
-				YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(TraceEventType.Error, "ログ保存時エラー：\n" + excep.Message);
+				YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(TraceEventType.Error, "設定のバックアップボタンクリック時エラー：\n" + excep.Message);
+				YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, "　スタックトレース：\n" + excep.StackTrace);
+			}
+		}
+		#endregion
+
+		#region 設定の復元ボタンの制御
+
+		private ViewModelCommand? _buttonRestoreClickedCommand;
+
+		public ViewModelCommand ButtonRestoreClickedCommand
+		{
+			get
+			{
+				if (_buttonRestoreClickedCommand == null)
+				{
+					_buttonRestoreClickedCommand = new ViewModelCommand(ButtonRestoreClicked);
+				}
+				return _buttonRestoreClickedCommand;
+			}
+		}
+
+		public void ButtonRestoreClicked()
+		{
+			try
+			{
+				String? path = PathByOpeningDialog("設定の復元", YlConstants.DIALOG_FILTER_SETTINGS_ARCHIVE, null);
+				if (path == null)
+				{
+					return;
+				}
+
+				if (MessageBox.Show("現在の設定は破棄され、" + Path.GetFileName(path) + " の設定に変更されます。\nよろしいですか？", "確認", MessageBoxButton.YesNo,
+						MessageBoxImage.Exclamation) != MessageBoxResult.Yes)
+				{
+					return;
+				}
+
+				// 解凍
+				String unzipFolder = YlCommon.TempPath() + "\\";
+				Directory.CreateDirectory(unzipFolder);
+				ZipFile.ExtractToDirectory(path, unzipFolder);
+
+				// 設定更新
+				String settingsFilePath = unzipFolder + Path.GetFileName(Path.GetDirectoryName(Common.UserAppDataFolderPath())) + "\\" + Path.GetFileName(YlSettings.YlSettingsPath());
+				File.Copy(settingsFilePath, YlSettings.YlSettingsPath(), true);
+				YukaListerModel.Instance.EnvModel.YlSettings.Load();
+				SettingsToProperties();
+				YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(TraceEventType.Information, "設定を復元しました。");
+			}
+			catch (Exception excep)
+			{
+				YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(TraceEventType.Error, "設定の復元ボタンクリック時エラー：\n" + excep.Message);
 				YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, "　スタックトレース：\n" + excep.StackTrace);
 			}
 		}

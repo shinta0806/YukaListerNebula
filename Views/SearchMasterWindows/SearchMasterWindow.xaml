@@ -64,7 +64,7 @@
         </DataGrid>
         <StackPanel Orientation="Horizontal" FlowDirection="RightToLeft" Margin="20">
             <Button Content="キャンセル" Height="Auto" Style="{StaticResource MaterialDesignRaisedLightButton}" IsCancel="True" Width="100" Padding="4"/>
-            <Button Content="(選択 (_E" Margin="20,0,0,0" Height="Auto" IsDefault="True" Width="100" Command="{Binding ButtonSelectClickedCommand}" Cursor="Hand" />
+            <Button Content="(選択 (_E" Margin="20,0,0,0" Height="Auto" IsDefault="True" Width="100" Command="{Binding ButtonSelectClickedCommand}" />
         </StackPanel>
     </StackPanel>
 

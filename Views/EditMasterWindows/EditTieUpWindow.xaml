@@ -157,13 +157,13 @@
             <TextBox Text="{Binding ReleaseDay}" Grid.Column="11" Margin="0" Grid.Row="1" VerticalAlignment="Center" HorizontalContentAlignment="Right"/>
             <Label Content="日" Margin="0" Grid.Row="1" Grid.Column="12"/>
             <Label Content="検索ワード (_W)：" Target="{Binding ElementName=TextBoxKeyword}" Margin="0" Grid.Row="2" Grid.Column="6" HorizontalAlignment="Right"/>
-            <TextBox Name="TextBoxKeyword" Text="{Binding Keyword}" ToolTip="{Binding KeywordHint}" ToolTipService.ShowDuration="{x:Static msm:YlConstants.TOOL_TIP_LONG_DURATION}" materialDesign:HintAssist.Hint="{Binding ElementName=TextBoxKeyword, Path=ToolTip}" Grid.Column="7" Margin="0" Grid.Row="2" VerticalAlignment="Center" Grid.ColumnSpan="6" Cursor="IBeam" />
+            <TextBox Name="TextBoxKeyword" Text="{Binding Keyword}" ToolTip="{Binding KeywordHint}" ToolTipService.ShowDuration="{x:Static msm:YlConstants.TOOL_TIP_LONG_DURATION}" materialDesign:HintAssist.Hint="{Binding ElementName=TextBoxKeyword, Path=ToolTip}" Grid.Column="7" Margin="0" Grid.Row="2" VerticalAlignment="Center" Grid.ColumnSpan="6" />
         </Grid>
         <Border BorderBrush="{DynamicResource {x:Static SystemColors.ControlLightBrushKey}}" BorderThickness="1" Height="3" Margin="0,20,0,0"/>
         <DockPanel Margin="20" LastChildFill="False" >
             <Button Content="削除 (_D)" Style="{StaticResource MaterialDesignRaisedLightButton}" Width="100" Height="Auto" Padding="4" Command="{Binding ButtonDeleteClickedCommand}" />
             <Button Content="キャンセル" Style="{StaticResource MaterialDesignRaisedLightButton}" IsCancel="True" Width="100" Height="Auto" Padding="4" DockPanel.Dock="Right"/>
-            <Button Content="_OK" Height="Auto" IsDefault="True" Width="100" Command="{Binding ButtonOkClickedCommand}" sb:IsFocusedAttachedBehavior.IsFocused="{Binding IsButtonOkFocused}" DockPanel.Dock="Right" Margin="0,0,20,0" Cursor="Hand"/>
+            <Button Content="_OK" Height="Auto" IsDefault="True" Width="100" Command="{Binding ButtonOkClickedCommand}" sb:IsFocusedAttachedBehavior.IsFocused="{Binding IsButtonOkFocused}" DockPanel.Dock="Right" Margin="0,0,20,0" />
         </DockPanel>
     </StackPanel>
 

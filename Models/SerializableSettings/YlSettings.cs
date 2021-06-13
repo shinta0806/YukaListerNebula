@@ -156,6 +156,18 @@ namespace YukaLister.Models.SerializableSettings
 		public DateTime RssCheckDate { get; set; }
 
 		// ====================================================================
+		// public static メンバー関数
+		// ====================================================================
+
+		// --------------------------------------------------------------------
+		// 保存パス
+		// --------------------------------------------------------------------
+		public static String YlSettingsPath()
+		{
+			return Common.UserAppDataFolderPath() + nameof(YlSettings) + Common.FILE_EXT_CONFIG;
+		}
+
+		// ====================================================================
 		// public メンバー関数
 		// ====================================================================
 
@@ -287,7 +299,7 @@ namespace YukaLister.Models.SerializableSettings
 		// --------------------------------------------------------------------
 		protected override String SettingsPath()
 		{
-			return Common.UserAppDataFolderPath() + nameof(YlSettings) + Common.FILE_EXT_CONFIG;
+			return YlSettingsPath();
 		}
 
 		// ====================================================================
