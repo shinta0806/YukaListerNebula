@@ -400,7 +400,7 @@ namespace YukaLister.ViewModels.EditMasterWindowViewModels
 		protected virtual void CheckInput()
 		{
 			String? normalizedName = YlCommon.NormalizeDbString(Name);
-			(String? normalizedRuby, Boolean allRuby) = YlCommon.NormalizeDbRubyForMusicInfo(Ruby);
+			(String? normalizedRuby, Boolean allRuby, _) = YlCommon.NormalizeDbRubyForMusicInfo(Ruby);
 			String? normalizedKeyword = YlCommon.NormalizeDbString(Keyword);
 
 			// 名前が入力されているか
@@ -517,8 +517,8 @@ namespace YukaLister.ViewModels.EditMasterWindowViewModels
 
 			// IRcMaster
 			master.Name = YlCommon.NormalizeDbString(Name);
-			(master.Ruby, _) = YlCommon.NormalizeDbRubyForMusicInfo(Ruby);
-			(master.RubyForSearch, _) = YlCommon.NormalizeDbRubyForSearch(Ruby);
+			(master.Ruby, _, _) = YlCommon.NormalizeDbRubyForMusicInfo(Ruby);
+			(master.RubyForSearch, _, _) = YlCommon.NormalizeDbRubyForSearch(Ruby);
 
 			// 検索ワードはカンマごとに正規化する
 			Debug.Assert(master.Keyword == null, "PropertiesToRecord() master.Keyword already set");
@@ -725,11 +725,11 @@ namespace YukaLister.ViewModels.EditMasterWindowViewModels
 		private void SetRubyFromName()
 		{
 			using RubyReconverter rubyReconverter = new();
-			(String? autoRuby, _) = YlCommon.NormalizeDbRubyForMusicInfo(rubyReconverter.Reconvert(Name));
-			if (!String.IsNullOrEmpty(autoRuby))
+			(String? autoRuby, _, Boolean headRuby) = YlCommon.NormalizeDbRubyForMusicInfo(rubyReconverter.Reconvert(Name));
+			if (!String.IsNullOrEmpty(autoRuby) && headRuby)
 			{
+				// 先頭がフリガナの場合のみ採用（先頭がフリガナでなかった場合、ユーザーが見逃してフリガナとして保存されてしまった場合、頭文字に影響が出るため）
 				Ruby = autoRuby;
-				//Debug.WriteLine("SetRubyFromName() " + autoRuby);
 			}
 		}
 

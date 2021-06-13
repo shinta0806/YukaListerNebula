@@ -10,12 +10,8 @@
 // ----------------------------------------------------------------------------
 
 using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
 using System.Runtime.InteropServices;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace YukaLister.Models.SharedMisc
 {
@@ -42,6 +38,10 @@ namespace YukaLister.Models.SharedMisc
 						_ime = null;
 					}
 				}
+				else
+				{
+					Debug.WriteLine("RubyReconverter() _ime is null");
+				}
 			}
 		}
 
@@ -61,19 +61,19 @@ namespace YukaLister.Models.SharedMisc
 		// --------------------------------------------------------------------
 		// 漢字をひらがなに変換
 		// --------------------------------------------------------------------
-		public String Reconvert(String? kanji)
+		public String? Reconvert(String? kanji)
 		{
 			if (_ime == null || String.IsNullOrEmpty(kanji))
 			{
-				return String.Empty;
+				return null;
 			}
 
 			if (_ime.GetPhonetic(kanji, 1, -1, out String hiragana) != 0)
 			{
-				return String.Empty;
+				return null;
 			}
 
-			Debug.WriteLine("Reconvert() " + hiragana);
+			//Debug.WriteLine("Reconvert() " + hiragana);
 			return hiragana;
 		}
 
@@ -111,7 +111,7 @@ namespace YukaLister.Models.SharedMisc
 		// ====================================================================
 
 		// IME
-		private IFELanguage2? _ime;
+		private readonly IFELanguage2? _ime;
 
 		// Dispose フラグ
 		private Boolean _isDisposed;

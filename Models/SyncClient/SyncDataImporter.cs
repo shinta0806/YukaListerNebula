@@ -167,10 +167,10 @@ namespace YukaLister.Models.SyncClient
 			SetBaseBySyncData(master, fieldPrefix, syncOneData);
 
 			master.Name = YlCommon.NormalizeDbString(syncOneData[fieldPrefix + YlConstants.FIELD_SUFFIX_NAME]);
-			(master.Ruby, _) = YlCommon.NormalizeDbRubyForMusicInfo(syncOneData[fieldPrefix + YlConstants.FIELD_SUFFIX_RUBY]);
-			(master.RubyForSearch, _) = YlCommon.NormalizeDbRubyForSearch(syncOneData[fieldPrefix + YlConstants.FIELD_SUFFIX_RUBY_FOR_SEARCH]);
+			(master.Ruby, _, _) = YlCommon.NormalizeDbRubyForMusicInfo(syncOneData[fieldPrefix + YlConstants.FIELD_SUFFIX_RUBY]);
+			(master.RubyForSearch, _, _) = YlCommon.NormalizeDbRubyForSearch(syncOneData[fieldPrefix + YlConstants.FIELD_SUFFIX_RUBY_FOR_SEARCH]);
 			master.Keyword = YlCommon.NormalizeDbString(syncOneData[fieldPrefix + YlConstants.FIELD_SUFFIX_KEYWORD]);
-			(master.KeywordRubyForSearch, _) = YlCommon.NormalizeDbRubyForSearch(syncOneData[fieldPrefix + YlConstants.FIELD_SUFFIX_KEYWORD_RUBY_FOR_SEARCH]);
+			(master.KeywordRubyForSearch, _, _) = YlCommon.NormalizeDbRubyForSearch(syncOneData[fieldPrefix + YlConstants.FIELD_SUFFIX_KEYWORD_RUBY_FOR_SEARCH]);
 
 			if (master is TSong song)
 			{
