@@ -58,7 +58,7 @@
         </StackPanel>
         <StackPanel Orientation="Horizontal" Margin="20,20,20,0">
             <Label Content="{Binding NameCaption}" Target="{Binding ElementName=TextBoxName}" Width="100" HorizontalContentAlignment="Right"/>
-            <TextBox Name="TextBoxName" Text="{Binding Name}" ToolTip="{Binding NameHint}" ToolTipService.ShowDuration="{x:Static msm:YlConstants.TOOL_TIP_LONG_DURATION}" materialDesign:HintAssist.Hint="{Binding ElementName=TextBoxName, Path=ToolTip}" VerticalAlignment="Center" Width="300"/>
+            <TextBox Name="TextBoxName" Text="{Binding Name}" ToolTip="{Binding NameHint}" ToolTipService.ShowDuration="{x:Static msm:YlConstants.TOOL_TIP_LONG_DURATION}" materialDesign:HintAssist.Hint="{Binding ElementName=TextBoxName, Path=ToolTip}" VerticalAlignment="Center" Width="300" />
         </StackPanel>
         <Border BorderBrush="{DynamicResource {x:Static SystemColors.ControlLightBrushKey}}" BorderThickness="1" Height="3" Margin="0,20,0,0"/>
         <DockPanel Margin="20" LastChildFill="False" >

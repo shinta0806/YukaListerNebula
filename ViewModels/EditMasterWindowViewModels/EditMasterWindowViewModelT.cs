@@ -338,6 +338,8 @@ namespace YukaLister.ViewModels.EditMasterWindowViewModels
 
 				// ヒント
 				KeywordHint = "キーワード、コメント、略称など。複数入力する際は、半角カンマ「 , 」で区切って下さい。";
+
+				_initialized = true;
 			}
 			catch (Exception excep)
 			{
@@ -533,8 +535,12 @@ namespace YukaLister.ViewModels.EditMasterWindowViewModels
 		// --------------------------------------------------------------------
 		protected virtual void RecordToProperties(T master)
 		{
-			Ruby = master.Ruby;
 			Name = master.Name;
+			Ruby = master.Ruby;
+			if (String.IsNullOrEmpty(Ruby))
+			{
+				SetRubyFromName();
+			}
 			Keyword = master.Keyword;
 		}
 
@@ -600,16 +606,28 @@ namespace YukaLister.ViewModels.EditMasterWindowViewModels
 		}
 
 		// ====================================================================
+		// private メンバー変数
+		// ====================================================================
+
+		// 初期化が完了した
+		private Boolean _initialized;
+
+		// ====================================================================
 		// private メンバー関数
 		// ====================================================================
 
 		// --------------------------------------------------------------------
 		// イベントハンドラー：Name が変更された
+		// ID 切り替えでは Name は変わらない前提（変わるのであればフリガナ更新はまずい）
 		// --------------------------------------------------------------------
 		private void NameChanged()
 		{
 			try
 			{
+				if (!_initialized)
+				{
+					return;
+				}
 				if (SelectedMaster == null)
 				{
 					return;
@@ -667,6 +685,9 @@ namespace YukaLister.ViewModels.EditMasterWindowViewModels
 
 					Masters.Add(dup);
 				}
+
+				// フリガナ更新
+				SetRubyFromName();
 			}
 			catch (Exception excep)
 			{
@@ -694,6 +715,21 @@ namespace YukaLister.ViewModels.EditMasterWindowViewModels
 			{
 				YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(TraceEventType.Error, "SelectedMaster 変更時エラー：\n" + excep.Message);
 				YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, "　スタックトレース：\n" + excep.StackTrace);
+			}
+		}
+
+
+		// --------------------------------------------------------------------
+		// 名前からフリガナを取得して設定
+		// --------------------------------------------------------------------
+		private void SetRubyFromName()
+		{
+			using RubyReconverter rubyReconverter = new();
+			(String? autoRuby, _) = YlCommon.NormalizeDbRubyForMusicInfo(rubyReconverter.Reconvert(Name));
+			if (!String.IsNullOrEmpty(autoRuby))
+			{
+				Ruby = autoRuby;
+				//Debug.WriteLine("SetRubyFromName() " + autoRuby);
 			}
 		}
 
