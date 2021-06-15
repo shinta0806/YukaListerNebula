@@ -1476,20 +1476,29 @@ namespace YukaLister.Models.OutputWriters
 		// --------------------------------------------------------------------
 		private List<QrFoundAndPerson> GetQrFoundAndPersons<T>(DbSet<T> records, Boolean isAdult) where T : class, IRcSequence
 		{
-			// ToDo: JOIN したほうが速いかもしれない
-			IQueryable<TFound> founds = _founds.Where(x => x.TieUpName != null && x.SongId != null
-					&& (isAdult ? x.TieUpAgeLimit >= YlConstants.AGE_LIMIT_CERO_Z : x.TieUpAgeLimit < YlConstants.AGE_LIMIT_CERO_Z));
-			List<QrFoundAndPerson> queryResult = new(founds.Count());
-			foreach (TFound found in founds)
+			var joined = _founds.Join(records, f => f.SongId, r => r.Id, (f, r) => new
 			{
-				List<TPerson> people = DbCommon.SelectSequencedPeopleBySongId(records, _peopleInMemory, found.SongId!);
-				foreach (TPerson person in people)
-				{
-					queryResult.Add(new(found, person));
-				}
-			}
-			return queryResult.OrderBy(x => x.Person.Ruby).ThenBy(x => x.Person.Name).ThenBy(x => x.Found.Head).ThenBy(x => x.Found.TieUpRuby).
+				found = f,
+				sequence = r,
+			}).Where(x => !x.sequence.Invalid)
+			.Join(_peopleInMemory, m => m.sequence.LinkId, p => p.Id, (m, p) => new
+			{
+				Found = m.found,
+				Person = p,
+			})
+			.Where(x => x.Found.TieUpName != null && x.Found.SongId != null
+					&& (isAdult ? x.Found.TieUpAgeLimit >= YlConstants.AGE_LIMIT_CERO_Z : x.Found.TieUpAgeLimit < YlConstants.AGE_LIMIT_CERO_Z))
+			.OrderBy(x => x.Person.Ruby).ThenBy(x => x.Person.Name).ThenBy(x => x.Found.Head).ThenBy(x => x.Found.TieUpRuby).
 					ThenBy(x => x.Found.TieUpName).ThenBy(x => x.Found.SongRuby).ThenBy(x => x.Found.SongName).ToList();
+
+			List<QrFoundAndPerson> queryResult = new(joined.Count());
+			foreach (var join in joined)
+			{
+				queryResult.Add(new QrFoundAndPerson(join.Found, join.Person));
+			}
+
+			//YukaListerModel.Instance.EnvModel.LogWriter.LogMessage(Common.TRACE_EVENT_TYPE_STATUS, "GetQrFoundAndPersons() num: " + queryResult.Count);
+			return queryResult;
 		}
 
 		// --------------------------------------------------------------------

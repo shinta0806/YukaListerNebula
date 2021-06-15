@@ -691,11 +691,6 @@ namespace YukaLister.ViewModels
 				_timerUpdateUi.Tick += new EventHandler(TimerUpdateUi_Tick);
 				_timerUpdateUi.Start();
 
-#if DEBUGz
-				var a = CsvManager.CsvStringToList("hoge, fuga ,\"foo\",bar,yooo");
-				var b = CsvManager.ListToCsvString(a, "\n");
-#endif
-
 				// 時間がかかるかもしれない処理を非同期で実行
 				await AutoTargetAllDrivesAsync();
 
