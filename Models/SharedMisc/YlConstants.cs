@@ -80,7 +80,7 @@ namespace YukaLister.Models.SharedMisc
 	{
 		Queued,         // 待機
 		Running,        // 実行中
-		Error,          // エラー
+		//Error,          // エラー
 		DoneInMemory,   // 完了（インメモリデータベースへの反映）
 		DoneInDisk,     // 完了（ゆかり用データベースへの反映）
 	}
@@ -227,7 +227,7 @@ namespace YukaLister.Models.SharedMisc
 		public const String APP_ID = "YukaLister";
 		public const String APP_GENERATION = "NEBULA";
 		public const String APP_NAME_J = "ゆかりすたー " + APP_GENERATION + " ";
-		public const String APP_VER = "Ver 2.82 JOIN2";
+		public const String APP_VER = "Ver 2.83";
 		public const String COPYRIGHT_J = "Copyright (C) 2021 by SHINTA";
 
 		// --------------------------------------------------------------------

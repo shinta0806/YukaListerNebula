@@ -312,10 +312,12 @@ namespace YukaLister.Models.SharedMisc
 					}
 					brush = YlConstants.BRUSH_STATUS_RUNNING;
 					break;
+#if false
 				case FolderTaskStatus.Error:
 					label = "エラー";
 					brush = YlConstants.BRUSH_STATUS_ERROR;
 					break;
+#endif
 				case FolderTaskStatus.DoneInMemory:
 					switch (FolderTaskKind)
 					{

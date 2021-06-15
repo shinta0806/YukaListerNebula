@@ -290,6 +290,17 @@ namespace YukaLister.Models.YukaListerModels
 		}
 
 		// --------------------------------------------------------------------
+		// FolderTaskStatus が DoneInDisk 以外の TargetFolderInfo を取得
+		// --------------------------------------------------------------------
+		public TargetFolderInfo? UndoneTargetFolderInfo()
+		{
+			lock (_targetFolderInfos)
+			{
+				return _targetFolderInfos.FirstOrDefault(x => x.FolderTaskStatus != FolderTaskStatus.DoneInDisk);
+			}
+		}
+
+		// --------------------------------------------------------------------
 		// 親フォルダーの IsOpen をサブフォルダーの Visible に反映
 		// --------------------------------------------------------------------
 		public void UpdateTargetFolderInfosVisible(TargetFolderInfo parentFolder)

@@ -1476,6 +1476,9 @@ namespace YukaLister.Models.OutputWriters
 		// --------------------------------------------------------------------
 		private List<QrFoundAndPerson> GetQrFoundAndPersons<T>(DbSet<T> records, Boolean isAdult) where T : class, IRcSequence
 		{
+			// 2 つめの JOIN で new QrFoundAndPerson() すると実行時エラーとなる
+			// https://docs.microsoft.com/ja-jp/ef/core/querying/client-eval
+			// いったん無名を生成してから後で QrFoundAndPerson に格納する
 			var joined = _founds.Join(records, f => f.SongId, r => r.Id, (f, r) => new
 			{
 				found = f,
@@ -1491,13 +1494,12 @@ namespace YukaLister.Models.OutputWriters
 			.OrderBy(x => x.Person.Ruby).ThenBy(x => x.Person.Name).ThenBy(x => x.Found.Head).ThenBy(x => x.Found.TieUpRuby).
 					ThenBy(x => x.Found.TieUpName).ThenBy(x => x.Found.SongRuby).ThenBy(x => x.Found.SongName).ToList();
 
-			List<QrFoundAndPerson> queryResult = new(joined.Count());
+			List<QrFoundAndPerson> queryResult = new(joined.Count);
 			foreach (var join in joined)
 			{
 				queryResult.Add(new QrFoundAndPerson(join.Found, join.Person));
 			}
 
-			//YukaListerModel.Instance.EnvModel.LogWriter.LogMessage(Common.TRACE_EVENT_TYPE_STATUS, "GetQrFoundAndPersons() num: " + queryResult.Count);
 			return queryResult;
 		}
 

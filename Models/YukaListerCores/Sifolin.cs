@@ -68,6 +68,10 @@ namespace YukaLister.Models.YukaListerCores
 					{
 						continue;
 					}
+					if (YukaListerModel.Instance.ProjModel.UndoneTargetFolderInfo() == null)
+					{
+						continue;
+					}
 
 					YukaListerModel.Instance.EnvModel.YukaListerPartsStatus[(Int32)YukaListerPartsStatusIndex.Sifolin] = YukaListerStatus.Running;
 					YukaListerModel.Instance.EnvModel.LogWriter.LogMessage(Common.TRACE_EVENT_TYPE_STATUS, GetType().Name + " アクティブ化。");
