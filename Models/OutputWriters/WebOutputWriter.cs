@@ -1256,20 +1256,28 @@ namespace YukaLister.Models.OutputWriters
 			// タイアップ名とそれに紐付く楽曲群
 			Dictionary<String, List<TFound>> tieUpNamesAndTFounds = new();
 
-			// ToDo: JOIN したほうが速いかもしれない
-			IQueryable<TFound> founds = _founds.Where(x => x.TieUpName != null && x.SongId != null
-					&& (isAdult ? x.TieUpAgeLimit >= YlConstants.AGE_LIMIT_CERO_Z : x.TieUpAgeLimit < YlConstants.AGE_LIMIT_CERO_Z));
-			List<QrFoundAndTag> queryResult = new(founds.Count());
-			foreach (TFound found in founds)
+			var joined = _founds.Join(_tagSequencesInMemory, f => f.SongId, s => s.Id, (f, s) => new
 			{
-				List<TTag> tags = DbCommon.SelectSequencedTagsBySongId(_tagSequencesInMemory, _tagsInMemory, found.SongId!);
-				foreach (TTag tag in tags)
-				{
-					queryResult.Add(new(found, tag));
-				}
-			}
-			queryResult = queryResult.OrderBy(x => x.Tag.Ruby).ThenBy(x => x.Tag.Name).ThenBy(x => x.Found.Head).ThenBy(x => x.Found.TieUpRuby).
+				found = f,
+				sequence = s,
+			}).Where(x => !x.sequence.Invalid)
+			.Join(_tagsInMemory, m => m.sequence.LinkId, t => t.Id, (m, t) => new
+			{
+				Found = m.found,
+				Tag = t,
+			})
+			.Where(x => x.Found.TieUpName != null && x.Found.SongId != null
+					&& (((WebOutputSettings)OutputSettings).OutputHeadMisc ? true : x.Tag.Ruby != null)
+					&& (isAdult ? x.Found.TieUpAgeLimit >= YlConstants.AGE_LIMIT_CERO_Z : x.Found.TieUpAgeLimit < YlConstants.AGE_LIMIT_CERO_Z))
+			.OrderBy(x => x.Tag.Ruby).ThenBy(x => x.Tag.Name).ThenBy(x => x.Found.Head).ThenBy(x => x.Found.TieUpRuby).
 					ThenBy(x => x.Found.TieUpName).ThenBy(x => x.Found.SongRuby).ThenBy(x => x.Found.SongName).ToList();
+
+			List<QrFoundAndTag> queryResult = new(joined.Count);
+			foreach (var join in joined)
+			{
+				queryResult.Add(new QrFoundAndTag(join.Found, join.Tag));
+			}
+
 			QrFoundAndTag? prevRecord = null;
 			String? prevTagHead = null;
 
