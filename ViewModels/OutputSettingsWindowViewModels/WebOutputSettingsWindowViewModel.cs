@@ -55,13 +55,7 @@ namespace YukaLister.ViewModels.OutputSettingsWindowViewModels
 		public Boolean EnableNew
 		{
 			get => _enableNew;
-			set
-			{
-				if (RaisePropertyChangedIfSet(ref _enableNew, value))
-				{
-
-				}
-			}
+			set => RaisePropertyChangedIfSet(ref _enableNew, value);
 		}
 
 		// 新着の日数
@@ -70,6 +64,14 @@ namespace YukaLister.ViewModels.OutputSettingsWindowViewModels
 		{
 			get => _newDays;
 			set => RaisePropertyChangedIfSet(ref _newDays, value);
+		}
+
+		// 頭文字その他出力
+		private Boolean _outputHeadMisc;
+		public Boolean OutputHeadMisc
+		{
+			get => _outputHeadMisc;
+			set => RaisePropertyChangedIfSet(ref _outputHeadMisc, value);
 		}
 
 		#endregion
@@ -148,6 +150,9 @@ namespace YukaLister.ViewModels.OutputSettingsWindowViewModels
 			{
 				webOutputSettings.NewDays = Common.StringToInt32(NewDays);
 			}
+
+			// 頭文字その他出力
+			webOutputSettings.OutputHeadMisc = OutputHeadMisc;
 		}
 
 		// --------------------------------------------------------------------
@@ -167,6 +172,9 @@ namespace YukaLister.ViewModels.OutputSettingsWindowViewModels
 
 			// 新着の日数
 			NewDays = webOutputSettings.NewDays.ToString();
+
+			// 頭文字その他出力
+			OutputHeadMisc = webOutputSettings.OutputHeadMisc;
 		}
 	}
 }

@@ -660,6 +660,12 @@ namespace YukaLister.Models.OutputWriters
 			foreach (QrFoundAndPerson record in queryResult)
 			{
 				String personHead = PersonHead(record.Person);
+#if false
+				if (personHead == YlConstants.HEAD_MISC)
+				{
+					continue;
+				}
+#endif
 
 				if (prevRecord != null && prevPersonHead != null
 						&& (personHead != prevPersonHead || record.Person.Ruby != prevRecord.Person.Ruby || record.Person.Name != prevRecord.Person.Name))
@@ -797,6 +803,12 @@ namespace YukaLister.Models.OutputWriters
 			foreach (QrFoundAndPerson record in queryResult)
 			{
 				String personHead = PersonHead(record.Person);
+#if false
+				if (personHead == YlConstants.HEAD_MISC)
+				{
+					continue;
+				}
+#endif
 
 				if (prevRecord != null && prevPersonHead != null
 						&& (personHead != prevPersonHead || record.Person.Ruby != prevRecord.Person.Ruby || record.Person.Name != prevRecord.Person.Name))
@@ -1490,6 +1502,7 @@ namespace YukaLister.Models.OutputWriters
 				Person = p,
 			})
 			.Where(x => x.Found.TieUpName != null && x.Found.SongId != null
+					&& (((WebOutputSettings)OutputSettings).OutputHeadMisc ? true : x.Person.Ruby != null)
 					&& (isAdult ? x.Found.TieUpAgeLimit >= YlConstants.AGE_LIMIT_CERO_Z : x.Found.TieUpAgeLimit < YlConstants.AGE_LIMIT_CERO_Z))
 			.OrderBy(x => x.Person.Ruby).ThenBy(x => x.Person.Name).ThenBy(x => x.Found.Head).ThenBy(x => x.Found.TieUpRuby).
 					ThenBy(x => x.Found.TieUpName).ThenBy(x => x.Found.SongRuby).ThenBy(x => x.Found.SongName).ToList();
@@ -1500,6 +1513,10 @@ namespace YukaLister.Models.OutputWriters
 				queryResult.Add(new QrFoundAndPerson(join.Found, join.Person));
 			}
 
+#if false
+			YukaListerModel.Instance.EnvModel.LogWriter.LogMessage(TraceEventType.Information, "GetQrFoundAndPersons() num: " + queryResult.Count);
+			return new List<QrFoundAndPerson>();
+#endif
 			return queryResult;
 		}
 

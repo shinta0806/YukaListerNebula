@@ -43,6 +43,9 @@ namespace YukaLister.Models.OutputWriters
 		// NEW と見なす日数
 		public Int32 NewDays { get; set; }
 
+		// 頭文字「その他」を出力する
+		public Boolean OutputHeadMisc { get; set; }
+
 		// ====================================================================
 		// public メンバー関数
 		// ====================================================================

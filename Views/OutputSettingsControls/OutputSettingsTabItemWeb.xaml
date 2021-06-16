@@ -17,6 +17,7 @@
             <TextBox Text="{Binding NewDays}" IsEnabled="{Binding EnableNew}" Width="40" Margin="10,0,10,0" VerticalAlignment="Center" HorizontalContentAlignment="Right"/>
             <Label Content="日以内に更新されたファイルを NEW （新着）に記載する (_N)" Target="{Binding ElementName=CheckBoxEnableNew}" />
         </StackPanel>
+        <CheckBox Content="歌手別リスト等において、ひらがな以外の頭文字を「その他」として出力する (_M)" IsChecked="{Binding OutputHeadMisc}" Margin="0,10,0,0"/>
     </StackPanel>
 
 </UserControl>
