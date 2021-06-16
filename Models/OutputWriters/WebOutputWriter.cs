@@ -660,12 +660,6 @@ namespace YukaLister.Models.OutputWriters
 			foreach (QrFoundAndPerson record in queryResult)
 			{
 				String personHead = PersonHead(record.Person);
-#if false
-				if (personHead == YlConstants.HEAD_MISC)
-				{
-					continue;
-				}
-#endif
 
 				if (prevRecord != null && prevPersonHead != null
 						&& (personHead != prevPersonHead || record.Person.Ruby != prevRecord.Person.Ruby || record.Person.Name != prevRecord.Person.Name))
@@ -803,12 +797,6 @@ namespace YukaLister.Models.OutputWriters
 			foreach (QrFoundAndPerson record in queryResult)
 			{
 				String personHead = PersonHead(record.Person);
-#if false
-				if (personHead == YlConstants.HEAD_MISC)
-				{
-					continue;
-				}
-#endif
 
 				if (prevRecord != null && prevPersonHead != null
 						&& (personHead != prevPersonHead || record.Person.Ruby != prevRecord.Person.Ruby || record.Person.Name != prevRecord.Person.Name))
@@ -1347,20 +1335,28 @@ namespace YukaLister.Models.OutputWriters
 			// タイアップ名とそれに紐付く楽曲群
 			Dictionary<String, List<TFound>> tieUpNamesAndTFounds = new();
 
-			// ToDo: JOIN したほうが速いかもしれない
-			IQueryable<TFound> founds = _founds.Where(x => x.TieUpId != null && x.SongId != null
-					&& (isAdult ? x.TieUpAgeLimit >= YlConstants.AGE_LIMIT_CERO_Z : x.TieUpAgeLimit < YlConstants.AGE_LIMIT_CERO_Z));
-			List<QrFoundAndTieUpGroup> queryResult = new(founds.Count());
-			foreach (TFound found in founds)
+			var joined = _founds.Join(_tieUpGroupSequencesInMemory, f => f.TieUpId, s => s.Id, (f, s) => new
 			{
-				List<TTieUpGroup> tieUpGroups = DbCommon.SelectSequencedTieUpGroupsByTieUpId(_tieUpGroupSequencesInMemory, _tieUpGroupsInMemory, found.TieUpId!);
-				foreach (TTieUpGroup tieUpGroup in tieUpGroups)
-				{
-					queryResult.Add(new(found, tieUpGroup));
-				}
-			}
-			queryResult = queryResult.OrderBy(x => x.TieUpGroup.Ruby).ThenBy(x => x.TieUpGroup.Name).ThenBy(x => x.Found.Head).ThenBy(x => x.Found.TieUpRuby).
+				found = f,
+				sequence = s,
+			}).Where(x => !x.sequence.Invalid)
+			.Join(_tieUpGroupsInMemory, m => m.sequence.LinkId, g => g.Id, (m, g) => new
+			{
+				Found = m.found,
+				TieUpGroup = g,
+			})
+			.Where(x => x.Found.TieUpId != null && x.Found.SongId != null
+					&& (((WebOutputSettings)OutputSettings).OutputHeadMisc ? true : x.TieUpGroup.Ruby != null)
+					&& (isAdult ? x.Found.TieUpAgeLimit >= YlConstants.AGE_LIMIT_CERO_Z : x.Found.TieUpAgeLimit < YlConstants.AGE_LIMIT_CERO_Z))
+					.OrderBy(x => x.TieUpGroup.Ruby).ThenBy(x => x.TieUpGroup.Name).ThenBy(x => x.Found.Head).ThenBy(x => x.Found.TieUpRuby).
 					ThenBy(x => x.Found.TieUpName).ThenBy(x => x.Found.SongRuby).ThenBy(x => x.Found.SongName).ToList();
+
+			List<QrFoundAndTieUpGroup> queryResult = new(joined.Count);
+			foreach (var join in joined)
+			{
+				queryResult.Add(new QrFoundAndTieUpGroup(join.Found, join.TieUpGroup));
+			}
+
 			QrFoundAndTieUpGroup? prevRecord = null;
 			String? prevTieUpGroupHead = null;
 
