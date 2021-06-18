@@ -668,7 +668,8 @@ namespace YukaLister.ViewModels
 
 				// 動作状況
 				YukaListerModel.Instance.EnvModel.YukaListerPartsStatus[(Int32)YukaListerPartsStatusIndex.Startup] = YukaListerStatus.Running;
-				YukaListerModel.Instance.EnvModel.YukaListerPartsStatusMessage[(Int32)YukaListerPartsStatusIndex.Startup] = "前回のゆかり検索対象フォルダーを確認中...";
+				YukaListerModel.Instance.EnvModel.YukaListerPartsStatusMessage[(Int32)YukaListerPartsStatusIndex.Startup]
+						= YukaListerModel.Instance.EnvModel.YlSettings.AddFolderOnDeviceArrived ? "前回のゆかり検索対象フォルダーを確認中..." : "起動処理中...";
 				UpdateYukaListerEnvironmentStatus();
 
 				// ゆかり設定ファイル監視
