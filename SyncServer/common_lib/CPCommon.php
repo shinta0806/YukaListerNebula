@@ -97,6 +97,7 @@ define('HEADER_CONTENT_LENGTH', 'Content-Length: ');
 define('HEADER_CONTENT_TYPE', 'Content-Type: application/force-download');
 define('HEADLINE_TIME_FORMAT', 'H:i:s');
 define('INVALID_YEAR', 1900);
+define('INVALID_MJD', 15020);
 define('LOG_FILE_SIZE_MAX', 1*1024*1024);
 define('LOG_LEVEL_DEBUG', 0);	// デバッグ用ログ（DEBUG_FLAG オンの場合のみ）
 define('LOG_LEVEL_STATUS', 1);	// 動作状況（通常運転）

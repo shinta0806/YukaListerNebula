@@ -2282,6 +2282,8 @@ class	CPManager
 				.'<script src="jquery.tablesorter.min.js"></script>'
 				.'<script>'
 				.'$(document).ready(function() {';
+
+		// 直近 3 ヶ月
 		$prev_month = 0;
 		$num_months = 0;
 		while (($row = $stmt->fetch(PDO::FETCH_ASSOC)) !== FALSE ) {
@@ -2308,6 +2310,25 @@ class	CPManager
 		if ( $prev_month != 0 ) {
 			$this->view_num_commit_end_month($contents);
 		}
+
+		// 全期間累計
+		$this->view_num_commit_begin_month($header, $contents, INVALID_MJD);
+		$sql = 'SELECT '.FIELD_NAME_ACCOUNT_UID.', '.FIELD_NAME_ACCOUNT_NAME
+				.', SUM('.FIELD_NAME_STATISTICS_ACCEPTS.')'.', SUM('.FIELD_NAME_STATISTICS_REJECTS.')'.', SUM('.FIELD_NAME_STATISTICS_BYTES.')'
+				.' FROM '.TABLE_NAME_STATISTICS.' LEFT JOIN '.TABLE_NAME_ACCOUNT
+				.' ON '.TABLE_NAME_STATISTICS.'.'.FIELD_NAME_STATISTICS_UID.' = '.TABLE_NAME_ACCOUNT.'.'.FIELD_NAME_ACCOUNT_UID
+				.' GROUP BY '.FIELD_NAME_ACCOUNT_UID.';';
+		$stmt = $pdo->query($sql);
+		while (($row = $stmt->fetch(PDO::FETCH_ASSOC)) !== FALSE ) {
+			$contents .= '<tr><td>'.$row[FIELD_NAME_ACCOUNT_UID].'</td>'
+					.'<td>'.$row[FIELD_NAME_ACCOUNT_NAME].'</td>'
+					.'<td>'.number_format($row['SUM('.FIELD_NAME_STATISTICS_ACCEPTS.')']).'</td>'
+					.'<td>'.number_format($row['SUM('.FIELD_NAME_STATISTICS_REJECTS.')']).'</td>'
+					.'<td>'.number_format($row['SUM('.FIELD_NAME_STATISTICS_BYTES.')']).'</td></tr>';
+		}
+		$stmt->closeCursor();
+		$this->view_num_commit_end_month($contents);
+
 		$header .= '} );'
 				.'</script>';
 	
@@ -2327,7 +2348,13 @@ class	CPManager
 	{
 		$month_date_time = modified_julian_date_to_date_time($month);
 		$header .= '$("#'.$month.'").tablesorter();';
-		$contents .= '<h3>'.$month_date_time->format('Y 年 m 月').'</h3>'
+		$contents .= '<h3>';
+		if($month == INVALID_MJD) {
+			$contents .= '全期間累計';
+		} else {
+			$contents .= $month_date_time->format('Y 年 m 月');
+		}
+		$contents .= '</h3>'
 				.'<table id="'.$month.'">'
 				.'<thead>'
 				.'<tr><th>番号</th><th>アカウント名</th><th>コミット数</th><th>競合数</th><th>通信量</th></tr>'
