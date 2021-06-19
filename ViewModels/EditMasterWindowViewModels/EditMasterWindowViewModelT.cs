@@ -725,7 +725,7 @@ namespace YukaLister.ViewModels.EditMasterWindowViewModels
 		private void SetRubyFromName()
 		{
 			using RubyReconverter rubyReconverter = new();
-			(String? autoRuby, _, Boolean headRuby) = YlCommon.NormalizeDbRubyForMusicInfo(rubyReconverter.Reconvert(Name));
+			(String? autoRuby, _, Boolean headRuby) = YlCommon.NormalizeDbRubyForMusicInfo(rubyReconverter.Reconvert(YlCommon.NormalizeDbString(Name)));
 			if (!String.IsNullOrEmpty(autoRuby) && headRuby)
 			{
 				// 先頭がフリガナの場合のみ採用（先頭がフリガナでなかった場合、ユーザーが見逃してフリガナとして保存されてしまった場合、頭文字に影響が出るため）
