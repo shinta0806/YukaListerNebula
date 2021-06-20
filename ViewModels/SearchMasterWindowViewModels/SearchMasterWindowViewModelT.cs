@@ -464,7 +464,7 @@ namespace YukaLister.ViewModels.SearchMasterWindowViewModels
 				return;
 			}
 
-			// ルビ
+			// フリガナ
 			(String? rubyForSearch, Boolean keywordIsRuby, _) = YlCommon.NormalizeDbRubyForSearch(normalizedKeyword);
 			if (!String.IsNullOrEmpty(rubyForSearch) && keywordIsRuby)
 			{
