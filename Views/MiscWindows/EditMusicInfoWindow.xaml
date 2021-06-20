@@ -68,7 +68,7 @@
         </StackPanel>
         <StackPanel Orientation="Horizontal" Margin="20,5,20,0">
             <Label Content="ファイル名：" Margin="0" HorizontalAlignment="Left"/>
-            <Label Margin="0" HorizontalAlignment="Left">
+            <Label Margin="0" HorizontalAlignment="Left" ToolTip="{Binding FolderName}" ToolTipService.ShowDuration="{x:Static msm:YlConstants.TOOL_TIP_LONG_DURATION}" >
                 <ContentPresenter  RecognizesAccessKey="False" Content="{Binding FileName}" ></ContentPresenter>
             </Label>
         </StackPanel>

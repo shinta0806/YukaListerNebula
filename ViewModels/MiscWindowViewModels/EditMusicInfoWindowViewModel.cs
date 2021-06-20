@@ -51,6 +51,7 @@ namespace YukaLister.ViewModels.MiscWindowViewModels
 
 			// 自動設定
 			FileName = Path.GetFileName(_filePath);
+			FolderName = Path.GetDirectoryName(_filePath) + "\\";
 		}
 
 		// --------------------------------------------------------------------
@@ -60,6 +61,7 @@ namespace YukaLister.ViewModels.MiscWindowViewModels
 		{
 			_filePath = String.Empty;
 			FileName = String.Empty;
+			FolderName = String.Empty;
 		}
 
 		// ====================================================================
@@ -72,6 +74,9 @@ namespace YukaLister.ViewModels.MiscWindowViewModels
 
 		// ファイル名（パス無し）
 		public String FileName { get; }
+
+		// フォルダー名
+		public String FolderName { get; }
 
 		// ファイル名から取得したタイアップ名
 		private String? _tieUpNameByFileName;
