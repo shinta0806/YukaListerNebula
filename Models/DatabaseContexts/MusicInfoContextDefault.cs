@@ -304,9 +304,9 @@ namespace YukaLister.Models.DatabaseContexts
 			categories.Add(CreateCategoryRecord(7, "ラジオ"));
 
 			// 主にタイアップの無い楽曲用
-			categories.Add(CreateCategoryRecord(101, "VOCALOID", "ボーカロイド"));
+			categories.Add(CreateCategoryRecord(101, YlConstants.CATEGORY_NAME_VOCALOID, "ボーカロイド"));
 			// 102 は欠番（旧：歌ってみた）
-			categories.Add(CreateCategoryRecord(103, "一般", "イッパン"));
+			categories.Add(CreateCategoryRecord(103, YlConstants.CATEGORY_NAME_GENERAL, "イッパン"));
 
 			musicInfoContext.SaveChanges();
 		}

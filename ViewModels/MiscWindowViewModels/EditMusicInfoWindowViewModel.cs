@@ -534,7 +534,23 @@ namespace YukaLister.ViewModels.MiscWindowViewModels
 				MusicInfoContextDefault.GetDbSet(musicInfoContext, out DbSet<TTieUp> tieUps);
 				TTieUp? tieUp = DbCommon.SelectMasterByName(tieUps, dicByFile[YlConstants.RULE_VAR_PROGRAM]);
 				MusicInfoContextDefault.GetDbSet(musicInfoContext, out DbSet<TCategory> categories);
-				TCategory? category = DbCommon.SelectMasterByName(categories, dicByFile[YlConstants.RULE_VAR_CATEGORY]);
+				TCategory? category = null;
+				if (tieUp == null)
+				{
+					category = DbCommon.SelectMasterByName(categories, dicByFile[YlConstants.RULE_VAR_CATEGORY]);
+					switch (category?.Name)
+					{
+						// タイアップの無いカテゴリーの場合は、ファイル名から取得したカテゴリーを採用する
+						case YlConstants.CATEGORY_NAME_VOCALOID:
+						case YlConstants.CATEGORY_NAME_GENERAL:
+							break;
+
+						// タイアップのあるカテゴリーの場合は、タイアップを選択できるよう、カテゴリーは付与しない
+						default:
+							category = null;
+							break;
+					}
+				}
 
 				// 新規作成用の追加
 				TSong newSong = new()
@@ -554,7 +570,7 @@ namespace YukaLister.ViewModels.MiscWindowViewModels
 					// TSong
 					ReleaseDate = YlConstants.INVALID_MJD,
 					TieUpId = tieUp?.Id,
-					CategoryId = tieUp == null && category != null ? category.Id : null,
+					CategoryId = category?.Id,
 					OpEd = dicByFile[YlConstants.RULE_VAR_OP_ED],
 				};
 				sameNameSongs.Insert(0, newSong);

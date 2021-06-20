@@ -227,7 +227,7 @@ namespace YukaLister.Models.SharedMisc
 		public const String APP_ID = "YukaLister";
 		public const String APP_GENERATION = "NEBULA";
 		public const String APP_NAME_J = "ゆかりすたー " + APP_GENERATION + " ";
-		public const String APP_VER = "Ver 2.85";
+		public const String APP_VER = "Ver 3.00";
 		public const String COPYRIGHT_J = "Copyright (C) 2021 by SHINTA";
 
 		// --------------------------------------------------------------------
@@ -480,6 +480,13 @@ namespace YukaLister.Models.SharedMisc
 				"備考", "最終更新日時", "ファイルサイズ", "楽曲名", "楽曲フリガナ", "摘要", "リリース日",
 				"歌手名", "歌手フリガナ", "作詞者名", "作詞者フリガナ", "作曲者名", "作曲者フリガナ", "編曲者名", "編曲者フリガナ",
 				"タイアップ名", "タイアップフリガナ", "年齢制限", "カテゴリー", "タイアップグループ名", "タイアップグループフリガナ", "制作会社名", "制作会社フリガナ" };
+
+		// --------------------------------------------------------------------
+		// カテゴリー名
+		// --------------------------------------------------------------------
+
+		public const String CATEGORY_NAME_VOCALOID = "VOCALOID";
+		public const String CATEGORY_NAME_GENERAL = "一般";
 
 		// --------------------------------------------------------------------
 		// 年齢制限
