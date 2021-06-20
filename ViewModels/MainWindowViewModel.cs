@@ -834,7 +834,17 @@ namespace YukaLister.ViewModels
 			autoTargetInfo.Load();
 			foreach (String folder in autoTargetInfo.Folders)
 			{
-				await YukaListerModel.Instance.ProjModel.AddTargetFolderAsync(driveLetter + folder);
+				try
+				{
+					await YukaListerModel.Instance.ProjModel.AddTargetFolderAsync(driveLetter + folder);
+				}
+				catch (Exception excep)
+				{
+					// 前回からフォルダー名が変更されている場合等にエラーとなるが、自動処理なのでエラー表示は抑止する
+					// ここで捕捉しておかないと、Initialize() の後半が実行されない
+					YukaListerModel.Instance.EnvModel.LogWriter.LogMessage(TraceEventType.Error, "デバイス接続時時エラー：\n" + excep.Message);
+					YukaListerModel.Instance.EnvModel.LogWriter.LogMessage(Common.TRACE_EVENT_TYPE_STATUS, "　スタックトレース：\n" + excep.StackTrace);
+				}
 			}
 		}
 
@@ -923,9 +933,6 @@ namespace YukaLister.ViewModels
 			{
 				await DeviceArrivalAsync(YlCommon.DriveLetter(drive));
 			}
-#if DEBUGz
-			await Task.Delay(1000);
-#endif
 		}
 
 		// --------------------------------------------------------------------
