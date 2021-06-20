@@ -412,7 +412,7 @@ namespace YukaLister.ViewModels.MiscWindowViewModels
 						TabItemOutputListFileDrop(files);
 						break;
 					case 4:
-						TabItemImportFileDrop(files);
+						TabItemMusicInfoFileDrop(files);
 						break;
 				}
 			}
@@ -1236,28 +1236,6 @@ namespace YukaLister.ViewModels.MiscWindowViewModels
 		// private static メンバー関数
 		// ====================================================================
 
-		// --------------------------------------------------------------------
-		// インポートタブのファイルドロップ
-		// --------------------------------------------------------------------
-		private static void TabItemImportFileDrop(String[] files)
-		{
-			String? notHandledFiles = null;
-			foreach (String file in files)
-			{
-				if (!File.Exists(file))
-				{
-					continue;
-				}
-
-				// ToDo: 未実装
-				notHandledFiles += Path.GetFileName(file) + "\n";
-			}
-			if (!String.IsNullOrEmpty(notHandledFiles))
-			{
-				throw new Exception("ドロップされたファイルの種類を自動判定できませんでした。\n参照ボタンからファイルを指定して下さい。\n" + notHandledFiles);
-			}
-		}
-
 		// ====================================================================
 		// private メンバー関数
 		// ====================================================================
@@ -1394,6 +1372,35 @@ namespace YukaLister.ViewModels.MiscWindowViewModels
 
 			// インポートタブ
 			ImportYukaListerMode = true;
+		}
+
+		// --------------------------------------------------------------------
+		// 楽曲情報データベースタブのファイルドロップ
+		// --------------------------------------------------------------------
+		private void TabItemMusicInfoFileDrop(String[] files)
+		{
+			String? notHandledFiles = null;
+			foreach (String file in files)
+			{
+				if (!File.Exists(file))
+				{
+					continue;
+				}
+
+				String ext = Path.GetExtension(file).ToLower();
+				if (ext == YlConstants.FILE_EXT_YL_EXPORT_ARCHIVE)
+				{
+					ImportYukaListerPath = file;
+				}
+				else
+				{
+					notHandledFiles += Path.GetFileName(file) + "\n";
+				}
+			}
+			if (!String.IsNullOrEmpty(notHandledFiles))
+			{
+				throw new Exception("ドロップされたファイルの種類を自動判定できませんでした。\n参照ボタンからファイルを指定して下さい。\n" + notHandledFiles);
+			}
 		}
 
 		// --------------------------------------------------------------------
