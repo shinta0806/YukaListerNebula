@@ -400,7 +400,7 @@ namespace YukaLister.Models.DatabaseAssist
 		// ====================================================================
 
 		// スマートトラック判定用の単語（小文字表記、両端を | で括る）
-		private const String OFF_VOCAL_WORDS = "|cho|cut|dam|guide|guidevocal|inst|joy|off|offcho|offvocal|offのみ|vc|オフ|オフボ|オフボーカル|ボイキャン|ボーカルキャンセル|配信|";
+		private const String OFF_VOCAL_WORDS = "|cho|cut|dam|guide|guidevocal|inst|joy|off|offcho|offvocal|offのみ|spleeter|vc|オフ|オフボ|オフボーカル|ボイキャン|ボーカルキャンセル|配信|";
 		private const String BOTH_VOCAL_WORDS = "|2tr|2ch|onoff|offon|";
 
 		// ====================================================================
