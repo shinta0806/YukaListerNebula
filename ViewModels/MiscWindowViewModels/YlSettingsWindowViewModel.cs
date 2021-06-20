@@ -408,6 +408,9 @@ namespace YukaLister.ViewModels.MiscWindowViewModels
 					case 0:
 						TabItemSettingsFileDrop(files);
 						break;
+					case 2:
+						TabItemOutputListFileDrop(files);
+						break;
 					case 4:
 						TabItemImportFileDrop(files);
 						break;
@@ -1391,6 +1394,35 @@ namespace YukaLister.ViewModels.MiscWindowViewModels
 
 			// インポートタブ
 			ImportYukaListerMode = true;
+		}
+
+		// --------------------------------------------------------------------
+		// リスト出力タブのファイルドロップ
+		// --------------------------------------------------------------------
+		private void TabItemOutputListFileDrop(String[] files)
+		{
+			String? folderPath = null;
+			foreach (String file in files)
+			{
+				if (Directory.Exists(file))
+				{
+					// フォルダーがドロップされた場合は、そのフォルダーを使用
+					folderPath = file;
+					continue;
+				}
+				if (String.IsNullOrEmpty(folderPath) && File.Exists(file))
+				{
+					// ファイルがドロップされた場合は、そのファイルを含むフォルダーを使用（フォルダーが指定されている場合はそちら優先）
+					folderPath = Path.GetDirectoryName(file);
+					continue;
+				}
+			}
+			if (String.IsNullOrEmpty(folderPath))
+			{
+				throw new Exception("ドロップされたフォルダーを取得できませんでした。\n参照ボタンからフォルダーを指定して下さい。");
+			}
+
+			ListFolder = folderPath;
 		}
 
 		// --------------------------------------------------------------------
