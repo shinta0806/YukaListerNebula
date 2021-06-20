@@ -589,6 +589,16 @@ namespace YukaLister.Models.YukaListerCores
 			using ListContextInMemory listContextInMemory = ListContextInMemory.CreateContext(out DbSet<TFound> founds);
 			Int64 uid = founds.Any() ? founds.Max(x => x.Uid) + 1 : 1;
 
+			// キャッシュが使われていない場合はディスク DB の Uid とも重複しないようにする
+			if (!targetFolderInfo.IsCacheUsed)
+			{
+				using ListContextInDisk listContextInDisk = ListContextInDisk.CreateContext(out DbSet<TFound> diskFounds);
+				if (diskFounds.Any())
+				{
+					uid = Math.Max(uid, diskFounds.Max(x => x.Uid) + 1);
+				}
+			}
+
 			// 検索
 			String[] allPathes;
 			try
@@ -632,6 +642,12 @@ namespace YukaLister.Models.YukaListerCores
 			// キャッシュが使われていない場合はディスク DB にも追加
 			if (!targetFolderInfo.IsCacheUsed)
 			{
+#if DEBUGz
+				foreach (TFound a in addRecords)
+				{
+					Debug.WriteLine("AddFileNamesCore() adding uid: " + a.Uid);
+				}
+#endif
 				using ListContextInDisk listContextInDisk = ListContextInDisk.CreateContext(out DbSet<TFound> diskFounds);
 				diskFounds.AddRange(addRecords);
 				listContextInDisk.SaveChanges();
