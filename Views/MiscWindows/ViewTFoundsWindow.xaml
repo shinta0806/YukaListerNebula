@@ -69,12 +69,12 @@
             </Label>
         </StackPanel>
         <DockPanel DockPanel.Dock="Bottom" Margin="20,0,20,20" LastChildFill="False">
-            <Button Content="編集 (_E)" Width="120" Height="Auto" ToolTip="タイアップ名・楽曲名を編集" Command="{Binding ButtonEditMusicInfoClickedCommand}"/>
-            <Button Content="フォルダー設定 (_S)" Style="{StaticResource MaterialDesignRaisedLightButton}" Width="120" Height="Auto" Margin="20,0,0,0" ToolTip="フォルダーの検索設定" Padding="4" Command="{Binding ButtonFolderSettingsClickedCommand}"/>
-            <Button Content="エクスプローラー (_X)" Style="{StaticResource MaterialDesignRaisedLightButton}" Width="120" Height="Auto" Margin="20,0,0,0" ToolTip="エクスプローラーを開く" Padding="4" Command="{Binding ButtonExplorerClickedCommand}"/>
-            <Button Content="検索 (_F)" Style="{StaticResource MaterialDesignRaisedLightButton}" Width="100" Height="Auto" Margin="40,0,0,0" ToolTip="キーワード検索" Padding="4" Command="{Binding ButtonFindKeywordClickedCommand}" />
+            <Button Content="検索 (_F)" Style="{StaticResource MaterialDesignRaisedLightButton}" Width="100" Height="Auto" ToolTip="キーワード検索" Padding="4" Command="{Binding ButtonFindKeywordClickedCommand}" />
             <Button Content="□↓検索 (_G)" Style="{StaticResource MaterialDesignRaisedLightButton}" Width="100" Height="Auto" Margin="20,0,0,0" ToolTip="空欄のセルを検索" Padding="4" Command="{Binding ButtonFindCellClickedCommand}"/>
             <Button Content="■↓検索 (_H)" Style="{StaticResource MaterialDesignRaisedLightButton}" Width="100" Height="Auto" Margin="20,0,0,0" ToolTip="空欄ではないセルの検索" Padding="4" Command="{Binding ButtonFindCellClickedCommand}" CommandParameter="Fill" />
+            <Button Content="編集 (_E)" Width="120" Height="Auto" ToolTip="タイアップ名・楽曲名を編集" Command="{Binding ButtonEditMusicInfoClickedCommand}" Margin="20,0,0,0"/>
+            <Button Content="フォルダー設定 (_S)" Style="{StaticResource MaterialDesignRaisedLightButton}" Width="120" Height="Auto" Margin="40,0,0,0" ToolTip="フォルダーの検索設定" Padding="4" Command="{Binding ButtonFolderSettingsClickedCommand}"/>
+            <Button Content="エクスプローラー (_X)" Style="{StaticResource MaterialDesignRaisedLightButton}" Width="120" Height="Auto" Margin="20,0,0,0" ToolTip="エクスプローラーを開く" Padding="4" Command="{Binding ButtonExplorerClickedCommand}"/>
             <Button Content="閉じる (_C)" Style="{StaticResource MaterialDesignRaisedLightButton}" Width="100" Height="Auto" IsCancel="True" DockPanel.Dock="Right" />
         </DockPanel>
         <DataGrid Margin="20,10,20,20" AutoGenerateColumns="False" CanUserReorderColumns="False" SelectionMode="Single" IsReadOnly="True" DockPanel.Dock="Top" 
