@@ -239,11 +239,20 @@ namespace YukaLister.ViewModels.ViewMastersWindowViewModels
 				return;
 			}
 
+			T? selectedMasterBak = SelectedMaster;
+
 			// ViewModel 経由で楽曲情報データベースマスター編集ウィンドウを開く
 			using EditMasterWindowViewModel<T> editMasterWindowViewModel = CreateEditMasterWindowViewModel();
 			editMasterWindowViewModel.SetMasters(CreateMasters());
 			editMasterWindowViewModel.DefaultMasterId = SelectedMaster.Id;
 			Messenger.Raise(new TransitionMessage(editMasterWindowViewModel, YlConstants.MESSAGE_KEY_OPEN_EDIT_MASTER_WINDOW));
+
+			if (editMasterWindowViewModel.IsOk || CountMasters() != _prevNumRecords)
+			{
+				UpdateDescription();
+				UpdateMasters();
+				SelectedMaster = Masters.FirstOrDefault(x => x.Id == selectedMasterBak.Id);
+			}
 		}
 
 		// --------------------------------------------------------------------
