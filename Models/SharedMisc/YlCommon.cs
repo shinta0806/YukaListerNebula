@@ -27,7 +27,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-
+using YukaLister.Models.Database;
 using YukaLister.Models.Database.Masters;
 using YukaLister.Models.DatabaseAssist;
 using YukaLister.Models.DatabaseContexts;
@@ -597,6 +597,38 @@ namespace YukaLister.Models.SharedMisc
 		{
 			SystemEnvironment se = new();
 			se.LogEnvironment(YukaListerModel.Instance.EnvModel.LogWriter);
+		}
+
+		// --------------------------------------------------------------------
+		// 検索結果ソート用関数（大文字小文字を区別しない名前順）
+		// --------------------------------------------------------------------
+		public static Int32 MasterComparisonByName<T>(T lhs, T rhs) where T : class, IRcMaster
+		{
+			if (String.IsNullOrEmpty(lhs.Name))
+			{
+				// 左側が空
+				if (String.IsNullOrEmpty(rhs.Name))
+				{
+					return 0;
+				}
+				else
+				{
+					return 1;
+				}
+			}
+			else
+			{
+				// 左側が空ではない
+				if (String.IsNullOrEmpty(rhs.Name))
+				{
+					return -1;
+				}
+				else
+				{
+					// 大文字小文字は区別するが、"A～" の後ろにすべて "a～" が来るわけではなく、きちんと "AA", "Aa", "AB", "Ab" のように並べてくれる模様
+					return String.Compare(lhs.Name, rhs.Name);
+				}
+			}
 		}
 
 		// --------------------------------------------------------------------

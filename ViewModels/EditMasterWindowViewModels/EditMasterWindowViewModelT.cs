@@ -399,6 +399,11 @@ namespace YukaLister.ViewModels.EditMasterWindowViewModels
 		// --------------------------------------------------------------------
 		protected virtual void CheckInput()
 		{
+			if (SelectedMaster == null)
+			{
+				throw new Exception("内部エラー：登録対象が指定されていません。");
+			}
+
 			String? normalizedName = YlCommon.NormalizeDbString(Name);
 			(String? normalizedRuby, Boolean allRuby, _) = YlCommon.NormalizeDbRubyForMusicInfo(Ruby);
 			String? normalizedKeyword = YlCommon.NormalizeDbString(Keyword);
@@ -424,7 +429,7 @@ namespace YukaLister.ViewModels.EditMasterWindowViewModels
 				// キーワードが同じものがあると登録は禁止
 				foreach (T dup in dups)
 				{
-					if (dup.Id != SelectedMaster?.Id && dup.Keyword == normalizedKeyword)
+					if (dup.Id != SelectedMaster.Id && dup.Keyword == normalizedKeyword)
 					{
 						throw new Exception("登録しようとしている" + _caption + "「" + normalizedName + "」は既に登録されており、検索ワードも同じです。\n"
 								+ _caption + " ID を切り替えて登録済みの" + _caption + "を選択してください。\n"
@@ -434,7 +439,7 @@ namespace YukaLister.ViewModels.EditMasterWindowViewModels
 
 				// 新規 ID の場合は確認
 				// ID 切替で新規を選んだ場合は、今までに警告が表示されていないため、この確認は必要
-				if (SelectedMaster?.Id == NewIdForDisplay())
+				if (SelectedMaster.Id == NewIdForDisplay())
 				{
 					if (MessageBox.Show("新規登録しようとしている" + _caption + "「" + normalizedName + "」と同名の" + _caption + "は既に登録されています。\n同名の" + _caption + "を追加で新規登録しますか？",
 							"確認", MessageBoxButton.YesNo, MessageBoxImage.Exclamation) != MessageBoxResult.Yes)
@@ -446,6 +451,12 @@ namespace YukaLister.ViewModels.EditMasterWindowViewModels
 
 			// フリガナとして使えない文字がある場合は警告
 			WarnRubyDeletedIfNeeded(allRuby, Ruby, normalizedRuby);
+
+			// 想定しているマスターの型と異なる場合はエラー（本来あってはならないが念のため）
+			if (SelectedMaster.Id != NewIdForDisplay() && !SelectedMaster.Id.Contains(YlConstants.MUSIC_INFO_ID_SECOND_PREFIXES[DbCommon.MusicInfoTableIndex<T>()]))
+			{
+				throw new Exception("内部エラー：登録対象の型が異なっています。");
+			}
 		}
 
 		// --------------------------------------------------------------------

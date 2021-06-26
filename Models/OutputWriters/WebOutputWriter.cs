@@ -1267,7 +1267,7 @@ namespace YukaLister.Models.OutputWriters
 				Tag = t,
 			})
 			.Where(x => x.Found.TieUpName != null && x.Found.SongId != null
-					&& (((WebOutputSettings)OutputSettings).OutputHeadMisc ? true : x.Tag.Ruby != null)
+					&& (((WebOutputSettings)OutputSettings).OutputHeadMisc || x.Tag.Ruby != null)
 					&& (isAdult ? x.Found.TieUpAgeLimit >= YlConstants.AGE_LIMIT_CERO_Z : x.Found.TieUpAgeLimit < YlConstants.AGE_LIMIT_CERO_Z))
 			.OrderBy(x => x.Tag.Ruby).ThenBy(x => x.Tag.Name).ThenBy(x => x.Found.Head).ThenBy(x => x.Found.TieUpRuby).
 					ThenBy(x => x.Found.TieUpName).ThenBy(x => x.Found.SongRuby).ThenBy(x => x.Found.SongName).ToList();
@@ -1354,7 +1354,7 @@ namespace YukaLister.Models.OutputWriters
 				TieUpGroup = g,
 			})
 			.Where(x => x.Found.TieUpId != null && x.Found.SongId != null
-					&& (((WebOutputSettings)OutputSettings).OutputHeadMisc ? true : x.TieUpGroup.Ruby != null)
+					&& (((WebOutputSettings)OutputSettings).OutputHeadMisc || x.TieUpGroup.Ruby != null)
 					&& (isAdult ? x.Found.TieUpAgeLimit >= YlConstants.AGE_LIMIT_CERO_Z : x.Found.TieUpAgeLimit < YlConstants.AGE_LIMIT_CERO_Z))
 					.OrderBy(x => x.TieUpGroup.Ruby).ThenBy(x => x.TieUpGroup.Name).ThenBy(x => x.Found.Head).ThenBy(x => x.Found.TieUpRuby).
 					ThenBy(x => x.Found.TieUpName).ThenBy(x => x.Found.SongRuby).ThenBy(x => x.Found.SongName).ToList();
@@ -1506,7 +1506,7 @@ namespace YukaLister.Models.OutputWriters
 				Person = p,
 			})
 			.Where(x => x.Found.TieUpName != null && x.Found.SongId != null
-					&& (((WebOutputSettings)OutputSettings).OutputHeadMisc ? true : x.Person.Ruby != null)
+					&& (((WebOutputSettings)OutputSettings).OutputHeadMisc || x.Person.Ruby != null)
 					&& (isAdult ? x.Found.TieUpAgeLimit >= YlConstants.AGE_LIMIT_CERO_Z : x.Found.TieUpAgeLimit < YlConstants.AGE_LIMIT_CERO_Z))
 			.OrderBy(x => x.Person.Ruby).ThenBy(x => x.Person.Name).ThenBy(x => x.Found.Head).ThenBy(x => x.Found.TieUpRuby).
 					ThenBy(x => x.Found.TieUpName).ThenBy(x => x.Found.SongRuby).ThenBy(x => x.Found.SongName).ToList();

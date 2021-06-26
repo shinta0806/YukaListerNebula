@@ -322,38 +322,6 @@ namespace YukaLister.ViewModels.SearchMasterWindowViewModels
 		// private static メンバー関数
 		// ====================================================================
 
-		// --------------------------------------------------------------------
-		// 検索結果ソート用関数（大文字小文字を区別しない名前順）
-		// --------------------------------------------------------------------
-		private static Int32 SearchResultComparison(T lhs, T rhs)
-		{
-			if (String.IsNullOrEmpty(lhs.Name))
-			{
-				// 左側が空
-				if (String.IsNullOrEmpty(rhs.Name))
-				{
-					return 0;
-				}
-				else
-				{
-					return 1;
-				}
-			}
-			else
-			{
-				// 左側が空ではない
-				if (String.IsNullOrEmpty(rhs.Name))
-				{
-					return -1;
-				}
-				else
-				{
-					// 大文字小文字は区別するが、"A～" の後ろにすべて "a～" が来るわけではなく、きちんと "AA", "Aa", "AB", "Ab" のように並べてくれる模様
-					return String.Compare(lhs.Name, rhs.Name);
-				}
-			}
-		}
-
 		// ====================================================================
 		// private メンバー関数
 		// ====================================================================
@@ -402,7 +370,7 @@ namespace YukaLister.ViewModels.SearchMasterWindowViewModels
 				}
 
 				// ソート
-				results.Sort(SearchResultComparison);
+				results.Sort(YlCommon.MasterComparisonByName);
 
 				// 同名検出
 				// ソート済みのため簡単に検出できるため、DbCommon.SetAvoidSameName() よりも高速と思う

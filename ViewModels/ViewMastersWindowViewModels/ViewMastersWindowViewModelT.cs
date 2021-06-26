@@ -261,6 +261,9 @@ namespace YukaLister.ViewModels.ViewMastersWindowViewModels
 		private void UpdateMasters()
 		{
 			Masters = _records.AsNoTracking().Where(x => !x.Invalid).ToList();
+
+			// ソート（OrderBy だと大文字小文字を区別してしまうため、区別しないソートを行う）
+			Masters.Sort(YlCommon.MasterComparisonByName);
 		}
 	}
 }

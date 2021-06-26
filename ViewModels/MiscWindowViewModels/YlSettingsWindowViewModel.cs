@@ -1313,6 +1313,35 @@ namespace YukaLister.ViewModels.MiscWindowViewModels
 		// private static メンバー関数
 		// ====================================================================
 
+		// --------------------------------------------------------------------
+		// 楽曲情報データベースマスター一覧ウィンドウの列を作成
+		// --------------------------------------------------------------------
+		private static ObservableCollection<DataGridColumn> CreateMasterColumns<T>() where T : class, IRcMaster
+		{
+			ObservableCollection<DataGridColumn> columns = new();
+			DataGridTextColumn column;
+
+			// 名
+			column = new();
+			column.Binding = new Binding(nameof(IRcMaster.Name));
+			column.Header = YlConstants.MUSIC_INFO_TABLE_NAME_LABELS[DbCommon.MusicInfoTableIndex<T>()] + "名";
+			columns.Add(column);
+
+			// フリガナ
+			column = new();
+			column.Binding = new Binding(nameof(IRcMaster.Ruby));
+			column.Header = "フリガナ";
+			columns.Add(column);
+
+			// 検索ワード
+			column = new();
+			column.Binding = new Binding(nameof(IRcMaster.Keyword));
+			column.Header = "検索ワード";
+			columns.Add(column);
+
+			return columns;
+		}
+
 		// ====================================================================
 		// private メンバー関数
 		// ====================================================================
@@ -1362,35 +1391,6 @@ namespace YukaLister.ViewModels.MiscWindowViewModels
 					SyncServer += "/";
 				}
 			}
-		}
-
-		// --------------------------------------------------------------------
-		// 楽曲情報データベースマスター一覧ウィンドウの列を作成
-		// --------------------------------------------------------------------
-		private ObservableCollection<DataGridColumn> CreateMasterColumns<T>() where T : class, IRcMaster
-		{
-			ObservableCollection<DataGridColumn> columns = new();
-			DataGridTextColumn column;
-
-			// 名
-			column = new();
-			column.Binding = new Binding(nameof(IRcMaster.Name));
-			column.Header = YlConstants.MUSIC_INFO_TABLE_NAME_LABELS[DbCommon.MusicInfoTableIndex<T>()] + "名";
-			columns.Add(column);
-
-			// フリガナ
-			column = new();
-			column.Binding = new Binding(nameof(IRcMaster.Ruby));
-			column.Header = "フリガナ";
-			columns.Add(column);
-
-			// 検索ワード
-			column = new();
-			column.Binding = new Binding(nameof(IRcMaster.Keyword));
-			column.Header = "検索ワード";
-			columns.Add(column);
-
-			return columns;
 		}
 
 		// --------------------------------------------------------------------
