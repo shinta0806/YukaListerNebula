@@ -66,6 +66,27 @@ namespace YukaLister.ViewModels.EditMasterWindowViewModels
 		// ====================================================================
 
 		// --------------------------------------------------------------------
+		// 入力値を確認する
+		// ＜例外＞ Exception, OperationCanceledException
+		// --------------------------------------------------------------------
+		protected override void CheckInput()
+		{
+			// タイアップグループの場合、名前の重複は無条件で NG のため、基底より先にチェック
+			String? normalizedName = YlCommon.NormalizeDbString(Name);
+			if (!String.IsNullOrEmpty(normalizedName))
+			{
+				(_, Int32 numDups) = GetSameNameRecords(normalizedName);
+				if (numDups > 0)
+				{
+					throw new Exception(_caption + "「" + normalizedName + "」は既に登録されています。\n同じ名前の" + _caption + "は登録できません。");
+				}
+			}
+
+			// 基底
+			base.CheckInput();
+		}
+
+		// --------------------------------------------------------------------
 		// レコード無効化
 		// --------------------------------------------------------------------
 		protected override void Invalidate(TTieUpGroup master)
