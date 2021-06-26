@@ -9,12 +9,17 @@
         xmlns:vemw="clr-namespace:YukaLister.Views.EditMasterWindows"
         xmlns:vm="clr-namespace:YukaLister.ViewModels"
         xmlns:vmvmwvm="clr-namespace:YukaLister.ViewModels.ViewMastersWindowViewModels"
+        xmlns:vsmw="clr-namespace:YukaLister.Views.SearchMasterWindows"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         Title="{Binding Title}" Height="600" Width="1000" ResizeMode="CanResizeWithGrip" ShowInTaskbar="False" >
 
     <Window.DataContext>
         <vmvmwvm:ViewMastersWindowViewModel />
     </Window.DataContext>
+
+    <behaviors:Interaction.Behaviors>
+        <sb:WindowBindingSupportBehavior IsCascade="True" MinimizeBox="False"/>
+    </behaviors:Interaction.Behaviors>
 
     <behaviors:Interaction.Triggers>
         <!-- When ContentRendered event raised, Initialize method of ViewModel would be called. -->
@@ -33,6 +38,10 @@
             <l:TransitionInteractionMessageAction WindowType="{x:Type vemw:EditMasterWindow}" Mode="Modal" IsOwned="True" InvokeActionOnlyWhenWindowIsActive="False" />
         </l:InteractionMessageTrigger>
 
+        <l:InteractionMessageTrigger MessageKey="{x:Static msm:YlConstants.MESSAGE_KEY_OPEN_SEARCH_MASTER_WINDOW}" Messenger="{Binding Messenger}">
+            <l:TransitionInteractionMessageAction WindowType="{x:Type vsmw:SearchMasterWindow}" Mode="Modal" IsOwned="True" InvokeActionOnlyWhenWindowIsActive="False" />
+        </l:InteractionMessageTrigger>
+
     </behaviors:Interaction.Triggers>
 
     <DockPanel>
@@ -45,7 +54,8 @@
             </Label>
         </StackPanel>
         <DockPanel DockPanel.Dock="Bottom" Margin="20,0,20,20" LastChildFill="False">
-            <Button Content="編集 (_E)" Width="120" Height="Auto" Command="{Binding ButtonEditMasterClickedCommand}" Cursor="Hand"/>
+            <Button Content="検索 (_E)" Style="{StaticResource MaterialDesignRaisedLightButton}" Width="120" Height="Auto" Command="{Binding ButtonSearchMasterClickedCommand}" />
+            <Button Content="編集 (_E)" Width="120" Height="Auto" Command="{Binding ButtonEditMasterClickedCommand}" Margin="20,0,0,0" />
             <Button Content="閉じる (_C)" Style="{StaticResource MaterialDesignRaisedLightButton}" Width="100" Height="Auto" IsCancel="True" DockPanel.Dock="Right" />
         </DockPanel>
         <DataGrid Margin="20,10,20,20" AutoGenerateColumns="False" CanUserReorderColumns="False" SelectionMode="Single" IsReadOnly="True" DockPanel.Dock="Top" 
