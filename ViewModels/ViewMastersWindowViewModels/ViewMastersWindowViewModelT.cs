@@ -331,7 +331,7 @@ namespace YukaLister.ViewModels.ViewMastersWindowViewModels
 		// ====================================================================
 
 		// マスター名
-		private String _caption;
+		private readonly String _caption;
 
 		// レコード数
 		private Int32 _prevNumRecords;

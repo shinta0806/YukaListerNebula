@@ -552,25 +552,8 @@ namespace YukaLister.ViewModels.EditSequenceWindowViewModels
 				return;
 			}
 
-			// 既存レコードを用意
-			List<T> sameNameMasters = DbCommon.SelectMastersByName(_records, SelectedMaster.Name);
-
-			// 新規作成用を追加
-			T newRecord = new()
-			{
-				// IRcBase
-				Id = String.Empty,
-				Import = false,
-				Invalid = false,
-				UpdateTime = YlConstants.INVALID_MJD,
-				Dirty = true,
-
-				// IRcMaster
-				Name = SelectedMaster.Name,
-				Ruby = null,
-				Keyword = null,
-			};
-			sameNameMasters.Insert(0, newRecord);
+			// 編集対象レコードを用意
+			List<T> sameNameMasters = DbCommon.MastersForEdit(_records, SelectedMaster.Name);
 
 			// ウィンドウを開く
 			(Boolean isOk, T? result) = OpenEditMasterWindow(sameNameMasters);

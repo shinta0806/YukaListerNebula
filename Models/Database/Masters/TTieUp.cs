@@ -15,6 +15,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
+
 using YukaLister.Models.Database.Sequences;
 using YukaLister.Models.DatabaseAssist;
 using YukaLister.Models.DatabaseContexts;
@@ -177,19 +178,19 @@ namespace YukaLister.Models.Database.Masters
 		}
 
 		// 表示シリーズ（マスター一覧ウィンドウ用）
-		private String? _displayTieUpGroups;
-		public String? DisplayTieUpGroups
+		private String? _displayTieUpGroupNames;
+		public String? DisplayTieUpGroupNames
 		{
 			get
 			{
-				if (_displayTieUpGroups == null)
+				if (_displayTieUpGroupNames == null)
 				{
 					using MusicInfoContextDefault musicInfoContextDefault = MusicInfoContextDefault.CreateContext(out DbSet<TTieUpGroup> tieUpGroups);
 					MusicInfoContextDefault.GetDbSet(musicInfoContextDefault, out DbSet<TTieUpGroupSequence> tieUpGroupSequences);
 					List<TTieUpGroup> sequencedTieUpGroups = DbCommon.SelectSequencedTieUpGroupsByTieUpId(tieUpGroupSequences, tieUpGroups, Id);
-					_displayTieUpGroups = String.Join(YlConstants.VAR_VALUE_DELIMITER, sequencedTieUpGroups.Select(x => x.Name));
+					_displayTieUpGroupNames = String.Join(YlConstants.VAR_VALUE_DELIMITER, sequencedTieUpGroups.Select(x => x.Name));
 				}
-				return _displayTieUpGroups;
+				return _displayTieUpGroupNames;
 			}
 		}
 

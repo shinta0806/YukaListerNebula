@@ -1273,6 +1273,39 @@ namespace YukaLister.ViewModels.MiscWindowViewModels
 		}
 		#endregion
 
+		#region 楽曲一覧ボタンの制御
+		private ViewModelCommand? _buttonSongsClickedCommand;
+
+		public ViewModelCommand ButtonSongsClickedCommand
+		{
+			get
+			{
+				if (_buttonSongsClickedCommand == null)
+				{
+					_buttonSongsClickedCommand = new ViewModelCommand(ButtonSongsClicked);
+				}
+				return _buttonSongsClickedCommand;
+			}
+		}
+
+		public void ButtonSongsClicked()
+		{
+			try
+			{
+				using MusicInfoContextDefault musicInfoContextDefault = MusicInfoContextDefault.CreateContext(out DbSet<TSong> songs);
+
+				// ViewModel 経由で楽曲情報データベースマスター一覧ウィンドウを開く
+				using ViewSongsWindowViewModel viewSongsWindowViewModel = new(musicInfoContextDefault, songs, CreateSongColumns());
+				Messenger.Raise(new TransitionMessage(viewSongsWindowViewModel, YlConstants.MESSAGE_KEY_OPEN_VIEW_MASTERS_WINDOW));
+			}
+			catch (Exception excep)
+			{
+				YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(TraceEventType.Error, "制作会社一覧ボタンクリック時エラー：\n" + excep.Message);
+				YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, "　スタックトレース：\n" + excep.StackTrace);
+			}
+		}
+		#endregion
+
 		#endregion
 
 		// ====================================================================
@@ -1401,6 +1434,59 @@ namespace YukaLister.ViewModels.MiscWindowViewModels
 		// --------------------------------------------------------------------
 		// 楽曲情報データベースマスター一覧ウィンドウの列を作成
 		// --------------------------------------------------------------------
+		private static ObservableCollection<DataGridColumn> CreateSongColumns()
+		{
+			ObservableCollection<DataGridColumn> columns = CreateCategorizableColumns<TSong>();
+			DataGridTextColumn column;
+
+			// タイアップ名
+			column = new();
+			column.Binding = new Binding(nameof(TSong.DisplayTieUpName));
+			column.Header = "タイアップ名";
+			columns.Add(column);
+
+			// 摘要
+			column = new();
+			column.Binding = new Binding(nameof(TSong.OpEd));
+			column.Header = "摘要";
+			columns.Add(column);
+
+			// 歌手名
+			column = new();
+			column.Binding = new Binding(nameof(TSong.DisplayArtistNames));
+			column.Header = "歌手名";
+			columns.Add(column);
+
+			// 作詞者名
+			column = new();
+			column.Binding = new Binding(nameof(TSong.DisplayLyristNames));
+			column.Header = "作詞者名";
+			columns.Add(column);
+
+			// 作曲者名
+			column = new();
+			column.Binding = new Binding(nameof(TSong.DisplayComposerNames));
+			column.Header = "作曲者名";
+			columns.Add(column);
+
+			// 編曲者名
+			column = new();
+			column.Binding = new Binding(nameof(TSong.DisplayArrangerNames));
+			column.Header = "編曲者名";
+			columns.Add(column);
+
+			// タグ名
+			column = new();
+			column.Binding = new Binding(nameof(TSong.DisplayTagNames));
+			column.Header = "タグ名";
+			columns.Add(column);
+
+			return columns;
+		}
+
+		// --------------------------------------------------------------------
+		// 楽曲情報データベースマスター一覧ウィンドウの列を作成
+		// --------------------------------------------------------------------
 		private static ObservableCollection<DataGridColumn> CreateTieUpColumns()
 		{
 			ObservableCollection<DataGridColumn> columns = CreateCategorizableColumns<TTieUp>();
@@ -1420,7 +1506,7 @@ namespace YukaLister.ViewModels.MiscWindowViewModels
 
 			// シリーズ
 			column = new();
-			column.Binding = new Binding(nameof(TTieUp.DisplayTieUpGroups));
+			column.Binding = new Binding(nameof(TTieUp.DisplayTieUpGroupNames));
 			column.Header = "シリーズ";
 			columns.Add(column);
 

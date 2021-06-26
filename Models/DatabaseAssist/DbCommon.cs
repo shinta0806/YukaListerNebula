@@ -254,7 +254,7 @@ namespace YukaLister.Models.DatabaseAssist
 		// --------------------------------------------------------------------
 		public static List<T> MastersForEdit<T>(DbSet<T> masters, String? masterName) where T : class, IRcMaster, new()
 		{
-			List<T> sameNameMasters = DbCommon.SelectMastersByName(masters, masterName);
+			List<T> sameNameMasters = SelectMastersByName(masters, masterName);
 
 			// 新規作成用を追加
 			T newRecord = new()

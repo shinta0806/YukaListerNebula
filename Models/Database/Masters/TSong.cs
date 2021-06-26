@@ -8,11 +8,17 @@
 //
 // ----------------------------------------------------------------------------
 
+using Microsoft.EntityFrameworkCore;
+
 using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Linq;
 
+using YukaLister.Models.Database.Sequences;
 using YukaLister.Models.DatabaseAssist;
+using YukaLister.Models.DatabaseContexts;
 using YukaLister.Models.SharedMisc;
 
 namespace YukaLister.Models.Database.Masters
@@ -125,6 +131,102 @@ namespace YukaLister.Models.Database.Masters
 		[Column(FIELD_NAME_SONG_OP_ED)]
 		public String? OpEd { get; set; }
 
+		// 表示タイアップ名（マスター一覧ウィンドウ用）
+		private String? _displayTieUpName;
+		public String? DisplayTieUpName
+		{
+			get
+			{
+				if (_displayTieUpName == null && TieUpId != null)
+				{
+					using MusicInfoContextDefault musicInfoContextDefault = MusicInfoContextDefault.CreateContext(out DbSet<TTieUp> tieUps);
+					_displayTieUpName = DbCommon.SelectBaseById(tieUps, TieUpId)?.Name;
+				}
+				return _displayTieUpName;
+			}
+		}
+
+		// 表示歌手名（マスター一覧ウィンドウ用）
+		private String? _displayArtistNames;
+		public String? DisplayArtistNames
+		{
+			get
+			{
+				if (_displayArtistNames == null)
+				{
+					using MusicInfoContextDefault musicInfoContextDefault = MusicInfoContextDefault.CreateContext(out DbSet<TPerson> people);
+					MusicInfoContextDefault.GetDbSet(musicInfoContextDefault, out DbSet<TArtistSequence> artistSequences);
+					_displayArtistNames = DisplayPeopleNames(artistSequences, people);
+				}
+				return _displayArtistNames;
+			}
+		}
+
+		// 表示作詞者名（マスター一覧ウィンドウ用）
+		private String? _displayLyristNames;
+		public String? DisplayLyristNames
+		{
+			get
+			{
+				if (_displayLyristNames == null)
+				{
+					using MusicInfoContextDefault musicInfoContextDefault = MusicInfoContextDefault.CreateContext(out DbSet<TPerson> people);
+					MusicInfoContextDefault.GetDbSet(musicInfoContextDefault, out DbSet<TLyristSequence> lyristSequences);
+					_displayLyristNames = DisplayPeopleNames(lyristSequences, people);
+				}
+				return _displayLyristNames;
+			}
+		}
+
+		// 表示作曲者名（マスター一覧ウィンドウ用）
+		private String? _displayComposerNames;
+		public String? DisplayComposerNames
+		{
+			get
+			{
+				if (_displayComposerNames == null)
+				{
+					using MusicInfoContextDefault musicInfoContextDefault = MusicInfoContextDefault.CreateContext(out DbSet<TPerson> people);
+					MusicInfoContextDefault.GetDbSet(musicInfoContextDefault, out DbSet<TComposerSequence> composerSequences);
+					_displayComposerNames = DisplayPeopleNames(composerSequences, people);
+				}
+				return _displayComposerNames;
+			}
+		}
+
+		// 表示編曲者名（マスター一覧ウィンドウ用）
+		private String? _displayArrangerNames;
+		public String? DisplayArrangerNames
+		{
+			get
+			{
+				if (_displayArrangerNames == null)
+				{
+					using MusicInfoContextDefault musicInfoContextDefault = MusicInfoContextDefault.CreateContext(out DbSet<TPerson> people);
+					MusicInfoContextDefault.GetDbSet(musicInfoContextDefault, out DbSet<TArrangerSequence> arrangerSequences);
+					_displayArrangerNames = DisplayPeopleNames(arrangerSequences, people);
+				}
+				return _displayArrangerNames;
+			}
+		}
+
+		// 表示タグ名（マスター一覧ウィンドウ用）
+		private String? _displayTagNames;
+		public String? DisplayTagNames
+		{
+			get
+			{
+				if (_displayTagNames == null)
+				{
+					using MusicInfoContextDefault musicInfoContextDefault = MusicInfoContextDefault.CreateContext(out DbSet<TTag> tags);
+					MusicInfoContextDefault.GetDbSet(musicInfoContextDefault, out DbSet<TTagSequence> tagSequences);
+					List<TTag> sequencedTags = DbCommon.SelectSequencedTagsBySongId(tagSequences, tags, Id);
+					_displayTagNames = String.Join(YlConstants.VAR_VALUE_DELIMITER, sequencedTags.Select(x => x.Name));
+				}
+				return _displayTagNames;
+			}
+		}
+
 		// ====================================================================
 		// public 定数
 		// ====================================================================
@@ -145,5 +247,18 @@ namespace YukaLister.Models.Database.Masters
 		public const String FIELD_NAME_SONG_RELEASE_DATE = FIELD_PREFIX_SONG + YlConstants.FIELD_SUFFIX_RELEASE_DATE;
 		public const String FIELD_NAME_SONG_TIE_UP_ID = FIELD_PREFIX_SONG + YlConstants.FIELD_SUFFIX_TIE_UP_ID;
 		public const String FIELD_NAME_SONG_OP_ED = FIELD_PREFIX_SONG + YlConstants.FIELD_SUFFIX_OP_ED;
+
+		// ====================================================================
+		// private メンバー関数
+		// ====================================================================
+
+		// --------------------------------------------------------------------
+		// 表示用人物名
+		// --------------------------------------------------------------------
+		private String DisplayPeopleNames<T>(DbSet<T> peopleSequences, DbSet<TPerson> people) where T : class, IRcSequence
+		{
+			List<TPerson> sequencedPeople = DbCommon.SelectSequencedPeopleBySongId(peopleSequences, people, Id);
+			return String.Join(YlConstants.VAR_VALUE_DELIMITER, sequencedPeople.Select(x => x.Name));
+		}
 	}
 }
