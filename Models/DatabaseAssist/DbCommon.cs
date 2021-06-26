@@ -103,6 +103,19 @@ namespace YukaLister.Models.DatabaseAssist
 		}
 
 		// --------------------------------------------------------------------
+		// 標準的な計算方法で算出される DisplayCategoryName
+		// --------------------------------------------------------------------
+		public static String? DisplayCategoryNameByDefaultAlgorithm(String? displayCategoryName, String? categoryId)
+		{
+			if (displayCategoryName == null && categoryId != null)
+			{
+				using MusicInfoContextDefault musicInfoContextDefault = MusicInfoContextDefault.CreateContext(out DbSet<TCategory> categories);
+				displayCategoryName = DbCommon.SelectBaseById(categories, categoryId)?.Name;
+			}
+			return displayCategoryName;
+		}
+
+		// --------------------------------------------------------------------
 		// 標準的な計算方法で算出される DisplayName
 		// --------------------------------------------------------------------
 		public static String? DisplayNameByDefaultAlgorithm<T>(T master) where T : IRcMaster
@@ -115,6 +128,18 @@ namespace YukaLister.Models.DatabaseAssist
 			{
 				return master.Name;
 			}
+		}
+
+		// --------------------------------------------------------------------
+		// 標準的な計算方法で算出される DisplayReleaseDate
+		// --------------------------------------------------------------------
+		public static String? DisplayReleaseDateByDefaultAlgorithm<T>(T categorizable) where T : IRcCategorizable
+		{
+			if (categorizable.ReleaseDate <= YlConstants.INVALID_MJD)
+			{
+				return null;
+			}
+			return JulianDay.ModifiedJulianDateToDateTime(categorizable.ReleaseDate).ToString(YlConstants.DATE_FORMAT);
 		}
 
 		// --------------------------------------------------------------------

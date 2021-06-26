@@ -96,6 +96,23 @@ namespace YukaLister.Models.Database.Masters
 		[Column(FIELD_NAME_SONG_RELEASE_DATE)]
 		public Double ReleaseDate { get; set; }
 
+		// 表示カテゴリー名（マスター一覧ウィンドウ用）
+		private String? _displayCategoryName;
+		public String? DisplayCategoryName
+		{
+			get
+			{
+				_displayCategoryName = DbCommon.DisplayCategoryNameByDefaultAlgorithm(_displayCategoryName, CategoryId);
+				return _displayCategoryName;
+			}
+		}
+
+		// 表示リリース日（マスター一覧ウィンドウ用）
+		public String? DisplayReleaseDate
+		{
+			get => DbCommon.DisplayReleaseDateByDefaultAlgorithm(this);
+		}
+
 		// --------------------------------------------------------------------
 		// TSong 独自項目
 		// --------------------------------------------------------------------

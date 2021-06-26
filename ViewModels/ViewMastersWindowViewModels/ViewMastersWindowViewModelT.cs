@@ -318,6 +318,14 @@ namespace YukaLister.ViewModels.ViewMastersWindowViewModels
 		// --------------------------------------------------------------------
 		protected abstract List<T> CreateMasters();
 
+		// --------------------------------------------------------------------
+		// ウィンドウを開くメッセージ
+		// --------------------------------------------------------------------
+		protected virtual String MessageKeyOpenEditWindow()
+		{
+			return YlConstants.MESSAGE_KEY_OPEN_EDIT_MASTER_WINDOW;
+		}
+
 		// ====================================================================
 		// private メンバー変数
 		// ====================================================================
@@ -357,7 +365,7 @@ namespace YukaLister.ViewModels.ViewMastersWindowViewModels
 			using EditMasterWindowViewModel<T> editMasterWindowViewModel = CreateEditMasterWindowViewModel();
 			editMasterWindowViewModel.SetMasters(CreateMasters());
 			editMasterWindowViewModel.DefaultMasterId = SelectedMaster.Id;
-			Messenger.Raise(new TransitionMessage(editMasterWindowViewModel, YlConstants.MESSAGE_KEY_OPEN_EDIT_MASTER_WINDOW));
+			Messenger.Raise(new TransitionMessage(editMasterWindowViewModel, MessageKeyOpenEditWindow()));
 
 			if (editMasterWindowViewModel.IsOk || CountMasters() != _prevNumRecords)
 			{

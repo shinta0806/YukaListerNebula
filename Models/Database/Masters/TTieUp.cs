@@ -11,9 +11,11 @@
 using Microsoft.EntityFrameworkCore;
 
 using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-
+using System.Linq;
+using YukaLister.Models.Database.Sequences;
 using YukaLister.Models.DatabaseAssist;
 using YukaLister.Models.DatabaseContexts;
 using YukaLister.Models.SharedMisc;
@@ -114,6 +116,23 @@ namespace YukaLister.Models.Database.Masters
 		[Column(FIELD_NAME_TIE_UP_RELEASE_DATE)]
 		public Double ReleaseDate { get; set; }
 
+		// 表示カテゴリー名（マスター一覧ウィンドウ用）
+		private String? _displayCategoryName;
+		public String? DisplayCategoryName
+		{
+			get
+			{
+				_displayCategoryName = DbCommon.DisplayCategoryNameByDefaultAlgorithm(_displayCategoryName, CategoryId);
+				return _displayCategoryName;
+			}
+		}
+
+		// 表示リリース日（マスター一覧ウィンドウ用）
+		public String? DisplayReleaseDate
+		{
+			get => DbCommon.DisplayReleaseDateByDefaultAlgorithm(this);
+		}
+
 		// --------------------------------------------------------------------
 		// TTieUp 独自項目
 		// --------------------------------------------------------------------
@@ -125,6 +144,54 @@ namespace YukaLister.Models.Database.Masters
 		// 年齢制限（○歳以上対象）
 		[Column(FIELD_NAME_TIE_UP_AGE_LIMIT)]
 		public Int32 AgeLimit { get; set; }
+
+		// 表示制作会社名（マスター一覧ウィンドウ用）
+		private String? _displayMakerName;
+		public String? DisplayMakerName
+		{
+			get
+			{
+				if (_displayMakerName == null && MakerId != null)
+				{
+					using MusicInfoContextDefault musicInfoContextDefault = MusicInfoContextDefault.CreateContext(out DbSet<TMaker> makers);
+					_displayMakerName = DbCommon.SelectBaseById(makers, MakerId)?.Name;
+				}
+				return _displayMakerName;
+			}
+		}
+
+		// 表示年齢制限（マスター一覧ウィンドウ用）
+		public String? DisplayAgeLimit
+		{
+			get
+			{
+				if (AgeLimit == 0)
+				{
+					return null;
+				}
+				else
+				{
+					return AgeLimit.ToString();
+				}
+			}
+		}
+
+		// 表示シリーズ（マスター一覧ウィンドウ用）
+		private String? _displayTieUpGroups;
+		public String? DisplayTieUpGroups
+		{
+			get
+			{
+				if (_displayTieUpGroups == null)
+				{
+					using MusicInfoContextDefault musicInfoContextDefault = MusicInfoContextDefault.CreateContext(out DbSet<TTieUpGroup> tieUpGroups);
+					MusicInfoContextDefault.GetDbSet(musicInfoContextDefault, out DbSet<TTieUpGroupSequence> tieUpGroupSequences);
+					List<TTieUpGroup> sequencedTieUpGroups = DbCommon.SelectSequencedTieUpGroupsByTieUpId(tieUpGroupSequences, tieUpGroups, Id);
+					_displayTieUpGroups = String.Join(YlConstants.VAR_VALUE_DELIMITER, sequencedTieUpGroups.Select(x => x.Name));
+				}
+				return _displayTieUpGroups;
+			}
+		}
 
 		// ====================================================================
 		// public 定数

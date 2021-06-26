@@ -402,14 +402,7 @@ namespace YukaLister.ViewModels.EditMasterWindowViewModels
 			_isAutoSearchAllowed = false;
 
 			// 年齢制限
-			if (master.AgeLimit == 0)
-			{
-				AgeLimit = null;
-			}
-			else
-			{
-				AgeLimit = master.AgeLimit.ToString();
-			}
+			AgeLimit = master.DisplayAgeLimit;
 
 			// 制作会社
 			MusicInfoContextDefault.GetDbSet(_musicInfoContext, out DbSet<TMaker> makers);

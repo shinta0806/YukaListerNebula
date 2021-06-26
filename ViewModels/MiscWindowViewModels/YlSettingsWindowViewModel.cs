@@ -1173,6 +1173,39 @@ namespace YukaLister.ViewModels.MiscWindowViewModels
 
 		#region 楽曲情報データベース一覧タブのコマンド
 
+		#region タイアップ一覧ボタンの制御
+		private ViewModelCommand? _buttonTieUpsClickedCommand;
+
+		public ViewModelCommand ButtonTieUpsClickedCommand
+		{
+			get
+			{
+				if (_buttonTieUpsClickedCommand == null)
+				{
+					_buttonTieUpsClickedCommand = new ViewModelCommand(ButtonTieUpsClicked);
+				}
+				return _buttonTieUpsClickedCommand;
+			}
+		}
+
+		public void ButtonTieUpsClicked()
+		{
+			try
+			{
+				using MusicInfoContextDefault musicInfoContextDefault = MusicInfoContextDefault.CreateContext(out DbSet<TTieUp> tieUps);
+
+				// ViewModel 経由で楽曲情報データベースマスター一覧ウィンドウを開く
+				using ViewTieUpsWindowViewModel viewTieUpsWindowViewModel = new(musicInfoContextDefault, tieUps, CreateTieUpColumns());
+				Messenger.Raise(new TransitionMessage(viewTieUpsWindowViewModel, YlConstants.MESSAGE_KEY_OPEN_VIEW_MASTERS_WINDOW));
+			}
+			catch (Exception excep)
+			{
+				YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(TraceEventType.Error, "タイアップ一覧ボタンクリック時エラー：\n" + excep.Message);
+				YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, "　スタックトレース：\n" + excep.StackTrace);
+			}
+		}
+		#endregion
+
 		#region 制作会社一覧ボタンの制御
 		private ViewModelCommand? _buttonMakersClickedCommand;
 
@@ -1316,6 +1349,29 @@ namespace YukaLister.ViewModels.MiscWindowViewModels
 		// --------------------------------------------------------------------
 		// 楽曲情報データベースマスター一覧ウィンドウの列を作成
 		// --------------------------------------------------------------------
+		private static ObservableCollection<DataGridColumn> CreateCategorizableColumns<T>() where T : class, IRcCategorizable
+		{
+			ObservableCollection<DataGridColumn> columns = CreateMasterColumns<T>();
+			DataGridTextColumn column;
+
+			// カテゴリー
+			column = new();
+			column.Binding = new Binding(nameof(IRcCategorizable.DisplayCategoryName));
+			column.Header = "カテゴリー";
+			columns.Add(column);
+
+			// リリース日
+			column = new();
+			column.Binding = new Binding(nameof(IRcCategorizable.DisplayReleaseDate));
+			column.Header = "リリース日";
+			columns.Add(column);
+
+			return columns;
+		}
+
+		// --------------------------------------------------------------------
+		// 楽曲情報データベースマスター一覧ウィンドウの列を作成
+		// --------------------------------------------------------------------
 		private static ObservableCollection<DataGridColumn> CreateMasterColumns<T>() where T : class, IRcMaster
 		{
 			ObservableCollection<DataGridColumn> columns = new();
@@ -1337,6 +1393,35 @@ namespace YukaLister.ViewModels.MiscWindowViewModels
 			column = new();
 			column.Binding = new Binding(nameof(IRcMaster.Keyword));
 			column.Header = "検索ワード";
+			columns.Add(column);
+
+			return columns;
+		}
+
+		// --------------------------------------------------------------------
+		// 楽曲情報データベースマスター一覧ウィンドウの列を作成
+		// --------------------------------------------------------------------
+		private static ObservableCollection<DataGridColumn> CreateTieUpColumns()
+		{
+			ObservableCollection<DataGridColumn> columns = CreateCategorizableColumns<TTieUp>();
+			DataGridTextColumn column;
+
+			// 制作会社名
+			column = new();
+			column.Binding = new Binding(nameof(TTieUp.DisplayMakerName));
+			column.Header = "制作会社名";
+			columns.Add(column);
+
+			// 年齢制限
+			column = new();
+			column.Binding = new Binding(nameof(TTieUp.DisplayAgeLimit));
+			column.Header = "年齢制限";
+			columns.Add(column);
+
+			// シリーズ
+			column = new();
+			column.Binding = new Binding(nameof(TTieUp.DisplayTieUpGroups));
+			column.Header = "シリーズ";
 			columns.Add(column);
 
 			return columns;
