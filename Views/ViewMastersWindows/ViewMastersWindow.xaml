@@ -55,7 +55,7 @@
                 <MouseBinding MouseAction="LeftDoubleClick" Command="{Binding DataGridDoubleClickedCommand}" />
             </DataGrid.InputBindings>
             <behaviors:Interaction.Behaviors>
-                <sb:DataGridBindingSupportBehavior Columns="{Binding Columns}" SelectedItem="{Binding SelectedMaster}" SortingCommand="{Binding DataGridSortingCommand}" />
+                <sb:DataGridBindingSupportBehavior Columns="{Binding Columns}" SelectedItem="{Binding SelectedMaster}" />
             </behaviors:Interaction.Behaviors>
         </DataGrid>
 

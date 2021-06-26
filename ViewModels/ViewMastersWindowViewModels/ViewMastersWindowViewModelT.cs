@@ -5,28 +5,24 @@
 // ============================================================================
 
 // ----------------------------------------------------------------------------
-//
+// プログラム中では本クラスではなく派生クラスを使うこと。
 // ----------------------------------------------------------------------------
 
-using Livet;
 using Livet.Commands;
-using Livet.EventListeners;
 using Livet.Messaging;
-using Livet.Messaging.IO;
-using Livet.Messaging.Windows;
+
 using Microsoft.EntityFrameworkCore;
+
 using Shinta;
+
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
-using System.Text;
 using System.Windows.Controls;
-using YukaLister.Models;
+
 using YukaLister.Models.Database;
-using YukaLister.Models.Database.Masters;
 using YukaLister.Models.DatabaseAssist;
 using YukaLister.Models.DatabaseContexts;
 using YukaLister.Models.SharedMisc;
@@ -97,6 +93,36 @@ namespace YukaLister.ViewModels.ViewMastersWindowViewModels
 		// --------------------------------------------------------------------
 		// コマンド
 		// --------------------------------------------------------------------
+
+		#region DataGrid ダブルクリックの制御
+
+		private ViewModelCommand? _dataGridDoubleClickedCommand;
+
+		public ViewModelCommand DataGridDoubleClickedCommand
+		{
+			get
+			{
+				if (_dataGridDoubleClickedCommand == null)
+				{
+					_dataGridDoubleClickedCommand = new ViewModelCommand(DataGridDoubleClicked);
+				}
+				return _dataGridDoubleClickedCommand;
+			}
+		}
+
+		public void DataGridDoubleClicked()
+		{
+			try
+			{
+				EditMaster();
+			}
+			catch (Exception excep)
+			{
+				YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(TraceEventType.Error, "DataGrid ダブルクリック時エラー：\n" + excep.Message);
+				YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, "　スタックトレース：\n" + excep.StackTrace);
+			}
+		}
+		#endregion
 
 		#region 編集ボタンの制御
 

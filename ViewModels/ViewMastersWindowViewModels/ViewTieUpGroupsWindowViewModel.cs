@@ -1,6 +1,6 @@
 ﻿// ============================================================================
 // 
-// 制作会社一覧ウィンドウの ViewModel
+// シリーズ一覧ウィンドウの ViewModel
 // 
 // ============================================================================
 
@@ -21,7 +21,7 @@ using YukaLister.ViewModels.EditMasterWindowViewModels;
 
 namespace YukaLister.ViewModels.ViewMastersWindowViewModels
 {
-	public class ViewMakersWindowViewModel : ViewMastersWindowViewModel<TMaker>
+	public class ViewTieUpGroupsWindowViewModel : ViewMastersWindowViewModel<TTieUpGroup>
 	{
 		// ====================================================================
 		// コンストラクター・デストラクター
@@ -30,7 +30,7 @@ namespace YukaLister.ViewModels.ViewMastersWindowViewModels
 		// --------------------------------------------------------------------
 		// コンストラクター
 		// --------------------------------------------------------------------
-		public ViewMakersWindowViewModel(MusicInfoContextDefault musicInfoContext, DbSet<TMaker> records, ObservableCollection<DataGridColumn> columns)
+		public ViewTieUpGroupsWindowViewModel(MusicInfoContextDefault musicInfoContext, DbSet<TTieUpGroup> records, ObservableCollection<DataGridColumn> columns)
 				: base(musicInfoContext, records, columns)
 		{
 		}
@@ -42,15 +42,15 @@ namespace YukaLister.ViewModels.ViewMastersWindowViewModels
 		// --------------------------------------------------------------------
 		// マスター編集ウィンドウビューモデルの作成
 		// --------------------------------------------------------------------
-		protected override EditMasterWindowViewModel<TMaker> CreateEditMasterWindowViewModel()
+		protected override EditMasterWindowViewModel<TTieUpGroup> CreateEditMasterWindowViewModel()
 		{
-			return new EditMakerWindowViewModel(_musicInfoContext, _records);
+			return new EditTieUpGroupWindowViewModel(_musicInfoContext, _records);
 		}
 
 		// --------------------------------------------------------------------
 		// 編集可能なマスター群の作成
 		// --------------------------------------------------------------------
-		protected override List<TMaker> CreateMasters()
+		protected override List<TTieUpGroup> CreateMasters()
 		{
 			return DbCommon.MastersForEdit(_records, SelectedMaster?.Name);
 		}

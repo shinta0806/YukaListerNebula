@@ -12,11 +12,12 @@ using Livet.Commands;
 using Livet.Messaging;
 using Livet.Messaging.IO;
 using Livet.Messaging.Windows;
+
 using Microsoft.EntityFrameworkCore;
+
 using Shinta;
 
 using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.IO;
@@ -27,6 +28,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
+using YukaLister.Models.Database;
 using YukaLister.Models.Database.Masters;
 using YukaLister.Models.DatabaseAssist;
 using YukaLister.Models.DatabaseContexts;
@@ -1171,18 +1173,18 @@ namespace YukaLister.ViewModels.MiscWindowViewModels
 
 		#region 楽曲情報データベース一覧タブのコマンド
 
-		#region 一覧ボタンの制御
-		private ViewModelCommand? _buttonMastersClickedCommand;
+		#region 制作会社一覧ボタンの制御
+		private ViewModelCommand? _buttonMakersClickedCommand;
 
-		public ViewModelCommand ButtonMastersClickedCommand
+		public ViewModelCommand ButtonMakersClickedCommand
 		{
 			get
 			{
-				if (_buttonMastersClickedCommand == null)
+				if (_buttonMakersClickedCommand == null)
 				{
-					_buttonMastersClickedCommand = new ViewModelCommand(ButtonMastersClicked);
+					_buttonMakersClickedCommand = new ViewModelCommand(ButtonMastersClicked);
 				}
-				return _buttonMastersClickedCommand;
+				return _buttonMakersClickedCommand;
 			}
 		}
 
@@ -1192,28 +1194,47 @@ namespace YukaLister.ViewModels.MiscWindowViewModels
 			{
 				using MusicInfoContextDefault musicInfoContextDefault = MusicInfoContextDefault.CreateContext(out DbSet<TMaker> makers);
 
-				ObservableCollection<DataGridColumn> columns = new();
-				DataGridTextColumn column;
-				column = new();
-				column.Binding = new Binding("Name");
-				column.Header = "制作会社名";
-				columns.Add(column);
-				column = new();
-				column.Binding = new Binding("Ruby");
-				column.Header = "フリガナ";
-				columns.Add(column);
-				column = new();
-				column.Binding = new Binding("Keyword");
-				column.Header = "検索ワード";
-				columns.Add(column);
-
 				// ViewModel 経由で楽曲情報データベースマスター一覧ウィンドウを開く
-				using ViewMakersWindowViewModel viewMastersWindowViewModel = new(musicInfoContextDefault, makers, columns);
+				using ViewMakersWindowViewModel viewMastersWindowViewModel = new(musicInfoContextDefault, makers, CreateMasterColumns<TMaker>());
 				Messenger.Raise(new TransitionMessage(viewMastersWindowViewModel, YlConstants.MESSAGE_KEY_OPEN_VIEW_MASTERS_WINDOW));
 			}
 			catch (Exception excep)
 			{
-				YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(TraceEventType.Error, "マスター一覧ボタンクリック時エラー：\n" + excep.Message);
+				YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(TraceEventType.Error, "制作会社一覧ボタンクリック時エラー：\n" + excep.Message);
+				YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, "　スタックトレース：\n" + excep.StackTrace);
+			}
+		}
+		#endregion
+
+		#region シリーズ一覧ボタンの制御
+
+		private ViewModelCommand? _buttonTieUpGroupsClickedCommand;
+
+		public ViewModelCommand ButtonTieUpGroupsClickedCommand
+		{
+			get
+			{
+				if (_buttonTieUpGroupsClickedCommand == null)
+				{
+					_buttonTieUpGroupsClickedCommand = new ViewModelCommand(ButtonTieUpGroupsClicked);
+				}
+				return _buttonTieUpGroupsClickedCommand;
+			}
+		}
+
+		public void ButtonTieUpGroupsClicked()
+		{
+			try
+			{
+				using MusicInfoContextDefault musicInfoContextDefault = MusicInfoContextDefault.CreateContext(out DbSet<TTieUpGroup> tieUpGroups);
+
+				// ViewModel 経由で楽曲情報データベースマスター一覧ウィンドウを開く
+				using ViewTieUpGroupsWindowViewModel viewTieUpGroupsWindowViewModel = new(musicInfoContextDefault, tieUpGroups, CreateMasterColumns<TTieUpGroup>());
+				Messenger.Raise(new TransitionMessage(viewTieUpGroupsWindowViewModel, YlConstants.MESSAGE_KEY_OPEN_VIEW_MASTERS_WINDOW));
+			}
+			catch (Exception excep)
+			{
+				YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(TraceEventType.Error, "制作会社一覧ボタンクリック時エラー：\n" + excep.Message);
 				YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, "　スタックトレース：\n" + excep.StackTrace);
 			}
 		}
@@ -1341,6 +1362,35 @@ namespace YukaLister.ViewModels.MiscWindowViewModels
 					SyncServer += "/";
 				}
 			}
+		}
+
+		// --------------------------------------------------------------------
+		// 楽曲情報データベースマスター一覧ウィンドウの列を作成
+		// --------------------------------------------------------------------
+		private ObservableCollection<DataGridColumn> CreateMasterColumns<T>() where T : class, IRcMaster
+		{
+			ObservableCollection<DataGridColumn> columns = new();
+			DataGridTextColumn column;
+
+			// 名
+			column = new();
+			column.Binding = new Binding(nameof(IRcMaster.Name));
+			column.Header = YlConstants.MUSIC_INFO_TABLE_NAME_LABELS[DbCommon.MusicInfoTableIndex<T>()] + "名";
+			columns.Add(column);
+
+			// フリガナ
+			column = new();
+			column.Binding = new Binding(nameof(IRcMaster.Ruby));
+			column.Header = "フリガナ";
+			columns.Add(column);
+
+			// 検索ワード
+			column = new();
+			column.Binding = new Binding(nameof(IRcMaster.Keyword));
+			column.Header = "検索ワード";
+			columns.Add(column);
+
+			return columns;
 		}
 
 		// --------------------------------------------------------------------
@@ -1516,6 +1566,5 @@ namespace YukaLister.ViewModels.MiscWindowViewModels
 				throw new Exception("ドロップされたファイルの種類を自動判定できませんでした。\n参照ボタンからファイルを指定して下さい。\n" + notHandledFiles);
 			}
 		}
-
 	}
 }

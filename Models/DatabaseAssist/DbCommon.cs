@@ -225,14 +225,14 @@ namespace YukaLister.Models.DatabaseAssist
 		}
 
 		// --------------------------------------------------------------------
-		// 楽曲情報データベースマスター詳細編集ウィンドウ用の編集対象制作会社群
+		// 楽曲情報データベースマスター詳細編集ウィンドウ用の編集対象マスター群
 		// --------------------------------------------------------------------
-		public static List<TMaker> MakersForEdit(DbSet<TMaker> makers, String? makerName)
+		public static List<T> MastersForEdit<T>(DbSet<T> masters, String? masterName) where T : class, IRcMaster, new()
 		{
-			List<TMaker> sameNameMakers = DbCommon.SelectMastersByName(makers, makerName);
+			List<T> sameNameMasters = DbCommon.SelectMastersByName(masters, masterName);
 
 			// 新規作成用を追加
-			TMaker newRecord = new()
+			T newRecord = new()
 			{
 				// IRcBase
 				Id = String.Empty,
@@ -242,13 +242,13 @@ namespace YukaLister.Models.DatabaseAssist
 				Dirty = true,
 
 				// IRcMaster
-				Name = makerName,
+				Name = masterName,
 				Ruby = null,
 				Keyword = null,
 			};
-			sameNameMakers.Insert(0, newRecord);
+			sameNameMasters.Insert(0, newRecord);
 
-			return sameNameMakers;
+			return sameNameMasters;
 		}
 
 		// --------------------------------------------------------------------

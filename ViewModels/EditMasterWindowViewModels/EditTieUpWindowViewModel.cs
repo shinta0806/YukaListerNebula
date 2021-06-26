@@ -217,7 +217,7 @@ namespace YukaLister.ViewModels.EditMasterWindowViewModels
 
 				// 編集対象レコードを用意
 				MusicInfoContextDefault.GetDbSet(_musicInfoContext, out DbSet<TMaker> makers);
-				List<TMaker> sameNameMakers = DbCommon.MakersForEdit(makers, OriginalMakerName());
+				List<TMaker> sameNameMakers = DbCommon.MastersForEdit(makers, OriginalMakerName());
 
 				// ウィンドウを開く
 				using EditMakerWindowViewModel editMakerWindowViewModel = new(_musicInfoContext, makers);
