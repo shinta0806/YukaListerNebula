@@ -20,6 +20,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Linq;
+using System.Windows;
 using System.Windows.Controls;
 
 using YukaLister.Models.Database;
@@ -45,10 +46,10 @@ namespace YukaLister.ViewModels.ViewMastersWindowViewModels
 		{
 			_musicInfoContext = musicInfoContext;
 			_records = records;
+			_caption = YlConstants.MUSIC_INFO_TABLE_NAME_LABELS[DbCommon.MusicInfoTableIndex<T>()];
 			Columns = columns;
 
-			UpdateDescription();
-			UpdateMasters();
+			UpdateAll(null);
 		}
 
 		// ====================================================================
@@ -149,6 +150,7 @@ namespace YukaLister.ViewModels.ViewMastersWindowViewModels
 				using SearchMasterWindowViewModel<T> searchMasterWindowViewModel = new(_records);
 				Messenger.Raise(new TransitionMessage(searchMasterWindowViewModel, YlConstants.MESSAGE_KEY_OPEN_SEARCH_MASTER_WINDOW));
 
+				_isSearched = true;
 				if (!searchMasterWindowViewModel.IsOk)
 				{
 					return;
@@ -198,6 +200,74 @@ namespace YukaLister.ViewModels.ViewMastersWindowViewModels
 		}
 		#endregion
 
+		#region 新規作成ボタンの制御
+
+		private ViewModelCommand? _buttonNewMasterClickedCommand;
+
+		public ViewModelCommand ButtonNewMasterClickedCommand
+		{
+			get
+			{
+				if (_buttonNewMasterClickedCommand == null)
+				{
+					_buttonNewMasterClickedCommand = new ViewModelCommand(ButtonNewMasterClicked);
+				}
+				return _buttonNewMasterClickedCommand;
+			}
+		}
+
+		public void ButtonNewMasterClicked()
+		{
+			try
+			{
+				if (!_isSearched)
+				{
+					throw new Exception("新規作成の前に一度、目的の" + _caption + "が未登録かどうか検索して下さい。");
+				}
+
+				if (MessageBox.Show("新規に" + _caption + "情報を作成しますか？\n"
+						+ "（目的の" + _caption + "が未登録の場合（検索してもヒットしない場合）に限り、新規作成を行って下さい）", "確認",
+						MessageBoxButton.YesNo, MessageBoxImage.Exclamation) == MessageBoxResult.No)
+				{
+					return;
+				}
+
+				// 新規マスター
+				List<T> masters = new();
+				T newRecord = new()
+				{
+					// IRcBase
+					Id = String.Empty,
+					Import = false,
+					Invalid = false,
+					UpdateTime = YlConstants.INVALID_MJD,
+					Dirty = true,
+
+					// IRcMaster
+					Name = null,
+					Ruby = null,
+					Keyword = null,
+				};
+				masters.Insert(0, newRecord);
+
+				// ViewModel 経由で楽曲情報データベースマスター編集ウィンドウを開く
+				using EditMasterWindowViewModel<T> editMasterWindowViewModel = CreateEditMasterWindowViewModel();
+				editMasterWindowViewModel.SetMasters(masters);
+				Messenger.Raise(new TransitionMessage(editMasterWindowViewModel, YlConstants.MESSAGE_KEY_OPEN_EDIT_MASTER_WINDOW));
+
+				if (editMasterWindowViewModel.IsOk)
+				{
+					UpdateAll(editMasterWindowViewModel.OkSelectedMaster?.Id);
+				}
+			}
+			catch (Exception excep)
+			{
+				YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(TraceEventType.Error, "新規作成ボタンクリック時エラー：\n" + excep.Message);
+				YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, "　スタックトレース：\n" + excep.StackTrace);
+			}
+		}
+		#endregion
+
 		// ====================================================================
 		// public メンバー関数
 		// ====================================================================
@@ -212,7 +282,7 @@ namespace YukaLister.ViewModels.ViewMastersWindowViewModels
 			try
 			{
 				// タイトルバー
-				Title = YlConstants.MUSIC_INFO_TABLE_NAME_LABELS[DbCommon.MusicInfoTableIndex<T>()] + "一覧";
+				Title = _caption + "一覧";
 #if DEBUG
 				Title = "［デバッグ］" + Title;
 #endif
@@ -252,8 +322,14 @@ namespace YukaLister.ViewModels.ViewMastersWindowViewModels
 		// private メンバー変数
 		// ====================================================================
 
+		// マスター名
+		private String _caption;
+
 		// レコード数
 		private Int32 _prevNumRecords;
+
+		// 検索したかどうか
+		private Boolean _isSearched;
 
 		// ====================================================================
 		// private メンバー関数
@@ -277,8 +353,6 @@ namespace YukaLister.ViewModels.ViewMastersWindowViewModels
 				return;
 			}
 
-			T? selectedMasterBak = SelectedMaster;
-
 			// ViewModel 経由で楽曲情報データベースマスター編集ウィンドウを開く
 			using EditMasterWindowViewModel<T> editMasterWindowViewModel = CreateEditMasterWindowViewModel();
 			editMasterWindowViewModel.SetMasters(CreateMasters());
@@ -287,10 +361,18 @@ namespace YukaLister.ViewModels.ViewMastersWindowViewModels
 
 			if (editMasterWindowViewModel.IsOk || CountMasters() != _prevNumRecords)
 			{
-				UpdateDescription();
-				UpdateMasters();
-				SelectedMaster = Masters.FirstOrDefault(x => x.Id == selectedMasterBak.Id);
+				UpdateAll(editMasterWindowViewModel.OkSelectedMaster?.Id);
 			}
+		}
+
+		// --------------------------------------------------------------------
+		// すべてを更新
+		// --------------------------------------------------------------------
+		private void UpdateAll(String? selectId)
+		{
+			UpdateDescription();
+			UpdateMasters();
+			SelectedMaster = Masters.FirstOrDefault(x => x.Id == selectId);
 		}
 
 		// --------------------------------------------------------------------
@@ -299,7 +381,7 @@ namespace YukaLister.ViewModels.ViewMastersWindowViewModels
 		private void UpdateDescription()
 		{
 			_prevNumRecords = CountMasters();
-			Description = _prevNumRecords.ToString("#,0") + " 個の" + YlConstants.MUSIC_INFO_TABLE_NAME_LABELS[DbCommon.MusicInfoTableIndex<T>()] + "が登録されています。";
+			Description = _prevNumRecords.ToString("#,0") + " 個の" + _caption + "が登録されています。";
 		}
 
 		// --------------------------------------------------------------------
