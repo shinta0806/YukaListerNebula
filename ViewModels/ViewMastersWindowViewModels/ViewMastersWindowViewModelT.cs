@@ -46,6 +46,7 @@ namespace YukaLister.ViewModels.ViewMastersWindowViewModels
 			_records = records;
 			Columns = columns;
 
+			UpdateDescription();
 			UpdateMasters();
 		}
 
@@ -210,6 +211,13 @@ namespace YukaLister.ViewModels.ViewMastersWindowViewModels
 		protected abstract List<T> CreateMasters();
 
 		// ====================================================================
+		// private メンバー変数
+		// ====================================================================
+
+		// レコード数
+		private Int32 _prevNumRecords;
+
+		// ====================================================================
 		// private メンバー関数
 		// ====================================================================
 
@@ -228,6 +236,15 @@ namespace YukaLister.ViewModels.ViewMastersWindowViewModels
 			editMasterWindowViewModel.SetMasters(CreateMasters());
 			editMasterWindowViewModel.DefaultMasterId = SelectedMaster.Id;
 			Messenger.Raise(new TransitionMessage(editMasterWindowViewModel, YlConstants.MESSAGE_KEY_OPEN_EDIT_MASTER_WINDOW));
+		}
+
+		// --------------------------------------------------------------------
+		// 説明を更新
+		// --------------------------------------------------------------------
+		private void UpdateDescription()
+		{
+			_prevNumRecords = _records.Count();
+			Description = _prevNumRecords.ToString("#,0") + " 個の" + YlConstants.MUSIC_INFO_TABLE_NAME_LABELS[DbCommon.MusicInfoTableIndex<T>()] + "が登録されています。";
 		}
 
 		// --------------------------------------------------------------------
