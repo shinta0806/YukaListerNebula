@@ -222,6 +222,14 @@ namespace YukaLister.ViewModels.ViewMastersWindowViewModels
 		// ====================================================================
 
 		// --------------------------------------------------------------------
+		// 有効なマスターの数
+		// --------------------------------------------------------------------
+		private Int32 CountMasters()
+		{
+			return _records.AsNoTracking().Where(x => !x.Invalid).Count();
+		}
+
+		// --------------------------------------------------------------------
 		// マスター編集
 		// --------------------------------------------------------------------
 		private void EditMaster()
@@ -243,7 +251,7 @@ namespace YukaLister.ViewModels.ViewMastersWindowViewModels
 		// --------------------------------------------------------------------
 		private void UpdateDescription()
 		{
-			_prevNumRecords = _records.Count();
+			_prevNumRecords = CountMasters();
 			Description = _prevNumRecords.ToString("#,0") + " 個の" + YlConstants.MUSIC_INFO_TABLE_NAME_LABELS[DbCommon.MusicInfoTableIndex<T>()] + "が登録されています。";
 		}
 
@@ -252,7 +260,7 @@ namespace YukaLister.ViewModels.ViewMastersWindowViewModels
 		// --------------------------------------------------------------------
 		private void UpdateMasters()
 		{
-			Masters = _records.AsNoTracking().ToList();
+			Masters = _records.AsNoTracking().Where(x => !x.Invalid).ToList();
 		}
 	}
 }
