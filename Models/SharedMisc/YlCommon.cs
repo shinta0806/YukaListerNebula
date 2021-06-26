@@ -10,7 +10,9 @@
 
 using Livet;
 using Livet.Messaging;
+
 using Microsoft.EntityFrameworkCore;
+
 using Shinta;
 
 using System;
@@ -25,12 +27,11 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using YukaLister.Models.Database;
+
 using YukaLister.Models.Database.Masters;
 using YukaLister.Models.DatabaseAssist;
 using YukaLister.Models.DatabaseContexts;
 using YukaLister.Models.YukaListerModels;
-using YukaLister.ViewModels;
 using YukaLister.ViewModels.MiscWindowViewModels;
 
 namespace YukaLister.Models.SharedMisc
@@ -597,23 +598,6 @@ namespace YukaLister.Models.SharedMisc
 			SystemEnvironment se = new();
 			se.LogEnvironment(YukaListerModel.Instance.EnvModel.LogWriter);
 		}
-
-#if false
-		// --------------------------------------------------------------------
-		// ファイル名とファイル命名規則・フォルダー固定値がマッチするか確認し、マッチしたマップを返す（ルビは楽曲情報データベース登録用に正規化）
-		// ＜引数＞ fileNameBody: 拡張子無し
-		// --------------------------------------------------------------------
-		public static Dictionary<String, String?> MatchFileNameRulesAndFolderRuleForMusicInfo(String fileNameBody, FolderSettingsInMemory folderSettingsInMemory)
-		{
-			// ファイル名命名規則
-			Dictionary<String, String?> dic = MatchFileNameRulesForMusicInfo(fileNameBody, folderSettingsInMemory);
-
-			// フォルダー固定値をマージ
-			MargeFolderRules(folderSettingsInMemory, dic);
-
-			return dic;
-		}
-#endif
 
 		// --------------------------------------------------------------------
 		// ファイル名とファイル命名規則・フォルダー固定値がマッチするか確認し、マッチしたマップを返す（ルビは検索用に正規化）

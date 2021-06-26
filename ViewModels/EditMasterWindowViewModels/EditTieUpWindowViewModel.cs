@@ -215,26 +215,9 @@ namespace YukaLister.ViewModels.EditMasterWindowViewModels
 					}
 				}
 
-				// 既存レコードを用意
+				// 編集対象レコードを用意
 				MusicInfoContextDefault.GetDbSet(_musicInfoContext, out DbSet<TMaker> makers);
-				List<TMaker> sameNameMakers = DbCommon.SelectMastersByName(makers, OriginalMakerName());
-
-				// 新規作成用を追加
-				TMaker newRecord = new()
-				{
-					// IRcBase
-					Id = String.Empty,
-					Import = false,
-					Invalid = false,
-					UpdateTime = YlConstants.INVALID_MJD,
-					Dirty = true,
-
-					// IRcMaster
-					Name = OriginalMakerName(),
-					Ruby = null,
-					Keyword = null,
-				};
-				sameNameMakers.Insert(0, newRecord);
+				List<TMaker> sameNameMakers = DbCommon.MakersForEdit(makers, OriginalMakerName());
 
 				// ウィンドウを開く
 				using EditMakerWindowViewModel editMakerWindowViewModel = new(_musicInfoContext, makers);

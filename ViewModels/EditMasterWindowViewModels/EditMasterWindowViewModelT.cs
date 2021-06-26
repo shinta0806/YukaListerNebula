@@ -371,7 +371,7 @@ namespace YukaLister.ViewModels.EditMasterWindowViewModels
 		// 編集対象の名称
 		protected String _caption;
 
-		// 楽曲情報データベースのコンテキスト
+		// 楽曲情報データベースのコンテキスト（外部から指定されたもの）
 		protected MusicInfoContextDefault _musicInfoContext;
 
 		// 検索対象データベースレコード

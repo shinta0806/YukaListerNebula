@@ -80,7 +80,7 @@ namespace YukaLister.Models.SharedMisc
 	{
 		Queued,         // 待機
 		Running,        // 実行中
-		//Error,          // エラー
+						//Error,          // エラー
 		DoneInMemory,   // 完了（インメモリデータベースへの反映）
 		DoneInDisk,     // 完了（ゆかり用データベースへの反映）
 	}
@@ -415,6 +415,9 @@ namespace YukaLister.Models.SharedMisc
 
 		// 楽曲情報データベースマスター検索ウィンドウを開く
 		public const String MESSAGE_KEY_OPEN_SEARCH_MASTER_WINDOW = "OpenSearchMasterWindow";
+
+		// 楽曲情報データベースマスター一覧ウィンドウを開く
+		public const String MESSAGE_KEY_OPEN_VIEW_MASTERS_WINDOW = "OpenViewMastersWindow";
 
 		// ファイル一覧ウィンドウを開く
 		public const String MESSAGE_KEY_OPEN_VIEW_TFOUNDS_WINDOW = "OpenViewTFoundsWindow";

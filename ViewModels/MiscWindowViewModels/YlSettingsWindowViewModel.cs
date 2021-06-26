@@ -12,10 +12,11 @@ using Livet.Commands;
 using Livet.Messaging;
 using Livet.Messaging.IO;
 using Livet.Messaging.Windows;
-
+using Microsoft.EntityFrameworkCore;
 using Shinta;
 
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.IO;
@@ -24,7 +25,9 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
-
+using System.Windows.Controls;
+using System.Windows.Data;
+using YukaLister.Models.Database.Masters;
 using YukaLister.Models.DatabaseAssist;
 using YukaLister.Models.DatabaseContexts;
 using YukaLister.Models.OutputWriters;
@@ -33,6 +36,7 @@ using YukaLister.Models.SharedMisc;
 using YukaLister.Models.YukaListerModels;
 using YukaLister.ViewModels.ImportExportWindowViewModels;
 using YukaLister.ViewModels.OutputSettingsWindowViewModels;
+using YukaLister.ViewModels.ViewMastersWindowViewModels;
 
 namespace YukaLister.ViewModels.MiscWindowViewModels
 {
@@ -929,7 +933,7 @@ namespace YukaLister.ViewModels.MiscWindowViewModels
 
 		#endregion
 
-		#region 楽曲情報データベースタブのコマンド
+		#region 楽曲情報データベース設定タブのコマンド
 
 		#region インポート参照ボタンの制御
 		private ViewModelCommand? _buttonBrowseImportYukaListerClickedCommand;
@@ -1158,6 +1162,58 @@ namespace YukaLister.ViewModels.MiscWindowViewModels
 			catch (Exception excep)
 			{
 				YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(TraceEventType.Error, "強制的に合わせるボタンクリック時エラー：\n" + excep.Message);
+				YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, "　スタックトレース：\n" + excep.StackTrace);
+			}
+		}
+		#endregion
+
+		#endregion
+
+		#region 楽曲情報データベース一覧タブのコマンド
+
+		#region 一覧ボタンの制御
+		private ViewModelCommand? _buttonMastersClickedCommand;
+
+		public ViewModelCommand ButtonMastersClickedCommand
+		{
+			get
+			{
+				if (_buttonMastersClickedCommand == null)
+				{
+					_buttonMastersClickedCommand = new ViewModelCommand(ButtonMastersClicked);
+				}
+				return _buttonMastersClickedCommand;
+			}
+		}
+
+		public void ButtonMastersClicked()
+		{
+			try
+			{
+				using MusicInfoContextDefault musicInfoContextDefault = MusicInfoContextDefault.CreateContext(out DbSet<TMaker> makers);
+
+				ObservableCollection<DataGridColumn> columns = new();
+				DataGridTextColumn column;
+				column = new();
+				column.Binding = new Binding("Name");
+				column.Header = "制作会社名";
+				columns.Add(column);
+				column = new();
+				column.Binding = new Binding("Ruby");
+				column.Header = "フリガナ";
+				columns.Add(column);
+				column = new();
+				column.Binding = new Binding("Keyword");
+				column.Header = "検索ワード";
+				columns.Add(column);
+
+				// ViewModel 経由で楽曲情報データベースマスター一覧ウィンドウを開く
+				using ViewMakersWindowViewModel viewMastersWindowViewModel = new(musicInfoContextDefault, makers, columns);
+				Messenger.Raise(new TransitionMessage(viewMastersWindowViewModel, YlConstants.MESSAGE_KEY_OPEN_VIEW_MASTERS_WINDOW));
+			}
+			catch (Exception excep)
+			{
+				YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(TraceEventType.Error, "マスター一覧ボタンクリック時エラー：\n" + excep.Message);
 				YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, "　スタックトレース：\n" + excep.StackTrace);
 			}
 		}

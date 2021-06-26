@@ -222,7 +222,33 @@ namespace YukaLister.Models.DatabaseAssist
 		public static String ListDatabasePath(YlSettings ylSettings)
 		{
 			return YukariDatabaseFullFolder(ylSettings) + FILE_NAME_LIST_DATABASE_IN_DISK;
+		}
 
+		// --------------------------------------------------------------------
+		// 楽曲情報データベースマスター詳細編集ウィンドウ用の編集対象制作会社群
+		// --------------------------------------------------------------------
+		public static List<TMaker> MakersForEdit(DbSet<TMaker> makers, String? makerName)
+		{
+			List<TMaker> sameNameMakers = DbCommon.SelectMastersByName(makers, makerName);
+
+			// 新規作成用を追加
+			TMaker newRecord = new()
+			{
+				// IRcBase
+				Id = String.Empty,
+				Import = false,
+				Invalid = false,
+				UpdateTime = YlConstants.INVALID_MJD,
+				Dirty = true,
+
+				// IRcMaster
+				Name = makerName,
+				Ruby = null,
+				Keyword = null,
+			};
+			sameNameMakers.Insert(0, newRecord);
+
+			return sameNameMakers;
 		}
 
 		// --------------------------------------------------------------------
