@@ -69,6 +69,9 @@ namespace YukaLister.Models.YukaListerModels
 		// ネビュラコア：同期担当
 		public Syclin Syclin { get; } = new();
 
+		// ネビュラコア：負荷監視担当
+		public Lomolin Lomolin { get; } = new();
+
 		// ゆかりすたー NEBULA パーツごとの動作状況
 		private readonly YukaListerStatus[] _yukaListerPartsStatus = new YukaListerStatus[(Int32)YukaListerPartsStatusIndex.__End__];
 		public YukaListerStatus[] YukaListerPartsStatus
@@ -213,6 +216,10 @@ namespace YukaLister.Models.YukaListerModels
 				Syclin.MainEvent.Set();
 				tasks.Add(Syclin.MainTask);
 			}
+			if (Lomolin.MainTask != null)
+			{
+				tasks.Add(Lomolin.MainTask);
+			}
 			Debug.WriteLine("QuitAllCoresAsync() b");
 			await Task.WhenAll(tasks);
 			Debug.WriteLine("QuitAllCoresAsync() c");
@@ -226,6 +233,7 @@ namespace YukaLister.Models.YukaListerModels
 			Sifolin.Start();
 			Kamlin.Start();
 			Syclin.Start();
+			Lomolin.Start();
 		}
 
 		// ====================================================================

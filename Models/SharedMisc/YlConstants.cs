@@ -228,7 +228,7 @@ namespace YukaLister.Models.SharedMisc
 		public const String APP_ID = "YukaLister";
 		public const String APP_GENERATION = "NEBULA";
 		public const String APP_NAME_J = "ゆかりすたー " + APP_GENERATION + " ";
-		public const String APP_VER = "Ver 3.28";
+		public const String APP_VER = "Ver 3.28 PC";
 		public const String COPYRIGHT_J = "Copyright (C) 2021 by SHINTA";
 
 		// --------------------------------------------------------------------
@@ -632,8 +632,8 @@ namespace YukaLister.Models.SharedMisc
 		// 同期詳細ログ ID
 		public const String SYNC_DETAIL_ID = "SyncDetail";
 
-		// インポート・エクスポート詳細ログ ID
-		//public const String IMPORT_EXPORT_DETAIL_ID = "ImportExportDetail";
+		// 負荷監視ログ ID
+		public const String MONITOR_ID = "Monitor";
 
 		// 検索の方向
 		public const String FIND_DIRECTION_BACKWARD = "Backward";
