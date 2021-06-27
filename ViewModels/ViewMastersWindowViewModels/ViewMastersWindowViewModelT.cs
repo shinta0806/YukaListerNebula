@@ -97,6 +97,13 @@ namespace YukaLister.ViewModels.ViewMastersWindowViewModels
 		// コマンド
 		// --------------------------------------------------------------------
 
+		#region ヘルプリンクの制御
+		public static ListenerCommand<String>? HelpClickedCommand
+		{
+			get => YukaListerModel.Instance.EnvModel.HelpClickedCommand;
+		}
+		#endregion
+
 		#region DataGrid ダブルクリックの制御
 
 		private ViewModelCommand? _dataGridDoubleClickedCommand;
@@ -389,7 +396,7 @@ namespace YukaLister.ViewModels.ViewMastersWindowViewModels
 		private void UpdateDescription()
 		{
 			_prevNumRecords = CountMasters();
-			Description = _prevNumRecords.ToString("#,0") + " 個の" + _caption + "が登録されています。";
+			Description = _prevNumRecords.ToString("#,0") + " 個の" + _caption + "が登録されています。ソートには時間がかかる場合があります。";
 		}
 
 		// --------------------------------------------------------------------

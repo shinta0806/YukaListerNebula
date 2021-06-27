@@ -1340,7 +1340,7 @@ namespace YukaLister.ViewModels.MiscWindowViewModels
 		#endregion
 
 		#region タグ一覧ボタンの制御
-		private ViewModelCommand _buttonTagsClickedCommand;
+		private ViewModelCommand? _buttonTagsClickedCommand;
 
 		public ViewModelCommand ButtonTagsClickedCommand
 		{
