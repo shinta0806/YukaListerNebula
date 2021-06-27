@@ -15,7 +15,7 @@ using Shinta;
 using System;
 using System.Diagnostics;
 using System.Linq;
-
+using System.Threading;
 using YukaLister.Models.Database;
 using YukaLister.Models.DatabaseContexts;
 using YukaLister.Models.OutputWriters;
@@ -54,6 +54,9 @@ namespace YukaLister.Models.YukaListerCores
 		// --------------------------------------------------------------------
 		protected override void CoreMain()
 		{
+			// リスト出力時の処理が重いことによるトラブルの可能性がゼロではないため、プライオリティーを下げる（チケット #97）
+			Thread.CurrentThread.Priority = ThreadPriority.Lowest;
+
 			while (true)
 			{
 				MainEvent.WaitOne();
@@ -62,6 +65,7 @@ namespace YukaLister.Models.YukaListerCores
 
 				try
 				{
+					//Debug.WriteLine("Kamlin.CoreMain() priority: " + Thread.CurrentThread.Priority.ToString());
 					YukaListerModel.Instance.EnvModel.AppCancellationTokenSource.Token.ThrowIfCancellationRequested();
 					if (YukaListerModel.Instance.EnvModel.YukaListerWholeStatus == YukaListerStatus.Error)
 					{

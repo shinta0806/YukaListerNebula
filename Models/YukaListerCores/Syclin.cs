@@ -62,6 +62,11 @@ namespace YukaLister.Models.YukaListerCores
 		// --------------------------------------------------------------------
 		protected override void CoreMain()
 		{
+#if DEBUGz
+			Debug.WriteLine("priority before: " + Thread.CurrentThread.Priority.ToString());
+			Thread.CurrentThread.Priority = ThreadPriority.Lowest;
+			Debug.WriteLine("priority after: " + Thread.CurrentThread.Priority.ToString());
+#endif
 			YlCommon.SetLogWriterSyncDetail(_logWriterSyncDetail);
 
 			while (true)
