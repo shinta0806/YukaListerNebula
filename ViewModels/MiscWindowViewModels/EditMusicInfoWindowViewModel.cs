@@ -342,34 +342,15 @@ namespace YukaLister.ViewModels.MiscWindowViewModels
 					}
 				}
 
-				// 情報準備
-				List<TTieUp> sameNameTieUps = DbCommon.SelectMastersByName(tieUps, dicByFile[YlConstants.RULE_VAR_PROGRAM]);
+				// 編集対象レコードを用意
+				List<TTieUp> sameNameTieUps = DbCommon.MastersForEdit(tieUps, dicByFile[YlConstants.RULE_VAR_PROGRAM]);
+
+				// 新規作成レコードの情報を補完
 				MusicInfoContextDefault.GetDbSet(musicInfoContext, out DbSet<TSong> songs);
 				TSong? song = DbCommon.SelectMasterByName(songs, dicByFile[YlConstants.RULE_VAR_TITLE]);
 				TCategory? category = DbCommon.SelectMasterByName(categories, dicByFile[YlConstants.RULE_VAR_CATEGORY]);
-
-				// 新規作成用を追加
-				TTieUp newTieUp = new()
-				{
-					// IRcBase
-					Id = String.Empty,
-					Import = false,
-					Invalid = false,
-					UpdateTime = YlConstants.INVALID_MJD,
-					Dirty = true,
-
-					// IRcMaster
-					Name = dicByFile[YlConstants.RULE_VAR_PROGRAM],
-					Ruby = null,
-					Keyword = null,
-
-					// TTieUp
-					CategoryId = category?.Id,
-					MakerId = null,
-					AgeLimit = Common.StringToInt32(dicByFile[YlConstants.RULE_VAR_AGE_LIMIT]),
-					ReleaseDate = YlConstants.INVALID_MJD,
-				};
-				sameNameTieUps.Insert(0, newTieUp);
+				sameNameTieUps[0].CategoryId = category?.Id;
+				sameNameTieUps[0].AgeLimit = Common.StringToInt32(dicByFile[YlConstants.RULE_VAR_AGE_LIMIT]);
 
 				// ウィンドウの準備
 				using EditTieUpWindowViewModel editTieUpWindowViewModel = new(musicInfoContext, tieUps);

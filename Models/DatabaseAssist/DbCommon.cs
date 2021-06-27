@@ -251,6 +251,7 @@ namespace YukaLister.Models.DatabaseAssist
 
 		// --------------------------------------------------------------------
 		// 楽曲情報データベースマスター詳細編集ウィンドウ用の編集対象マスター群
+		// 同名の既存マスター＋新規マスター
 		// --------------------------------------------------------------------
 		public static List<T> MastersForEdit<T>(DbSet<T> masters, String? masterName) where T : class, IRcMaster, new()
 		{

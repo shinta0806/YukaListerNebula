@@ -397,26 +397,9 @@ namespace YukaLister.ViewModels.EditMasterWindowViewModels
 					}
 				}
 
-				// 既存レコードを用意
+				// 編集対象レコードを用意
 				MusicInfoContextDefault.GetDbSet(_musicInfoContext, out DbSet<TTieUp> tieUps);
-				List<TTieUp> sameNameTieUps = DbCommon.SelectMastersByName(tieUps, OriginalTieUpName());
-
-				// 新規作成用を追加
-				TTieUp newRecord = new()
-				{
-					// IRcBase
-					Id = String.Empty,
-					Import = false,
-					Invalid = false,
-					UpdateTime = YlConstants.INVALID_MJD,
-					Dirty = true,
-
-					// IRcMaster
-					Name = OriginalTieUpName(),
-					Ruby = null,
-					Keyword = null,
-				};
-				sameNameTieUps.Insert(0, newRecord);
+				List<TTieUp> sameNameTieUps = DbCommon.MastersForEdit(tieUps, OriginalTieUpName());
 
 				// ウィンドウを開く
 				using EditTieUpWindowViewModel editTieUpWindowViewModel = new(_musicInfoContext, tieUps);
