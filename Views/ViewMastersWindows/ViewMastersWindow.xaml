@@ -17,6 +17,10 @@
         <vmvmwvm:ViewMastersWindowViewModel />
     </Window.DataContext>
 
+    <Window.InputBindings>
+        <KeyBinding Gesture="Ctrl+F" Command="{Binding ButtonSearchMasterClickedCommand}"/>
+    </Window.InputBindings>
+
     <behaviors:Interaction.Behaviors>
         <sb:WindowBindingSupportBehavior IsCascade="True" MinimizeBox="False"/>
     </behaviors:Interaction.Behaviors>
@@ -62,9 +66,9 @@
             </Label>
         </StackPanel>
         <DockPanel DockPanel.Dock="Bottom" Margin="20,0,20,20" LastChildFill="False">
-            <Button Content="検索 (_E)" Style="{StaticResource MaterialDesignRaisedLightButton}" Width="120" Height="Auto" Command="{Binding ButtonSearchMasterClickedCommand}" />
-            <Button Content="編集 (_E)" Width="120" Height="Auto" Command="{Binding ButtonEditMasterClickedCommand}" Margin="20,0,0,0" />
-            <Button Content="新規作成 (_E)" Style="{StaticResource MaterialDesignRaisedLightButton}" Width="120" Height="Auto" Command="{Binding ButtonNewMasterClickedCommand}" Margin="20,0,0,0" />
+            <Button Content="検索 (_F)" ToolTip="検索 (Ctrl+F)" Style="{StaticResource MaterialDesignRaisedLightButton}" Width="120" Height="Auto" Command="{Binding ButtonSearchMasterClickedCommand}" />
+            <Button Content="編集 (_E)" ToolTip="編集" Width="120" Height="Auto" Command="{Binding ButtonEditMasterClickedCommand}" Margin="20,0,0,0" />
+            <Button Content="新規作成 (_N)" ToolTip="新規作成" Style="{StaticResource MaterialDesignRaisedLightButton}" Width="120" Height="Auto" Command="{Binding ButtonNewMasterClickedCommand}" Margin="20,0,0,0" />
             <Button Content="閉じる (_C)" Style="{StaticResource MaterialDesignRaisedLightButton}" Width="100" Height="Auto" IsCancel="True" DockPanel.Dock="Right" />
         </DockPanel>
         <DataGrid Margin="20,10,20,20" AutoGenerateColumns="False" CanUserReorderColumns="False" SelectionMode="Single" IsReadOnly="True" DockPanel.Dock="Top" 

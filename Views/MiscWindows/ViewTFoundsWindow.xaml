@@ -69,7 +69,7 @@
             </Label>
         </StackPanel>
         <DockPanel DockPanel.Dock="Bottom" Margin="20,0,20,20" LastChildFill="False">
-            <Button Content="検索 (_F)" Style="{StaticResource MaterialDesignRaisedLightButton}" Width="100" Height="Auto" ToolTip="キーワード検索" Padding="4" Command="{Binding ButtonFindKeywordClickedCommand}" />
+            <Button Content="検索 (_F)" Style="{StaticResource MaterialDesignRaisedLightButton}" Width="100" Height="Auto" ToolTip="キーワード検索 (Ctrl+F)" Padding="4" Command="{Binding ButtonFindKeywordClickedCommand}" />
             <Button Content="□↓検索 (_G)" Style="{StaticResource MaterialDesignRaisedLightButton}" Width="100" Height="Auto" Margin="20,0,0,0" ToolTip="空欄のセルを検索" Padding="4" Command="{Binding ButtonFindCellClickedCommand}"/>
             <Button Content="■↓検索 (_H)" Style="{StaticResource MaterialDesignRaisedLightButton}" Width="100" Height="Auto" Margin="20,0,0,0" ToolTip="空欄ではないセルの検索" Padding="4" Command="{Binding ButtonFindCellClickedCommand}" CommandParameter="Fill" />
             <Button Content="編集 (_E)" Width="120" Height="Auto" ToolTip="タイアップ名・楽曲名を編集" Command="{Binding ButtonEditMusicInfoClickedCommand}" Margin="20,0,0,0"/>
