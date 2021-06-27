@@ -1355,7 +1355,8 @@ namespace YukaLister.ViewModels
 						TargetFolderInfo? targetFolderInfo = YukaListerModel.Instance.ProjModel.RunningTargetFolderInfo();
 						if (targetFolderInfo == null)
 						{
-							// タイミングによっては一時的に null になることがありえるが、その場合は何もしない
+							// タイミングによっては一時的に null になることがありえる
+							YukaListerStatusLabel = "検索データ作成中...";
 						}
 						else
 						{
@@ -1376,7 +1377,8 @@ namespace YukaLister.ViewModels
 					}
 					else
 					{
-						// 残り香の状態なので表示は更新しない
+						// 残り香の状態
+						YukaListerStatusLabel = "処理中...";
 					}
 					break;
 				case YukaListerStatus.Error:
