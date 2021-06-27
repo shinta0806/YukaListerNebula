@@ -238,6 +238,7 @@
                     </DockPanel>
                     <Button Content="楽曲一覧 (_L)" Style="{StaticResource MaterialDesignRaisedLightButton}" Width="180" Height="Auto" Padding="4" Command="{Binding ButtonSongsClickedCommand}" HorizontalAlignment="Left" Margin="20,10,0,0" />
                     <Button Content="人物一覧 (_L)" Style="{StaticResource MaterialDesignRaisedLightButton}" Width="180" Height="Auto" Padding="4" Command="{Binding ButtonPeopleClickedCommand}" HorizontalAlignment="Left" Margin="20,10,0,0" />
+                    <Button Content="タグ一覧 (_L)" Style="{StaticResource MaterialDesignRaisedLightButton}" Width="180" Height="Auto" Padding="4" Command="{Binding ButtonTagsClickedCommand}" HorizontalAlignment="Left" Margin="20,10,0,0" />
                 </StackPanel>
             </TabItem>
         </TabControl>

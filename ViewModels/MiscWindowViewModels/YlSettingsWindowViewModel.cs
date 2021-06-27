@@ -1339,6 +1339,39 @@ namespace YukaLister.ViewModels.MiscWindowViewModels
 		}
 		#endregion
 
+		#region タグ一覧ボタンの制御
+		private ViewModelCommand _buttonTagsClickedCommand;
+
+		public ViewModelCommand ButtonTagsClickedCommand
+		{
+			get
+			{
+				if (_buttonTagsClickedCommand == null)
+				{
+					_buttonTagsClickedCommand = new ViewModelCommand(ButtonTagsClicked);
+				}
+				return _buttonTagsClickedCommand;
+			}
+		}
+
+		public void ButtonTagsClicked()
+		{
+			try
+			{
+				using MusicInfoContextDefault musicInfoContextDefault = MusicInfoContextDefault.CreateContext(out DbSet<TTag> tags);
+
+				// ViewModel 経由で楽曲情報データベースマスター一覧ウィンドウを開く
+				using ViewTagsWindowViewModel viewTagsWindowViewModel = new(musicInfoContextDefault, tags, CreateMasterColumns<TTag>());
+				Messenger.Raise(new TransitionMessage(viewTagsWindowViewModel, YlConstants.MESSAGE_KEY_OPEN_VIEW_MASTERS_WINDOW));
+			}
+			catch (Exception excep)
+			{
+				YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(TraceEventType.Error, "タグ一覧ボタンクリック時エラー：\n" + excep.Message);
+				YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, "　スタックトレース：\n" + excep.StackTrace);
+			}
+		}
+		#endregion
+
 		#endregion
 
 		// ====================================================================
