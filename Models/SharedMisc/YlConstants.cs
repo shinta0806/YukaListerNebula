@@ -152,6 +152,16 @@ namespace YukaLister.Models.SharedMisc
 	}
 
 	// --------------------------------------------------------------------
+	// パフォーマンスカウンターの種類
+	// --------------------------------------------------------------------
+	public enum PerformanceCounterKind
+	{
+		CpuAll,
+		CpuProcess,
+		Disk,
+	}
+
+	// --------------------------------------------------------------------
 	// リスト問題の修正項目インデックス
 	// --------------------------------------------------------------------
 	public enum ReportAdjustKey
@@ -228,7 +238,7 @@ namespace YukaLister.Models.SharedMisc
 		public const String APP_ID = "YukaLister";
 		public const String APP_GENERATION = "NEBULA";
 		public const String APP_NAME_J = "ゆかりすたー " + APP_GENERATION + " ";
-		public const String APP_VER = "Ver 3.28 PC";
+		public const String APP_VER = "Ver 3.41";
 		public const String COPYRIGHT_J = "Copyright (C) 2021 by SHINTA";
 
 		// --------------------------------------------------------------------

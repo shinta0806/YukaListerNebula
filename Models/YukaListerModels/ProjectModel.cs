@@ -99,6 +99,7 @@ namespace YukaLister.Models.YukaListerModels
 				// 通知
 				YukaListerModel.Instance.EnvModel.IsMainWindowDataGridCountChanged = true;
 				YukaListerModel.Instance.EnvModel.Sifolin.MainEvent.Set();
+				SetLomolinTargetDrives();
 
 				// スリープ状態のデバイスだとここで時間がかかる
 				AdjustAutoTargetInfoIfNeeded(YlCommon.DriveLetter(parentFolder));
@@ -171,6 +172,7 @@ namespace YukaLister.Models.YukaListerModels
 				_targetFolderInfos.RemoveRange(parentIndex, _targetFolderInfos[parentIndex].NumTotalFolders);
 			}
 			YukaListerModel.Instance.EnvModel.IsMainWindowDataGridCountChanged = true;
+			SetLomolinTargetDrives();
 			return true;
 		}
 
@@ -423,6 +425,32 @@ namespace YukaLister.Models.YukaListerModels
 				}
 			}
 			return -1;
+		}
+
+		// --------------------------------------------------------------------
+		// Lomolin の TargetDrives を設定
+		// --------------------------------------------------------------------
+		private void SetLomolinTargetDrives()
+		{
+			List<TargetFolderInfo> parents;
+			lock (_targetFolderInfos)
+			{
+				parents = _targetFolderInfos.Where(x => x.IsParent).ToList();
+			}
+			List<String> drives = new();
+
+			// C ドライブはデータベースを保持しているので常に測定対象とする
+			drives.Add("C");
+
+			foreach (TargetFolderInfo parent in parents)
+			{
+				if (drives.FirstOrDefault(x => x == parent.TargetPath[0..1].ToUpper()) == null)
+				{
+					drives.Add(parent.TargetPath[0..1].ToUpper());
+				}
+			}
+
+			YukaListerModel.Instance.EnvModel.Lomolin.TargetDrives = String.Join(',', drives);
 		}
 
 		// --------------------------------------------------------------------

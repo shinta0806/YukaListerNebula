@@ -5,16 +5,22 @@
 // ============================================================================
 
 // ----------------------------------------------------------------------------
-// 実測値からの推測
+// 全プロセスの CPU 負荷を記録するのが理想だが、測定に 10 秒以上かかるため、特定プロセスのみを記録する
+// ----------------------------------------------------------------------------
+
+// ----------------------------------------------------------------------------
+// PerformanceCounter について、実測値からの推測
 // ・"Processor"-"% Processor Time"-"_Total" は全コアに対する CPU 使用率を返す
 //   例）8C16T のマシンで 1 スレッドが 100% 負荷の場合、6.25 が返る
 // ・"Process"-"% Processor Time" シリーズは 1 CPU に対する CPU 使用率を返す
 //   例）8C16T のマシンで 1 スレッドが 100% 負荷の場合、100.00 が返る
+//       スレッド数で割るとタスクマネージャーの値より少し少なめに出る印象
 // ・"Process"-"% Processor Time"-"_Total" には "Idle" も含まれている
 //   例）8C16T のマシンは常に 1600.00 に近い数字が返る
 // ----------------------------------------------------------------------------
 
 using Shinta;
+
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -44,6 +50,9 @@ namespace YukaLister.Models.YukaListerCores
 		// public プロパティー
 		// ====================================================================
 
+		// 測定対象ディスクのドライブレター群（カンマ区切り）
+		public String TargetDrives { get; set; } = "C";
+
 		// ====================================================================
 		// protected メンバー関数
 		// ====================================================================
@@ -67,18 +76,20 @@ namespace YukaLister.Models.YukaListerCores
 
 					// CPU（全体）
 					_logWriterMonitor.LogMessage(Common.TRACE_EVENT_TYPE_STATUS, "-----");
-					_logWriterMonitor.LogMessage(TraceEventType.Information, "CPU-All," + _cpuAllCounter?.NextValue().ToString());
+					if (_cpuAllCounter != null)
+					{
+						LogOne(PerformanceCounterKind.CpuAll, "CPU,", "All", _cpuAllCounter);
+					}
 
 					// CPU（プロセス別）
 					AddRemoveCpuCounters();
 					LogCpuCounters();
 
-					// メモリー
-					AddRemoveMemoryCounters();
-					LogMemoryCounters();
-
 					// ディスク
-					AddRemoveDiskCounters();
+					if (TargetDrives != _prevTargetDrives)
+					{
+						AddRemoveDiskCounters();
+					}
 					LogDiskCounters();
 
 					_logWriterMonitor.LogMessage(Common.TRACE_EVENT_TYPE_STATUS, "負荷計測所要時間 [ms]：" + (Environment.TickCount - startTime).ToString());
@@ -141,23 +152,14 @@ namespace YukaLister.Models.YukaListerCores
 		private const String COUNTER_NAME_WORKING_SET_PRIVATE = "Working Set - Private";
 
 		// インスタンス名
-		private const String INSTANCE_NAME_IDLE = "Idle";
 		private const String INSTANCE_NAME_TOTAL = "_Total";
 
 		// 負荷監視ログファイル名
 		private const String FILE_NAME_MONITOR_LOG = YlConstants.APP_ID + YlConstants.MONITOR_ID + Common.FILE_EXT_LOG;
 
-		// 記録必須
-		private readonly String[] MUST_LOG_INSTANCES = { YlConstants.APP_ID, "mpc", "Everything" };
-
-		// CPU 除外
-		private readonly String[] CPU_EXCEPT_INSTANCES = { INSTANCE_NAME_TOTAL, INSTANCE_NAME_IDLE };
-
-		// ディスク除外
-		private readonly String[] DISK_EXCEPT_INSTANCES = { INSTANCE_NAME_TOTAL };
-
-		// メモリー除外
-		private readonly String[] MEMORY_EXCEPT_INSTANCES = { INSTANCE_NAME_TOTAL, INSTANCE_NAME_IDLE };
+		// 記録対象
+		private readonly String[] TARGET_INSTANCES = { YlConstants.APP_ID, "mpc", "httpd" /* Apache */, "Everything", "owncloud",
+				"MsMpEng" /* Windows Defender (Antimalware Service Executable) */, "avp" /* Kaspersky */, "coreServiceShell" /* ウイルスバスター */, "ccSvcHst" /* ノートン */ };
 
 		// 測定間隔 [ms]
 		private const Int32 INTERVAL = 10 * 1000;
@@ -166,14 +168,14 @@ namespace YukaLister.Models.YukaListerCores
 		// private メンバー変数
 		// ====================================================================
 
+		// ドライブ設定時のドライブ群
+		private String _prevTargetDrives = String.Empty;
+
 		// PC 全体の CPU 負荷
 		private PerformanceCounter? _cpuAllCounter;
 
 		// プロセスごとの CPU 負荷
 		private Dictionary<String, PerformanceCounter> _cpuCounters = new();
-
-		// プロセスごとのメモリー使用量
-		private Dictionary<String, PerformanceCounter> _memoryCounters = new();
 
 		// ドライブごとのディスク負荷
 		private Dictionary<String, PerformanceCounter> _diskCounters = new();
@@ -191,22 +193,22 @@ namespace YukaLister.Models.YukaListerCores
 		// --------------------------------------------------------------------
 		// 存在しないカウンターを追加
 		// --------------------------------------------------------------------
-		private void AddCounters(Dictionary<String, PerformanceCounter> counters, String categoryName, String counterName, String[] instanceNames, String[] exceptInstanceNames)
+		private void AddCounters(Dictionary<String, PerformanceCounter> counters, String categoryName, String counterName, String[] instanceNames, String[] targetInstanceNames)
 		{
-			IEnumerable<String> addes = instanceNames.Where(x => !counters.ContainsKey(x));
-			foreach (String add in addes)
+			IEnumerable<String> noExists = instanceNames.Where(x => !counters.ContainsKey(x));
+			foreach (String noExist in noExists)
 			{
-				if (exceptInstanceNames.Contains(add))
+				if (targetInstanceNames.FirstOrDefault(x => noExist.Contains(x, StringComparison.OrdinalIgnoreCase)) == null)
 				{
-					// 除外
+					// 対象外
 					continue;
 				}
 
-				PerformanceCounter? counter = CreateCounter(categoryName, counterName, add);
+				PerformanceCounter? counter = CreateCounter(categoryName, counterName, noExist);
 				if (counter != null)
 				{
-					counters[add] = counter;
-					_logWriterMonitor.LogMessage(Common.TRACE_EVENT_TYPE_STATUS, "カウンター追加：" + add);
+					counters[noExist] = counter;
+					_logWriterMonitor.LogMessage(Common.TRACE_EVENT_TYPE_STATUS, "カウンター追加：" + noExist);
 				}
 			}
 		}
@@ -214,12 +216,12 @@ namespace YukaLister.Models.YukaListerCores
 		// --------------------------------------------------------------------
 		// カウンターの追加と削除
 		// --------------------------------------------------------------------
-		private void AddRemoveCountersCore(Dictionary<String, PerformanceCounter> counters, String categoryName, String counterName, String[] exceptInstanceNames)
+		private void AddRemoveCountersCore(Dictionary<String, PerformanceCounter> counters, String categoryName, String counterName, String[] targetInstanceNames)
 		{
 			PerformanceCounterCategory category = PerformanceCounterCategory.GetCategories().Single(x => x.CategoryName == categoryName);
 			String[] instanceNames = category.GetInstanceNames();
 			RemoveCounters(counters, instanceNames);
-			AddCounters(counters, categoryName, counterName, instanceNames, exceptInstanceNames);
+			AddCounters(counters, categoryName, counterName, instanceNames, targetInstanceNames);
 		}
 
 		// --------------------------------------------------------------------
@@ -227,7 +229,7 @@ namespace YukaLister.Models.YukaListerCores
 		// --------------------------------------------------------------------
 		private void AddRemoveCpuCounters()
 		{
-			AddRemoveCountersCore(_cpuCounters, CATEGORY_NAME_PROCESS, COUNTER_NAME_PERCENT_PROCESSOR_TIME, CPU_EXCEPT_INSTANCES);
+			AddRemoveCountersCore(_cpuCounters, CATEGORY_NAME_PROCESS, COUNTER_NAME_PERCENT_PROCESSOR_TIME, TARGET_INSTANCES);
 		}
 
 		// --------------------------------------------------------------------
@@ -235,16 +237,8 @@ namespace YukaLister.Models.YukaListerCores
 		// --------------------------------------------------------------------
 		private void AddRemoveDiskCounters()
 		{
-			// PhysicalDisk ? LogicalDisk ?
-			AddRemoveCountersCore(_diskCounters, CATEGORY_NAME_LOGICAL_DISK, COUNTER_NAME_PERCENT_DISK_TIME, DISK_EXCEPT_INSTANCES);
-		}
-
-		// --------------------------------------------------------------------
-		// メモリーカウンターの追加と削除
-		// --------------------------------------------------------------------
-		private void AddRemoveMemoryCounters()
-		{
-			AddRemoveCountersCore(_memoryCounters, CATEGORY_NAME_PROCESS, COUNTER_NAME_WORKING_SET_PRIVATE, MEMORY_EXCEPT_INSTANCES);
+			AddRemoveCountersCore(_diskCounters, CATEGORY_NAME_LOGICAL_DISK, COUNTER_NAME_PERCENT_DISK_TIME, TargetDrives.Split(','));
+			_prevTargetDrives = TargetDrives;
 		}
 
 		// --------------------------------------------------------------------
@@ -275,39 +269,11 @@ namespace YukaLister.Models.YukaListerCores
 		// --------------------------------------------------------------------
 		// 負荷を記録
 		// --------------------------------------------------------------------
-		private void LogCountersCore(Dictionary<String, PerformanceCounter> counters, Boolean isPercent, String labelPrefix, Int32 rank, String[] mustLogInstances)
+		private void LogCountersCore(PerformanceCounterKind kind, String kindLabel, Dictionary<String, PerformanceCounter> counters)
 		{
-			// カウンター値取得
-			List<KeyValuePair<String, Single>> values = new(counters.Count);
 			foreach (KeyValuePair<String, PerformanceCounter> kvp in counters)
 			{
-				try
-				{
-					values.Add(new KeyValuePair<String, Single>(kvp.Key, kvp.Value.NextValue()));
-				}
-				catch (Exception excep)
-				{
-					// カウンターが消滅した場合は例外となる模様
-					_logWriterMonitor.LogMessage(TraceEventType.Error, "カウンター値取得時エラー：" + excep.Message);
-				}
-			}
-
-			// 記録必須インスタンスを記録
-			foreach (String instance in mustLogInstances)
-			{
-				IEnumerable<KeyValuePair<String, Single>> matches = values.Where(x => x.Key.Contains(instance, StringComparison.OrdinalIgnoreCase));
-				foreach (KeyValuePair<String, Single> match in matches)
-				{
-					LogOne(match, isPercent, labelPrefix);
-				}
-				values.RemoveAll(x => x.Key.Contains(instance, StringComparison.OrdinalIgnoreCase));
-			}
-
-			// 降順に rank 個記録
-			values.Sort((x, y) => y.Value.CompareTo(x.Value));
-			for (Int32 i = 0; i < Math.Min(rank, values.Count); i++)
-			{
-				LogOne(values[i], isPercent, labelPrefix);
+				LogOne(kind, kindLabel, kvp.Key, kvp.Value);
 			}
 		}
 
@@ -316,7 +282,7 @@ namespace YukaLister.Models.YukaListerCores
 		// --------------------------------------------------------------------
 		private void LogCpuCounters()
 		{
-			LogCountersCore(_cpuCounters, true, "CPU,", 5, MUST_LOG_INSTANCES);
+			LogCountersCore(PerformanceCounterKind.CpuProcess, "CPU,", _cpuCounters);
 		}
 
 		// --------------------------------------------------------------------
@@ -324,29 +290,34 @@ namespace YukaLister.Models.YukaListerCores
 		// --------------------------------------------------------------------
 		private void LogDiskCounters()
 		{
-			LogCountersCore(_diskCounters, true, "Dsk,", 3, Array.Empty<String>());
-		}
-
-		// --------------------------------------------------------------------
-		// メモリー負荷を記録
-		// --------------------------------------------------------------------
-		private void LogMemoryCounters()
-		{
-			LogCountersCore(_memoryCounters, false, "Mem,", 5, MUST_LOG_INSTANCES);
+			LogCountersCore(PerformanceCounterKind.Disk, "Dsk,", _diskCounters);
 		}
 
 		// --------------------------------------------------------------------
 		// 1 行分記録
 		// --------------------------------------------------------------------
-		private void LogOne(KeyValuePair<String, Single> value, Boolean isPercent, String labelPrefix)
+		private void LogOne(PerformanceCounterKind kind, String kindLabel, String instanceName, PerformanceCounter counter)
 		{
-			if (isPercent)
+			try
 			{
-				_logWriterMonitor.LogMessage(TraceEventType.Information, labelPrefix + value.Key + "," + ((Int32)value.Value).ToString());
+				switch (kind)
+				{
+					case PerformanceCounterKind.CpuAll:
+					case PerformanceCounterKind.Disk:
+						_logWriterMonitor.LogMessage(TraceEventType.Information, kindLabel + instanceName + "," + ((Int32)counter.NextValue()).ToString());
+						break;
+					case PerformanceCounterKind.CpuProcess:
+						_logWriterMonitor.LogMessage(TraceEventType.Information, kindLabel + instanceName + "," + ((Int32)(counter.NextValue() / Environment.ProcessorCount)).ToString());
+						break;
+					default:
+						Debug.Assert(false, "LogOne() bad kind");
+						break;
+				}
 			}
-			else
+			catch (Exception excep)
 			{
-				_logWriterMonitor.LogMessage(TraceEventType.Information, labelPrefix + value.Key + "," + (((Int64)value.Value) / 1024 / 1024).ToString());
+				// カウンターが消滅した場合は例外となる模様
+				_logWriterMonitor.LogMessage(TraceEventType.Error, "カウンター値記録時エラー：" + excep.Message);
 			}
 		}
 
@@ -383,7 +354,7 @@ namespace YukaLister.Models.YukaListerCores
 			_logWriterMonitor.SimpleTraceListener.LogFileName = Path.GetDirectoryName(_logWriterMonitor.SimpleTraceListener.LogFileName) + "\\" + FILE_NAME_MONITOR_LOG;
 			_logWriterMonitor.SimpleTraceListener.Quote = false;
 
-			_logWriterMonitor.LogMessage(Common.TRACE_EVENT_TYPE_STATUS, "稼働開始 ====================");
+			_logWriterMonitor.LogMessage(Common.TRACE_EVENT_TYPE_STATUS, "稼働開始 " + Environment.ProcessorCount + " スレッド ====================");
 		}
 
 	}
