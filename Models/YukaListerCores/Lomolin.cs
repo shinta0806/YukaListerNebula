@@ -152,21 +152,44 @@ namespace YukaLister.Models.YukaListerCores
 		private const String COUNTER_NAME_WORKING_SET_PRIVATE = "Working Set - Private";
 
 		// インスタンス名
+		private const String INSTANCE_NAME_EVERYTHING = "Everything";
+		private const String INSTANCE_NAME_OWNCLOUD = "owncloud";
 		private const String INSTANCE_NAME_TOTAL = "_Total";
+		private const String INSTANCE_NAME_WINDOWS_DEFENDER = "MsMpEng"; /* Antimalware Service Executable */
 
 		// 負荷監視ログファイル名
 		private const String FILE_NAME_MONITOR_LOG = YlConstants.APP_ID + YlConstants.MONITOR_ID + Common.FILE_EXT_LOG;
 
 		// 記録対象
-		private readonly String[] TARGET_INSTANCES = { YlConstants.APP_ID, "mpc", "httpd" /* Apache */, "Everything", "owncloud",
-				"MsMpEng" /* Windows Defender (Antimalware Service Executable) */, "avp" /* Kaspersky */, "coreServiceShell" /* ウイルスバスター */, "ccSvcHst" /* ノートン */ };
+		private readonly String[] TARGET_INSTANCES = { YlConstants.APP_ID, "mpc", "httpd" /* Apache */, INSTANCE_NAME_EVERYTHING, INSTANCE_NAME_OWNCLOUD,
+				INSTANCE_NAME_WINDOWS_DEFENDER, "avp" /* Kaspersky */, "coreServiceShell" /* ウイルスバスター */, "ccSvcHst" /* ノートン */ };
 
 		// 測定間隔 [ms]
 		private const Int32 INTERVAL = 10 * 1000;
 
+		// 高負荷の閾値 [%]
+		private const Single HIGH_LOAD_THRESHOLD = 70.0f;
+
 		// ====================================================================
 		// private メンバー変数
 		// ====================================================================
+
+		// --------------------------------------------------------------------
+		// 警告関連
+		// --------------------------------------------------------------------
+
+		// Everything の警告を行った
+		private Boolean _everythingWarned;
+
+		// ownCloud の警告を行った
+		private Boolean _ownCloudWarned;
+
+		// Windows Defender の警告を行った
+		private Boolean _defenderWarned;
+
+		// --------------------------------------------------------------------
+		// その他
+		// --------------------------------------------------------------------
 
 		// ドライブ設定時のドライブ群
 		private String _prevTargetDrives = String.Empty;
@@ -307,7 +330,9 @@ namespace YukaLister.Models.YukaListerCores
 						_logWriterMonitor.LogMessage(TraceEventType.Information, kindLabel + instanceName + "," + ((Int32)counter.NextValue()).ToString());
 						break;
 					case PerformanceCounterKind.CpuProcess:
-						_logWriterMonitor.LogMessage(TraceEventType.Information, kindLabel + instanceName + "," + ((Int32)(counter.NextValue() / Environment.ProcessorCount)).ToString());
+						Single loadAsOneCpu = counter.NextValue();
+						_logWriterMonitor.LogMessage(TraceEventType.Information, kindLabel + instanceName + "," + ((Int32)(loadAsOneCpu / Environment.ProcessorCount)).ToString());
+						WarnCpuIfNeeded(instanceName, loadAsOneCpu);
 						break;
 					default:
 						Debug.Assert(false, "LogOne() bad kind");
@@ -357,5 +382,31 @@ namespace YukaLister.Models.YukaListerCores
 			_logWriterMonitor.LogMessage(Common.TRACE_EVENT_TYPE_STATUS, "稼働開始 " + Environment.ProcessorCount + " スレッド ====================");
 		}
 
+		// --------------------------------------------------------------------
+		// CPU 負荷に関する警告を作成する
+		// 表示は UI スレッドが行う（メッセージボックス表示中も Lomolin は引き続き動作できるように）
+		// --------------------------------------------------------------------
+		private void WarnCpuIfNeeded(String instanceName, Single loadAsOneCpu)
+		{
+			// 存在を検知したら出す警告
+			if (!_ownCloudWarned && instanceName.Contains(INSTANCE_NAME_OWNCLOUD, StringComparison.OrdinalIgnoreCase))
+			{
+				_ownCloudWarned = YukaListerModel.Instance.EnvModel.NebulaCoreErrors.TryAdd("ownCloud が動作しています。\n\n"
+						+ "ゆかり・" + YlConstants.APP_NAME_J + "動作中は ownCloud を終了することを推奨します。");
+			}
+			if (!_everythingWarned && instanceName.Contains(INSTANCE_NAME_EVERYTHING, StringComparison.OrdinalIgnoreCase))
+			{
+				_everythingWarned = YukaListerModel.Instance.EnvModel.NebulaCoreErrors.TryAdd("Everything が動作しています。\n\n"
+						+ "ゆかりの動作に Everything は不要となりましたので、Everything をアンインストールすることを推奨します。");
+			}
+
+			// 高負荷を検知したら出す警告
+			if (!_defenderWarned && loadAsOneCpu >= HIGH_LOAD_THRESHOLD && instanceName.Contains(INSTANCE_NAME_WINDOWS_DEFENDER, StringComparison.OrdinalIgnoreCase))
+			{
+				_defenderWarned = YukaListerModel.Instance.EnvModel.NebulaCoreErrors.TryAdd("Windows Defender が高負荷になっています。\n\n"
+						+ "ゆかり・" + YlConstants.APP_NAME_J + "動作中は Windows Defender を無効化することを推奨します。\n"
+						+ "（Windows Defender 以外のセキュリティーソフトを使用することを推奨します）");
+			}
+		}
 	}
 }

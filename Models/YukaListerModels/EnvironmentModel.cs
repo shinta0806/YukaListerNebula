@@ -13,6 +13,7 @@ using Livet.Commands;
 using Shinta;
 
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -119,6 +120,9 @@ namespace YukaLister.Models.YukaListerModels
 			get => _isMainWindowDataGridItemUpdated;
 			set => _isMainWindowDataGridItemUpdated = value;
 		}
+
+		// ネビュラからのエラーメッセージ
+		public BlockingCollection<String> NebulaCoreErrors { get; set; } = new();
 
 		// EXE フルパス
 		private String? _exeFullPath;

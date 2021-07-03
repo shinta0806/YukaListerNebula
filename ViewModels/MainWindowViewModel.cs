@@ -1226,6 +1226,9 @@ namespace YukaLister.ViewModels
 				YukaListerStatus currentWholeStatus = YukaListerModel.Instance.EnvModel.YukaListerWholeStatus;
 				UpdateUi(currentWholeStatus);
 				_prevYukaListerWholeStatus = currentWholeStatus;
+
+				DisplayNebulaCoreError();
+
 				_timerUpdateUi.Start();
 			}
 			catch (Exception excep)
@@ -1390,6 +1393,20 @@ namespace YukaLister.ViewModels
 					break;
 			}
 			SetYukaListerStatusBackground(currentWholeStatus);
+		}
+
+		// --------------------------------------------------------------------
+		// ネビュラコアからのエラーを表示
+		// 大量にエラーが出た場合もユーザーがなんとか操作できるよう、1 度に出すエラーは 1 つ
+		// --------------------------------------------------------------------
+		private void DisplayNebulaCoreError()
+		{
+			if (!YukaListerModel.Instance.EnvModel.NebulaCoreErrors.TryTake(out String? error))
+			{
+				return;
+			}
+
+			YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(TraceEventType.Error, error);
 		}
 	}
 }
