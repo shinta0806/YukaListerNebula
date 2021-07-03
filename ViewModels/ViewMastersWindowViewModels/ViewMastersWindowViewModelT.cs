@@ -260,7 +260,7 @@ namespace YukaLister.ViewModels.ViewMastersWindowViewModels
 				// ViewModel 経由で楽曲情報データベースマスター編集ウィンドウを開く
 				using EditMasterWindowViewModel<T> editMasterWindowViewModel = CreateEditMasterWindowViewModel();
 				editMasterWindowViewModel.SetMasters(masters);
-				Messenger.Raise(new TransitionMessage(editMasterWindowViewModel, YlConstants.MESSAGE_KEY_OPEN_EDIT_MASTER_WINDOW));
+				Messenger.Raise(new TransitionMessage(editMasterWindowViewModel, MessageKeyOpenEditWindow()));
 
 				if (editMasterWindowViewModel.IsOk)
 				{

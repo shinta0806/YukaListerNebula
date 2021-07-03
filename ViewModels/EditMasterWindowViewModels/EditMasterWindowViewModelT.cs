@@ -215,7 +215,7 @@ namespace YukaLister.ViewModels.EditMasterWindowViewModels
 				else
 				{
 					// それ以外の場合は通常の確認
-					if (MessageBox.Show("この" + _caption + "を削除しますか？\n\n【注意】削除すると復活できません。",
+					if (MessageBox.Show("この" + _caption + "「" + Name + "」を削除しますか？\n\n【注意】削除すると復活できません。",
 							"確認", MessageBoxButton.YesNo, MessageBoxImage.Exclamation) != MessageBoxResult.Yes)
 					{
 						return;
@@ -453,7 +453,9 @@ namespace YukaLister.ViewModels.EditMasterWindowViewModels
 			WarnRubyDeletedIfNeeded(allRuby, Ruby, normalizedRuby);
 
 			// 想定しているマスターの型と異なる場合はエラー（本来あってはならないが念のため）
-			if (SelectedMaster.Id != NewIdForDisplay() && !SelectedMaster.Id.Contains(YlConstants.MUSIC_INFO_ID_SECOND_PREFIXES[DbCommon.MusicInfoTableIndex<T>()]))
+			Int32 tableIndex = DbCommon.MusicInfoTableIndex<T>();
+			if (SelectedMaster.Id != NewIdForDisplay() && !SelectedMaster.Id.Contains(YlConstants.MUSIC_INFO_ID_SECOND_PREFIXES[tableIndex])
+					&& !(tableIndex == (Int32)MusicInfoTables.TTieUp && SelectedMaster.Id.Contains("_P_")))
 			{
 				throw new Exception("内部エラー：登録対象の型が異なっています。");
 			}

@@ -159,7 +159,7 @@ define('SESSION_INFO_POST_ERROR_MESSAGE', 'PostErrorMessage');
 define('SESSION_INFO_REJECT_UPDATE_TIME', 'RejectUpdateTime');
 define('SYSTEM_NAME', 'ゆかりすたー NEBULA 同期');
 define('SYSTEM_APP_GENERATION', 'NEBULA');
-define('SYSTEM_VER', 'Ver 3.00');
+define('SYSTEM_VER', 'Ver 3.44');
 define('SYSTEM_COPYRIGHT', 'Copyright (C) 2021 by SHINTA');
 define('TABLE_NAME_SONG', 't_song');
 define('TABLE_NAME_PERSON', 't_person');

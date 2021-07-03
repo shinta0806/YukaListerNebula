@@ -755,6 +755,7 @@ namespace YukaLister.ViewModels
 			{
 				// アプリケーションの終了を通知
 				YukaListerModel.Instance.EnvModel.AppCancellationTokenSource.Cancel();
+				YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, "終了中...");
 
 				// 終了処理
 				// await するとその間に強制終了されてしまうようなので、await しない

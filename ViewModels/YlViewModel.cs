@@ -10,10 +10,14 @@
 
 using Livet;
 using Livet.Messaging.IO;
+
+using Shinta;
 using System;
 using System.IO;
 using System.Windows.Input;
+
 using YukaLister.Models.SharedMisc;
+using YukaLister.Models.YukaListerModels;
 
 namespace YukaLister.ViewModels
 {
@@ -70,11 +74,22 @@ namespace YukaLister.ViewModels
 		// --------------------------------------------------------------------
 		public virtual void Initialize()
 		{
+			YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, GetType().Name + " 初期化中...");
 		}
 
 		// ====================================================================
 		// protected メンバー関数
 		// ====================================================================
+
+		// --------------------------------------------------------------------
+		// リソース解放
+		// --------------------------------------------------------------------
+		protected override void Dispose(Boolean isDisposing)
+		{
+			base.Dispose(isDisposing);
+
+			YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, GetType().Name + " 破棄中...");
+		}
 
 		// --------------------------------------------------------------------
 		// 開くダイアログを表示し、ファイルパスを取得
