@@ -283,6 +283,9 @@ namespace YukaLister.Models.SharedMisc
 		// 楽曲情報データベースエクスポートファイル
 		public const String DIALOG_FILTER_YL_EXPORT_ARCHIVE = "ゆかりすたー情報ファイル|*" + FILE_EXT_YL_EXPORT_ARCHIVE;
 
+		// CSV
+		public const String DIALOG_FILTER_CSV = "CSV ファイル|*" + Common.FILE_EXT_CSV;
+
 		// --------------------------------------------------------------------
 		// 楽曲情報データベース
 		// --------------------------------------------------------------------

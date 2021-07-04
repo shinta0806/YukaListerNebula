@@ -18,11 +18,13 @@ using Microsoft.EntityFrameworkCore;
 using Shinta;
 
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
@@ -367,6 +369,32 @@ namespace YukaLister.ViewModels.MiscWindowViewModels
 		{
 			get => _syncPassword;
 			set => RaisePropertyChangedIfSet(ref _syncPassword, value);
+		}
+
+		#endregion
+
+		#region ゆかり統計タブのプロパティー
+
+		// ゆかり統計出力先
+		private String? _yukariStatisticsPath;
+		public String? YukariStatisticsPath
+		{
+			get => _yukariStatisticsPath;
+			set => RaisePropertyChangedIfSet(ref _yukariStatisticsPath, value);
+		}
+
+		// プログレスバー表示
+		private Visibility _progressBarOutputYukariStatisticsVisibility;
+		public Visibility ProgressBarOutputYukariStatisticsVisibility
+		{
+			get => _progressBarOutputYukariStatisticsVisibility;
+			set
+			{
+				if (RaisePropertyChangedIfSet(ref _progressBarOutputYukariStatisticsVisibility, value))
+				{
+					ButtonOutputYukariStatisticsClickedCommand.RaiseCanExecuteChanged();
+				}
+			}
 		}
 
 		#endregion
@@ -1375,6 +1403,114 @@ namespace YukaLister.ViewModels.MiscWindowViewModels
 
 		#endregion
 
+		#region ゆかり統計タブのコマンド
+
+		#region ゆかり統計出力先参照ボタンの制御
+		private ViewModelCommand? _buttonBrowseYukariStatisticsFileClickedCommand;
+
+		public ViewModelCommand ButtonBrowseYukariStatisticsFileClickedCommand
+		{
+			get
+			{
+				if (_buttonBrowseYukariStatisticsFileClickedCommand == null)
+				{
+					_buttonBrowseYukariStatisticsFileClickedCommand = new ViewModelCommand(ButtonBrowseYukariStatisticsFileClicked);
+				}
+				return _buttonBrowseYukariStatisticsFileClickedCommand;
+			}
+		}
+
+		public void ButtonBrowseYukariStatisticsFileClicked()
+		{
+			try
+			{
+				String? path = PathBySavingDialog("ゆかり統計出力", YlConstants.DIALOG_FILTER_CSV, "YukariStatistics");
+				if (path != null)
+				{
+					YukariStatisticsPath = path;
+				}
+			}
+			catch (Exception excep)
+			{
+				YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(TraceEventType.Error, "エクスポート先参照ボタンクリック時エラー：\n" + excep.Message);
+				YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, "　スタックトレース：\n" + excep.StackTrace);
+			}
+		}
+		#endregion
+
+		#region ゆかり統計出力ボタンの制御
+		private ViewModelCommand? _buttonOutputYukariStatisticsClickedCommand;
+
+		public ViewModelCommand ButtonOutputYukariStatisticsClickedCommand
+		{
+			get
+			{
+				if (_buttonOutputYukariStatisticsClickedCommand == null)
+				{
+					_buttonOutputYukariStatisticsClickedCommand = new ViewModelCommand(ButtonOutputYukariStatisticsClicked, CanButtonOutputYukariStatisticsClicked);
+				}
+				return _buttonOutputYukariStatisticsClickedCommand;
+			}
+		}
+
+		public Boolean CanButtonOutputYukariStatisticsClicked()
+		{
+			return ProgressBarOutputYukariStatisticsVisibility != Visibility.Visible;
+		}
+
+		public async void ButtonOutputYukariStatisticsClicked()
+		{
+			try
+			{
+				// 確認
+				if (String.IsNullOrEmpty(YukariStatisticsPath))
+				{
+					throw new Exception("ゆかり統計出力先フォルダーを指定してください。");
+				}
+
+#if false
+				if (YukaListerModel.Instance.EnvModel.YukaListerWholeStatus == YukaListerStatus.Running)
+				{
+					if (MessageBox.Show("データ更新中のため、今すぐリスト出力しても完全なリストにはなりません。\n今すぐリスト出力しますか？",
+							"確認", MessageBoxButton.YesNo, MessageBoxImage.Exclamation) != MessageBoxResult.Yes)
+					{
+						return;
+					}
+				}
+#endif
+
+				// ウィンドウのキャンセルボタンが押された場合でも出力先は確定
+				YukaListerModel.Instance.EnvModel.YlSettings.YukariStatisticsPath = YukariStatisticsPath;
+
+				// 出力
+				ProgressBarOutputYukariStatisticsVisibility = Visibility.Visible;
+				await YlCommon.LaunchTaskAsync<Object?>(_semaphoreSlim, OutputYukariStatisticsByWorker, null, "ゆかり統計出力");
+				YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(TraceEventType.Information, "ゆかり統計出力が完了しました。");
+
+				// 表示
+				try
+				{
+					YlCommon.ShellExecute(YukariStatisticsPath);
+				}
+				catch (Exception)
+				{
+					throw new Exception("出力先ファイルを開けませんでした。\n" + YukariStatisticsPath);
+				}
+			}
+			catch (Exception excep)
+			{
+				YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(TraceEventType.Error, "ゆかり統計出力ボタンクリック時エラー：\n" + excep.Message);
+				YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, "　スタックトレース：\n" + excep.StackTrace);
+			}
+			finally
+			{
+				ProgressBarOutputYukariStatisticsVisibility = Visibility.Hidden;
+			}
+		}
+		#endregion
+
+		#endregion
+
 		// ====================================================================
 		// public メンバー関数
 		// ====================================================================
@@ -1405,6 +1541,7 @@ namespace YukaLister.ViewModels.MiscWindowViewModels
 				// プログレスバー
 				ProgressBarOutputListVisibility = Visibility.Hidden;
 				ProgressBarCheckRssVisibility = Visibility.Hidden;
+				ProgressBarOutputYukariStatisticsVisibility = Visibility.Hidden;
 
 				SettingsToProperties();
 			}
@@ -1643,7 +1780,7 @@ namespace YukaLister.ViewModels.MiscWindowViewModels
 		}
 
 		// --------------------------------------------------------------------
-		// インポート・エクスポート処理
+		// リスト出力処理
 		// ワーカースレッドで実行される前提
 		// --------------------------------------------------------------------
 		private Task OutputListByWorker(OutputWriter outputWriter)
@@ -1652,6 +1789,66 @@ namespace YukaLister.ViewModels.MiscWindowViewModels
 #if DEBUGz
 			Thread.Sleep(3000);
 #endif
+			return Task.CompletedTask;
+		}
+
+		// --------------------------------------------------------------------
+		// ゆかり統計出力処理
+		// ワーカースレッドで実行される前提
+		// --------------------------------------------------------------------
+		private Task OutputYukariStatisticsByWorker(Object? _)
+		{
+			// タイトル行
+			List<String> titleColumns = new(new String[] { "No", "PC", "予約日", "ルーム名", "カテゴリー", "タイアップ名", "摘要", "年齢制限", "リリース日", "リリース年", "シリーズ", "制作会社名",
+					"楽曲名", "歌手名", "作詞者", "作曲者", "編曲者", "ファイル", "動画制作者" });
+
+			// 内容
+			using YukariStatisticsContext yukariStatisticsContext = YukariStatisticsContext.CreateContext(out DbSet<TYukariStatistics> yukariStatistics);
+			yukariStatisticsContext.ChangeTracker.QueryTrackingBehavior = QueryTrackingBehavior.NoTracking;
+			List<TYukariStatistics> targetStatistics = yukariStatistics.Where(x => !x.Invalid).ToList();
+			List<List<String>> contents = new(targetStatistics.Count);
+			Int32 index = 1;
+			foreach (TYukariStatistics yukariStatisticsRecord in targetStatistics)
+			{
+				List<String> line = new(titleColumns.Count);
+				line.Add(index.ToString());
+				index++;
+
+				// 会の情報
+				line.Add(yukariStatisticsRecord.Id[0..yukariStatisticsRecord.Id.IndexOf('_')]);
+				line.Add(JulianDay.ModifiedJulianDateToDateTime(yukariStatisticsRecord.RequestTime).ToLocalTime().ToString(YlConstants.DATE_FORMAT));
+				line.Add(yukariStatisticsRecord.RoomName ?? String.Empty);
+
+				// タイアップ情報
+				line.Add(yukariStatisticsRecord.Category ?? String.Empty);
+				line.Add(yukariStatisticsRecord.TieUpName ?? String.Empty);
+				line.Add(yukariStatisticsRecord.SongOpEd ?? String.Empty);
+				line.Add((yukariStatisticsRecord.TieUpAgeLimit < 0 ? 0 : yukariStatisticsRecord.TieUpAgeLimit).ToString());
+				DateTime releaseDate = JulianDay.ModifiedJulianDateToDateTime(yukariStatisticsRecord.SongReleaseDate);
+				line.Add(releaseDate.ToString(YlConstants.DATE_FORMAT));
+				line.Add(releaseDate.ToString("yyyy"));
+				line.Add(yukariStatisticsRecord.TieUpGroupName ?? String.Empty);
+
+				// 制作会社情報
+				line.Add(yukariStatisticsRecord.MakerName ?? String.Empty);
+
+				// 楽曲情報
+				line.Add(yukariStatisticsRecord.SongName ?? String.Empty);
+
+				// 人物情報
+				line.Add(yukariStatisticsRecord.ArtistName ?? String.Empty);
+				line.Add(yukariStatisticsRecord.LyristName ?? String.Empty);
+				line.Add(yukariStatisticsRecord.ComposerName ?? String.Empty);
+				line.Add(yukariStatisticsRecord.ArrangerName ?? String.Empty);
+
+				// その他
+				line.Add(yukariStatisticsRecord.RequestMoviePath);
+				line.Add(yukariStatisticsRecord.Worker ?? String.Empty);
+
+				contents.Add(line);
+			}
+
+			CsvManager.SaveCsv(YukariStatisticsPath!, contents, "\r\n", Encoding.UTF8, titleColumns);
 			return Task.CompletedTask;
 		}
 
@@ -1682,7 +1879,27 @@ namespace YukaLister.ViewModels.MiscWindowViewModels
 			YukaListerModel.Instance.EnvModel.YlSettings.SyncServer = SyncServer;
 			YukaListerModel.Instance.EnvModel.YlSettings.SyncAccount = SyncAccount;
 			YukaListerModel.Instance.EnvModel.YlSettings.SyncPassword = YlCommon.Encrypt(SyncPassword);
+
+			// ゆかり統計タブ
+			YukaListerModel.Instance.EnvModel.YlSettings.YukariStatisticsPath = YukariStatisticsPath;
 		}
+
+#if false
+		// --------------------------------------------------------------------
+		// CSV として使えない文字をサニタイズしながら追加
+		// --------------------------------------------------------------------
+		private void SanitizingCsvAdd(List<String> line, String? str)
+		{
+			if (String.IsNullOrEmpty(str))
+			{
+				line.Add(String.Empty);
+			}
+			else
+			{
+				line.Add(str.Replace(',', '，').Replace('"', '”'));
+			}
+		}
+#endif
 
 		// --------------------------------------------------------------------
 		// 設定をプロパティーに反映
@@ -1716,6 +1933,9 @@ namespace YukaLister.ViewModels.MiscWindowViewModels
 
 			// インポートタブ
 			ImportYukaListerMode = true;
+
+			// ゆかり統計タブ
+			YukariStatisticsPath = YukaListerModel.Instance.EnvModel.YlSettings.YukariStatisticsPath;
 		}
 
 		// --------------------------------------------------------------------

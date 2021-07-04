@@ -241,6 +241,19 @@
                     <Button Content="タグ一覧 (_Z)" Style="{StaticResource MaterialDesignRaisedLightButton}" Width="180" Height="Auto" Padding="4" Command="{Binding ButtonTagsClickedCommand}" HorizontalAlignment="Left" Margin="20,10,0,0" />
                 </StackPanel>
             </TabItem>
+            <TabItem Header="ゆかり統計" >
+                <StackPanel>
+                    <DockPanel Margin="0,20,20,0">
+                        <Label Content="統計出力先ファイル (_F)：" Target="{Binding ElementName=TextBoxYukariStatisticsFile}" Width="170" HorizontalContentAlignment="Right"/>
+                        <Button Height="Auto" Content="参照 (_B)" Style="{StaticResource MaterialDesignRaisedLightButton}" Margin="0" DockPanel.Dock="Right" Width="100" Padding="0,4" Command="{Binding ButtonBrowseYukariStatisticsFileClickedCommand}" />
+                        <TextBox Name="TextBoxYukariStatisticsFile" Text="{Binding YukariStatisticsPath}" VerticalAlignment="Center" Margin="0,0,10,0"/>
+                    </DockPanel>
+                    <DockPanel Margin="170,10,20,0" >
+                        <Button Height="Auto" Content="ゆかり統計出力 (_Y)" Style="{StaticResource MaterialDesignRaisedLightButton}" Margin="0" Width="200" DockPanel.Dock="Right" Command="{Binding ButtonOutputYukariStatisticsClickedCommand}" />
+                        <ProgressBar Height="Auto" Margin="0,0,10,0" Visibility="{Binding ProgressBarOutputYukariStatisticsVisibility}" IsIndeterminate="True" />
+                    </DockPanel>
+                </StackPanel>
+            </TabItem>
         </TabControl>
         <DockPanel Margin="20">
             <Button Content="キャンセル" Margin="0" Height="Auto" Style="{StaticResource MaterialDesignRaisedLightButton}" IsCancel="True" Width="100" DockPanel.Dock="Right" Padding="4"/>

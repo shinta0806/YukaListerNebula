@@ -210,30 +210,13 @@ namespace YukaLister.Models.YukaListerCores
 		// --------------------------------------------------------------------
 		private void CopyYukariRequestToYukariStatistics(TYukariRequest yukariRequest, TYukariStatistics yukariStatistics)
 		{
-			//if (yukariStatistics.RequestId != yukariRequest.Id)
-			{
-				yukariStatistics.RequestId = yukariRequest.Id;
-			}
-			//if (yukariStatistics.RequestMoviePath != yukariRequest.Path)
-			{
-				yukariStatistics.RequestMoviePath = yukariRequest.Path;
-			}
-			//if (yukariStatistics.RequestSinger != yukariRequest.Singer)
-			{
-				yukariStatistics.RequestSinger = yukariRequest.Singer;
-			}
-			//if (yukariStatistics.RequestComment != yukariRequest.Comment)
-			{
-				yukariStatistics.RequestComment = yukariRequest.Comment;
-			}
-			//if (yukariStatistics.RequestOrder != yukariRequest.Order)
-			{
-				yukariStatistics.RequestOrder = yukariRequest.Order;
-			}
-			//if (yukariStatistics.RequestKeyChange != yukariRequest.KeyChange)
-			{
-				yukariStatistics.RequestKeyChange = yukariRequest.KeyChange;
-			}
+			// EF Core では、代入しても実際の値が更新されていなければ更新と判定されない（無駄な保存が発生しない）模様なので、プログラムでは更新チェックはせずに常に代入する
+			yukariStatistics.RequestId = yukariRequest.Id;
+			yukariStatistics.RequestMoviePath = yukariRequest.Path;
+			yukariStatistics.RequestSinger = yukariRequest.Singer;
+			yukariStatistics.RequestComment = yukariRequest.Comment;
+			yukariStatistics.RequestOrder = yukariRequest.Order;
+			yukariStatistics.RequestKeyChange = yukariRequest.KeyChange;
 		}
 
 		// --------------------------------------------------------------------
@@ -276,6 +259,5 @@ namespace YukaLister.Models.YukaListerCores
 			CopyYukariRequestToYukariStatistics(yukariRequest, existStatistics);
 			CopyFoundToYukariStatisticsIfNeeded(founds, existStatistics);
 		}
-
 	}
 }
