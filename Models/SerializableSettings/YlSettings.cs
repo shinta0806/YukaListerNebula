@@ -120,6 +120,12 @@ namespace YukaLister.Models.SerializableSettings
 		// ゆかりの設定
 		// --------------------------------------------------------------------
 
+		// DB ファイル名（相対または絶対）
+		public String YukariRequestDatabasePathSeed { get; set; } = String.Empty;
+
+		// ルーム名
+		public String? YukariRoomName { get; set; }
+
 		// 簡易認証を使用するかどうか
 		public Boolean YukariUseEasyAuth { get; set; }
 
@@ -130,11 +136,17 @@ namespace YukaLister.Models.SerializableSettings
 		// 終了時の状態（ゆかりすたー専用）
 		// --------------------------------------------------------------------
 
-		// 前回発行した ID（次回はインクリメントした番号で発行する）
+		// 前回発行した楽曲情報データベースの ID（次回はインクリメントした番号で発行する）
 		public List<Int32> LastIdNumbers { get; set; } = new();
 
 		// 前回楽曲情報データベースを同期ダウンロードした日（修正ユリウス日 UTC）
 		public Double LastSyncDownloadDate { get; set; }
+
+		// 前回発行したゆかり統計データベースの ID（次回はインクリメントした番号で発行する）
+		public Int32 LastYukariStatisticsIdNumber { get; set; }
+
+		// request.db の全消去を検知した日時（修正ユリウス日 UTC）
+		public Double LastYukariRequestClearTime { get; set; }
 
 		// --------------------------------------------------------------------
 		// 終了時の状態（一般）
@@ -172,9 +184,9 @@ namespace YukaLister.Models.SerializableSettings
 		// ====================================================================
 
 		// --------------------------------------------------------------------
-		// ゆかり設定ファイルを解析して簡易認証の設定を取得
+		// ゆかり設定ファイルを解析してゆかりの設定を取得
 		// --------------------------------------------------------------------
-		public void AnalyzeYukariEasyAuthConfig()
+		public void AnalyzeYukariConfig()
 		{
 			try
 			{
@@ -184,6 +196,12 @@ namespace YukaLister.Models.SerializableSettings
 				}
 
 				String[] config = File.ReadAllLines(YukariConfigPath(), Encoding.UTF8);
+
+				// DB ファイル名
+				YukariRequestDatabasePathSeed = YukariConfigValue(config, YUKARI_CONFIG_KEY_NAME_DB_NAME);
+
+				// ルーム名
+				YukariRoomName = YukariConfigValue(config, YUKARI_CONFIG_KEY_NAME_ROOM_NAME);
 
 				// 簡易認証を使用するかどうか
 				String useEasyAuth = YukariConfigValue(config, YUKARI_CONFIG_KEY_NAME_USE_EASY_AUTH);
@@ -195,6 +213,7 @@ namespace YukaLister.Models.SerializableSettings
 			catch (Exception excep)
 			{
 				// エラーの場合は情報をクリア
+				YukariRequestDatabasePathSeed = YUKARI_CONFIG_DEFAULT_DB_NAME;
 				YukariUseEasyAuth = false;
 				YukaListerModel.Instance.EnvModel.LogWriter.LogMessage(TraceEventType.Error, excep.Message + "サーバーに簡易認証を適用しません。");
 			}
@@ -223,12 +242,21 @@ namespace YukaLister.Models.SerializableSettings
 		}
 
 		// --------------------------------------------------------------------
-		// 前回使った ID 文字列
+		// 前回使った楽曲情報データベース ID 文字列
 		// --------------------------------------------------------------------
 		public String LastId(Int32 tableIndex)
 		{
 			Debug.Assert(!String.IsNullOrEmpty(IdPrefix), "LastId() empty IdPrefix");
 			return IdPrefix + YlConstants.MUSIC_INFO_ID_SECOND_PREFIXES[tableIndex] + LastIdNumbers[tableIndex].ToString();
+		}
+
+		// --------------------------------------------------------------------
+		// 前回使ったゆかり統計データベース ID 文字列
+		// --------------------------------------------------------------------
+		public String LastYukariStatisticsId()
+		{
+			Debug.Assert(!String.IsNullOrEmpty(IdPrefix), "LastYukariStatisticsId() empty IdPrefix");
+			return IdPrefix + YlConstants.YUKARI_STATISTICS_ID_SECOND_PREFIXES + LastYukariStatisticsIdNumber.ToString();
 		}
 
 		// --------------------------------------------------------------------
@@ -249,6 +277,22 @@ namespace YukaLister.Models.SerializableSettings
 		}
 
 		// --------------------------------------------------------------------
+		// LastIdNumbers をこれから使う ID 番号に設定
+		// ＜返値＞ これから使う ID 文字列
+		// --------------------------------------------------------------------
+		public String PrepareYukariStatisticsLastId(DbSet<TYukariStatistics> records)
+		{
+			for (; ; )
+			{
+				LastYukariStatisticsIdNumber++;
+				if (DbCommon.SelectBaseById(records, LastYukariStatisticsId()) == null)
+				{
+					return LastYukariStatisticsId();
+				}
+			}
+		}
+
+		// --------------------------------------------------------------------
 		// ゆかり設定ファイルのフルパス
 		// --------------------------------------------------------------------
 		public String YukariConfigPath()
@@ -260,6 +304,25 @@ namespace YukaLister.Models.SerializableSettings
 			else
 			{
 				return Common.MakeAbsolutePath(YukaListerModel.Instance.EnvModel.ExeFullFolder, YukariConfigPathSeed);
+			}
+		}
+
+		// --------------------------------------------------------------------
+		// ゆかり request.db のフルパス
+		// --------------------------------------------------------------------
+		public String YukariRequestDatabasePath()
+		{
+			if (String.IsNullOrEmpty(YukariRequestDatabasePathSeed))
+			{
+				return @"C:\xampp\htdocs\" + YUKARI_CONFIG_DEFAULT_DB_NAME;
+			}
+			else if (Path.IsPathRooted(YukariRequestDatabasePathSeed))
+			{
+				return YukariRequestDatabasePathSeed;
+			}
+			else
+			{
+				return Common.MakeAbsolutePath(Path.GetDirectoryName(YukariConfigPath()), YukariRequestDatabasePathSeed);
 			}
 		}
 
@@ -291,7 +354,7 @@ namespace YukaLister.Models.SerializableSettings
 					LastIdNumbers.Add(0);
 				}
 			}
-			AnalyzeYukariEasyAuthConfig();
+			AnalyzeYukariConfig();
 		}
 
 		// --------------------------------------------------------------------
@@ -316,8 +379,13 @@ namespace YukaLister.Models.SerializableSettings
 		private const Int32 DEFAULT_THUMB_WIDTH = 128;
 
 		// ゆかりの config.ini の項目
+		private const String YUKARI_CONFIG_KEY_NAME_DB_NAME = "dbname";
+		private const String YUKARI_CONFIG_KEY_NAME_ROOM_NAME = "commentroom";
 		private const String YUKARI_CONFIG_KEY_NAME_USE_EASY_AUTH = "useeasyauth";
 		private const String YUKARI_CONFIG_KEY_NAME_EASY_AUTH_KEYWORD = "useeasyauth_word";
+
+		// デフォルト DB ファイル名
+		private const String YUKARI_CONFIG_DEFAULT_DB_NAME = "request.db";
 
 		// ====================================================================
 		// private static メンバー関数

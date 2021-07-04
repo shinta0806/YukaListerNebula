@@ -105,7 +105,7 @@ namespace YukaLister.Models.Database
 		[Column(TSong.FIELD_NAME_SONG_RELEASE_DATE)]
 		public Double SongReleaseDate { get; set; }
 
-		// カテゴリー：TTieUp の値を優先
+		// カテゴリー名：TTieUp の値を優先
 		[Column(FIELD_NAME_FOUND_CATEGORY_NAME)]
 		public String? Category { get; set; }
 

@@ -379,6 +379,7 @@ namespace YukaLister.Models.DatabaseAssist
 				ListContextInDisk.CreateDatabase();
 				ListContextInMemory.CreateDatabase();
 				ReportContext.CreateDatabaseIfNeeded();
+				YukariStatisticsContext.CreateDatabaseIfNeeded();
 				ThumbContext.CreateDatabaseIfNeeded();
 			}
 			catch (Exception excep)

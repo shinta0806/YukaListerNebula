@@ -117,7 +117,6 @@ namespace YukaLister.Models.DatabaseContexts
 		// --------------------------------------------------------------------
 		protected override void OnModelCreating(ModelBuilder modelBuilder)
 		{
-			// サムネイルキャッシュテーブル
 			modelBuilder.Entity<TReport>().HasIndex(x => x.RegistTime);
 			modelBuilder.Entity<TReport>().HasIndex(x => x.Status);
 		}

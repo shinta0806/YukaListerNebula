@@ -238,7 +238,7 @@ namespace YukaLister.Models.SharedMisc
 		public const String APP_ID = "YukaLister";
 		public const String APP_GENERATION = "NEBULA";
 		public const String APP_NAME_J = "ゆかりすたー " + APP_GENERATION + " ";
-		public const String APP_VER = "Ver 3.44";
+		public const String APP_VER = "Ver 3.60";
 		public const String COPYRIGHT_J = "Copyright (C) 2021 by SHINTA";
 
 		// --------------------------------------------------------------------
@@ -288,7 +288,7 @@ namespace YukaLister.Models.SharedMisc
 		// --------------------------------------------------------------------
 
 		// 楽曲情報データベースの各テーブルの ID 第二接頭辞
-		// この他、報告データベースで "R" を使用する
+		// この他、報告データベースで "_R_"、ゆかり統計データベースで "_Y_" を使用する
 		public static readonly String[] MUSIC_INFO_ID_SECOND_PREFIXES =
 		{
 			"_S_", "_P_", "_T_","_C_", "_G_", "_M_", "_Z_",
@@ -355,6 +355,13 @@ namespace YukaLister.Models.SharedMisc
 		// TTieUp 独自項目
 		public const String FIELD_SUFFIX_MAKER_ID = "maker_id";
 		public const String FIELD_SUFFIX_AGE_LIMIT = "age_limit";
+
+		// --------------------------------------------------------------------
+		// ゆかり統計データベース
+		// --------------------------------------------------------------------
+
+		// ID 第二接頭辞
+		public const String YUKARI_STATISTICS_ID_SECOND_PREFIXES = "_Y_";
 
 		// --------------------------------------------------------------------
 		// リスト問題報告データベース
@@ -638,6 +645,9 @@ namespace YukaLister.Models.SharedMisc
 
 		// DPI
 		public const Single DPI = 96.0f;
+
+		// request.db 更新時の統計更新遅延時間 [ms]
+		public const Int32 UPDATE_YUKARI_STATISTICS_DELAY_TIME = 60 * 1000;
 
 		// 同期詳細ログ ID
 		public const String SYNC_DETAIL_ID = "SyncDetail";

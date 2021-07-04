@@ -203,11 +203,11 @@ namespace YukaLister.Models.YukaListerCores
 		// ドライブごとのディスク負荷
 		private Dictionary<String, PerformanceCounter> _diskCounters = new();
 
-		// Dispose フラグ
-		private Boolean _isDisposed;
-
 		// 詳細ログ（負荷監視専用）
 		private readonly LogWriter _logWriterMonitor = new(YlConstants.APP_ID + YlConstants.MONITOR_ID);
+
+		// Dispose フラグ
+		private Boolean _isDisposed;
 
 		// ====================================================================
 		// private メンバー変数

@@ -341,9 +341,10 @@ namespace YukaLister.ViewModels
 				// ゆかり設定ファイルのフルパスが変更された場合は処理を行う
 				if (YukaListerModel.Instance.EnvModel.YlSettings.YukariConfigPath() != yukariConfigPathBak)
 				{
-					UpdateYukaListerEnvironmentStatus();
-					YukaListerModel.Instance.EnvModel.YlSettings.AnalyzeYukariEasyAuthConfig();
+					YukaListerModel.Instance.EnvModel.YlSettings.AnalyzeYukariConfig();
+					DbCommon.PrepareDatabases();
 					SetFileSystemWatcherYukariConfig();
+					UpdateYukaListerEnvironmentStatus();
 				}
 
 				// サーバー設定が変更された場合は起動・終了を行う
@@ -664,6 +665,7 @@ namespace YukaLister.ViewModels
 
 				// 参照設定
 				YukaListerModel.Instance.EnvModel.Kamlin.MainWindowViewModel = this;
+				YukaListerModel.Instance.EnvModel.Yurelin.MainWindowViewModel = this;
 				YukaListerModel.Instance.EnvModel.Syclin.MainWindowViewModel = this;
 
 				// 動作状況
@@ -672,12 +674,19 @@ namespace YukaLister.ViewModels
 						= YukaListerModel.Instance.EnvModel.YlSettings.AddFolderOnDeviceArrived ? "前回のゆかり検索対象フォルダーを確認中..." : "起動処理中...";
 				UpdateYukaListerEnvironmentStatus();
 
-				// ゆかり設定ファイル監視
+				// ゆかり設定ファイル config.ini 監視
 				CompositeDisposable.Add(_fileSystemWatcherYukariConfig);
 				_fileSystemWatcherYukariConfig.Created += new FileSystemEventHandler(FileSystemWatcherYukariConfig_Changed);
 				_fileSystemWatcherYukariConfig.Deleted += new FileSystemEventHandler(FileSystemWatcherYukariConfig_Changed);
 				_fileSystemWatcherYukariConfig.Changed += new FileSystemEventHandler(FileSystemWatcherYukariConfig_Changed);
 				SetFileSystemWatcherYukariConfig();
+
+				// ゆかり予約ファイル request.db 監視
+				CompositeDisposable.Add(_fileSystemWatcherYukariRequestDatabase);
+				_fileSystemWatcherYukariRequestDatabase.Created += new FileSystemEventHandler(FileSystemWatcherYukariRequestDatabase_Changed);
+				_fileSystemWatcherYukariRequestDatabase.Deleted += new FileSystemEventHandler(FileSystemWatcherYukariRequestDatabase_Changed);
+				_fileSystemWatcherYukariRequestDatabase.Changed += new FileSystemEventHandler(FileSystemWatcherYukariRequestDatabase_Changed);
+				SetFileSystemWatcherYukariRequestDatabase();
 
 				// リスト問題報告データベース監視
 				CompositeDisposable.Add(_fileSystemWatcherReportDatabase);
@@ -692,8 +701,21 @@ namespace YukaLister.ViewModels
 				_timerUpdateUi.Tick += new EventHandler(TimerUpdateUi_Tick);
 				_timerUpdateUi.Start();
 
+#if DEBUGz
+				Debug.WriteLine("Initialize() db path: " + YukaListerModel.Instance.EnvModel.YlSettings.YukariRequestDatabasePath());
+				using YukariRequestContext requestDbContext = YukariRequestContext.CreateContext(out DbSet<TYukariRequest> yukariRequests);
+				List<TYukariRequest> requests = yukariRequests.ToList();
+				foreach (TYukariRequest yukariRequest in requests)
+				{
+					Debug.WriteLine("Initialize() yukariRequest: " + yukariRequest.Id + ", " + yukariRequest.Path);
+				}
+#endif
+
 				// 時間がかかるかもしれない処理を非同期で実行
 				await AutoTargetAllDrivesAsync();
+
+				// 統計データ作成
+				ActivateYurelinIfNeeded();
 
 				// Web サーバー
 				StartWebServerIfNeeded();
@@ -805,6 +827,15 @@ namespace YukaLister.ViewModels
 		// config.ini 監視用
 		private readonly FileSystemWatcher _fileSystemWatcherYukariConfig = new();
 
+		// request.db 監視用
+		private readonly FileSystemWatcher _fileSystemWatcherYukariRequestDatabase = new();
+
+		// request.db 更新時の遅延フラグ
+		private Boolean _fileSystemWatcherYukariRequestDatabaseDelaying;
+
+		// request.db 更新時の遅延中に再度更新があった
+		private Boolean _fileSystemWatcherYukariRequestDatabaseDelayingQueue;
+
 		// リスト問題報告データベース監視用
 		private readonly FileSystemWatcher _fileSystemWatcherReportDatabase = new();
 
@@ -895,6 +926,15 @@ namespace YukaLister.ViewModels
 			{
 				YukaListerModel.Instance.EnvModel.Syclin.MainEvent.Set();
 			}
+		}
+
+		// --------------------------------------------------------------------
+		// 必要に応じて待機中の統計データ作成担当をアクティブ化
+		// --------------------------------------------------------------------
+		public static void ActivateYurelinIfNeeded()
+		{
+			Debug.WriteLine("ActivateYurelinIfNeeded() ACTIVATE " + Environment.TickCount.ToString("#,0"));
+			YukaListerModel.Instance.EnvModel.Yurelin.MainEvent.Set();
 		}
 
 		// --------------------------------------------------------------------
@@ -1018,7 +1058,35 @@ namespace YukaLister.ViewModels
 		private void FileSystemWatcherYukariConfig_Changed(Object sender, FileSystemEventArgs fileSystemEventArgs)
 		{
 			SetStatusBarMessageWithInvoke(TraceEventType.Information, "ゆかり設定ファイルが更新されました。");
-			YukaListerModel.Instance.EnvModel.YlSettings.AnalyzeYukariEasyAuthConfig();
+			YukaListerModel.Instance.EnvModel.YlSettings.AnalyzeYukariConfig();
+		}
+
+		// --------------------------------------------------------------------
+		// イベントハンドラー
+		// --------------------------------------------------------------------
+		private async void FileSystemWatcherYukariRequestDatabase_Changed(Object sender, FileSystemEventArgs fileSystemEventArgs)
+		{
+			Debug.WriteLine("FileSystemWatcherYukariRequestDatabase_Changed() event " + Environment.TickCount.ToString("#,0"));
+
+			// 再生曲遷移時やリスト操作時は頻繁にファイルが更新されるが、そのたびに Yurelin をアクティブ化するのは高負荷なため、ある程度まとめてアクティブ化する
+			if (_fileSystemWatcherYukariRequestDatabaseDelaying)
+			{
+				_fileSystemWatcherYukariRequestDatabaseDelayingQueue = true;
+				return;
+			}
+
+			// 初回はすぐにアクティブ化（全消去時にすみやかに検知できるように）
+			_fileSystemWatcherYukariRequestDatabaseDelaying = true;
+			_fileSystemWatcherYukariRequestDatabaseDelayingQueue = false;
+			ActivateYurelinIfNeeded();
+
+			await Task.Delay(YlConstants.UPDATE_YUKARI_STATISTICS_DELAY_TIME);
+			if (_fileSystemWatcherYukariRequestDatabaseDelayingQueue)
+			{
+				// 遅延中に更新があれば再度アクティブ化
+				ActivateYurelinIfNeeded();
+			}
+			_fileSystemWatcherYukariRequestDatabaseDelaying = false;
 		}
 
 		// --------------------------------------------------------------------
@@ -1144,7 +1212,7 @@ namespace YukaLister.ViewModels
 		}
 
 		// --------------------------------------------------------------------
-		// ゆかり設定ファイルの監視設定
+		// ゆかり設定ファイル config.ini の監視設定
 		// --------------------------------------------------------------------
 		private void SetFileSystemWatcherYukariConfig()
 		{
@@ -1161,7 +1229,28 @@ namespace YukaLister.ViewModels
 				}
 			}
 
-			_fileSystemWatcherYukariConfig!.EnableRaisingEvents = false;
+			_fileSystemWatcherYukariConfig.EnableRaisingEvents = false;
+		}
+
+		// --------------------------------------------------------------------
+		// ゆかり予約ファイル request.db の監視設定
+		// --------------------------------------------------------------------
+		private void SetFileSystemWatcherYukariRequestDatabase()
+		{
+			if (YukaListerModel.Instance.EnvModel.YlSettings.IsYukariConfigPathValid())
+			{
+				String? path = Path.GetDirectoryName(YukaListerModel.Instance.EnvModel.YlSettings.YukariRequestDatabasePath());
+				String filter = Path.GetFileName(YukaListerModel.Instance.EnvModel.YlSettings.YukariRequestDatabasePath());
+				if (!String.IsNullOrEmpty(path) && !String.IsNullOrEmpty(filter))
+				{
+					_fileSystemWatcherYukariRequestDatabase.Path = path;
+					_fileSystemWatcherYukariRequestDatabase.Filter = filter;
+					_fileSystemWatcherYukariRequestDatabase.EnableRaisingEvents = true;
+					return;
+				}
+			}
+
+			_fileSystemWatcherYukariRequestDatabase.EnableRaisingEvents = false;
 		}
 
 		// --------------------------------------------------------------------
