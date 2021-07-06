@@ -2195,12 +2195,16 @@ class	CPManager
 					if ( $this->is_insertable_record($pdo, $table, $record) ) {
 						if ( $this->insert_record($pdo, $table, $record) ) {
 							// 新規登録
-							$num_accepts++;
+							if( $table !== TABLE_NAME_YUKARI_STATISTICS ) {
+								$num_accepts++;
+							}
 							log_message('アップロード受諾（新規）'.$this->user_info()
 									.' '.$table.' / '.$record[$field_id], LOG_LEVEL_STATUS, FALSE,
 									FILE_NAME_SYNC_DETAIL_LOG);
 						} else {
-							$num_rejects++;
+							if( $table !== TABLE_NAME_YUKARI_STATISTICS ) {
+								$num_rejects++;
+							}
 							log_message('アップロード拒否（新規）'.$this->user_info()
 									.' '.$table.' / '.$record[$field_id], LOG_LEVEL_STATUS, FALSE,
 									FILE_NAME_SYNC_DETAIL_LOG);
@@ -2209,7 +2213,9 @@ class	CPManager
 						// INVALID フラグを立てて登録する
 						$record[$field_invalid] = TRUE;
 						$this->insert_record($pdo, $table, $record);
-						$num_rejects++;
+						if( $table !== TABLE_NAME_YUKARI_STATISTICS ) {
+							$num_rejects++;
+						}
 						log_message('アップロード拒否（新規）'.$this->user_info()
 								.' '.$table.' / '.$record[$field_id], LOG_LEVEL_STATUS, FALSE,
 								FILE_NAME_SYNC_DETAIL_LOG);
@@ -2221,13 +2227,17 @@ class	CPManager
 					if ( $record[$field_update_time] == $row[$field_update_time]
 							&& $this->update_record($pdo, $table, $record) ) {
 						// 更新
-						$num_accepts++;
+						if( $table !== TABLE_NAME_YUKARI_STATISTICS ) {
+							$num_accepts++;
+						}
 						log_message('アップロード受諾（更新）'.$this->user_info()
 								.' '.$table.' / '.$record[$field_id], LOG_LEVEL_STATUS, FALSE,
 								FILE_NAME_SYNC_DETAIL_LOG);
 					} else {
 						$this->set_reject_update_time($row[$field_update_time]);
-						$num_rejects++;
+						if( $table !== TABLE_NAME_YUKARI_STATISTICS ) {
+							$num_rejects++;
+						}
 						log_message('アップロード拒否（更新）'.$this->user_info()
 								.' '.$table.' / '.$record[$field_id], LOG_LEVEL_STATUS, FALSE,
 								FILE_NAME_SYNC_DETAIL_LOG);
