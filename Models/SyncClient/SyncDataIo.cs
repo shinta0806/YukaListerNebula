@@ -37,13 +37,15 @@ namespace YukaLister.Models.SyncClient
 			// 最初にログの設定
 			YlCommon.SetLogWriterSyncDetail(_logWriterSyncDetail);
 
-			_musicInfoContext = MusicInfoContextDefault.CreateContext(out _properties,
+			_musicInfoContext = MusicInfoContextDefault.CreateContext(out _MusicInfoProperties,
 					out _songs, out _people, out _tieUps, out _categories,
 					out _tieUpGroups, out _makers, out _tags,
 					out _songAliases, out _personAliases, out _tieUpAliases,
 					out _categoryAliases, out _tieUpGroupAliases, out _makerAliases,
 					out _artistSequences, out _lyristSequences, out _composerSequences, out _arrangerSequences,
 					out _tieUpGroupSequences, out _tagSequences);
+
+			_yukariStatisticsContext = YukariStatisticsContext.CreateContext(out _YukariStatisticsProperties, out _yukariStatistics);
 		}
 
 		// ====================================================================
@@ -67,8 +69,11 @@ namespace YukaLister.Models.SyncClient
 		// データベースプロパティーテーブル
 		// --------------------------------------------------------------------
 
-		// データベースプロパティーテーブル
-		protected readonly DbSet<TProperty> _properties;
+		// 楽曲情報データベースプロパティーテーブル
+		protected readonly DbSet<TProperty> _MusicInfoProperties;
+
+		// ゆかり統計データベースプロパティーテーブル
+		protected readonly DbSet<TProperty> _YukariStatisticsProperties;
 
 		// --------------------------------------------------------------------
 		// マスターテーブル
@@ -140,11 +145,21 @@ namespace YukaLister.Models.SyncClient
 		protected readonly DbSet<TTagSequence> _tagSequences;
 
 		// --------------------------------------------------------------------
+		// ゆかり統計テーブル
+		// --------------------------------------------------------------------
+
+		// ゆかり統計テーブル
+		protected readonly DbSet<TYukariStatistics> _yukariStatistics;
+
+		// --------------------------------------------------------------------
 		// その他
 		// --------------------------------------------------------------------
 
 		// 楽曲情報データベースのコンテキスト
 		protected readonly MusicInfoContextDefault _musicInfoContext;
+
+		// ゆかり統計データベースのコンテキスト
+		protected readonly YukariStatisticsContext _yukariStatisticsContext;
 
 		// 詳細ログ（同期専用）
 		protected LogWriter _logWriterSyncDetail = new(YlConstants.APP_ID + YlConstants.SYNC_DETAIL_ID);

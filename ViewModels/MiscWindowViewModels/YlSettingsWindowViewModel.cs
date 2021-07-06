@@ -1820,7 +1820,7 @@ namespace YukaLister.ViewModels.MiscWindowViewModels
 				line.Add(yukariStatisticsRecord.RoomName ?? String.Empty);
 
 				// タイアップ情報
-				line.Add(yukariStatisticsRecord.Category ?? String.Empty);
+				line.Add(yukariStatisticsRecord.CategoryName ?? String.Empty);
 				line.Add(yukariStatisticsRecord.TieUpName ?? String.Empty);
 				line.Add(yukariStatisticsRecord.SongOpEd ?? String.Empty);
 				line.Add((yukariStatisticsRecord.TieUpAgeLimit < 0 ? 0 : yukariStatisticsRecord.TieUpAgeLimit).ToString());

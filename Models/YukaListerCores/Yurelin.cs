@@ -124,7 +124,7 @@ namespace YukaLister.Models.YukaListerCores
 		{
 			try
 			{
-				Debug.Assert(MainWindowViewModel != null, "Yurelin.AddYukariRequest() MainWindowViewModel is null");
+				Debug.Assert(MainWindowViewModel != null, "AddYukariRequest() MainWindowViewModel is null");
 				YlCommon.InputIdPrefixIfNeededWithInvoke(MainWindowViewModel);
 			}
 			catch (Exception)
@@ -132,6 +132,7 @@ namespace YukaLister.Models.YukaListerCores
 				// OperationCanceledException を通常の例外に変換
 				throw new Exception("ID 接頭辞が設定されていません。");
 			}
+			Debug.Assert(YukaListerModel.Instance.EnvModel.YlSettings.IdPrefix != null, "AddYukariRequest() IdPrefix is null");
 			TYukariStatistics yukariStatisticsRecord = new()
 			{
 				Id = YukaListerModel.Instance.EnvModel.YlSettings.PrepareYukariStatisticsLastId(yukariStatistics),
@@ -139,6 +140,7 @@ namespace YukaLister.Models.YukaListerCores
 				RequestDatabasePath = YukaListerModel.Instance.EnvModel.YlSettings.YukariRequestDatabasePath(),
 				RequestTime = YukariRequestContext.LastWriteTime(),
 				RoomName = YukaListerModel.Instance.EnvModel.YlSettings.YukariRoomName,
+				//IdPrefix = YukaListerModel.Instance.EnvModel.YlSettings.IdPrefix,
 			};
 
 			CopyYukariRequestToYukariStatistics(yukariRequest, yukariStatisticsRecord);
@@ -191,7 +193,7 @@ namespace YukaLister.Models.YukaListerCores
 			yukariStatistics.AttributesDone = true;
 			yukariStatistics.Worker = found.Worker;
 			yukariStatistics.SongReleaseDate = found.SongReleaseDate;
-			yukariStatistics.Category = found.Category;
+			yukariStatistics.CategoryName = found.Category;
 			yukariStatistics.TieUpName = found.TieUpName;
 			yukariStatistics.TieUpAgeLimit = found.TieUpAgeLimit;
 			yukariStatistics.MakerName = found.MakerName;
@@ -202,6 +204,8 @@ namespace YukaLister.Models.YukaListerCores
 			yukariStatistics.LyristName = found.LyristName;
 			yukariStatistics.ComposerName = found.ComposerName;
 			yukariStatistics.ArrangerName = found.ArrangerName;
+
+			yukariStatistics.Dirty = true;
 			Debug.WriteLine("CopyFoundToYukariStatisticsIfNeeded() 属性確認実施 " + yukariStatistics.RequestMoviePath);
 		}
 
@@ -211,11 +215,18 @@ namespace YukaLister.Models.YukaListerCores
 		private void CopyYukariRequestToYukariStatistics(TYukariRequest yukariRequest, TYukariStatistics yukariStatistics)
 		{
 			// EF Core では、代入しても実際の値が更新されていなければ更新と判定されない（無駄な保存が発生しない）模様なので、プログラムでは更新チェックはせずに常に代入する
+			// 途中で変わるものについては、変わったら Dirty フラグを立てる必要がある
 			yukariStatistics.RequestId = yukariRequest.Id;
 			yukariStatistics.RequestMoviePath = yukariRequest.Path;
 			yukariStatistics.RequestSinger = yukariRequest.Singer;
+
+			yukariStatistics.Dirty |= yukariStatistics.RequestComment != yukariRequest.Comment;
 			yukariStatistics.RequestComment = yukariRequest.Comment;
+
+			yukariStatistics.Dirty |= yukariStatistics.RequestOrder != yukariRequest.Order;
 			yukariStatistics.RequestOrder = yukariRequest.Order;
+
+			yukariStatistics.Dirty |= yukariStatistics.RequestKeyChange != yukariRequest.KeyChange;
 			yukariStatistics.RequestKeyChange = yukariRequest.KeyChange;
 		}
 
@@ -224,11 +235,14 @@ namespace YukaLister.Models.YukaListerCores
 		// --------------------------------------------------------------------
 		private TYukariStatistics? ExistStatisticsRecord(DbSet<TYukariStatistics> yukariStatistics, TYukariRequest yukariRequest)
 		{
-			// request.db ファイル名、Id、Path、Singer のすべてが一致したものを既存レコードとする
+			// request.db ファイル名、ゆかり予約 Id、Path、Singer のすべてが一致したものを既存レコードとする
+			// かつ、この PC で追加したレコード（ID 接頭辞の先頭が一致するレコード）を既存レコードとする
 			// かつ、推定予約日時が全消去検知日時以降のものを既存レコードとする
+			// ルーム名は途中で変更されることがあるので判定に使用しない
 			return yukariStatistics.Where(x => x.RequestTime >= YukaListerModel.Instance.EnvModel.YlSettings.LastYukariRequestClearTime
 					&& x.RequestId == yukariRequest.Id && x.RequestDatabasePath == YukaListerModel.Instance.EnvModel.YlSettings.YukariRequestDatabasePath()
-					&& x.RequestMoviePath == yukariRequest.Path && x.RequestSinger == yukariRequest.Singer).OrderByDescending(x => x.RequestTime).FirstOrDefault();
+					&& x.RequestMoviePath == yukariRequest.Path && x.RequestSinger == yukariRequest.Singer
+					&& EF.Functions.Like(x.Id, $"{YukaListerModel.Instance.EnvModel.YlSettings.IdPrefix}%")).OrderByDescending(x => x.RequestTime).FirstOrDefault();
 		}
 
 		// --------------------------------------------------------------------

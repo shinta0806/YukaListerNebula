@@ -38,6 +38,18 @@ namespace YukaLister.Models.DatabaseContexts
 		// データベースコンテキスト生成
 		// ＜例外＞ Exception
 		// --------------------------------------------------------------------
+		public static YukariStatisticsContext CreateContext(out DbSet<TProperty> properties, out DbSet<TYukariStatistics> yukariStatistics)
+		{
+			YukariStatisticsContext yukariStatisticsContext = new();
+			GetDbSet(yukariStatisticsContext, out properties);
+			GetDbSet(yukariStatisticsContext, out yukariStatistics);
+			return yukariStatisticsContext;
+		}
+
+		// --------------------------------------------------------------------
+		// データベースコンテキスト生成
+		// ＜例外＞ Exception
+		// --------------------------------------------------------------------
 		public static YukariStatisticsContext CreateContext(out DbSet<TYukariStatistics> yukariStatistics)
 		{
 			YukariStatisticsContext yukariStatisticsContext = new();

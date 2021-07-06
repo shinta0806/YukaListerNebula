@@ -204,6 +204,39 @@ namespace YukaLister.Models.SyncClient
 		}
 
 		// --------------------------------------------------------------------
+		// 同期データから TYukariStatistics を設定（下位の IRcBase も設定）
+		// ＜例外＞ Exception
+		// --------------------------------------------------------------------
+		private static void SetYukariStatisticsBySyncData(TYukariStatistics yukariStatistics, Dictionary<String, String> syncOneData)
+		{
+			SetBaseBySyncData(yukariStatistics, TYukariStatistics.FIELD_PREFIX_YUKARI_STATISTICS, syncOneData);
+
+			yukariStatistics.RequestDatabasePath = syncOneData[TYukariStatistics.FIELD_NAME_YUKARI_STATISTICS_REQUEST_DATABASE_PATH];
+			yukariStatistics.RequestTime = SyncDataToDouble(syncOneData[TYukariStatistics.FIELD_NAME_YUKARI_STATISTICS_REQUEST_TIME]);
+			yukariStatistics.AttributesDone = SyncDataToBoolean(syncOneData[TYukariStatistics.FIELD_NAME_YUKARI_STATISTICS_ATTRIBUTES_DONE]);
+			yukariStatistics.RoomName = syncOneData[TYukariStatistics.FIELD_NAME_YUKARI_STATISTICS_ROOM_NAME];
+			yukariStatistics.RequestId = SyncDataToInt32(syncOneData[TYukariStatistics.FIELD_NAME_YUKARI_STATISTICS_REQUEST_ID]);
+			yukariStatistics.RequestMoviePath = syncOneData[TYukariStatistics.FIELD_NAME_YUKARI_STATISTICS_REQUEST_MOVIE_PATH];
+			yukariStatistics.RequestSinger = syncOneData[TYukariStatistics.FIELD_NAME_YUKARI_STATISTICS_REQUEST_SINGER];
+			yukariStatistics.RequestComment = syncOneData[TYukariStatistics.FIELD_NAME_YUKARI_STATISTICS_REQUEST_COMMENT];
+			yukariStatistics.RequestOrder = SyncDataToInt32(syncOneData[TYukariStatistics.FIELD_NAME_YUKARI_STATISTICS_REQUEST_ORDER]);
+			yukariStatistics.RequestKeyChange = SyncDataToInt32(syncOneData[TYukariStatistics.FIELD_NAME_YUKARI_STATISTICS_REQUEST_KEY_CHANGE]);
+			yukariStatistics.Worker = syncOneData[TYukariStatistics.FIELD_NAME_YUKARI_STATISTICS_WORKER];
+			yukariStatistics.SongReleaseDate = SyncDataToDouble(syncOneData[TYukariStatistics.FIELD_NAME_YUKARI_STATISTICS_SONG_RELEASE_DATE]);
+			yukariStatistics.CategoryName = YlCommon.NormalizeDbString(syncOneData[TYukariStatistics.FIELD_NAME_YUKARI_STATISTICS_CATEGORY_NAME]);
+			yukariStatistics.TieUpName = YlCommon.NormalizeDbString(syncOneData[TYukariStatistics.FIELD_NAME_YUKARI_STATISTICS_TIE_UP_NAME]);
+			yukariStatistics.TieUpAgeLimit = SyncDataToInt32(syncOneData[TYukariStatistics.FIELD_NAME_YUKARI_STATISTICS_AGE_LIMIT]);
+			yukariStatistics.MakerName = YlCommon.NormalizeDbString(syncOneData[TYukariStatistics.FIELD_NAME_YUKARI_STATISTICS_MAKER_NAME]);
+			yukariStatistics.TieUpGroupName = YlCommon.NormalizeDbString(syncOneData[TYukariStatistics.FIELD_NAME_YUKARI_STATISTICS_TIE_UP_GROUP_NAME]);
+			yukariStatistics.SongName = YlCommon.NormalizeDbString(syncOneData[TYukariStatistics.FIELD_NAME_YUKARI_STATISTICS_SONG_NAME]);
+			yukariStatistics.SongOpEd = YlCommon.NormalizeDbString(syncOneData[TYukariStatistics.FIELD_NAME_YUKARI_STATISTICS_SONG_OP_ED]);
+			yukariStatistics.ArtistName = YlCommon.NormalizeDbString(syncOneData[TYukariStatistics.FIELD_NAME_YUKARI_STATISTICS_ARTIST_NAME]);
+			yukariStatistics.LyristName = YlCommon.NormalizeDbString(syncOneData[TYukariStatistics.FIELD_NAME_YUKARI_STATISTICS_LYRIST_NAME]);
+			yukariStatistics.ComposerName = YlCommon.NormalizeDbString(syncOneData[TYukariStatistics.FIELD_NAME_YUKARI_STATISTICS_COMPOSER_NAME]);
+			yukariStatistics.ArrangerName = YlCommon.NormalizeDbString(syncOneData[TYukariStatistics.FIELD_NAME_YUKARI_STATISTICS_ARRANGER_NAME]);
+		}
+
+		// --------------------------------------------------------------------
 		// 文字列で受信した同期データを Boolean に変換
 		// --------------------------------------------------------------------
 		private static Boolean SyncDataToBoolean(String str)
@@ -260,14 +293,30 @@ namespace YukaLister.Models.SyncClient
 		// --------------------------------------------------------------------
 		// カウントを増やし、進捗状況をメインウィンドウステータスバーに表示
 		// --------------------------------------------------------------------
-		private void DisplayStatusIfNeeded(Int32 tableIndex, ref Int32 numChecks)
+		private void DisplayMusicInfoStatusIfNeeded(Int32 tableIndex, ref Int32 numChecks)
+		{
+			DisplayStatusIfNeededCore(YlConstants.MUSIC_INFO_TABLE_NAME_LABELS[tableIndex], ref numChecks);
+		}
+
+		// --------------------------------------------------------------------
+		// カウントを増やし、進捗状況をメインウィンドウステータスバーに表示
+		// --------------------------------------------------------------------
+		private void DisplayStatusIfNeededCore(String tableNameLabel, ref Int32 numChecks)
 		{
 			numChecks++;
 			if (numChecks % IMPORT_PROGRESS_BLOCK == 0)
 			{
 				_mainWindowViewModel.SetStatusBarMessageWithInvoke(Common.TRACE_EVENT_TYPE_STATUS, "同期データをダウンロード中...（" + _syncInfos[SYNC_INFO_PARAM_DATE] + "）："
-						+ YlConstants.MUSIC_INFO_TABLE_NAME_LABELS[tableIndex] + "確認 " + numChecks.ToString("#,0") + " 件");
+						+ tableNameLabel + "確認 " + numChecks.ToString("#,0") + " 件");
 			}
+		}
+
+		// --------------------------------------------------------------------
+		// カウントを増やし、進捗状況をメインウィンドウステータスバーに表示
+		// --------------------------------------------------------------------
+		private void DisplayYukariStatisticsStatusIfNeeded(ref Int32 numChecks)
+		{
+			DisplayStatusIfNeededCore("ゆかり統計", ref numChecks);
 		}
 
 		// --------------------------------------------------------------------
@@ -338,6 +387,9 @@ namespace YukaLister.Models.SyncClient
 				case TTieUpGroupSequence.TABLE_NAME_TIE_UP_GROUP_SEQUENCE:
 					numTotalImports += ImportSequence(_tieUpGroupSequences, TTieUpGroupSequence.FIELD_PREFIX_TIE_UP_GROUP_SEQUENCE, syncData);
 					break;
+				case TYukariStatistics.TABLE_NAME_YUKARI_STATISTICS:
+					numTotalImports += ImportYukariStatistics(syncData);
+					break;
 				default:
 					_logWriterSyncDetail.LogMessage(TraceEventType.Error, "ダウンロード：未対応のテーブルデータがありました：" + tableName);
 					break;
@@ -370,7 +422,7 @@ namespace YukaLister.Models.SyncClient
 					continue;
 				}
 				UpdateBaseDatabaseIfNeeded(records, newRecord, ref numImports);
-				DisplayStatusIfNeeded(tableIndex, ref numChecks);
+				DisplayMusicInfoStatusIfNeeded(tableIndex, ref numChecks);
 
 				YukaListerModel.Instance.EnvModel.AppCancellationTokenSource.Token.ThrowIfCancellationRequested();
 			}
@@ -403,7 +455,7 @@ namespace YukaLister.Models.SyncClient
 					continue;
 				}
 				UpdateBaseDatabaseIfNeeded(records, newRecord, ref numImports);
-				DisplayStatusIfNeeded(tableIndex, ref numChecks);
+				DisplayMusicInfoStatusIfNeeded(tableIndex, ref numChecks);
 
 				YukaListerModel.Instance.EnvModel.AppCancellationTokenSource.Token.ThrowIfCancellationRequested();
 			}
@@ -436,12 +488,44 @@ namespace YukaLister.Models.SyncClient
 					continue;
 				}
 				UpdateSequenceDatabaseIfNeeded(records, newRecord, ref numImports);
-				DisplayStatusIfNeeded(tableIndex, ref numChecks);
+				DisplayMusicInfoStatusIfNeeded(tableIndex, ref numChecks);
 
 				YukaListerModel.Instance.EnvModel.AppCancellationTokenSource.Token.ThrowIfCancellationRequested();
 			}
 
 			_musicInfoContext.SaveChanges();
+
+			return numImports;
+		}
+
+		// --------------------------------------------------------------------
+		// TYukariStatistics インポート
+		// --------------------------------------------------------------------
+		private Int32 ImportYukariStatistics(List<Dictionary<String, String>> syncData)
+		{
+			Int32 numImports = 0;
+			Int32 numChecks = 0;
+			_logWriterSyncDetail.LogMessage(Common.TRACE_EVENT_TYPE_STATUS, "ゆかり統計インポート中...");
+
+			foreach (Dictionary<String, String> oneData in syncData)
+			{
+				TYukariStatistics newRecord = new();
+				try
+				{
+					SetYukariStatisticsBySyncData(newRecord, oneData);
+				}
+				catch (Exception excep)
+				{
+					_logWriterSyncDetail.LogMessage(TraceEventType.Error, "ゆかり統計レコード設定時エラー：" + excep.Message);
+					continue;
+				}
+				UpdateBaseDatabaseIfNeeded(_yukariStatistics, newRecord, ref numImports);
+				DisplayYukariStatisticsStatusIfNeeded(ref numChecks);
+
+				YukaListerModel.Instance.EnvModel.AppCancellationTokenSource.Token.ThrowIfCancellationRequested();
+			}
+
+			_yukariStatisticsContext.SaveChanges();
 
 			return numImports;
 		}
@@ -463,8 +547,7 @@ namespace YukaLister.Models.SyncClient
 			}
 			else
 			{
-				Debug.Assert(false, "UpdateBaseDatabaseIfNeeded() bad newRecord type");
-				logName = null;
+				logName = newRecord.Id;
 			}
 
 			// ID が既にテーブル内にあるか確認

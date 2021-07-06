@@ -36,6 +36,7 @@ namespace YukaLister.Models.SyncClient
 		public SyncDataExporter()
 		{
 			_musicInfoContext.ChangeTracker.QueryTrackingBehavior = QueryTrackingBehavior.NoTracking;
+			_yukariStatisticsContext.ChangeTracker.QueryTrackingBehavior = QueryTrackingBehavior.NoTracking;
 		}
 
 		// ====================================================================
@@ -43,9 +44,9 @@ namespace YukaLister.Models.SyncClient
 		// ====================================================================
 
 		// --------------------------------------------------------------------
-		// 同期データ生成
+		// 同期データ生成（楽曲情報データベース）
 		// --------------------------------------------------------------------
-		public (List<String> csvHead, List<List<String>> csvContents) Export(MusicInfoTables tableIndex)
+		public (List<String> csvHead, List<List<String>> csvContents) ExportMusicInfoDatabase(MusicInfoTables tableIndex)
 		{
 			return tableIndex switch
 			{
@@ -65,8 +66,31 @@ namespace YukaLister.Models.SyncClient
 			};
 		}
 
+		// --------------------------------------------------------------------
+		// 同期データ生成（ゆかり統計データベース）
+		// --------------------------------------------------------------------
+		public (List<String> csvHead, List<List<String>> csvContents) ExportYukariStatisticsDatabase()
+		{
+			List<String> csvHead = new();
+			List<List<String>> csvContents = new();
+
+			// ヘッダー
+			SetYukariStatisticsCsvHead(csvHead);
+
+			// レコード群
+			IQueryable<TYukariStatistics> dirties = _yukariStatistics.Where(x => x.Dirty);
+			foreach (TYukariStatistics dirtyRecord in dirties)
+			{
+				List<String> csvRecord = new();
+				SetYukariStatisticsCsvRecord(dirtyRecord, csvRecord);
+				csvContents.Add(csvRecord);
+			}
+
+			return (csvHead, csvContents);
+		}
+
 		// ====================================================================
-		// private static メンバー変数
+		// private static メンバー関数
 		// ====================================================================
 
 		// --------------------------------------------------------------------
@@ -291,6 +315,70 @@ namespace YukaLister.Models.SyncClient
 
 			csvRecord.Add(sequence.Sequence.ToString());
 			csvRecord.Add(sequence.LinkId);
+		}
+
+		// --------------------------------------------------------------------
+		// TYukariStatistics 用に csvHead を設定（下位の IRcBase も設定）
+		// --------------------------------------------------------------------
+		private static void SetYukariStatisticsCsvHead(List<String> csvHead)
+		{
+			SetBaseCsvHead(csvHead, TYukariStatistics.FIELD_PREFIX_YUKARI_STATISTICS);
+
+			csvHead.Add(TYukariStatistics.FIELD_NAME_YUKARI_STATISTICS_REQUEST_DATABASE_PATH);
+			csvHead.Add(TYukariStatistics.FIELD_NAME_YUKARI_STATISTICS_REQUEST_TIME);
+			csvHead.Add(TYukariStatistics.FIELD_NAME_YUKARI_STATISTICS_ATTRIBUTES_DONE);
+			csvHead.Add(TYukariStatistics.FIELD_NAME_YUKARI_STATISTICS_ROOM_NAME);
+			csvHead.Add(TYukariStatistics.FIELD_NAME_YUKARI_STATISTICS_REQUEST_ID);
+			csvHead.Add(TYukariStatistics.FIELD_NAME_YUKARI_STATISTICS_REQUEST_MOVIE_PATH);
+			csvHead.Add(TYukariStatistics.FIELD_NAME_YUKARI_STATISTICS_REQUEST_SINGER);
+			csvHead.Add(TYukariStatistics.FIELD_NAME_YUKARI_STATISTICS_REQUEST_COMMENT);
+			csvHead.Add(TYukariStatistics.FIELD_NAME_YUKARI_STATISTICS_REQUEST_ORDER);
+			csvHead.Add(TYukariStatistics.FIELD_NAME_YUKARI_STATISTICS_REQUEST_KEY_CHANGE);
+			csvHead.Add(TYukariStatistics.FIELD_NAME_YUKARI_STATISTICS_WORKER);
+			csvHead.Add(TYukariStatistics.FIELD_NAME_YUKARI_STATISTICS_SONG_RELEASE_DATE);
+			csvHead.Add(TYukariStatistics.FIELD_NAME_YUKARI_STATISTICS_CATEGORY_NAME);
+			csvHead.Add(TYukariStatistics.FIELD_NAME_YUKARI_STATISTICS_TIE_UP_NAME);
+			csvHead.Add(TYukariStatistics.FIELD_NAME_YUKARI_STATISTICS_AGE_LIMIT);
+			csvHead.Add(TYukariStatistics.FIELD_NAME_YUKARI_STATISTICS_MAKER_NAME);
+			csvHead.Add(TYukariStatistics.FIELD_NAME_YUKARI_STATISTICS_TIE_UP_GROUP_NAME);
+			csvHead.Add(TYukariStatistics.FIELD_NAME_YUKARI_STATISTICS_SONG_NAME);
+			csvHead.Add(TYukariStatistics.FIELD_NAME_YUKARI_STATISTICS_SONG_OP_ED);
+			csvHead.Add(TYukariStatistics.FIELD_NAME_YUKARI_STATISTICS_ARTIST_NAME);
+			csvHead.Add(TYukariStatistics.FIELD_NAME_YUKARI_STATISTICS_LYRIST_NAME);
+			csvHead.Add(TYukariStatistics.FIELD_NAME_YUKARI_STATISTICS_COMPOSER_NAME);
+			csvHead.Add(TYukariStatistics.FIELD_NAME_YUKARI_STATISTICS_ARRANGER_NAME);
+		}
+
+		// --------------------------------------------------------------------
+		// TYukariStatistics を csvRecord に設定（下位の IRcBase も設定）
+		// --------------------------------------------------------------------
+		private static void SetYukariStatisticsCsvRecord(TYukariStatistics yukariStatistics, List<String> csvRecord)
+		{
+			SetBaseCsvRecord(yukariStatistics, csvRecord);
+
+			csvRecord.Add(yukariStatistics.RequestDatabasePath);
+			csvRecord.Add(yukariStatistics.RequestTime.ToString());
+			csvRecord.Add(BooleanToSyncData(yukariStatistics.AttributesDone));
+			csvRecord.Add(yukariStatistics.RoomName ?? String.Empty);
+			csvRecord.Add(yukariStatistics.RequestId.ToString());
+			csvRecord.Add(yukariStatistics.RequestMoviePath);
+			csvRecord.Add(yukariStatistics.RequestSinger ?? String.Empty);
+			csvRecord.Add(yukariStatistics.RequestComment ?? String.Empty);
+			csvRecord.Add(yukariStatistics.RequestOrder.ToString());
+			csvRecord.Add(yukariStatistics.RequestKeyChange.ToString());
+			csvRecord.Add(yukariStatistics.Worker ?? String.Empty);
+			csvRecord.Add(yukariStatistics.SongReleaseDate.ToString());
+			csvRecord.Add(yukariStatistics.CategoryName ?? String.Empty);
+			csvRecord.Add(yukariStatistics.TieUpName ?? String.Empty);
+			csvRecord.Add(yukariStatistics.TieUpAgeLimit.ToString());
+			csvRecord.Add(yukariStatistics.MakerName ?? String.Empty);
+			csvRecord.Add(yukariStatistics.TieUpGroupName ?? String.Empty);
+			csvRecord.Add(yukariStatistics.SongName ?? String.Empty);
+			csvRecord.Add(yukariStatistics.SongOpEd ?? String.Empty);
+			csvRecord.Add(yukariStatistics.ArtistName ?? String.Empty);
+			csvRecord.Add(yukariStatistics.LyristName ?? String.Empty);
+			csvRecord.Add(yukariStatistics.ComposerName ?? String.Empty);
+			csvRecord.Add(yukariStatistics.ArrangerName ?? String.Empty);
 		}
 
 		// ====================================================================

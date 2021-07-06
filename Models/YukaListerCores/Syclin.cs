@@ -18,7 +18,7 @@ using System.IO;
 using System.IO.Compression;
 using System.Text;
 using System.Threading;
-
+using YukaLister.Models.Database;
 using YukaLister.Models.DatabaseContexts;
 using YukaLister.Models.SharedMisc;
 using YukaLister.Models.SyncClient;
@@ -433,61 +433,83 @@ namespace YukaLister.Models.YukaListerCores
 		// --------------------------------------------------------------------
 		private Int32 UploadSyncData()
 		{
-			Debug.Assert(MainWindowViewModel != null, "UploadSyncData() no main window");
 			_logWriterSyncDetail.LogMessage(Common.TRACE_EVENT_TYPE_STATUS, "アップロード開始");
 			using SyncDataExporter syncDataExporter = new();
 			Int32 numTotalUploads = 0;
 
+			// 楽曲情報データベース
 			for (MusicInfoTables i = 0; i < MusicInfoTables.__End__; i++)
 			{
 				// アップロードデータ準備
-				(List<String> csvHead, List<List<String>> csvContents) = syncDataExporter.Export(i);
-				if (csvContents.Count == 0)
+				(List<String> musicInfoCsvHead, List<List<String>> musicInfoCsvContents) = syncDataExporter.ExportMusicInfoDatabase(i);
+				if (musicInfoCsvContents.Count == 0)
 				{
 					continue;
 				}
 
-				// 一定数ずつアップロード
+				// アップロード
 				_logWriterSyncDetail.LogMessage(Common.TRACE_EVENT_TYPE_STATUS, "アップロード中... " + YlConstants.MUSIC_INFO_TABLE_NAME_LABELS[(Int32)i]);
-				for (Int32 j = 0; j < (csvContents.Count + SYNC_UPLOAD_BLOCK - 1) / SYNC_UPLOAD_BLOCK; j++)
-				{
-					List<List<String>> uploadContents = new();
-					uploadContents.Add(csvHead);
-					uploadContents.AddRange(csvContents.GetRange(j * SYNC_UPLOAD_BLOCK, Math.Min(SYNC_UPLOAD_BLOCK, csvContents.Count - j * SYNC_UPLOAD_BLOCK)));
-					String uploadFolder = YlCommon.TempPath();
-					Directory.CreateDirectory(uploadFolder);
-					String uploadPath = uploadFolder + "\\" + YlConstants.MUSIC_INFO_DB_TABLE_NAMES[(Int32)i];
-					CsvManager.SaveCsv(uploadPath, uploadContents, "\n", Encoding.UTF8);
-					Dictionary<String, String> uploadFiles = new()
-					{
-						{ "File", uploadPath },
-					};
-					Dictionary<String, String?> postParams = new()
-					{
-						// HTML Name 属性
-						{ "Mode", SYNC_MODE_NAME_UPLOAD_SYNC_DATA },
-					};
-					for (Int32 k = 1; k < uploadContents.Count; k++)
-					{
-						_logWriterSyncDetail.LogMessage(Common.TRACE_EVENT_TYPE_STATUS, "データ：" + uploadContents[k][0]);
-					}
-					Post(postParams, uploadFiles);
-
-					// アップロード結果確認
-					if (SyncPostErrorExists(out String? errMessage))
-					{
-						throw new Exception("同期データをアップロードできませんでした：" + errMessage);
-					}
-
-					// 状況
-					numTotalUploads += uploadContents.Count - 1;
-					MainWindowViewModel.SetStatusBarMessageWithInvoke(Common.TRACE_EVENT_TYPE_STATUS, "同期データをアップロード中... 合計 " + numTotalUploads.ToString("#,0") + " 件");
-					Thread.Sleep(SYNC_INTERVAL);
-					YukaListerModel.Instance.EnvModel.AppCancellationTokenSource.Token.ThrowIfCancellationRequested();
-				}
+				numTotalUploads += UploadSyncDataCore(YlConstants.MUSIC_INFO_DB_TABLE_NAMES[(Int32)i], musicInfoCsvHead, musicInfoCsvContents);
 			}
+
+			// ゆかり統計データベース
+			(List<String> yukariStatisticsCsvHead, List<List<String>> yukariStatisticsCsvContents) = syncDataExporter.ExportYukariStatisticsDatabase();
+			_logWriterSyncDetail.LogMessage(Common.TRACE_EVENT_TYPE_STATUS, "アップロード中... ゆかり統計");
+			numTotalUploads += UploadSyncDataCore(TYukariStatistics.TABLE_NAME_YUKARI_STATISTICS, yukariStatisticsCsvHead, yukariStatisticsCsvContents);
+
 			DownloadRejectDate();
 			_logWriterSyncDetail.LogMessage(Common.TRACE_EVENT_TYPE_STATUS, "アップロード完了");
+			return numTotalUploads;
+		}
+
+		// --------------------------------------------------------------------
+		// 同期データをサーバーへアップロード
+		// ＜返値＞ アップロード件数合計
+		// --------------------------------------------------------------------
+		private Int32 UploadSyncDataCore(String tableName, List<String> csvHead, List<List<String>> csvContents)
+		{
+			Debug.Assert(MainWindowViewModel != null, "UploadSyncDataCore() no main window");
+
+			Int32 numTotalUploads = 0;
+
+			// 一定数ずつアップロード
+			for (Int32 j = 0; j < (csvContents.Count + SYNC_UPLOAD_BLOCK - 1) / SYNC_UPLOAD_BLOCK; j++)
+			{
+				List<List<String>> uploadContents = new();
+				uploadContents.Add(csvHead);
+				uploadContents.AddRange(csvContents.GetRange(j * SYNC_UPLOAD_BLOCK, Math.Min(SYNC_UPLOAD_BLOCK, csvContents.Count - j * SYNC_UPLOAD_BLOCK)));
+				String uploadFolder = YlCommon.TempPath();
+				Directory.CreateDirectory(uploadFolder);
+				String uploadPath = uploadFolder + "\\" + tableName;
+				CsvManager.SaveCsv(uploadPath, uploadContents, "\n", Encoding.UTF8);
+				Dictionary<String, String> uploadFiles = new()
+				{
+					{ "File", uploadPath },
+				};
+				Dictionary<String, String?> postParams = new()
+				{
+					// HTML Name 属性
+					{ "Mode", SYNC_MODE_NAME_UPLOAD_SYNC_DATA },
+				};
+				for (Int32 k = 1; k < uploadContents.Count; k++)
+				{
+					_logWriterSyncDetail.LogMessage(Common.TRACE_EVENT_TYPE_STATUS, "データ：" + uploadContents[k][0]);
+				}
+				Post(postParams, uploadFiles);
+
+				// アップロード結果確認
+				if (SyncPostErrorExists(out String? errMessage))
+				{
+					throw new Exception("同期データをアップロードできませんでした：" + errMessage);
+				}
+
+				// 状況
+				numTotalUploads += uploadContents.Count - 1;
+				MainWindowViewModel.SetStatusBarMessageWithInvoke(Common.TRACE_EVENT_TYPE_STATUS, "同期データをアップロード中... 合計 " + numTotalUploads.ToString("#,0") + " 件");
+				Thread.Sleep(SYNC_INTERVAL);
+				YukaListerModel.Instance.EnvModel.AppCancellationTokenSource.Token.ThrowIfCancellationRequested();
+			}
+
 			return numTotalUploads;
 		}
 	}
