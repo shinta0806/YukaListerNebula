@@ -2421,8 +2421,9 @@ class	CPManager
 		// テンプレート適用
 		$vars = array();
 
-		// データ数
-		$num_data = '<table>'
+		// 楽曲情報データベースのデータ数
+		$num_data = '<h2>楽曲情報データベース</h2>'
+				.'<table>'
 				.'<tr><th>テーブル</th><th>有効データ数</th><th>全データ数</th></tr>';
 		$num_total_data_sum = 0;
 		$num_valid_data_sum = 0;
@@ -2430,42 +2431,63 @@ class	CPManager
 		$sync_tables = $this->sync_tables();
 		for ( $i = 0 ; $i < count($sync_tables) ; $i++ ) {
 			$table = $sync_tables[$i];
-			$field_prefix = $this->field_name_prefix($table);
-			$field_update_time = $field_prefix.FIELD_NAME_SUFFIX_UPDATE_TIME;
-			
-			// 全データ数
-			$num_total_data = 0;
-			$sql = 'SELECT COUNT('.$field_update_time.') AS count FROM '.$table;
-			$stmt = $pdo->query($sql);
-			$row = $stmt->fetch(PDO::FETCH_ASSOC);
-			if ( $row !== FALSE && $row['count'] != NULL ) {
-				$num_total_data = $row['count'];
+			if( $table === TABLE_NAME_YUKARI_STATISTICS ){
+				break;
 			}
-			$stmt->closeCursor();
-			$num_total_data_sum += $num_total_data;
-			
-			// 有効データ数
-			$num_valid_data = 0;
-			$field_invalid = $field_prefix.FIELD_NAME_SUFFIX_INVALID;
-			$sql .= ' WHERE '.$field_invalid.' = 0';
-			$stmt = $pdo->query($sql);
-			$row = $stmt->fetch(PDO::FETCH_ASSOC);
-			if ( $row !== FALSE && $row['count'] != NULL ) {
-				$num_valid_data = $row['count'];
-			}
-			$stmt->closeCursor();
-			$num_valid_data_sum += $num_valid_data;
-			
-			$num_data .= '<tr><th>'.$table.'</th><td>'.number_format($num_valid_data).'</td>'
-					.'<td>'.number_format($num_total_data).'</td></tr>';
+			$num_data .= $this->view_num_data_tr($pdo, $table, $num_total_data_sum, $num_valid_data_sum);
 		}
 		$num_data .= '<th>合計</th><td>'.number_format($num_valid_data_sum).'</td>'
 				.'<td>'.number_format($num_total_data_sum).'</td></tr>'
 				.'</table>';
+
+		// ゆかり統計データベースのデータ数
+		$num_data .= '<h2>ゆかり統計データベース</h2>'
+				.'<table>'
+				.'<tr><th>テーブル</th><th>有効データ数</th><th>全データ数</th></tr>';
+		$num_total_data_sum = 0;
+		$num_valid_data_sum = 0;
+		$num_data .= $this->view_num_data_tr($pdo, TABLE_NAME_YUKARI_STATISTICS, $num_total_data_sum, $num_valid_data_sum);
+		$num_data .= '</table>';
+
 		$vars[TMPL_MARK_NUM_DATA] = $num_data;
 	
 		// フォーム表示
 		$this->show_form('データ数表示フォーム', FILE_NAME_TEMPLATE_VIEW_NUM_DATA, $vars);
+	}
+
+	// -------------------------------------------------------------------
+	// データ数表示用の <TR> の内容
+	// -------------------------------------------------------------------
+	private function view_num_data_tr(&$pdo, $table, &$num_total_data_sum, &$num_valid_data_sum)
+	{
+		$field_prefix = $this->field_name_prefix($table);
+		$field_update_time = $field_prefix.FIELD_NAME_SUFFIX_UPDATE_TIME;
+		
+		// 全データ数
+		$num_total_data = 0;
+		$sql = 'SELECT COUNT('.$field_update_time.') AS count FROM '.$table;
+		$stmt = $pdo->query($sql);
+		$row = $stmt->fetch(PDO::FETCH_ASSOC);
+		if ( $row !== FALSE && $row['count'] != NULL ) {
+			$num_total_data = $row['count'];
+		}
+		$stmt->closeCursor();
+		$num_total_data_sum += $num_total_data;
+		
+		// 有効データ数
+		$num_valid_data = 0;
+		$field_invalid = $field_prefix.FIELD_NAME_SUFFIX_INVALID;
+		$sql .= ' WHERE '.$field_invalid.' = 0';
+		$stmt = $pdo->query($sql);
+		$row = $stmt->fetch(PDO::FETCH_ASSOC);
+		if ( $row !== FALSE && $row['count'] != NULL ) {
+			$num_valid_data = $row['count'];
+		}
+		$stmt->closeCursor();
+		$num_valid_data_sum += $num_valid_data;
+		
+		return '<tr><th>'.$table.'</th><td>'.number_format($num_valid_data).'</td>'
+				.'<td>'.number_format($num_total_data).'</td></tr>';
 	}
 
 	// -------------------------------------------------------------------

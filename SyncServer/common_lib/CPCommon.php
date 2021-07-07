@@ -203,6 +203,7 @@ define('TMPL_MARK_ADD_HEADER', '<!-- $AddHeader$ -->');
 define('TMPL_MARK_BODY_PROPERTY', '<!-- $BodyProperty$ -->');
 define('TMPL_MARK_CP_MAIN_PARAM', '<!-- $CPMainParam$ -->');
 define('TMPL_MARK_CP_TOP_PATH', '<!-- $CPTopPath$ -->');
+define('TMPL_MARK_DEBUG', '<!-- $Debug$ -->');
 define('TMPL_MARK_FUNCTION_GET_USER_INFO', '<!-- $FunctionGetUserInfo$ -->');
 define('TMPL_MARK_HEADLINE', '<!-- $Headline$ -->');
 define('TMPL_MARK_INDENT','<!-- $Indent$ -->');
