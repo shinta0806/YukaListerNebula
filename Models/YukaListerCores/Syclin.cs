@@ -116,7 +116,7 @@ namespace YukaLister.Models.YukaListerCores
 					}
 
 					// 完了表示
-					MainWindowViewModel.SetStatusBarMessageWithInvoke(Common.TRACE_EVENT_TYPE_STATUS, "楽曲情報データベース同期完了（ダウンロード"
+					MainWindowViewModel.SetStatusBarMessageWithInvoke(Common.TRACE_EVENT_TYPE_STATUS, "データベース同期完了（ダウンロード"
 							+ (numTotalDownloads == 0 ? "無" : " " + numTotalDownloads.ToString("#,0") + " 件、うち " + numTotalImports.ToString("#,0") + " 件インポート")
 							+ "、アップロード" + (numTotalUploads == 0 ? "無" : " " + numTotalUploads.ToString("#,0") + " 件") + "）");
 				}
@@ -350,16 +350,16 @@ namespace YukaLister.Models.YukaListerCores
 				{ "AppGeneration", YlConstants.APP_GENERATION },
 				{ "AppVer", YlConstants.APP_VER },
 			};
-			MainWindowViewModel?.SetStatusBarMessageWithInvoke(Common.TRACE_EVENT_TYPE_STATUS, "楽曲情報データベース同期サーバーにログインします...");
+			MainWindowViewModel?.SetStatusBarMessageWithInvoke(Common.TRACE_EVENT_TYPE_STATUS, "データベース同期サーバーにログインします...");
 			Post(postParams);
 
 			// ログイン結果確認
 			if (SyncPostErrorExists(out String? errMessage))
 			{
-				throw new Exception("楽曲情報データベース同期サーバーにログインできませんでした。" + errMessage);
+				throw new Exception("データベース同期サーバーにログインできませんでした。" + errMessage);
 			}
 
-			MainWindowViewModel?.SetStatusBarMessageWithInvoke(Common.TRACE_EVENT_TYPE_STATUS, "楽曲情報データベース同期サーバーにログインしました。同期処理中です...");
+			MainWindowViewModel?.SetStatusBarMessageWithInvoke(Common.TRACE_EVENT_TYPE_STATUS, "データベース同期サーバーにログインしました。同期処理中です...");
 			Thread.Sleep(SYNC_INTERVAL);
 			YukaListerModel.Instance.EnvModel.AppCancellationTokenSource.Token.ThrowIfCancellationRequested();
 		}
@@ -381,11 +381,11 @@ namespace YukaLister.Models.YukaListerCores
 				if (IsNetworkAvailable())
 				{
 					// ネットワークが利用可能なのに例外になった場合は、サーバーアドレスが間違っているか、サーバーが混んでいる可能性が高い
-					throw new Exception("楽曲情報データベース同期サーバーに接続できませんでした。サーバーアドレスが間違っているか、サーバーが混んでいます。");
+					throw new Exception("データベース同期サーバーに接続できませんでした。サーバーアドレスが間違っているか、サーバーが混んでいます。");
 				}
 				else
 				{
-					throw new Exception("楽曲情報データベース同期サーバーに接続できませんでした。インターネットが使えません。");
+					throw new Exception("データベース同期サーバーに接続できませんでした。インターネットが使えません。");
 				}
 			}
 		}
@@ -419,7 +419,7 @@ namespace YukaLister.Models.YukaListerCores
 			}
 			catch (Exception excep)
 			{
-				throw new Exception("楽曲情報データベースへの送信結果を確認できませんでした。\n" + excep.Message);
+				throw new Exception("データベースへの送信結果を確認できませんでした。\n" + excep.Message);
 			}
 		}
 
