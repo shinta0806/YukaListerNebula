@@ -87,11 +87,18 @@ namespace YukaLister.Models.YukaListerCores
 					// 統計更新
 					AnalyzeYukariRequests(yukariStatistics, yukariRequests, founds);
 #if DEBUG
+					Boolean hasChangesBak = yukariStatisticsContext.ChangeTracker.HasChanges();
 					Double lastWriteTimeBak = YukariStatisticsContext.LastWriteTime();
 #endif
+					if (yukariStatisticsContext.ChangeTracker.HasChanges())
+					{
+						YukariStatisticsContext.BackupDatabase();
+					}
 					yukariStatisticsContext.SaveChanges();
 #if DEBUG
-					Debug.WriteLine("Yurelin.CoreMain() ファイル更新 " + (lastWriteTimeBak == YukariStatisticsContext.LastWriteTime() ? "なし" : "有り"));
+					Debug.WriteLine("Yurelin.CoreMain() 更新フラグ " + hasChangesBak.ToString());
+					Debug.WriteLine("Yurelin.CoreMain() 実際のファイル更新 " + (lastWriteTimeBak == YukariStatisticsContext.LastWriteTime() ? "なし" : "有り"));
+					Debug.Assert(hasChangesBak == (lastWriteTimeBak != YukariStatisticsContext.LastWriteTime()), "Yurelin.CoreMain() フラグが実際と異なった");
 #endif
 				}
 				catch (OperationCanceledException)
