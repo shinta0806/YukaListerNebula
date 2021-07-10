@@ -141,9 +141,15 @@ class	CPManager
 		// 管理者アカウントでログインしていてかつデバッグモードの場合
 		if ( $_SESSION[SESSION_INFO_ACCOUNT_ADMIN] && DEBUG_FLAG ) {
 			switch ( $this->_mode ) {
-			case MODE_NAME_UPLOAD_TEST:
-				$this->upload_test();
-				return;
+				case MODE_NAME_DEBUG_CREATE_YUKARI_STATISTICS_TABLE:
+					$this->debug_create_yukari_statistics_table();
+					return;
+				case MODE_NAME_VIEW_DEBUG_MISC:
+					$this->view_debug_misc();
+					return;
+				case MODE_NAME_VIEW_DEBUG_UPLOAD_TEST:
+					$this->view_debug_upload_test();
+					return;
 			}
 		}
 
@@ -427,33 +433,37 @@ class	CPManager
 	// -------------------------------------------------------------------
 	private function check_login()
 	{
-		// POST されたパラメーター取得
-		$posted_name = $this->get_posted_parameter(PARAM_NAME_NAME);
-		$posted_pw = $this->get_posted_parameter(PARAM_NAME_PASSWORD);
-		$posted_app_generation = $this->get_posted_parameter(PARAM_NAME_APP_GENERATION);
+		try {
+			// POST されたパラメーター取得
+			$posted_name = $this->get_posted_parameter(PARAM_NAME_NAME);
+			$posted_pw = $this->get_posted_parameter(PARAM_NAME_PASSWORD);
+			$posted_app_generation = $this->get_posted_parameter(PARAM_NAME_APP_GENERATION);
+			$posted_app_ver = $this->get_posted_parameter(PARAM_NAME_APP_VER);
 
-		if ( $posted_app_generation != SYSTEM_APP_GENERATION ) {
-			// クライアントの世代がサーバーと異なる
+			if ($posted_app_generation != SYSTEM_APP_GENERATION) {
+				// クライアントの世代がサーバーと異なる
+				throw new Exception('クライアントの互換性がありません。');
+			}
+
+			if ($posted_app_ver != "Web" && $posted_app_ver < "Ver 3.80") {
+				// クライアントの世代が想定よりも古い
+				throw new Exception('クライアントのバージョンが古いです。');
+			}
+
+			$row = $this->select_account_by_name_and_password($posted_name, $posted_pw);
+			if ($row === FALSE) {
+				throw new Exception('アカウント名またはパスワードが違います。');
+			}
+
+			// ログイン成功
+			$this->login($row);
+			$this->insert_login(TRUE);
+			header('Location:' . FILE_NAME_CP_MAIN);
+		} catch (Exception $excep) {
+			// ログイン失敗
 			$this->insert_login(FALSE);
-
-			// ログインできないのでログイン画面に戻る
-			header('Location:'.FILE_NAME_CP_LOGIN.'?'.PARAM_NAME_ERROR_MESSAGE.'='.urlencode('クライアントの互換性がありません。'));
-			return;
+			header('Location:' . FILE_NAME_CP_LOGIN . '?' . PARAM_NAME_ERROR_MESSAGE . '=' . urlencode($excep->getMessage()));
 		}
-
-		$row = $this->select_account_by_name_and_password($posted_name, $posted_pw);
-		if ( $row === FALSE ) {
-			$this->insert_login(FALSE);
-		
-			// ログインできないのでログイン画面に戻る
-			header('Location:'.FILE_NAME_CP_LOGIN.'?'.PARAM_NAME_ERROR_MESSAGE.'='.urlencode('アカウント名またはパスワードが違います。'));
-			return;
-		}
-
-		// ログイン成功
-		$this->login($row);
-		$this->insert_login(TRUE);
-		header('Location:'.FILE_NAME_CP_MAIN.$this->get_posted_parameter(CP_MAIN_PARAM));
 	}
 
 	// ----------------------------------------------------------------------------
@@ -806,36 +816,7 @@ class	CPManager
 		$pdo->exec($sql);
 
 		// TYukariStatistics
-		$sql = 'CREATE TABLE IF NOT EXISTS '.TABLE_NAME_YUKARI_STATISTICS.' ('
-				.$this->create_table_tbase_sql(FIELD_NAME_YUKARI_STATISTICS_PREFIX)
-				.FIELD_NAME_YUKARI_STATISTICS_REQUEST_DATABASE_PATH.' VARCHAR(65535),'
-				.FIELD_NAME_YUKARI_STATISTICS_REQUEST_TIME.' DOUBLE NOT NULL,'
-				.FIELD_NAME_YUKARI_STATISTICS_ATTRIBUTES_DONE.' TINYINT(1) NOT NULL,'
-				.FIELD_NAME_YUKARI_STATISTICS_ROOM_NAME.' VARCHAR(65535),'
-				.FIELD_NAME_YUKARI_STATISTICS_REQUEST_ID.' INT NOT NULL,'
-				.FIELD_NAME_YUKARI_STATISTICS_REQUEST_MOVIE_PATH.' VARCHAR(65535),'
-				.FIELD_NAME_YUKARI_STATISTICS_REQUEST_SINGER.' VARCHAR(65535),'
-				.FIELD_NAME_YUKARI_STATISTICS_REQUEST_COMMENT.' VARCHAR(65535),'
-				.FIELD_NAME_YUKARI_STATISTICS_REQUEST_ORDER.' INT NOT NULL,'
-				.FIELD_NAME_YUKARI_STATISTICS_REQUEST_KEY_CHANGE.' INT NOT NULL,'
-				.FIELD_NAME_YUKARI_STATISTICS_WORKER.' VARCHAR(65535),'
-				.FIELD_NAME_YUKARI_STATISTICS_SONG_RELEASE_DATE.' DOUBLE NOT NULL,'
-				.FIELD_NAME_YUKARI_STATISTICS_CATEGORY_NAME.' VARCHAR(65535),'
-				.FIELD_NAME_YUKARI_STATISTICS_TIE_UP_NAME.' VARCHAR(65535),'
-				.FIELD_NAME_YUKARI_STATISTICS_TIE_UP_AGE_LIMIT.' INT NOT NULL,'
-				.FIELD_NAME_YUKARI_STATISTICS_MAKER_NAME.' VARCHAR(65535),'
-				.FIELD_NAME_YUKARI_STATISTICS_TIE_UP_GROUP_NAME.' VARCHAR(65535),'
-				.FIELD_NAME_YUKARI_STATISTICS_SONG_NAME.' VARCHAR(65535),'
-				.FIELD_NAME_YUKARI_STATISTICS_SONG_OP_ED.' VARCHAR(65535),'
-				.FIELD_NAME_YUKARI_STATISTICS_ARTIST_NAME.' VARCHAR(65535),'
-				.FIELD_NAME_YUKARI_STATISTICS_LYRIST_NAME.' VARCHAR(65535),'
-				.FIELD_NAME_YUKARI_STATISTICS_COMPOSER_NAME.' VARCHAR(65535),'
-				.FIELD_NAME_YUKARI_STATISTICS_ARRANGER_NAME.' VARCHAR(65535),'
-				.'PRIMARY KEY('.FIELD_NAME_YUKARI_STATISTICS_ID.'),'
-				.'INDEX('.FIELD_NAME_YUKARI_STATISTICS_UPDATE_TIME.')'
-				.') '.CREATE_TABLE_OPTIONS.';';
-		log_message('create_tables() TYukariStatistics '.$sql, LOG_LEVEL_DEBUG, FALSE);
-		$pdo->exec($sql);
+		$this->create_yukari_statistics_table($pdo);
 		
 		if ( DEBUG_FLAG && FALSE ) {
 			// サンプルデータ（TSong）
@@ -993,6 +974,43 @@ class	CPManager
 	}
 
 	// -------------------------------------------------------------------
+	// ゆかり統計テーブル作成
+	// -------------------------------------------------------------------
+	private function create_yukari_statistics_table(&$pdo)
+	{
+		$sql = 'CREATE TABLE IF NOT EXISTS '.TABLE_NAME_YUKARI_STATISTICS.' ('
+				.$this->create_table_tbase_sql(FIELD_NAME_YUKARI_STATISTICS_PREFIX)
+				.FIELD_NAME_YUKARI_STATISTICS_REQUEST_DATABASE_PATH.' VARCHAR(65535),'
+				.FIELD_NAME_YUKARI_STATISTICS_REQUEST_TIME.' DOUBLE NOT NULL,'
+				.FIELD_NAME_YUKARI_STATISTICS_ATTRIBUTES_DONE.' TINYINT(1) NOT NULL,'
+				.FIELD_NAME_YUKARI_STATISTICS_ROOM_NAME.' VARCHAR(65535),'
+				.FIELD_NAME_YUKARI_STATISTICS_REQUEST_ID.' INT NOT NULL,'
+				.FIELD_NAME_YUKARI_STATISTICS_REQUEST_MOVIE_PATH.' VARCHAR(65535),'
+				.FIELD_NAME_YUKARI_STATISTICS_REQUEST_SINGER.' VARCHAR(65535),'
+				.FIELD_NAME_YUKARI_STATISTICS_REQUEST_COMMENT.' VARCHAR(65535),'
+				.FIELD_NAME_YUKARI_STATISTICS_REQUEST_ORDER.' INT NOT NULL,'
+				.FIELD_NAME_YUKARI_STATISTICS_REQUEST_KEY_CHANGE.' INT NOT NULL,'
+				.FIELD_NAME_YUKARI_STATISTICS_WORKER.' VARCHAR(65535),'
+				.FIELD_NAME_YUKARI_STATISTICS_SONG_RELEASE_DATE.' DOUBLE NOT NULL,'
+				.FIELD_NAME_YUKARI_STATISTICS_CATEGORY_NAME.' VARCHAR(65535),'
+				.FIELD_NAME_YUKARI_STATISTICS_TIE_UP_NAME.' VARCHAR(65535),'
+				.FIELD_NAME_YUKARI_STATISTICS_TIE_UP_AGE_LIMIT.' INT NOT NULL,'
+				.FIELD_NAME_YUKARI_STATISTICS_MAKER_NAME.' VARCHAR(65535),'
+				.FIELD_NAME_YUKARI_STATISTICS_TIE_UP_GROUP_NAME.' VARCHAR(65535),'
+				.FIELD_NAME_YUKARI_STATISTICS_SONG_NAME.' VARCHAR(65535),'
+				.FIELD_NAME_YUKARI_STATISTICS_SONG_OP_ED.' VARCHAR(65535),'
+				.FIELD_NAME_YUKARI_STATISTICS_ARTIST_NAME.' VARCHAR(65535),'
+				.FIELD_NAME_YUKARI_STATISTICS_LYRIST_NAME.' VARCHAR(65535),'
+				.FIELD_NAME_YUKARI_STATISTICS_COMPOSER_NAME.' VARCHAR(65535),'
+				.FIELD_NAME_YUKARI_STATISTICS_ARRANGER_NAME.' VARCHAR(65535),'
+				.'PRIMARY KEY('.FIELD_NAME_YUKARI_STATISTICS_ID.'),'
+				.'INDEX('.FIELD_NAME_YUKARI_STATISTICS_UPDATE_TIME.')'
+				.') '.CREATE_TABLE_OPTIONS.';';
+		log_message('create_yukari_statistics_table() TYukariStatistics '.$sql, LOG_LEVEL_DEBUG, FALSE);
+		$pdo->exec($sql);
+	}
+
+	// -------------------------------------------------------------------
 	// "20180123" 形式の文字列を DateTime に変換
 	// "" も変換できる
 	// -------------------------------------------------------------------
@@ -1023,6 +1041,17 @@ class	CPManager
 		$date_time->setTime(0, 0, 0);
 		return $date_time;
 	}
+
+	// -------------------------------------------------------------------
+	// ゆかり統計テーブル作成
+	// -------------------------------------------------------------------
+	private function debug_create_yukari_statistics_table()
+	{
+		$pdo = $this->connect_db();
+		$this->create_yukari_statistics_table($pdo);
+		header('Location:'.FILE_NAME_CP_MAIN.'?'.PARAM_NAME_MODE.'='.MODE_NAME_VIEW_DEBUG_MISC
+		.'&'.PARAM_NAME_NOTICE_MESSAGE.'='.urlencode('ゆかり統計テーブルが存在していなかった場合は作成しました。'));
+}
 
 	// -------------------------------------------------------------------
 	// アカウント削除
@@ -2039,7 +2068,7 @@ class	CPManager
 			$headline = get_headline_error_html($this->_err_message);
 		}
 
-		// メニュー
+		// 管理者用メニュー
 		$menu_admin = '';
 		if ( $_SESSION[SESSION_INFO_ACCOUNT_ADMIN] ) {
 			$menu_admin = '<div class="SideMenuTitle">管理者メニュー</div>'
@@ -2048,10 +2077,12 @@ class	CPManager
 					.'<div class="SideMenuItem"><a href="?Mode='.MODE_NAME_VIEW_NUM_COMMIT.'">コミット数表示</a></div>'
 					.'<div class="SideMenuItem"><a href="?Mode='.MODE_NAME_VIEW_LOG.'">ログ表示</a></div>';
 		}
-		$menu_item_admin_debug = '';
+
+		// 管理者用メニュー（デバッグ時のみ）
 		if ( $_SESSION[SESSION_INFO_ACCOUNT_ADMIN] && DEBUG_FLAG ) {
-			$menu_item_admin_debug = '<div class="SideMenuItem"><a href="?Mode='
-					.MODE_NAME_UPLOAD_TEST.'">アップロードテスト</a></div>';
+			$menu_admin .= '<div class="SideMenuTitle">デバッグメニュー</div>'
+					.'<div class="SideMenuItem"><a href="?Mode='.MODE_NAME_VIEW_DEBUG_UPLOAD_TEST.'">アップロードテスト</a></div>'
+					.'<div class="SideMenuItem"><a href="?Mode='.MODE_NAME_VIEW_DEBUG_MISC.'">各種デバッグ</a></div>';
 		}
 
 		// テンプレート適用
@@ -2264,25 +2295,37 @@ class	CPManager
 	}
 
 	// -------------------------------------------------------------------
-	// アップロードテスト
-	// -------------------------------------------------------------------
-	private function upload_test()
-	{
-		// テンプレート適用
-		$vars = array();
-		$vars[TMPL_MARK_TITLE_DETAIL] = 'アップロードテスト';
-
-		// フォーム表示
-		$this->show_form('アップロードテストフォーム', FILE_NAME_TEMPLATE_UPLOAD_TEST, $vars);
-	}
-
-	// -------------------------------------------------------------------
 	// ログ用ユーザー情報
 	// -------------------------------------------------------------------
 	private function user_info()
 	{
 		return ' ［ユーザー ID：'.$_SESSION[SESSION_INFO_ACCOUNT_UID]
 				.' / '.$_SESSION[SESSION_INFO_ACCOUNT_NAME].'］';
+	}
+
+	// -------------------------------------------------------------------
+	// デバッグページ表示
+	// -------------------------------------------------------------------
+	private function view_debug_misc()
+	{
+		// テンプレート適用
+		$vars = array();
+
+		// フォーム表示
+		$this->show_form('デバッグ表示フォーム', FILE_NAME_TEMPLATE_VIEW_DEBUG_MISC, $vars);
+	}
+
+	// -------------------------------------------------------------------
+	// デバッグ用アップロードテスト
+	// -------------------------------------------------------------------
+	private function view_debug_upload_test()
+	{
+		// テンプレート適用
+		$vars = array();
+		$vars[TMPL_MARK_TITLE_DETAIL] = 'アップロードテスト';
+
+		// フォーム表示
+		$this->show_form('アップロードテストフォーム', FILE_NAME_TEMPLATE_VIEW_DEBUG_UPLOAD_TEST, $vars);
 	}
 
 	// -------------------------------------------------------------------
@@ -2529,5 +2572,3 @@ class	CPManager
 
 
 }
-
-?>

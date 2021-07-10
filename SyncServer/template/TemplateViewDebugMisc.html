@@ -1,0 +1,15 @@
+<h1>デバッグ</h1>
+
+<script type="text/javascript"> 
+    function confirmCreateYukariStatisticsTable() {
+        return window.confirm('ゆかり統計データベースを作成してよろしいですか？');
+    }
+</script>
+
+<form method="post" enctype="multipart/form-data" action="CPMain.php" onSubmit="return confirmCreateYukariStatisticsTable()">
+
+    <input type="hidden" name="Mode" value="DebugCreateYukariStatisticsTable">
+    <input type="submit" name="ChangeCurrentPW" value="ゆかり統計データベース作成（存在しない場合）">
+    
+</form>
+    
