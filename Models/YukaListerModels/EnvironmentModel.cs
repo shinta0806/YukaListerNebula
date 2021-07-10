@@ -20,7 +20,7 @@ using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-
+using YukaLister.Models.DatabaseContexts;
 using YukaLister.Models.SerializableSettings;
 using YukaLister.Models.SharedMisc;
 using YukaLister.Models.YukaListerCores;
@@ -162,6 +162,18 @@ namespace YukaLister.Models.YukaListerModels
 
 		// アプリケーション終了時タスク安全中断用
 		public CancellationTokenSource AppCancellationTokenSource { get; } = new();
+
+		// インメモリデータベースが生存し続けるようにインスタンスを保持
+		// マルチスレッドで安全に使用できるよう、本プロパティーは使用せず、CreateContext() で新たなコンテキストを作成すること
+		private ListContextInMemory? _listContextInMemory;
+		public ListContextInMemory ListContextInMemory
+		{
+			set
+			{
+				_listContextInMemory?.Dispose();
+				_listContextInMemory = value;
+			}
+		}
 
 		// --------------------------------------------------------------------
 		// コマンド

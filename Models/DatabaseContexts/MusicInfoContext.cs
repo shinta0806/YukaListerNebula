@@ -10,9 +10,8 @@
 
 using Microsoft.EntityFrameworkCore;
 
-using Shinta;
-
 using System;
+
 using YukaLister.Models.Database;
 using YukaLister.Models.Database.Aliases;
 using YukaLister.Models.Database.Masters;
@@ -22,6 +21,18 @@ namespace YukaLister.Models.DatabaseContexts
 {
 	public abstract class MusicInfoContext : YukaListerContext
 	{
+		// ====================================================================
+		// コンストラクター・デストラクター
+		// ====================================================================
+
+		// --------------------------------------------------------------------
+		// コンストラクター
+		// --------------------------------------------------------------------
+		public MusicInfoContext(String databaseName)
+				: base(databaseName)
+		{
+		}
+
 		// ====================================================================
 		// public プロパティー
 		// ====================================================================
@@ -386,12 +397,5 @@ namespace YukaLister.Models.DatabaseContexts
 			}
 			tagSequences = musicInfoContext.TagSequences;
 		}
-
-		// ====================================================================
-		// protected メンバー定数
-		// ====================================================================
-
-		// データベースファイル名
-		protected const String FILE_NAME_MUSIC_INFO_DATABASE = "NebulaMusicInfo" + Common.FILE_EXT_SQLITE3;
 	}
 }

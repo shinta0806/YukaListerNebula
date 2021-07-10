@@ -24,6 +24,18 @@ namespace YukaLister.Models.DatabaseContexts
 	public class YukariStatisticsContext : YukaListerContext
 	{
 		// ====================================================================
+		// コンストラクター・デストラクター
+		// ====================================================================
+
+		// --------------------------------------------------------------------
+		// コンストラクター
+		// --------------------------------------------------------------------
+		public YukariStatisticsContext()
+				: base("ゆかり統計")
+		{
+		}
+
+		// ====================================================================
 		// public プロパティー
 		// ====================================================================
 
@@ -33,14 +45,6 @@ namespace YukaLister.Models.DatabaseContexts
 		// ====================================================================
 		// public static メンバー関数
 		// ====================================================================
-
-		// --------------------------------------------------------------------
-		// データベースファイルのバックアップを作成
-		// --------------------------------------------------------------------
-		public static void BackupDatabase()
-		{
-			DbCommon.BackupDatabase(DatabasePath());
-		}
 
 		// --------------------------------------------------------------------
 		// データベースコンテキスト生成
@@ -77,38 +81,6 @@ namespace YukaLister.Models.DatabaseContexts
 		}
 
 		// --------------------------------------------------------------------
-		// データベースファイル生成（既存がある場合はクリア）
-		// --------------------------------------------------------------------
-		public static void CreateDatabase()
-		{
-			YukaListerModel.Instance.EnvModel.LogWriter.LogMessage(Common.TRACE_EVENT_TYPE_STATUS, "ゆかり統計データベース初期化中...");
-
-			// クリア
-			using YukariStatisticsContext yukariStatisticsContext = CreateContext(out DbSet<TProperty> properties);
-			yukariStatisticsContext.Database.EnsureDeleted();
-
-			// 新規作成
-			yukariStatisticsContext.Database.EnsureCreated();
-			DbCommon.UpdateProperty(yukariStatisticsContext, properties);
-
-			YukaListerModel.Instance.EnvModel.LogWriter.LogMessage(Common.TRACE_EVENT_TYPE_STATUS, "ゆかり統計データベースを初期化しました。");
-		}
-
-		// --------------------------------------------------------------------
-		// データベースファイル生成（既存がある場合は作成しない）
-		// --------------------------------------------------------------------
-		public static void CreateDatabaseIfNeeded()
-		{
-			using YukariStatisticsContext yukariStatisticsContext = CreateContext(out DbSet<TProperty> properties);
-			if (DbCommon.ValidPropertyExists(properties))
-			{
-				// 既存のデータベースがある場合はクリアしない
-				return;
-			}
-			CreateDatabase();
-		}
-
-		// --------------------------------------------------------------------
 		// データベースセット取得
 		// ＜例外＞ Exception
 		// --------------------------------------------------------------------
@@ -121,25 +93,21 @@ namespace YukaLister.Models.DatabaseContexts
 			yukariStatistics = yukariStatisticsContext.YukariStatistics;
 		}
 
+		// ====================================================================
+		// public メンバー関数
+		// ====================================================================
+
 		// --------------------------------------------------------------------
-		// ファイルの最終更新日時 UTC（修正ユリウス日）
+		// データベースのフルパス
 		// --------------------------------------------------------------------
-		public static Double LastWriteTime()
+		public override String DatabasePath()
 		{
-			return JulianDay.DateTimeToModifiedJulianDate(new FileInfo(DatabasePath()).LastWriteTimeUtc);
+			return DbCommon.YukaListerDatabaseFullFolder() + FILE_NAME_YUKARI_STATISTICS_DATABASE;
 		}
 
 		// ====================================================================
 		// protected メンバー関数
 		// ====================================================================
-
-		// --------------------------------------------------------------------
-		// データベース設定
-		// --------------------------------------------------------------------
-		protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-		{
-			optionsBuilder.UseSqlite(DbCommon.Connect(DatabasePath()));
-		}
 
 		// --------------------------------------------------------------------
 		// データベースモデル作成
@@ -159,17 +127,5 @@ namespace YukaLister.Models.DatabaseContexts
 
 		// データベースファイル名
 		private const String FILE_NAME_YUKARI_STATISTICS_DATABASE = "YukariStatistics" + Common.FILE_EXT_SQLITE3;
-
-		// ====================================================================
-		// private static メンバー関数
-		// ====================================================================
-
-		// --------------------------------------------------------------------
-		// データベースのフルパス
-		// --------------------------------------------------------------------
-		private static String DatabasePath()
-		{
-			return DbCommon.YukaListerDatabaseFullFolder() + FILE_NAME_YUKARI_STATISTICS_DATABASE;
-		}
 	}
 }

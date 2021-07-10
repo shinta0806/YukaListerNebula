@@ -10,8 +10,6 @@
 
 using Microsoft.EntityFrameworkCore;
 
-using Shinta;
-
 using System;
 
 using YukaLister.Models.Database;
@@ -22,6 +20,18 @@ namespace YukaLister.Models.DatabaseContexts
 {
 	public class ThumbContext : YukaListerContext
 	{
+		// ====================================================================
+		// コンストラクター・デストラクター
+		// ====================================================================
+
+		// --------------------------------------------------------------------
+		// コンストラクター
+		// --------------------------------------------------------------------
+		public ThumbContext()
+				: base("サムネイルキャッシュ")
+		{
+		}
+
 		// ====================================================================
 		// public プロパティー
 		// ====================================================================
@@ -56,38 +66,6 @@ namespace YukaLister.Models.DatabaseContexts
 		}
 
 		// --------------------------------------------------------------------
-		// データベースファイル生成（既存がある場合はクリア）
-		// --------------------------------------------------------------------
-		public static void CreateDatabase()
-		{
-			YukaListerModel.Instance.EnvModel.LogWriter.LogMessage(Common.TRACE_EVENT_TYPE_STATUS, "サムネイルキャッシュデータベース初期化中...");
-
-			// クリア
-			using ThumbContext thumbContext = CreateContext(out DbSet<TProperty> properties);
-			thumbContext.Database.EnsureDeleted();
-
-			// 新規作成
-			thumbContext.Database.EnsureCreated();
-			DbCommon.UpdateProperty(thumbContext, properties);
-
-			YukaListerModel.Instance.EnvModel.LogWriter.LogMessage(Common.TRACE_EVENT_TYPE_STATUS, "サムネイルキャッシュデータベースを初期化しました。");
-		}
-
-		// --------------------------------------------------------------------
-		// データベースファイル生成（既存がある場合は作成しない）
-		// --------------------------------------------------------------------
-		public static void CreateDatabaseIfNeeded()
-		{
-			using ThumbContext thumbContext = CreateContext(out DbSet<TProperty> properties);
-			if (DbCommon.ValidPropertyExists(properties))
-			{
-				// 既存のデータベースがある場合はクリアしない
-				return;
-			}
-			CreateDatabase();
-		}
-
-		// --------------------------------------------------------------------
 		// データベースセット取得
 		// ＜例外＞ Exception
 		// --------------------------------------------------------------------
@@ -101,16 +79,20 @@ namespace YukaLister.Models.DatabaseContexts
 		}
 
 		// ====================================================================
-		// protected メンバー関数
+		// public メンバー関数
 		// ====================================================================
 
 		// --------------------------------------------------------------------
-		// データベース設定
+		// データベースのフルパス
 		// --------------------------------------------------------------------
-		protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+		public override String DatabasePath()
 		{
-			optionsBuilder.UseSqlite(DbCommon.Connect(DbCommon.ThumbDatabasePath(YukaListerModel.Instance.EnvModel.YlSettings)));
+			return DbCommon.ThumbDatabasePath(YukaListerModel.Instance.EnvModel.YlSettings);
 		}
+
+		// ====================================================================
+		// protected メンバー関数
+		// ====================================================================
 
 		// --------------------------------------------------------------------
 		// データベースモデル作成

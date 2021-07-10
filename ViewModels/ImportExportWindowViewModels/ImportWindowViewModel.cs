@@ -64,7 +64,8 @@ namespace YukaLister.ViewModels.ImportExportWindowViewModels
 		protected override Task ImportExportByWorker(Object? _)
 		{
 			// 楽曲情報データベースバックアップ
-			MusicInfoContextDefault.BackupDatabase();
+			using MusicInfoContextDefault musicInfoContextDefault = MusicInfoContextDefault.CreateContext(out DbSet<TProperty> _);
+			musicInfoContextDefault.BackupDatabase();
 
 			// ID 接頭辞
 			YlCommon.InputIdPrefixIfNeededWithInvoke(this);

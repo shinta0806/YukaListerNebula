@@ -953,7 +953,7 @@ namespace YukaLister.Models.SharedMisc
 		// --------------------------------------------------------------------
 		// 現在時刻（UTC）の修正ユリウス日
 		// --------------------------------------------------------------------
-		public static Double UtcNowModifiedJulianDate()
+		public static Double UtcNowMjd()
 		{
 			return JulianDay.DateTimeToModifiedJulianDate(DateTime.UtcNow);
 		}

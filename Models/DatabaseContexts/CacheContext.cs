@@ -15,13 +15,11 @@ using Shinta;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.IO;
 using System.Linq;
 
 using YukaLister.Models.Database;
 using YukaLister.Models.DatabaseAssist;
 using YukaLister.Models.SharedMisc;
-using YukaLister.Models.YukaListerModels;
 
 namespace YukaLister.Models.DatabaseContexts
 {
@@ -35,6 +33,7 @@ namespace YukaLister.Models.DatabaseContexts
 		// コンストラクター
 		// --------------------------------------------------------------------
 		public CacheContext(String driveLetter)
+				: base(driveLetter + " キャッシュ")
 		{
 			Debug.Assert(driveLetter.Length == 2, "CacheContext() bad drive letter");
 			_driveLetter = driveLetter;
@@ -77,9 +76,60 @@ namespace YukaLister.Models.DatabaseContexts
 			return cacheContext;
 		}
 
+		// --------------------------------------------------------------------
+		// データベースセット取得
+		// ＜例外＞ Exception
+		// --------------------------------------------------------------------
+		public static void GetDbSet(CacheContext cacheContext, out DbSet<TFound> founds)
+		{
+			if (cacheContext.Founds == null)
+			{
+				throw new Exception("検出ファイルリストテーブルにアクセスできません。");
+			}
+			founds = cacheContext.Founds;
+		}
+
+		// --------------------------------------------------------------------
+		// データベースセット取得
+		// ＜例外＞ Exception
+		// --------------------------------------------------------------------
+		public static void GetDbSet(CacheContext cacheContext, out DbSet<TCacheHeader> cacheHeaders)
+		{
+			if (cacheContext.CacheHeaders == null)
+			{
+				throw new Exception("キャッシュ管理テーブルにアクセスできません。");
+			}
+			cacheHeaders = cacheContext.CacheHeaders;
+		}
+
 		// ====================================================================
 		// public メンバー関数
 		// ====================================================================
+
+		// --------------------------------------------------------------------
+		// データベースファイル生成（既存がある場合は作成しない）
+		// --------------------------------------------------------------------
+		public override void CreateDatabaseIfNeeded()
+		{
+			if (Properties != null && DbCommon.ValidPropertyExists(Properties))
+			{
+				TProperty property = DbCommon.Property(Properties);
+				if (Common.CompareVersionString(property.AppVer, "Ver 1.18 α") >= 0)
+				{
+					// 既存のデータベースがあり、キャッシュデータの互換性がある場合はクリアしない
+					return;
+				}
+			}
+			CreateDatabase();
+		}
+
+		// --------------------------------------------------------------------
+		// データベースのフルパス
+		// --------------------------------------------------------------------
+		public override String DatabasePath()
+		{
+			return YlCommon.YukaListerStatusFolderPath(_driveLetter, true) + FILE_NAME_CACHE_DATABASE;
+		}
 
 		// --------------------------------------------------------------------
 		// キャッシュ更新（追加）
@@ -119,7 +169,7 @@ namespace YukaLister.Models.DatabaseContexts
 				};
 				needAdd = true;
 			}
-			cacheHeader.UpdateTime = YlCommon.UtcNowModifiedJulianDate();
+			cacheHeader.UpdateTime = YlCommon.UtcNowMjd();
 			if (needAdd)
 			{
 				cacheHeaders.Add(cacheHeader);
@@ -131,14 +181,6 @@ namespace YukaLister.Models.DatabaseContexts
 		// ====================================================================
 		// protected メンバー関数
 		// ====================================================================
-
-		// --------------------------------------------------------------------
-		// データベース設定
-		// --------------------------------------------------------------------
-		protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-		{
-			optionsBuilder.UseSqlite(DbCommon.Connect(DatabasePath()));
-		}
 
 		// --------------------------------------------------------------------
 		// データベースモデル作成
@@ -166,88 +208,5 @@ namespace YukaLister.Models.DatabaseContexts
 
 		// 対象ドライブ（"D:" のようにコロンまで）
 		private readonly String _driveLetter;
-
-		// ====================================================================
-		// private static メンバー関数
-		// ====================================================================
-
-		// --------------------------------------------------------------------
-		// データベースセット取得
-		// ＜例外＞ Exception
-		// --------------------------------------------------------------------
-		private static void GetDbSet(CacheContext cacheContext, out DbSet<TFound> founds)
-		{
-			if (cacheContext.Founds == null)
-			{
-				throw new Exception("検出ファイルリストテーブルにアクセスできません。");
-			}
-			founds = cacheContext.Founds;
-		}
-
-		// --------------------------------------------------------------------
-		// データベースセット取得
-		// ＜例外＞ Exception
-		// --------------------------------------------------------------------
-		private static void GetDbSet(CacheContext cacheContext, out DbSet<TCacheHeader> cacheHeaders)
-		{
-			if (cacheContext.CacheHeaders == null)
-			{
-				throw new Exception("キャッシュ管理テーブルにアクセスできません。");
-			}
-			cacheHeaders = cacheContext.CacheHeaders;
-		}
-
-		// ====================================================================
-		// private メンバー関数
-		// ====================================================================
-
-		// --------------------------------------------------------------------
-		// データベースファイル生成（既存がある場合はクリア）
-		// --------------------------------------------------------------------
-		private void CreateDatabase()
-		{
-			YukaListerModel.Instance.EnvModel.LogWriter.LogMessage(Common.TRACE_EVENT_TYPE_STATUS, "キャッシュデータベース " + _driveLetter + " 初期化中...");
-
-			// クリア
-			Database.EnsureDeleted();
-
-			// 新規作成
-			Database.EnsureCreated();
-			if (Properties != null)
-			{
-				DbCommon.UpdateProperty(this, Properties);
-			}
-
-			// 隠し属性
-			//FileAttributes attr = File.GetAttributes(DatabasePath());
-			//File.SetAttributes(DatabasePath(), attr | FileAttributes.Hidden);
-
-			YukaListerModel.Instance.EnvModel.LogWriter.LogMessage(Common.TRACE_EVENT_TYPE_STATUS, "キャッシュデータベースを初期化しました。");
-		}
-
-		// --------------------------------------------------------------------
-		// データベースファイル生成（既存がある場合は作成しない）
-		// --------------------------------------------------------------------
-		private void CreateDatabaseIfNeeded()
-		{
-			if (Properties != null && DbCommon.ValidPropertyExists(Properties))
-			{
-				TProperty property = DbCommon.Property(Properties);
-				if (Common.CompareVersionString(property.AppVer, "Ver 1.18 α") >= 0)
-				{
-					// 既存のデータベースがあり、キャッシュデータの互換性がある場合はクリアしない
-					return;
-				}
-			}
-			CreateDatabase();
-		}
-
-		// --------------------------------------------------------------------
-		// データベースのフルパス
-		// --------------------------------------------------------------------
-		private String DatabasePath()
-		{
-			return YlCommon.YukaListerStatusFolderPath(_driveLetter, true) + FILE_NAME_CACHE_DATABASE;
-		}
 	}
 }

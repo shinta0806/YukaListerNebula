@@ -13,7 +13,6 @@ using Microsoft.EntityFrameworkCore;
 using Shinta;
 
 using System;
-using System.IO;
 
 using YukaLister.Models.Database;
 using YukaLister.Models.Database.Aliases;
@@ -21,23 +20,26 @@ using YukaLister.Models.Database.Masters;
 using YukaLister.Models.Database.Sequences;
 using YukaLister.Models.DatabaseAssist;
 using YukaLister.Models.SharedMisc;
-using YukaLister.Models.YukaListerModels;
 
 namespace YukaLister.Models.DatabaseContexts
 {
 	public class MusicInfoContextDefault : MusicInfoContext
 	{
 		// ====================================================================
-		// public static メンバー関数
+		// コンストラクター・デストラクター
 		// ====================================================================
 
 		// --------------------------------------------------------------------
-		// データベースファイルのバックアップを作成
+		// コンストラクター
 		// --------------------------------------------------------------------
-		public static void BackupDatabase()
+		public MusicInfoContextDefault()
+				: base("楽曲情報")
 		{
-			DbCommon.BackupDatabase(DatabasePath());
 		}
+
+		// ====================================================================
+		// public static メンバー関数
+		// ====================================================================
 
 		// --------------------------------------------------------------------
 		// データベースコンテキスト生成
@@ -172,59 +174,31 @@ namespace YukaLister.Models.DatabaseContexts
 			return musicInfoContext;
 		}
 
+		// ====================================================================
+		// public メンバー関数
+		// ====================================================================
+
 		// --------------------------------------------------------------------
 		// データベースファイル生成（既存がある場合はクリア）
 		// --------------------------------------------------------------------
-		public static void CreateDatabase()
+		public override void CreateDatabase()
 		{
 			BackupDatabase();
-			YukaListerModel.Instance.EnvModel.LogWriter.LogMessage(Common.TRACE_EVENT_TYPE_STATUS, "楽曲情報データベース初期化中...");
-
-			// クリア
-			using MusicInfoContextDefault musicInfoContext = CreateContext(out DbSet<TProperty> properties);
-			musicInfoContext.Database.EnsureDeleted();
-
-			// 新規作成
-			musicInfoContext.Database.EnsureCreated();
-			InsertCategoryDefaultRecords(musicInfoContext);
-			DbCommon.UpdateProperty(musicInfoContext, properties);
-
-			YukaListerModel.Instance.EnvModel.LogWriter.LogMessage(Common.TRACE_EVENT_TYPE_STATUS, "楽曲情報データベースを初期化しました。");
+			base.CreateDatabase();
+			InsertCategoryDefaultRecords();
 		}
 
 		// --------------------------------------------------------------------
-		// データベースファイル生成（既存がある場合は作成しない）
+		// データベースのフルパス
 		// --------------------------------------------------------------------
-		public static void CreateDatabaseIfNeeded()
+		public override String DatabasePath()
 		{
-			using MusicInfoContextDefault musicInfoContext = CreateContext(out DbSet<TProperty> properties);
-			if (DbCommon.ValidPropertyExists(properties))
-			{
-				// 既存のデータベースがある場合はクリアしない
-				return;
-			}
-			CreateDatabase();
-		}
-
-		// --------------------------------------------------------------------
-		// ファイルの最終更新日時 UTC
-		// --------------------------------------------------------------------
-		public static DateTime LastWriteTime()
-		{
-			return new FileInfo(DatabasePath()).LastWriteTimeUtc;
+			return DbCommon.YukaListerDatabaseFullFolder() + FILE_NAME_MUSIC_INFO_DATABASE;
 		}
 
 		// ====================================================================
 		// protected メンバー関数
 		// ====================================================================
-
-		// --------------------------------------------------------------------
-		// データベース設定
-		// --------------------------------------------------------------------
-		protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-		{
-			optionsBuilder.UseSqlite(DbCommon.Connect(DatabasePath()));
-		}
 
 		// --------------------------------------------------------------------
 		// データベースモデル作成
@@ -277,13 +251,20 @@ namespace YukaLister.Models.DatabaseContexts
 		}
 
 		// ====================================================================
-		// private static メンバー関数
+		// private メンバー定数
+		// ====================================================================
+
+		// データベースファイル名
+		private const String FILE_NAME_MUSIC_INFO_DATABASE = "NebulaMusicInfo" + Common.FILE_EXT_SQLITE3;
+
+		// ====================================================================
+		// private メンバー関数
 		// ====================================================================
 
 		// --------------------------------------------------------------------
 		// カテゴリーテーブルのレコードを作成
 		// --------------------------------------------------------------------
-		private static TCategory CreateCategoryRecord(Int32 idNumber, String name, String? ruby = null)
+		private TCategory CreateCategoryRecord(Int32 idNumber, String name, String? ruby = null)
 		{
 			String? normalizedName = YlCommon.NormalizeDbString(name);
 			(String? normalizedRubyForMusicInfo, _, _) = YlCommon.NormalizeDbRubyForMusicInfo(ruby);
@@ -312,36 +293,31 @@ namespace YukaLister.Models.DatabaseContexts
 		}
 
 		// --------------------------------------------------------------------
-		// データベースのフルパス
-		// --------------------------------------------------------------------
-		private static String DatabasePath()
-		{
-			return DbCommon.YukaListerDatabaseFullFolder() + FILE_NAME_MUSIC_INFO_DATABASE;
-		}
-
-		// --------------------------------------------------------------------
 		// カテゴリーマスターテーブルの既定レコードを挿入
 		// ニコニコ動画のカテゴリータグおよび anison.info のカテゴリーから主要な物を抽出
 		// --------------------------------------------------------------------
-		private static void InsertCategoryDefaultRecords(MusicInfoContextDefault musicInfoContext)
+		private void InsertCategoryDefaultRecords()
 		{
-			MusicInfoContextDefault.GetDbSet(musicInfoContext, out DbSet<TCategory> categories);
+			if (Categories == null)
+			{
+				throw new Exception("カテゴリーを作成できません。");
+			}
 
 			// 主にタイアップ用
-			categories.Add(CreateCategoryRecord(1, "アニメ"));
-			categories.Add(CreateCategoryRecord(2, "イベント/舞台/公演", "イベントブタイコウエン"));
-			categories.Add(CreateCategoryRecord(3, "ゲーム"));
-			categories.Add(CreateCategoryRecord(4, "時代劇", "ジダイゲキ"));
-			categories.Add(CreateCategoryRecord(5, "特撮", "トクサツ"));
-			categories.Add(CreateCategoryRecord(6, "ドラマ"));
-			categories.Add(CreateCategoryRecord(7, "ラジオ"));
+			Categories.Add(CreateCategoryRecord(1, "アニメ"));
+			Categories.Add(CreateCategoryRecord(2, "イベント/舞台/公演", "イベントブタイコウエン"));
+			Categories.Add(CreateCategoryRecord(3, "ゲーム"));
+			Categories.Add(CreateCategoryRecord(4, "時代劇", "ジダイゲキ"));
+			Categories.Add(CreateCategoryRecord(5, "特撮", "トクサツ"));
+			Categories.Add(CreateCategoryRecord(6, "ドラマ"));
+			Categories.Add(CreateCategoryRecord(7, "ラジオ"));
 
 			// 主にタイアップの無い楽曲用
-			categories.Add(CreateCategoryRecord(101, YlConstants.CATEGORY_NAME_VOCALOID, "ボーカロイド"));
+			Categories.Add(CreateCategoryRecord(101, YlConstants.CATEGORY_NAME_VOCALOID, "ボーカロイド"));
 			// 102 は欠番（旧：歌ってみた）
-			categories.Add(CreateCategoryRecord(103, YlConstants.CATEGORY_NAME_GENERAL, "イッパン"));
+			Categories.Add(CreateCategoryRecord(103, YlConstants.CATEGORY_NAME_GENERAL, "イッパン"));
 
-			musicInfoContext.SaveChanges();
+			SaveChanges();
 		}
 	}
 }

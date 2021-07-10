@@ -10,8 +10,6 @@
 
 using Microsoft.EntityFrameworkCore;
 
-using Shinta;
-
 using System;
 
 using YukaLister.Models.Database;
@@ -22,6 +20,18 @@ namespace YukaLister.Models.DatabaseContexts
 {
 	public class ReportContext : YukaListerContext
 	{
+		// ====================================================================
+		// コンストラクター・デストラクター
+		// ====================================================================
+
+		// --------------------------------------------------------------------
+		// コンストラクター
+		// --------------------------------------------------------------------
+		public ReportContext()
+				: base("リスト問題報告")
+		{
+		}
+
 		// ====================================================================
 		// public プロパティー
 		// ====================================================================
@@ -56,38 +66,6 @@ namespace YukaLister.Models.DatabaseContexts
 		}
 
 		// --------------------------------------------------------------------
-		// データベースファイル生成（既存がある場合はクリア）
-		// --------------------------------------------------------------------
-		public static void CreateDatabase()
-		{
-			YukaListerModel.Instance.EnvModel.LogWriter.LogMessage(Common.TRACE_EVENT_TYPE_STATUS, "リスト問題報告データベース初期化中...");
-
-			// クリア
-			using ReportContext reportContext = CreateContext(out DbSet<TProperty> properties);
-			reportContext.Database.EnsureDeleted();
-
-			// 新規作成
-			reportContext.Database.EnsureCreated();
-			DbCommon.UpdateProperty(reportContext, properties);
-
-			YukaListerModel.Instance.EnvModel.LogWriter.LogMessage(Common.TRACE_EVENT_TYPE_STATUS, "リスト問題報告データベースを初期化しました。");
-		}
-
-		// --------------------------------------------------------------------
-		// データベースファイル生成（既存がある場合は作成しない）
-		// --------------------------------------------------------------------
-		public static void CreateDatabaseIfNeeded()
-		{
-			using ReportContext reportContext = CreateContext(out DbSet<TProperty> properties);
-			if (DbCommon.ValidPropertyExists(properties))
-			{
-				// 既存のデータベースがある場合はクリアしない
-				return;
-			}
-			CreateDatabase();
-		}
-
-		// --------------------------------------------------------------------
 		// データベースセット取得
 		// ＜例外＞ Exception
 		// --------------------------------------------------------------------
@@ -101,16 +79,20 @@ namespace YukaLister.Models.DatabaseContexts
 		}
 
 		// ====================================================================
-		// protected メンバー関数
+		// public メンバー関数
 		// ====================================================================
 
 		// --------------------------------------------------------------------
-		// データベース設定
+		// データベースのフルパス
 		// --------------------------------------------------------------------
-		protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+		public override String DatabasePath()
 		{
-			optionsBuilder.UseSqlite(DbCommon.Connect(DbCommon.ReportDatabasePath(YukaListerModel.Instance.EnvModel.YlSettings)));
+			return DbCommon.ReportDatabasePath(YukaListerModel.Instance.EnvModel.YlSettings);
 		}
+
+		// ====================================================================
+		// protected メンバー関数
+		// ====================================================================
 
 		// --------------------------------------------------------------------
 		// データベースモデル作成

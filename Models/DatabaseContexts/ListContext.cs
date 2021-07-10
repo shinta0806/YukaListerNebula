@@ -21,6 +21,18 @@ namespace YukaLister.Models.DatabaseContexts
 	public abstract class ListContext : YukaListerContext
 	{
 		// ====================================================================
+		// コンストラクター・デストラクター
+		// ====================================================================
+
+		// --------------------------------------------------------------------
+		// コンストラクター
+		// --------------------------------------------------------------------
+		public ListContext(String databaseName)
+				: base(databaseName)
+		{
+		}
+
+		// ====================================================================
 		// public プロパティー
 		// ====================================================================
 
@@ -57,14 +69,14 @@ namespace YukaLister.Models.DatabaseContexts
 		public DbSet<TTagSequence>? TagSequences { get; set; }
 
 		// ====================================================================
-		// protected static メンバー関数
+		// public static メンバー関数
 		// ====================================================================
 
 		// --------------------------------------------------------------------
 		// データベースセット取得
 		// ＜例外＞ Exception
 		// --------------------------------------------------------------------
-		protected static void GetDbSet(ListContext listContext, out DbSet<TFound> founds)
+		public static void GetDbSet(ListContext listContext, out DbSet<TFound> founds)
 		{
 			if (listContext.Founds == null)
 			{
@@ -77,7 +89,7 @@ namespace YukaLister.Models.DatabaseContexts
 		// データベースセット取得
 		// ＜例外＞ Exception
 		// --------------------------------------------------------------------
-		protected static void GetDbSet(ListContext listContext, out DbSet<TPerson> people)
+		public static void GetDbSet(ListContext listContext, out DbSet<TPerson> people)
 		{
 			if (listContext.People == null)
 			{
@@ -90,7 +102,7 @@ namespace YukaLister.Models.DatabaseContexts
 		// データベースセット取得
 		// ＜例外＞ Exception
 		// --------------------------------------------------------------------
-		protected static void GetDbSet(ListContext listContext, out DbSet<TArtistSequence> artistSequences)
+		public static void GetDbSet(ListContext listContext, out DbSet<TArtistSequence> artistSequences)
 		{
 			if (listContext.ArtistSequences == null)
 			{
@@ -103,7 +115,7 @@ namespace YukaLister.Models.DatabaseContexts
 		// データベースセット取得
 		// ＜例外＞ Exception
 		// --------------------------------------------------------------------
-		protected static void GetDbSet(ListContext listContext, out DbSet<TComposerSequence> composerSequences)
+		public static void GetDbSet(ListContext listContext, out DbSet<TComposerSequence> composerSequences)
 		{
 			if (listContext.ComposerSequences == null)
 			{
@@ -116,7 +128,7 @@ namespace YukaLister.Models.DatabaseContexts
 		// データベースセット取得
 		// ＜例外＞ Exception
 		// --------------------------------------------------------------------
-		protected static void GetDbSet(ListContext listContext, out DbSet<TTieUpGroup> tieUpGroups)
+		public static void GetDbSet(ListContext listContext, out DbSet<TTieUpGroup> tieUpGroups)
 		{
 			if (listContext.TieUpGroups == null)
 			{
@@ -129,7 +141,7 @@ namespace YukaLister.Models.DatabaseContexts
 		// データベースセット取得
 		// ＜例外＞ Exception
 		// --------------------------------------------------------------------
-		protected static void GetDbSet(ListContext listContext, out DbSet<TTieUpGroupSequence> tieUpGroupSequences)
+		public static void GetDbSet(ListContext listContext, out DbSet<TTieUpGroupSequence> tieUpGroupSequences)
 		{
 			if (listContext.TieUpGroupSequences == null)
 			{
@@ -142,7 +154,7 @@ namespace YukaLister.Models.DatabaseContexts
 		// データベースセット取得
 		// ＜例外＞ Exception
 		// --------------------------------------------------------------------
-		protected static void GetDbSet(ListContext listContext, out DbSet<TTag> tags)
+		public static void GetDbSet(ListContext listContext, out DbSet<TTag> tags)
 		{
 			if (listContext.Tags == null)
 			{
@@ -155,7 +167,7 @@ namespace YukaLister.Models.DatabaseContexts
 		// データベースセット取得
 		// ＜例外＞ Exception
 		// --------------------------------------------------------------------
-		protected static void GetDbSet(ListContext listContext, out DbSet<TTagSequence> tagSequences)
+		public static void GetDbSet(ListContext listContext, out DbSet<TTagSequence> tagSequences)
 		{
 			if (listContext.TagSequences == null)
 			{

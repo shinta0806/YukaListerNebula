@@ -11,20 +11,28 @@
 using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
 
-using Shinta;
-
 using System;
 
 using YukaLister.Models.Database;
 using YukaLister.Models.Database.Masters;
 using YukaLister.Models.Database.Sequences;
-using YukaLister.Models.DatabaseAssist;
-using YukaLister.Models.YukaListerModels;
 
 namespace YukaLister.Models.DatabaseContexts
 {
 	public class ListContextInMemory : ListContext
 	{
+		// ====================================================================
+		// コンストラクター・デストラクター
+		// ====================================================================
+
+		// --------------------------------------------------------------------
+		// コンストラクター
+		// --------------------------------------------------------------------
+		public ListContextInMemory()
+				: base("ゆかり用リスト（インメモリ）")
+		{
+		}
+
 		// ====================================================================
 		// public static メンバー関数
 		// ====================================================================
@@ -72,19 +80,16 @@ namespace YukaLister.Models.DatabaseContexts
 			return listContext;
 		}
 
+		// ====================================================================
+		// public メンバー関数
+		// ====================================================================
+
 		// --------------------------------------------------------------------
-		// データベースファイル生成（既存は無い前提）
+		// データベースのフルパス
 		// --------------------------------------------------------------------
-		public static void CreateDatabase()
+		public override String DatabasePath()
 		{
-			YukaListerModel.Instance.EnvModel.LogWriter.LogMessage(Common.TRACE_EVENT_TYPE_STATUS, "インメモリデータベース初期化中...");
-
-			// 新規作成
-			_listContextInMemory = CreateContext(out DbSet<TProperty> properties);
-			_listContextInMemory.Database.EnsureCreated();
-			DbCommon.UpdateProperty(_listContextInMemory, properties);
-
-			YukaListerModel.Instance.EnvModel.LogWriter.LogMessage(Common.TRACE_EVENT_TYPE_STATUS, "インメモリデータベースを初期化しました。");
+			return FILE_NAME_LIST_DATABASE_IN_MEMORY;
 		}
 
 		// ====================================================================
@@ -113,25 +118,5 @@ namespace YukaLister.Models.DatabaseContexts
 
 		// データベースファイル名
 		private const String FILE_NAME_LIST_DATABASE_IN_MEMORY = "ListInMemory";
-
-		// ====================================================================
-		// private static メンバー変数
-		// ====================================================================
-
-		// インメモリデータベースが生存し続けるようにインスタンスを保持
-		// マルチスレッドで安全に使用できるよう、本変数は使用せず、CreateContext() で新たなコンテキストを作成すること
-		private static ListContextInMemory? _listContextInMemory;
-
-		// ====================================================================
-		// private static メンバー関数
-		// ====================================================================
-
-		// --------------------------------------------------------------------
-		// データベースのフルパス
-		// --------------------------------------------------------------------
-		private static String DatabasePath()
-		{
-			return FILE_NAME_LIST_DATABASE_IN_MEMORY;
-		}
 	}
 }

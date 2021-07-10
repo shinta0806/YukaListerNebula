@@ -375,12 +375,28 @@ namespace YukaLister.Models.DatabaseAssist
 			{
 				Directory.CreateDirectory(YukaListerDatabaseFullFolder());
 				Directory.CreateDirectory(YukariDatabaseFullFolder(YukaListerModel.Instance.EnvModel.YlSettings));
-				MusicInfoContextDefault.CreateDatabaseIfNeeded();
-				ListContextInDisk.CreateDatabase();
-				ListContextInMemory.CreateDatabase();
-				ReportContext.CreateDatabaseIfNeeded();
-				YukariStatisticsContext.CreateDatabaseIfNeeded();
-				ThumbContext.CreateDatabaseIfNeeded();
+
+				// 存在しない場合は作成
+				using MusicInfoContextDefault musicInfoContextDefault = MusicInfoContextDefault.CreateContext(out DbSet<TProperty> _);
+				musicInfoContextDefault.CreateDatabaseIfNeeded();
+
+				using ReportContext reportContext = ReportContext.CreateContext(out DbSet<TProperty> _);
+				reportContext.CreateDatabaseIfNeeded();
+
+				using YukariStatisticsContext yukariStatisticsContext = YukariStatisticsContext.CreateContext(out DbSet<TProperty> _);
+				yukariStatisticsContext.CreateDatabaseIfNeeded();
+
+				using ThumbContext thumbContext = ThumbContext.CreateContext(out DbSet<TProperty> _);
+				thumbContext.CreateDatabaseIfNeeded();
+
+				// 常に作成（クリア）
+				using ListContextInDisk listContextInDisk = ListContextInDisk.CreateContext(out DbSet<TProperty> _);
+				listContextInDisk.CreateDatabase();
+
+				// using しない
+				ListContextInMemory listContextInMemory = ListContextInMemory.CreateContext(out DbSet<TProperty> _);
+				listContextInMemory.CreateDatabase();
+				YukaListerModel.Instance.EnvModel.ListContextInMemory = listContextInMemory;
 			}
 			catch (Exception excep)
 			{

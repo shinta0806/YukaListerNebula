@@ -223,7 +223,7 @@ namespace YukaLister.ViewModels.EditMasterWindowViewModels
 				}
 
 				// データベースをバックアップ
-				MusicInfoContextDefault.BackupDatabase();
+				_musicInfoContext.BackupDatabase();
 
 				// 無効化
 				T master = new();
@@ -265,7 +265,7 @@ namespace YukaLister.ViewModels.EditMasterWindowViewModels
 				CheckInput();
 
 				// データベースをバックアップ
-				MusicInfoContextDefault.BackupDatabase();
+				_musicInfoContext.BackupDatabase();
 
 				// 保存
 				T master = new();

@@ -5,7 +5,7 @@
 // ============================================================================
 
 // ----------------------------------------------------------------------------
-// YukaListerContext の派生にはしない
+// データベースプロパティーテーブルが存在しないため YukaListerContext の派生にはしない
 // ----------------------------------------------------------------------------
 
 using Microsoft.EntityFrameworkCore;
@@ -72,7 +72,7 @@ namespace YukaLister.Models.DatabaseContexts
 		// --------------------------------------------------------------------
 		// ファイルの最終更新日時 UTC（修正ユリウス日）
 		// --------------------------------------------------------------------
-		public static Double LastWriteTime()
+		public static Double LastWriteMjd()
 		{
 			return JulianDay.DateTimeToModifiedJulianDate(new FileInfo(YukaListerModel.Instance.EnvModel.YlSettings.YukariRequestDatabasePath()).LastWriteTimeUtc);
 		}

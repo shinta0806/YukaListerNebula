@@ -88,17 +88,17 @@ namespace YukaLister.Models.YukaListerCores
 					AnalyzeYukariRequests(yukariStatistics, yukariRequests, founds);
 #if DEBUG
 					Boolean hasChangesBak = yukariStatisticsContext.ChangeTracker.HasChanges();
-					Double lastWriteTimeBak = YukariStatisticsContext.LastWriteTime();
+					Double lastWriteTimeBak = yukariStatisticsContext.LastWriteMjd();
 #endif
 					if (yukariStatisticsContext.ChangeTracker.HasChanges())
 					{
-						YukariStatisticsContext.BackupDatabase();
+						yukariStatisticsContext.BackupDatabase();
 					}
 					yukariStatisticsContext.SaveChanges();
 #if DEBUG
 					Debug.WriteLine("Yurelin.CoreMain() 更新フラグ " + hasChangesBak.ToString());
-					Debug.WriteLine("Yurelin.CoreMain() 実際のファイル更新 " + (lastWriteTimeBak == YukariStatisticsContext.LastWriteTime() ? "なし" : "有り"));
-					Debug.Assert(hasChangesBak == (lastWriteTimeBak != YukariStatisticsContext.LastWriteTime()), "Yurelin.CoreMain() フラグが実際と異なった");
+					Debug.WriteLine("Yurelin.CoreMain() 実際のファイル更新 " + (lastWriteTimeBak == yukariStatisticsContext.LastWriteMjd() ? "なし" : "有り"));
+					Debug.Assert(hasChangesBak == (lastWriteTimeBak != yukariStatisticsContext.LastWriteMjd()), "Yurelin.CoreMain() フラグが実際と異なった");
 #endif
 				}
 				catch (OperationCanceledException)
@@ -145,7 +145,7 @@ namespace YukaLister.Models.YukaListerCores
 				Id = YukaListerModel.Instance.EnvModel.YlSettings.PrepareYukariStatisticsLastId(yukariStatistics),
 				Dirty = true,
 				RequestDatabasePath = YukaListerModel.Instance.EnvModel.YlSettings.YukariRequestDatabasePath(),
-				RequestTime = YukariRequestContext.LastWriteTime(),
+				RequestTime = YukariRequestContext.LastWriteMjd(),
 				RoomName = YukaListerModel.Instance.EnvModel.YlSettings.YukariRoomName,
 				//IdPrefix = YukaListerModel.Instance.EnvModel.YlSettings.IdPrefix,
 			};

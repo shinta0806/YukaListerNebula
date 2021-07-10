@@ -8,6 +8,8 @@
 //
 // ----------------------------------------------------------------------------
 
+using Microsoft.EntityFrameworkCore;
+
 using Shinta;
 
 using System;
@@ -18,6 +20,7 @@ using System.IO;
 using System.IO.Compression;
 using System.Text;
 using System.Threading;
+
 using YukaLister.Models.Database;
 using YukaLister.Models.DatabaseContexts;
 using YukaLister.Models.SharedMisc;
@@ -95,10 +98,11 @@ namespace YukaLister.Models.YukaListerCores
 					LoginToSyncServer();
 
 					// データベースをバックアップ
-					MusicInfoContextDefault.BackupDatabase();
+					using MusicInfoContextDefault musicInfoContextDefault = MusicInfoContextDefault.CreateContext(out DbSet<TProperty> _);
+					musicInfoContextDefault.BackupDatabase();
 
 					// 再取得の場合は楽曲情報データベース初期化
-					CreateMusicInfoDbIfNeeded();
+					CreateMusicInfoDbIfNeeded(musicInfoContextDefault);
 
 					// ダウンロード
 					(Int32 numTotalDownloads, Int32 numTotalImports) = DownloadSyncData();
@@ -198,7 +202,7 @@ namespace YukaLister.Models.YukaListerCores
 		// --------------------------------------------------------------------
 		// 再取得の場合は楽曲情報データベースを初期化
 		// --------------------------------------------------------------------
-		private void CreateMusicInfoDbIfNeeded()
+		private void CreateMusicInfoDbIfNeeded(MusicInfoContextDefault musicInfoContextDefault)
 		{
 			if (!IsReget)
 			{
@@ -206,7 +210,7 @@ namespace YukaLister.Models.YukaListerCores
 			}
 
 			YukaListerModel.Instance.EnvModel.LogWriter.LogMessage(Common.TRACE_EVENT_TYPE_STATUS, "サーバーデータ再取得のため楽曲情報データベースを初期化。");
-			MusicInfoContextDefault.CreateDatabase();
+			musicInfoContextDefault.CreateDatabase();
 			IsReget = false;
 		}
 

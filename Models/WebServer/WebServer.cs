@@ -489,7 +489,7 @@ namespace YukaLister.Models.WebServer
 
 			FileInfo fileInfo = new(path);
 			cacheThumb.FileLastWriteTime = JulianDay.DateTimeToModifiedJulianDate(fileInfo.LastWriteTime);
-			cacheThumb.ThumbLastWriteTime = YlCommon.UtcNowModifiedJulianDate();
+			cacheThumb.ThumbLastWriteTime = YlCommon.UtcNowMjd();
 
 			if (isSave)
 			{

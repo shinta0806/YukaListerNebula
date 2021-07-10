@@ -70,7 +70,6 @@ namespace YukaLister.ViewModels.ImportExportWindowViewModels
 					out DbSet<TArtistSequence> artistSequencesDefault, out DbSet<TLyristSequence> lyristSequencesDefault, out DbSet<TComposerSequence> composerSequencesDefault, out DbSet<TArrangerSequence> arrangerSequencesDefault,
 					out DbSet<TTieUpGroupSequence> tieUpGroupSequencesDefault, out DbSet<TTagSequence> tagSequencesDefault);
 			musicInfoContextDefault.ChangeTracker.QueryTrackingBehavior = QueryTrackingBehavior.NoTracking;
-			MusicInfoContextExport.CreateDatabase(tempExportPath);
 			MusicInfoContextExport musicInfoContextExport = MusicInfoContextExport.CreateContext(tempExportPath, out DbSet<TProperty> propertiesExport,
 					out DbSet<TSong> songsExport, out DbSet<TPerson> peopleExport, out DbSet<TTieUp> tieUpsExport, out DbSet<TCategory> categoriesExport,
 					out DbSet<TTieUpGroup> tieUpGroupsExport, out DbSet<TMaker> makersExport, out DbSet<TTag> tagsExport,
@@ -78,6 +77,7 @@ namespace YukaLister.ViewModels.ImportExportWindowViewModels
 					out DbSet<TCategoryAlias> categoryAliasesExport, out DbSet<TTieUpGroupAlias> tieUpGroupAliasesExport, out DbSet<TMakerAlias> makerAliasesExport,
 					out DbSet<TArtistSequence> artistSequencesExport, out DbSet<TLyristSequence> lyristSequencesExport, out DbSet<TComposerSequence> composerSequencesExport, out DbSet<TArrangerSequence> arrangerSequencesExport,
 					out DbSet<TTieUpGroupSequence> tieUpGroupSequencesExport, out DbSet<TTagSequence> tagSequencesExport);
+			musicInfoContextExport.CreateDatabase();
 
 			// コピー
 			// peopleInMemory.AddRange(peopleInMusicInfo) のように DbSet 全体を追加すると、アプリ終了時にタスクが終了しないため、Where を挟む

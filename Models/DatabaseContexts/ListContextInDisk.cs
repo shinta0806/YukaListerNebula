@@ -10,7 +10,7 @@
 
 using Microsoft.EntityFrameworkCore;
 
-using Shinta;
+using System;
 
 using YukaLister.Models.Database;
 using YukaLister.Models.DatabaseAssist;
@@ -20,6 +20,18 @@ namespace YukaLister.Models.DatabaseContexts
 {
 	public class ListContextInDisk : ListContext
 	{
+		// ====================================================================
+		// コンストラクター・デストラクター
+		// ====================================================================
+
+		// --------------------------------------------------------------------
+		// コンストラクター
+		// --------------------------------------------------------------------
+		public ListContextInDisk()
+				: base("ゆかり用リスト")
+		{
+		}
+
 		// ====================================================================
 		// public static メンバー関数
 		// ====================================================================
@@ -46,34 +58,16 @@ namespace YukaLister.Models.DatabaseContexts
 			return listContext;
 		}
 
-		// --------------------------------------------------------------------
-		// データベースファイル生成（既存がある場合はクリア）
-		// --------------------------------------------------------------------
-		public static void CreateDatabase()
-		{
-			YukaListerModel.Instance.EnvModel.LogWriter.LogMessage(Common.TRACE_EVENT_TYPE_STATUS, "ゆかり用リストデータベース初期化中...");
-
-			// クリア
-			using ListContextInDisk listContext = CreateContext(out DbSet<TProperty> properties);
-			listContext.Database.EnsureDeleted();
-
-			// 新規作成
-			listContext.Database.EnsureCreated();
-			DbCommon.UpdateProperty(listContext, properties);
-
-			YukaListerModel.Instance.EnvModel.LogWriter.LogMessage(Common.TRACE_EVENT_TYPE_STATUS, "ゆかり用リストデータベースを初期化しました。");
-		}
-
 		// ====================================================================
-		// protected メンバー関数
+		// public メンバー関数
 		// ====================================================================
 
 		// --------------------------------------------------------------------
-		// データベース設定
+		// データベースのフルパス
 		// --------------------------------------------------------------------
-		protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+		public override String DatabasePath()
 		{
-			optionsBuilder.UseSqlite(DbCommon.Connect(DbCommon.ListDatabasePath(YukaListerModel.Instance.EnvModel.YlSettings)));
+			return DbCommon.ListDatabasePath(YukaListerModel.Instance.EnvModel.YlSettings);
 		}
 	}
 }

@@ -10,16 +10,12 @@
 
 using Microsoft.EntityFrameworkCore;
 
-using Shinta;
-
 using System;
 
 using YukaLister.Models.Database;
 using YukaLister.Models.Database.Aliases;
 using YukaLister.Models.Database.Masters;
 using YukaLister.Models.Database.Sequences;
-using YukaLister.Models.DatabaseAssist;
-using YukaLister.Models.YukaListerModels;
 
 namespace YukaLister.Models.DatabaseContexts
 {
@@ -33,6 +29,7 @@ namespace YukaLister.Models.DatabaseContexts
 		// コンストラクター
 		// --------------------------------------------------------------------
 		public MusicInfoContextExport(String databasePath)
+				: base("エクスポート用楽曲情報")
 		{
 			_databasePath = databasePath;
 		}
@@ -75,35 +72,21 @@ namespace YukaLister.Models.DatabaseContexts
 			return musicInfoContext;
 		}
 
-		// --------------------------------------------------------------------
-		// データベースファイル生成（既存がある場合はクリア）
-		// --------------------------------------------------------------------
-		public static void CreateDatabase(String databasePath)
-		{
-			YukaListerModel.Instance.EnvModel.LogWriter.LogMessage(Common.TRACE_EVENT_TYPE_STATUS, "エクスポート用楽曲情報データベース初期化中...");
-
-			// クリア
-			using MusicInfoContextExport musicInfoContext = CreateContext(databasePath, out DbSet<TProperty> properties);
-			musicInfoContext.Database.EnsureDeleted();
-
-			// 新規作成
-			musicInfoContext.Database.EnsureCreated();
-			DbCommon.UpdateProperty(musicInfoContext, properties);
-
-			YukaListerModel.Instance.EnvModel.LogWriter.LogMessage(Common.TRACE_EVENT_TYPE_STATUS, "エクスポート用楽曲情報データベースを初期化しました。");
-		}
-
 		// ====================================================================
 		// protected メンバー関数
 		// ====================================================================
 
 		// --------------------------------------------------------------------
-		// データベース設定
+		// データベースのフルパス
 		// --------------------------------------------------------------------
-		protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+		public override String DatabasePath()
 		{
-			optionsBuilder.UseSqlite(DbCommon.Connect(_databasePath));
+			return _databasePath;
 		}
+
+		// ====================================================================
+		// protected メンバー関数
+		// ====================================================================
 
 		// --------------------------------------------------------------------
 		// データベースモデル作成
