@@ -1716,27 +1716,25 @@ class	CPManager
 		$pdo = $this->connect_db();
 		$sql = 'SELECT *'
 				.' FROM '.TABLE_NAME_ACCOUNT
-				.' LEFT JOIN '
-				.'('
-					.'SELECT li1.'.FIELD_NAME_LOGIN_NAME.' AS ln, li1.'.FIELD_NAME_LOGIN_TIME.' AS lt'
-					.' FROM '.TABLE_NAME_LOGIN.' AS li1'
-					.' LEFT JOIN '.TABLE_NAME_LOGIN.' AS li2'
-					.' ON (li1.'.FIELD_NAME_LOGIN_NAME.' = li2.'.FIELD_NAME_LOGIN_NAME
-					.' AND li1.'.FIELD_NAME_LOGIN_TIME.' < li2.'.FIELD_NAME_LOGIN_TIME.')'
-					.' WHERE li1.'.FIELD_NAME_LOGIN_SUCCESS.' = 1 AND li2.'.FIELD_NAME_LOGIN_TIME.' IS NULL'
-				.') AS result'
-				.' ON '.TABLE_NAME_ACCOUNT.'.'.FIELD_NAME_ACCOUNT_NAME.' = ln'
-				.' ORDER BY '.TABLE_NAME_ACCOUNT.'.'.FIELD_NAME_ACCOUNT_UID;
+				.' LEFT JOIN'
+				.' ('
+					.'SELECT '.FIELD_NAME_LOGIN_NAME.', MAX('.FIELD_NAME_LOGIN_TIME.')'
+					.' FROM '.TABLE_NAME_LOGIN
+					.' WHERE '.FIELD_NAME_LOGIN_SUCCESS.' = 1'
+					.' GROUP BY '.FIELD_NAME_LOGIN_NAME
+				.' ) AS login'
+				.' ON '.FIELD_NAME_ACCOUNT_NAME.' = '.FIELD_NAME_LOGIN_NAME
+				.' ORDER BY '.FIELD_NAME_ACCOUNT_UID;
 		$stmt = $pdo->query($sql);
 		while ( ($row = $stmt->fetch(PDO::FETCH_ASSOC)) !== FALSE ) {
-			$login_time = modified_julian_date_to_date_time($row['lt']);
+			$login_time = modified_julian_date_to_date_time($row['MAX('.FIELD_NAME_LOGIN_TIME.')']);
 			$login_time->setTimeZone(new DateTimeZone(date_default_timezone_get()));
 			$update_time = modified_julian_date_to_date_time($row[FIELD_NAME_ACCOUNT_UPDATE_TIME]);
 			$update_time->setTimeZone(new DateTimeZone(date_default_timezone_get()));
 			$user_list .= '<tr><th>'.$row[FIELD_NAME_ACCOUNT_UID].'</th>'
 					.'<td>'.$row[FIELD_NAME_ACCOUNT_NAME].'</td>'
 					.'<td>'.($row[FIELD_NAME_ACCOUNT_ADMIN] ? '○' : '×').'</td>'
-					.'<td>'.$login_time->format('Y/m/d H:i:s').'</td>'
+					.'<td>'.($row['MAX('.FIELD_NAME_LOGIN_TIME.')'] > INVALID_MJD ? $login_time->format('Y/m/d H:i:s') : '-').'</td>'
 					.'<td>'.$update_time->format('Y/m/d H:i:s').'</td>'
 					.'<td><a href="#Change" onClick="changeUser('.$row[FIELD_NAME_ACCOUNT_UID].');">変更</a></td>'
 					.'<td><a href="#Init" onClick="initUser('.$row[FIELD_NAME_ACCOUNT_UID].');">初期化</a></td>'
