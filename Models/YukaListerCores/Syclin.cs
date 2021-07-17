@@ -120,6 +120,10 @@ namespace YukaLister.Models.YukaListerCores
 					MainWindowViewModel.SetStatusBarMessageWithInvoke(Common.TRACE_EVENT_TYPE_STATUS, "データベース同期完了（ダウンロード"
 							+ (numTotalDownloads == 0 ? "無" : " " + numTotalDownloads.ToString("#,0") + " 件、うち " + numTotalImports.ToString("#,0") + " 件インポート")
 							+ "、アップロード" + (numTotalUploads == 0 ? "無" : " " + numTotalUploads.ToString("#,0") + " 件") + "）");
+
+					// 起動直後は Syclin と Yurelin が両方起動され、Syclin による属性未確認データのアップロード＆ダウンロードと、Yurelin による属性確認が競合し、属性未確認の状態に戻ることがある
+					// Syclin スリープ化直前に Yurelin を起動し、再度属性確認が行われるようにする
+					YlCommon.ActivateYurelinIfNeeded();
 				}
 				catch (OperationCanceledException)
 				{

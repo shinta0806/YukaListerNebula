@@ -43,6 +43,34 @@ namespace YukaLister.Models.SharedMisc
 		// ====================================================================
 
 		// --------------------------------------------------------------------
+		// 必要に応じて待機中の動画リスト作成担当をアクティブ化
+		// --------------------------------------------------------------------
+		public static void ActivateKamlinIfNeeded()
+		{
+			YukaListerModel.Instance.EnvModel.Kamlin.MainEvent.Set();
+		}
+
+		// --------------------------------------------------------------------
+		// 必要に応じて待機中の同期担当をアクティブ化
+		// --------------------------------------------------------------------
+		public static void ActivateSyclinIfNeeded()
+		{
+			if (YukaListerModel.Instance.EnvModel.YlSettings.SyncMusicInfoDb)
+			{
+				YukaListerModel.Instance.EnvModel.Syclin.MainEvent.Set();
+			}
+		}
+
+		// --------------------------------------------------------------------
+		// 必要に応じて待機中の統計データ作成担当をアクティブ化
+		// --------------------------------------------------------------------
+		public static void ActivateYurelinIfNeeded()
+		{
+			Debug.WriteLine("ActivateYurelinIfNeeded() ACTIVATE " + Environment.TickCount.ToString("#,0"));
+			YukaListerModel.Instance.EnvModel.Yurelin.MainEvent.Set();
+		}
+
+		// --------------------------------------------------------------------
 		// コンテキストメニューにアイテムを追加
 		// ToDo: MVVM 的なやり方でのコンテキストメニューへのコマンド登録方法が分からなかったのでこの方法としている
 		// List<ViewModelCommand> をバインドするとコマンドの制御はできるが、表示文字列の制御ができない

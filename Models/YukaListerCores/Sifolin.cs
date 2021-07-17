@@ -78,6 +78,7 @@ namespace YukaLister.Models.YukaListerCores
 
 					MusicInfoDatabaseToMemory();
 
+					_prevFolderTaskDetail = FolderTaskDetail.Done;
 					while (true)
 					{
 						TargetFolderInfo? targetFolderInfo;
@@ -96,6 +97,14 @@ namespace YukaLister.Models.YukaListerCores
 						{
 							CacheToDisk(targetFolderInfo);
 							continue;
+						}
+
+						// すべてのフォルダーのキャッシュ活用が終わったら Yurelin をアクティブ化する
+						// 起動直後に前回のゆかり予約を解析することを想定している
+						if (_prevFolderTaskDetail == FolderTaskDetail.CacheToDisk)
+						{
+							Debug.WriteLine("Sifolin.CoreMain() キャッシュ活用後の Yurelin アクティブ化");
+							YlCommon.ActivateYurelinIfNeeded();
 						}
 
 						// サブフォルダー検索
@@ -128,11 +137,14 @@ namespace YukaLister.Models.YukaListerCores
 							MemoryToDisk();
 							MemoryToCache();
 
-							// Kamlin アクティブ化
-							YukaListerModel.Instance.EnvModel.Kamlin.MainEvent.Set();
-
 							continue;
 						}
+
+						// Kamlin アクティブ化
+						YlCommon.ActivateKamlinIfNeeded();
+
+						// Yurelin アクティブ化
+						YlCommon.ActivateYurelinIfNeeded();
 
 						// やることが無くなったのでループを抜けて待機へ向かう
 						break;
@@ -188,6 +200,9 @@ namespace YukaLister.Models.YukaListerCores
 
 		// メモリ DB 更新フラグ
 		private Boolean _isMemoryDbDirty;
+
+		// 直前のフォルダータスク詳細
+		private FolderTaskDetail _prevFolderTaskDetail;
 
 		// Dispose フラグ
 		private Boolean _isDisposed;
@@ -287,26 +302,6 @@ namespace YukaLister.Models.YukaListerCores
 		}
 
 		// --------------------------------------------------------------------
-		// 検出ファイルリストテーブルに属性を追加
-		// --------------------------------------------------------------------
-		private static void AddInfos(TargetFolderInfo targetFolderInfo)
-		{
-			// 動作状況設定
-			SetFolderTaskStatus(targetFolderInfo, FolderTaskStatus.Running);
-			YukaListerModel.Instance.EnvModel.LogWriter.LogMessage(Common.TRACE_EVENT_TYPE_STATUS, "属性確認中... " + targetFolderInfo.TargetPath);
-
-			// 作業
-			AddInfosCore(targetFolderInfo);
-#if DEBUGz
-			Thread.Sleep(500);
-#endif
-
-			// 動作状況設定
-			targetFolderInfo.SetFolderTaskDetail(FolderTaskDetail.AddInfos, FolderTaskDetail.Done);
-			SetFolderTaskStatus(targetFolderInfo, FolderTaskStatus.DoneInMemory);
-		}
-
-		// --------------------------------------------------------------------
 		// 検出ファイルリストテーブルにファイル情報を追加
 		// AddFileNames() で追加されない情報をすべて付与する
 		// ファイルは再帰検索しない
@@ -340,28 +335,6 @@ namespace YukaLister.Models.YukaListerCores
 
 			// コミット
 			listContextInMemory.SaveChanges();
-		}
-
-		// --------------------------------------------------------------------
-		// キャッシュ DB からディスク DB へコピー
-		// --------------------------------------------------------------------
-		private static void CacheToDisk(TargetFolderInfo targetFolderInfo)
-		{
-			Debug.Assert(targetFolderInfo.IsParent, "CacheToDisk() not parent");
-
-			// 動作状況設定
-			SetFolderTaskStatus(targetFolderInfo, FolderTaskStatus.Running);
-
-			// 作業
-			CacheToDiskCore(targetFolderInfo);
-
-			// 動作状況設定
-			targetFolderInfo.SetFolderTaskDetail(FolderTaskDetail.CacheToDisk, FolderTaskDetail.FindSubFolders);
-			SetFolderTaskStatus(targetFolderInfo, FolderTaskStatus.Queued);
-
-#if DEBUGz
-			Thread.Sleep(60 * 1000);
-#endif
 		}
 
 		// --------------------------------------------------------------------
@@ -496,20 +469,6 @@ namespace YukaLister.Models.YukaListerCores
 		// --------------------------------------------------------------------
 		// 削除
 		// --------------------------------------------------------------------
-		private static void Remove(TargetFolderInfo targetFolderInfo)
-		{
-			// 動作状況設定
-			SetFolderTaskStatus(targetFolderInfo, FolderTaskStatus.Running);
-
-			// 作業
-			RemoveCore(targetFolderInfo);
-
-			// 動作状況設定は削除済みのため不要
-		}
-
-		// --------------------------------------------------------------------
-		// 削除
-		// --------------------------------------------------------------------
 		private static void RemoveCore(TargetFolderInfo targetFolderInfo)
 		{
 			if (!targetFolderInfo.IsParent)
@@ -570,6 +529,7 @@ namespace YukaLister.Models.YukaListerCores
 			// 動作状況設定
 			targetFolderInfo.SetFolderTaskDetail(FolderTaskDetail.AddFileNames, FolderTaskDetail.AddInfos);
 			SetFolderTaskStatus(targetFolderInfo, FolderTaskStatus.Queued);
+			_prevFolderTaskDetail = FolderTaskDetail.AddFileNames;
 		}
 
 		// --------------------------------------------------------------------
@@ -656,6 +616,49 @@ namespace YukaLister.Models.YukaListerCores
 		}
 
 		// --------------------------------------------------------------------
+		// 検出ファイルリストテーブルに属性を追加
+		// --------------------------------------------------------------------
+		private void AddInfos(TargetFolderInfo targetFolderInfo)
+		{
+			// 動作状況設定
+			SetFolderTaskStatus(targetFolderInfo, FolderTaskStatus.Running);
+			YukaListerModel.Instance.EnvModel.LogWriter.LogMessage(Common.TRACE_EVENT_TYPE_STATUS, "属性確認中... " + targetFolderInfo.TargetPath);
+
+			// 作業
+			AddInfosCore(targetFolderInfo);
+#if DEBUGz
+			Thread.Sleep(500);
+#endif
+
+			// 動作状況設定
+			targetFolderInfo.SetFolderTaskDetail(FolderTaskDetail.AddInfos, FolderTaskDetail.Done);
+			SetFolderTaskStatus(targetFolderInfo, FolderTaskStatus.DoneInMemory);
+			_prevFolderTaskDetail = FolderTaskDetail.AddInfos;
+		}
+
+		// --------------------------------------------------------------------
+		// キャッシュ DB からディスク DB へコピー
+		// --------------------------------------------------------------------
+		private void CacheToDisk(TargetFolderInfo targetFolderInfo)
+		{
+			Debug.Assert(targetFolderInfo.IsParent, "CacheToDisk() not parent");
+
+			// 動作状況設定
+			SetFolderTaskStatus(targetFolderInfo, FolderTaskStatus.Running);
+
+			// 作業
+			CacheToDiskCore(targetFolderInfo);
+
+			// 動作状況設定
+			targetFolderInfo.SetFolderTaskDetail(FolderTaskDetail.CacheToDisk, FolderTaskDetail.FindSubFolders);
+			SetFolderTaskStatus(targetFolderInfo, FolderTaskStatus.Queued);
+			_prevFolderTaskDetail = FolderTaskDetail.CacheToDisk;
+#if DEBUGz
+			Thread.Sleep(60 * 1000);
+#endif
+		}
+
+		// --------------------------------------------------------------------
 		// リスト化対象フォルダーのサブフォルダーを列挙
 		// --------------------------------------------------------------------
 		private List<TargetFolderInfo> EnumSubFolders(TargetFolderInfo parentFolder)
@@ -714,6 +717,7 @@ namespace YukaLister.Models.YukaListerCores
 			// 動作状況設定
 			targetFolderInfo.SetFolderTaskDetail(FolderTaskDetail.FindSubFolders, FolderTaskDetail.AddFileNames);
 			SetFolderTaskStatus(targetFolderInfo, FolderTaskStatus.Queued);
+			_prevFolderTaskDetail = FolderTaskDetail.FindSubFolders;
 		}
 
 		// --------------------------------------------------------------------
@@ -761,6 +765,21 @@ namespace YukaLister.Models.YukaListerCores
 				YukaListerModel.Instance.ProjModel.SetAllFolderTaskStatusToDoneInDisk();
 				_isMemoryDbDirty = false;
 			}
+		}
+
+		// --------------------------------------------------------------------
+		// 削除
+		// --------------------------------------------------------------------
+		private void Remove(TargetFolderInfo targetFolderInfo)
+		{
+			// 動作状況設定
+			SetFolderTaskStatus(targetFolderInfo, FolderTaskStatus.Running);
+
+			// 作業
+			RemoveCore(targetFolderInfo);
+
+			_prevFolderTaskDetail = FolderTaskDetail.Remove;
+			// targetFolderInfo の動作状況設定は削除済みのため不要
 		}
 	}
 }

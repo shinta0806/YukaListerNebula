@@ -365,7 +365,7 @@ namespace YukaLister.ViewModels
 				{
 					// 再取得が指示された場合は再取得
 					YukaListerModel.Instance.EnvModel.Syclin.IsReget = true;
-					ActivateSyclinIfNeeded();
+					YlCommon.ActivateSyclinIfNeeded();
 				}
 				else
 				{
@@ -377,7 +377,7 @@ namespace YukaLister.ViewModels
 							|| YukaListerModel.Instance.EnvModel.YlSettings.SyncPassword != syncPasswordBak
 							|| musicInfoDbTime != musicInfoDbTimeBak)
 					{
-						ActivateSyclinIfNeeded();
+						YlCommon.ActivateSyclinIfNeeded();
 					}
 				}
 			}
@@ -568,7 +568,7 @@ namespace YukaLister.ViewModels
 				// 楽曲情報データベースが更新された場合は同期を行う
 				if (musicInfoContextDefault.LastWriteDateTime() != musicInfoDbTimeBak)
 				{
-					ActivateSyclinIfNeeded();
+					YlCommon.ActivateSyclinIfNeeded();
 				}
 			}
 			catch (Exception excep)
@@ -717,13 +717,13 @@ namespace YukaLister.ViewModels
 				await AutoTargetAllDrivesAsync();
 
 				// 統計データ作成
-				ActivateYurelinIfNeeded();
+				YlCommon.ActivateYurelinIfNeeded();
 
 				// Web サーバー
 				StartWebServerIfNeeded();
 
 				// サーバー同期
-				ActivateSyclinIfNeeded();
+				YlCommon.ActivateSyclinIfNeeded();
 
 				// スタートアップ終了
 				YukaListerModel.Instance.EnvModel.YukaListerPartsStatus[(Int32)YukaListerPartsStatusIndex.Startup] = YukaListerStatus.Ready;
@@ -934,26 +934,6 @@ namespace YukaLister.ViewModels
 		// ====================================================================
 
 		// --------------------------------------------------------------------
-		// 必要に応じて待機中の同期担当をアクティブ化
-		// --------------------------------------------------------------------
-		public static void ActivateSyclinIfNeeded()
-		{
-			if (YukaListerModel.Instance.EnvModel.YlSettings.SyncMusicInfoDb)
-			{
-				YukaListerModel.Instance.EnvModel.Syclin.MainEvent.Set();
-			}
-		}
-
-		// --------------------------------------------------------------------
-		// 必要に応じて待機中の統計データ作成担当をアクティブ化
-		// --------------------------------------------------------------------
-		public static void ActivateYurelinIfNeeded()
-		{
-			Debug.WriteLine("ActivateYurelinIfNeeded() ACTIVATE " + Environment.TickCount.ToString("#,0"));
-			YukaListerModel.Instance.EnvModel.Yurelin.MainEvent.Set();
-		}
-
-		// --------------------------------------------------------------------
 		// フォルダーを 1 つ追加
 		// ＜例外＞ Exception
 		// --------------------------------------------------------------------
@@ -1094,13 +1074,13 @@ namespace YukaLister.ViewModels
 			// 初回はすぐにアクティブ化（全消去時にすみやかに検知できるように）
 			_fileSystemWatcherYukariRequestDatabaseDelaying = true;
 			_fileSystemWatcherYukariRequestDatabaseDelayingQueue = false;
-			ActivateYurelinIfNeeded();
+			YlCommon.ActivateYurelinIfNeeded();
 
 			await Task.Delay(YlConstants.UPDATE_YUKARI_STATISTICS_DELAY_TIME);
 			if (_fileSystemWatcherYukariRequestDatabaseDelayingQueue)
 			{
 				// 遅延中に更新があれば再度アクティブ化
-				ActivateYurelinIfNeeded();
+				YlCommon.ActivateYurelinIfNeeded();
 			}
 			_fileSystemWatcherYukariRequestDatabaseDelaying = false;
 		}
@@ -1130,7 +1110,7 @@ namespace YukaLister.ViewModels
 			// 楽曲情報データベースが更新された場合は同期を行う
 			if (musicInfoContextDefault.LastWriteDateTime() != musicInfoDbTimeBak)
 			{
-				ActivateSyclinIfNeeded();
+				YlCommon.ActivateSyclinIfNeeded();
 			}
 		}
 
