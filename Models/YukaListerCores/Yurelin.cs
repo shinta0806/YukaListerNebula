@@ -55,7 +55,7 @@ namespace YukaLister.Models.YukaListerCores
 		// ====================================================================
 
 		// --------------------------------------------------------------------
-		// ネビュラコア（負荷監視）のメインルーチン
+		// ネビュラコア（統計データ作成）のメインルーチン
 		// --------------------------------------------------------------------
 		protected override async Task CoreMain()
 		{
@@ -71,6 +71,10 @@ namespace YukaLister.Models.YukaListerCores
 				{
 					YukaListerModel.Instance.EnvModel.AppCancellationTokenSource.Token.ThrowIfCancellationRequested();
 					if (YukaListerModel.Instance.EnvModel.YukaListerWholeStatus == YukaListerStatus.Error)
+					{
+						continue;
+					}
+					if (!YukaListerModel.Instance.EnvModel.YlSettings.IsYukariRequestDatabasePathValid())
 					{
 						continue;
 					}

@@ -249,6 +249,14 @@ namespace YukaLister.Models.SerializableSettings
 		}
 
 		// --------------------------------------------------------------------
+		// ゆかり設定ファイルが正しく指定されているかどうか
+		// --------------------------------------------------------------------
+		public Boolean IsYukariRequestDatabasePathValid()
+		{
+			return File.Exists(YukariRequestDatabasePath());
+		}
+
+		// --------------------------------------------------------------------
 		// 前回使った楽曲情報データベース ID 文字列
 		// --------------------------------------------------------------------
 		public String LastId(Int32 tableIndex)

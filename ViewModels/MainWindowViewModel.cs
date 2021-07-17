@@ -1254,7 +1254,8 @@ namespace YukaLister.ViewModels
 		// --------------------------------------------------------------------
 		private void SetFileSystemWatcherYukariRequestDatabase()
 		{
-			if (YukaListerModel.Instance.EnvModel.YlSettings.IsYukariConfigPathValid())
+			if (YukaListerModel.Instance.EnvModel.YlSettings.IsYukariConfigPathValid()
+					&& YukaListerModel.Instance.EnvModel.YlSettings.IsYukariRequestDatabasePathValid())
 			{
 				String? path = Path.GetDirectoryName(YukaListerModel.Instance.EnvModel.YlSettings.YukariRequestDatabasePath());
 				String filter = Path.GetFileName(YukaListerModel.Instance.EnvModel.YlSettings.YukariRequestDatabasePath());
