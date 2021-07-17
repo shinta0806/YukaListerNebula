@@ -20,6 +20,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Threading.Tasks;
 using System.Windows;
 
 using YukaLister.Models.Database;
@@ -632,12 +633,12 @@ namespace YukaLister.ViewModels.MiscWindowViewModels
 			}
 		}
 
-		public void ButtonOkClicked()
+		public async void ButtonOkClicked()
 		{
 			try
 			{
 				(String? songOriginalId, String? tieUpOriginalId) = CheckInput();
-				Save(songOriginalId, tieUpOriginalId);
+				await Save(songOriginalId, tieUpOriginalId);
 				Messenger.Raise(new WindowActionMessage(YlConstants.MESSAGE_KEY_WINDOW_CLOSE));
 			}
 			catch (OperationCanceledException excep)
@@ -848,15 +849,8 @@ namespace YukaLister.ViewModels.MiscWindowViewModels
 		// --------------------------------------------------------------------
 		// 別名を保存
 		// --------------------------------------------------------------------
-		private void Save(String? songOriginalId, String? tieUpOriginalId)
+		private async Task Save(String? songOriginalId, String? tieUpOriginalId)
 		{
-#if false
-			using ListContextInMemory listContextInMemory = ListContextInMemory.CreateContext(out DbSet<TFound> founds,
-					out DbSet<TPerson> people, out DbSet<TArtistSequence> artistSequences, out DbSet<TComposerSequence> composerSequences,
-					out DbSet<TTieUpGroup> tieUpGroups, out DbSet<TTieUpGroupSequence> tieUpGroupSequences,
-					out DbSet<TTag> tags, out DbSet<TTagSequence> tagSequences);
-#endif
-
 			// コンポーネントや楽曲情報データベースによるエイリアスを指定しない状態での情報を使うため、YlCommon を使う
 			Dictionary<String, String?> dicByFilePure = YlCommon.MatchFileNameRulesAndFolderRuleForSearch(_filePath);
 
@@ -884,7 +878,7 @@ namespace YukaLister.ViewModels.MiscWindowViewModels
 					if (existSongAlias == null)
 					{
 						// 新規登録
-						YlCommon.InputIdPrefixIfNeededWithInvoke(this);
+						await YlCommon.InputIdPrefixIfNeededWithInvoke(this);
 						newSongAlias.Id = YukaListerModel.Instance.EnvModel.YlSettings.PrepareLastId(songAliases);
 						songAliases.Add(newSongAlias);
 						YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, "楽曲別名テーブル新規登録：" + newSongAlias.Id + " / " + newSongAlias.Alias);
@@ -936,7 +930,7 @@ namespace YukaLister.ViewModels.MiscWindowViewModels
 					if (existTieUpAlias == null)
 					{
 						// 新規登録
-						YlCommon.InputIdPrefixIfNeededWithInvoke(this);
+						await YlCommon.InputIdPrefixIfNeededWithInvoke(this);
 						newTieUpAlias.Id = YukaListerModel.Instance.EnvModel.YlSettings.PrepareLastId(tieUpAliases);
 						tieUpAliases.Add(newTieUpAlias);
 						YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, "タイアップ別名テーブル新規登録：" + newTieUpAlias.Id + " / " + newTieUpAlias.Alias);

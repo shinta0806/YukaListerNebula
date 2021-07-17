@@ -20,6 +20,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Windows;
 
 using YukaLister.Models.Database;
@@ -255,7 +256,7 @@ namespace YukaLister.ViewModels.EditMasterWindowViewModels
 			}
 		}
 
-		public void ButtonOKClicked()
+		public async void ButtonOKClicked()
 		{
 			try
 			{
@@ -270,7 +271,7 @@ namespace YukaLister.ViewModels.EditMasterWindowViewModels
 				// 保存
 				T master = new();
 				PropertiesToRecord(master);
-				Save(master);
+				await Save(master);
 				IsOk = true;
 				OkSelectedMaster = master;
 				Messenger.Raise(new WindowActionMessage(YlConstants.MESSAGE_KEY_WINDOW_CLOSE));
@@ -384,9 +385,9 @@ namespace YukaLister.ViewModels.EditMasterWindowViewModels
 		// --------------------------------------------------------------------
 		// テーブルに新規レコードを追加
 		// --------------------------------------------------------------------
-		protected void AddNewRecord(T newRecord)
+		protected async Task AddNewRecord(T newRecord)
 		{
-			YlCommon.InputIdPrefixIfNeededWithInvoke(this);
+			await YlCommon.InputIdPrefixIfNeededWithInvoke(this);
 			newRecord.Id = YukaListerModel.Instance.EnvModel.YlSettings.PrepareLastId(_records);
 			_records.Add(newRecord);
 			YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS,
@@ -560,12 +561,12 @@ namespace YukaLister.ViewModels.EditMasterWindowViewModels
 		// --------------------------------------------------------------------
 		// レコード保存
 		// --------------------------------------------------------------------
-		protected virtual void Save(T master)
+		protected virtual async Task Save(T master)
 		{
 			if (master.Id == NewIdForDisplay())
 			{
 				// 新規登録
-				AddNewRecord(master);
+				await AddNewRecord(master);
 			}
 			else
 			{

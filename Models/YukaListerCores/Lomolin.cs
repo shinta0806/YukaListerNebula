@@ -27,7 +27,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Threading;
-
+using System.Threading.Tasks;
 using YukaLister.Models.SharedMisc;
 using YukaLister.Models.YukaListerModels;
 
@@ -60,7 +60,7 @@ namespace YukaLister.Models.YukaListerCores
 		// --------------------------------------------------------------------
 		// ネビュラコア（負荷監視）のメインルーチン
 		// --------------------------------------------------------------------
-		protected override void CoreMain()
+		protected override Task CoreMain()
 		{
 			// 急ぎではないのでプライオリティーを下げるが、Lowest だとビジー状態で進まないかもしれないので、一段だけ下げる
 			Thread.CurrentThread.Priority = ThreadPriority.BelowNormal;
@@ -101,7 +101,7 @@ namespace YukaLister.Models.YukaListerCores
 				}
 				catch (OperationCanceledException)
 				{
-					return;
+					return Task.CompletedTask;
 				}
 				catch (Exception excep)
 				{

@@ -432,23 +432,46 @@ namespace YukaLister.Models.SharedMisc
 		// ID 接頭辞が未設定ならばユーザーに入力してもらう
 		// ＜例外＞ OperationCanceledException
 		// --------------------------------------------------------------------
-		public static void InputIdPrefixIfNeededWithInvoke(ViewModel viewModel)
+		public static async Task InputIdPrefixIfNeededWithInvoke(ViewModel viewModel)
 		{
+			YukaListerModel.Instance.EnvModel.LogWriter.LogMessage(Common.TRACE_EVENT_TYPE_STATUS, "InputIdPrefixIfNeededWithInvoke() start");
+			// 設定済なら直ちに返る
 			if (!String.IsNullOrEmpty(YukaListerModel.Instance.EnvModel.YlSettings.IdPrefix))
 			{
 				return;
 			}
 
-			DispatcherHelper.UIDispatcher.Invoke(new Action(() =>
+			YukaListerModel.Instance.EnvModel.LogWriter.LogMessage(Common.TRACE_EVENT_TYPE_STATUS, "InputIdPrefixIfNeededWithInvoke() a");
+			await DispatcherHelper.UIDispatcher.Invoke(new Func<Task>(async () =>
 			{
-				using InputIdPrefixWindowViewModel inputIdPrefixWindowViewModel = new();
-				viewModel.Messenger.Raise(new TransitionMessage(inputIdPrefixWindowViewModel, YlConstants.MESSAGE_KEY_OPEN_INPUT_ID_PREFIX_WINDOW));
+				// 現在設定中なら待機
+				YukaListerModel.Instance.EnvModel.LogWriter.LogMessage(Common.TRACE_EVENT_TYPE_STATUS, "InputIdPrefixIfNeededWithInvoke() b");
+				await WaitInputIdPrefix();
+				YukaListerModel.Instance.EnvModel.LogWriter.LogMessage(Common.TRACE_EVENT_TYPE_STATUS, "InputIdPrefixIfNeededWithInvoke() c");
+
+				// 設定開始
+				_isInputtingIdPrefix = true;
+
+				// 待機中に設定済となる場合もあるので再度確認
+				if (String.IsNullOrEmpty(YukaListerModel.Instance.EnvModel.YlSettings.IdPrefix))
+				{
+					// 設定済でない場合に限り、ユーザーに入力してもらう
+					YukaListerModel.Instance.EnvModel.LogWriter.LogMessage(Common.TRACE_EVENT_TYPE_STATUS, "InputIdPrefixIfNeededWithInvoke() d");
+					using InputIdPrefixWindowViewModel inputIdPrefixWindowViewModel = new();
+					viewModel.Messenger.Raise(new TransitionMessage(inputIdPrefixWindowViewModel, YlConstants.MESSAGE_KEY_OPEN_INPUT_ID_PREFIX_WINDOW));
+				}
+
+				// 設定終了
+				YukaListerModel.Instance.EnvModel.LogWriter.LogMessage(Common.TRACE_EVENT_TYPE_STATUS, "InputIdPrefixIfNeededWithInvoke() e");
+				_isInputtingIdPrefix = false;
 			}));
 
+			YukaListerModel.Instance.EnvModel.LogWriter.LogMessage(Common.TRACE_EVENT_TYPE_STATUS, "InputIdPrefixIfNeededWithInvoke() f");
 			if (String.IsNullOrEmpty(YukaListerModel.Instance.EnvModel.YlSettings.IdPrefix))
 			{
 				throw new OperationCanceledException();
 			}
+			YukaListerModel.Instance.EnvModel.LogWriter.LogMessage(Common.TRACE_EVENT_TYPE_STATUS, "InputIdPrefixIfNeededWithInvoke() end");
 		}
 
 		// --------------------------------------------------------------------
@@ -1052,8 +1075,11 @@ namespace YukaLister.Models.SharedMisc
 		// private static メンバー変数
 		// ====================================================================
 
+		// InputIdPrefix
+		private static Boolean _isInputtingIdPrefix;
+
 		// TempPath() 用カウンター（同じスレッドでもファイル名が分かれるようにするため）
-		private static Int32 _tempPathCounter = 0;
+		private static Int32 _tempPathCounter;
 
 		// ====================================================================
 		// private static メンバー関数
@@ -1306,6 +1332,20 @@ namespace YukaLister.Models.SharedMisc
 			}
 
 			return (katakanaString, fromAllRuby, headRuby);
+		}
+
+		// --------------------------------------------------------------------
+		// ID 接頭辞がユーザー入力中なら待つ
+		// --------------------------------------------------------------------
+		private static async Task WaitInputIdPrefix()
+		{
+			await Task.Run(() =>
+			{
+				while (_isInputtingIdPrefix)
+				{
+					Thread.Sleep(Common.GENERAL_SLEEP_TIME);
+				}
+			});
 		}
 	}
 }

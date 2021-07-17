@@ -16,6 +16,7 @@ using System;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading;
+using System.Threading.Tasks;
 using YukaLister.Models.Database;
 using YukaLister.Models.DatabaseContexts;
 using YukaLister.Models.OutputWriters;
@@ -52,7 +53,7 @@ namespace YukaLister.Models.YukaListerCores
 		// --------------------------------------------------------------------
 		// ネビュラコア（動画リスト作成）のメインルーチン
 		// --------------------------------------------------------------------
-		protected override void CoreMain()
+		protected override async Task CoreMain()
 		{
 			// リスト出力時の処理が重いことによるトラブルの可能性がゼロではないため、プライオリティーを下げる（チケット #97）
 			Thread.CurrentThread.Priority = ThreadPriority.Lowest;
@@ -85,7 +86,7 @@ namespace YukaLister.Models.YukaListerCores
 					// 問題報告用に ID 接頭辞が必要
 					try
 					{
-						YlCommon.InputIdPrefixIfNeededWithInvoke(MainWindowViewModel);
+						await YlCommon.InputIdPrefixIfNeededWithInvoke(MainWindowViewModel);
 					}
 					catch (Exception)
 					{

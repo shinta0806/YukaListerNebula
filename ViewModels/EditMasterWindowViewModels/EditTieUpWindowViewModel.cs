@@ -18,6 +18,7 @@ using Shinta;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 
@@ -428,12 +429,12 @@ namespace YukaLister.ViewModels.EditMasterWindowViewModels
 		// --------------------------------------------------------------------
 		// レコード保存
 		// --------------------------------------------------------------------
-		protected override void Save(TTieUp master)
+		protected override async Task Save(TTieUp master)
 		{
 			if (master.Id == NewIdForDisplay())
 			{
 				// 新規登録
-				AddNewRecord(master);
+				await AddNewRecord(master);
 			}
 			else
 			{

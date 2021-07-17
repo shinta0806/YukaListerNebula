@@ -61,18 +61,17 @@ namespace YukaLister.ViewModels.ImportExportWindowViewModels
 		// --------------------------------------------------------------------
 		// インポート処理
 		// --------------------------------------------------------------------
-		protected override Task ImportExportByWorker(Object? _)
+		protected override async Task ImportExportByWorker(Object? _)
 		{
 			// 楽曲情報データベースバックアップ
 			using MusicInfoContextDefault musicInfoContextDefault = MusicInfoContextDefault.CreateContext(out DbSet<TProperty> _);
 			musicInfoContextDefault.BackupDatabase();
 
 			// ID 接頭辞
-			YlCommon.InputIdPrefixIfNeededWithInvoke(this);
+			await YlCommon.InputIdPrefixIfNeededWithInvoke(this);
 
 			// インポートタスクを実行
 			ImportYukaLister();
-			return Task.CompletedTask;
 		}
 
 		// ====================================================================

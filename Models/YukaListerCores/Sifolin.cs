@@ -19,7 +19,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Threading;
-
+using System.Threading.Tasks;
 using YukaLister.Models.Database;
 using YukaLister.Models.Database.Masters;
 using YukaLister.Models.Database.Sequences;
@@ -54,7 +54,7 @@ namespace YukaLister.Models.YukaListerCores
 		// --------------------------------------------------------------------
 		// ネビュラコア（検索データ作成）のメインルーチン
 		// --------------------------------------------------------------------
-		protected override void CoreMain()
+		protected override Task CoreMain()
 		{
 			while (true)
 			{
@@ -140,7 +140,7 @@ namespace YukaLister.Models.YukaListerCores
 				}
 				catch (OperationCanceledException)
 				{
-					return;
+					return Task.CompletedTask;
 				}
 				catch (Exception excep)
 				{

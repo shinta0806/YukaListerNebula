@@ -20,7 +20,7 @@ using System.IO;
 using System.IO.Compression;
 using System.Text;
 using System.Threading;
-
+using System.Threading.Tasks;
 using YukaLister.Models.Database;
 using YukaLister.Models.DatabaseContexts;
 using YukaLister.Models.SharedMisc;
@@ -63,7 +63,7 @@ namespace YukaLister.Models.YukaListerCores
 		// --------------------------------------------------------------------
 		// ネビュラコア（同期）のメインルーチン
 		// --------------------------------------------------------------------
-		protected override void CoreMain()
+		protected override Task CoreMain()
 		{
 #if DEBUGz
 			Debug.WriteLine("priority before: " + Thread.CurrentThread.Priority.ToString());
@@ -122,7 +122,7 @@ namespace YukaLister.Models.YukaListerCores
 				}
 				catch (OperationCanceledException)
 				{
-					return;
+					return Task.CompletedTask;
 				}
 				catch (Exception excep)
 				{

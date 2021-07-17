@@ -16,6 +16,7 @@ using System;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading;
+using System.Threading.Tasks;
 
 using YukaLister.Models.Database;
 using YukaLister.Models.DatabaseContexts;
@@ -56,7 +57,7 @@ namespace YukaLister.Models.YukaListerCores
 		// --------------------------------------------------------------------
 		// ネビュラコア（負荷監視）のメインルーチン
 		// --------------------------------------------------------------------
-		protected override void CoreMain()
+		protected override async Task CoreMain()
 		{
 			// 急ぎではないのでプライオリティーを下げる
 			Thread.CurrentThread.Priority = ThreadPriority.Lowest;
@@ -85,7 +86,7 @@ namespace YukaLister.Models.YukaListerCores
 					UpdateLastYukariRequestClearTimeIfNeeded(yukariRequests);
 
 					// 統計更新
-					AnalyzeYukariRequests(yukariStatistics, yukariRequests, founds);
+					await AnalyzeYukariRequests(yukariStatistics, yukariRequests, founds);
 #if DEBUG
 					Boolean hasChangesBak = yukariStatisticsContext.ChangeTracker.HasChanges();
 					Double lastWriteTimeBak = yukariStatisticsContext.LastWriteMjd();
@@ -127,12 +128,12 @@ namespace YukaLister.Models.YukaListerCores
 		// --------------------------------------------------------------------
 		// request.db の 1 レコードを統計に追加
 		// --------------------------------------------------------------------
-		private void AddYukariRequest(DbSet<TYukariStatistics> yukariStatistics, TYukariRequest yukariRequest, DbSet<TFound> founds)
+		private async Task AddYukariRequest(DbSet<TYukariStatistics> yukariStatistics, TYukariRequest yukariRequest, DbSet<TFound> founds)
 		{
 			try
 			{
 				Debug.Assert(MainWindowViewModel != null, "AddYukariRequest() MainWindowViewModel is null");
-				YlCommon.InputIdPrefixIfNeededWithInvoke(MainWindowViewModel);
+				await YlCommon.InputIdPrefixIfNeededWithInvoke(MainWindowViewModel);
 			}
 			catch (Exception)
 			{
@@ -159,14 +160,14 @@ namespace YukaLister.Models.YukaListerCores
 		// --------------------------------------------------------------------
 		// request.db を解析してゆかり統計に反映
 		// --------------------------------------------------------------------
-		private void AnalyzeYukariRequests(DbSet<TYukariStatistics> yukariStatistics, DbSet<TYukariRequest> yukariRequests, DbSet<TFound> founds)
+		private async Task AnalyzeYukariRequests(DbSet<TYukariStatistics> yukariStatistics, DbSet<TYukariRequest> yukariRequests, DbSet<TFound> founds)
 		{
 			foreach (TYukariRequest yukariRequest in yukariRequests)
 			{
 				TYukariStatistics? existStatisticsRecord = ExistStatisticsRecord(yukariStatistics, yukariRequest);
 				if (existStatisticsRecord == null)
 				{
-					AddYukariRequest(yukariStatistics, yukariRequest, founds);
+					await AddYukariRequest(yukariStatistics, yukariRequest, founds);
 				}
 				else
 				{
