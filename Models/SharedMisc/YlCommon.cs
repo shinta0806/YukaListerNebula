@@ -71,16 +71,42 @@ namespace YukaLister.Models.SharedMisc
 		}
 
 		// --------------------------------------------------------------------
+		// コンボボックスにアイテムを追加
+		// ToDo: MVVM 的なやり方でのコンテキストメニューへのコマンド登録方法が分からなかったのでこの方法としている
+		// バインドではセパレーターを追加できない
+		// --------------------------------------------------------------------
+		public static void AddComboBoxItem(List<Control> items, String label)
+		{
+			if (String.IsNullOrEmpty(label))
+			{
+				items.Add(new Separator());
+			}
+			else
+			{
+				ComboBoxItem comboBoxItem = new();
+				comboBoxItem.Content = label;
+				items.Add(comboBoxItem);
+			}
+		}
+
+		// --------------------------------------------------------------------
 		// コンテキストメニューにアイテムを追加
 		// ToDo: MVVM 的なやり方でのコンテキストメニューへのコマンド登録方法が分からなかったのでこの方法としている
 		// List<ViewModelCommand> をバインドするとコマンドの制御はできるが、表示文字列の制御ができない
 		// --------------------------------------------------------------------
-		public static void AddContextMenuItem(List<MenuItem> items, String label, RoutedEventHandler click)
+		public static void AddContextMenuItem(List<Control> items, String label, RoutedEventHandler click)
 		{
-			MenuItem menuItem = new();
-			menuItem.Header = label;
-			menuItem.Click += click;
-			items.Add(menuItem);
+			if (String.IsNullOrEmpty(label))
+			{
+				items.Add(new Separator());
+			}
+			else
+			{
+				MenuItem menuItem = new();
+				menuItem.Header = label;
+				menuItem.Click += click;
+				items.Add(menuItem);
+			}
 		}
 
 		// --------------------------------------------------------------------
@@ -826,7 +852,7 @@ namespace YukaLister.Models.SharedMisc
 		// --------------------------------------------------------------------
 		// カテゴリーメニューに値を設定
 		// --------------------------------------------------------------------
-		public static void SetContextMenuItemCategories(List<MenuItem> menuItems, RoutedEventHandler click)
+		public static void SetContextMenuItemCategories(List<Control> menuItems, RoutedEventHandler click)
 		{
 			using MusicInfoContextDefault musicInfoContext = MusicInfoContextDefault.CreateContext(out DbSet<TCategory> categories);
 			musicInfoContext.ChangeTracker.QueryTrackingBehavior = QueryTrackingBehavior.NoTracking;

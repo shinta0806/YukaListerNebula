@@ -375,6 +375,63 @@ namespace YukaLister.ViewModels.MiscWindowViewModels
 
 		#region ゆかり統計タブのプロパティー
 
+		// 出力対象期間
+		public List<Control> YukariStatisticsPeriodItems { get; set; } = new();
+
+		// 選択された出力対象期間
+		private Int32 _selectedYukariStatisticsPeriodIndex = -1;
+		public Int32 SelectedYukariStatisticsPeriodIndex
+		{
+			get => _selectedYukariStatisticsPeriodIndex;
+			set
+			{
+				if (RaisePropertyChangedIfSet(ref _selectedYukariStatisticsPeriodIndex, value))
+				{
+					try
+					{
+						UpdateYukariStatisticsPeriodControls();
+					}
+					catch (Exception excep)
+					{
+						YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(TraceEventType.Error, "ゆかり統計出力対象期間変更時エラー：\n" + excep.Message);
+						YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, "　スタックトレース：\n" + excep.StackTrace);
+					}
+				}
+			}
+		}
+
+		// 出力対象期間指定有効化
+		private Boolean _isCustomYukariStatisticsPeriodEnabled;
+		public Boolean IsCustomYukariStatisticsPeriodEnabled
+		{
+			get => _isCustomYukariStatisticsPeriodEnabled;
+			set => RaisePropertyChangedIfSet(ref _isCustomYukariStatisticsPeriodEnabled, value);
+		}
+
+		// 出力対象期間 From
+		private DateTime? _yukariStatisticsPeriodFrom;
+		public DateTime? YukariStatisticsPeriodFrom
+		{
+			get => _yukariStatisticsPeriodFrom;
+			set => RaisePropertyChangedIfSet(ref _yukariStatisticsPeriodFrom, value);
+		}
+
+		// 出力対象期間 To
+		private DateTime? _yukariStatisticsPeriodTo;
+		public DateTime? YukariStatisticsPeriodTo
+		{
+			get => _yukariStatisticsPeriodTo;
+			set => RaisePropertyChangedIfSet(ref _yukariStatisticsPeriodTo, value);
+		}
+
+		// 属性未確認の予約情報も出力する
+		private Boolean _outputAttributesNone;
+		public Boolean OutputAttributesNone
+		{
+			get => _outputAttributesNone;
+			set => RaisePropertyChangedIfSet(ref _outputAttributesNone, value);
+		}
+
 		// ゆかり統計出力先
 		private String? _yukariStatisticsPath;
 		public String? YukariStatisticsPath
@@ -1468,6 +1525,14 @@ namespace YukaLister.ViewModels.MiscWindowViewModels
 				{
 					throw new Exception("ゆかり統計出力先フォルダーを指定してください。");
 				}
+				if (YukariStatisticsPeriodFrom == null)
+				{
+					throw new Exception("出力対象期間（開始）を指定してください。");
+				}
+				if (YukariStatisticsPeriodTo == null)
+				{
+					throw new Exception("出力対象期間（終了）を指定してください。");
+				}
 
 #if false
 				if (YukaListerModel.Instance.EnvModel.YukaListerWholeStatus == YukaListerStatus.Running)
@@ -1538,6 +1603,13 @@ namespace YukaLister.ViewModels.MiscWindowViewModels
 				CsvOutputWriter csvOutputWriter = new();
 				CompositeDisposable.Add(csvOutputWriter);
 				OutputWriters.Add(csvOutputWriter);
+
+				// ゆかり統計出力対象期間
+				foreach (String label in YlConstants.YUKARI_STATISTICS_PERIOD_LABELS)
+				{
+					YlCommon.AddComboBoxItem(YukariStatisticsPeriodItems, label);
+				}
+				SelectedYukariStatisticsPeriodIndex = 0;
 
 				// プログレスバー
 				ProgressBarOutputListVisibility = Visibility.Hidden;
@@ -1770,6 +1842,14 @@ namespace YukaLister.ViewModels.MiscWindowViewModels
 		}
 
 		// --------------------------------------------------------------------
+		// 今月 1 日
+		// --------------------------------------------------------------------
+		private DateTime CurrentMonth()
+		{
+			return DateTime.Today.AddDays(-(DateTime.Today.Day - 1));
+		}
+
+		// --------------------------------------------------------------------
 		// すべての出力クラスの OutputSettings を読み込む
 		// --------------------------------------------------------------------
 		private void LoadOutputSettings()
@@ -1799,14 +1879,21 @@ namespace YukaLister.ViewModels.MiscWindowViewModels
 		// --------------------------------------------------------------------
 		private Task OutputYukariStatisticsByWorker(Object? _)
 		{
+			Debug.Assert(YukariStatisticsPeriodFrom != null && YukariStatisticsPeriodTo != null, "OutputYukariStatisticsByWorker() YukariStatisticsPeriodFrom, YukariStatisticsPeriodTo is null");
+
 			// タイトル行
 			List<String> titleColumns = new(new String[] { "No", "PC", "予約日", "ルーム名", "カテゴリー", "タイアップ名", "摘要", "年齢制限", "リリース日", "リリース年", "シリーズ", "制作会社名",
 					"楽曲名", "歌手名", "作詞者", "作曲者", "編曲者", "ファイル", "動画制作者" });
 
+			// 出力対象期間
+			Double periodFrom = JulianDay.DateTimeToModifiedJulianDate(YukariStatisticsPeriodFrom.Value.ToUniversalTime());
+			Double periodTo = JulianDay.DateTimeToModifiedJulianDate(YukariStatisticsPeriodTo.Value.AddDays(1).ToUniversalTime());
+
 			// 内容
 			using YukariStatisticsContext yukariStatisticsContext = YukariStatisticsContext.CreateContext(out DbSet<TYukariStatistics> yukariStatistics);
 			yukariStatisticsContext.ChangeTracker.QueryTrackingBehavior = QueryTrackingBehavior.NoTracking;
-			List<TYukariStatistics> targetStatistics = yukariStatistics.Where(x => !x.Invalid).ToList();
+			List<TYukariStatistics> targetStatistics = yukariStatistics.
+					Where(x => periodFrom <= x.RequestTime && x.RequestTime < periodTo && (OutputAttributesNone || x.AttributesDone) && !x.Invalid).ToList();
 			List<List<String>> contents = new(targetStatistics.Count);
 			Int32 index = 1;
 			foreach (TYukariStatistics yukariStatisticsRecord in targetStatistics)
@@ -1885,23 +1972,6 @@ namespace YukaLister.ViewModels.MiscWindowViewModels
 			YukaListerModel.Instance.EnvModel.YlSettings.YukariStatisticsPath = YukariStatisticsPath;
 		}
 
-#if false
-		// --------------------------------------------------------------------
-		// CSV として使えない文字をサニタイズしながら追加
-		// --------------------------------------------------------------------
-		private void SanitizingCsvAdd(List<String> line, String? str)
-		{
-			if (String.IsNullOrEmpty(str))
-			{
-				line.Add(String.Empty);
-			}
-			else
-			{
-				line.Add(str.Replace(',', '，').Replace('"', '”'));
-			}
-		}
-#endif
-
 		// --------------------------------------------------------------------
 		// 設定をプロパティーに反映
 		// --------------------------------------------------------------------
@@ -1937,6 +2007,55 @@ namespace YukaLister.ViewModels.MiscWindowViewModels
 
 			// ゆかり統計タブ
 			YukariStatisticsPath = YukaListerModel.Instance.EnvModel.YlSettings.YukariStatisticsPath;
+		}
+
+		// --------------------------------------------------------------------
+		// 今年の 1 月 1 日
+		// --------------------------------------------------------------------
+		private DateTime ThisYear()
+		{
+			return CurrentMonth().AddMonths(-(CurrentMonth().Month - 1));
+		}
+
+		// --------------------------------------------------------------------
+		// ゆかり統計出力対象期間コントロールを更新
+		// --------------------------------------------------------------------
+		private void UpdateYukariStatisticsPeriodControls()
+		{
+			YukariStatisticsPeriod yukariStatisticsPeriod = (YukariStatisticsPeriod)SelectedYukariStatisticsPeriodIndex;
+
+			// 出力対象期間
+			switch (yukariStatisticsPeriod)
+			{
+				case YukariStatisticsPeriod.Today:
+					YukariStatisticsPeriodFrom = YukariStatisticsPeriodTo = DateTime.Today;
+					break;
+				case YukariStatisticsPeriod.Yesterday:
+					YukariStatisticsPeriodFrom = YukariStatisticsPeriodTo = DateTime.Today.AddDays(-1);
+					break;
+				case YukariStatisticsPeriod.CurrentMonth:
+					YukariStatisticsPeriodFrom = CurrentMonth();
+					YukariStatisticsPeriodTo = CurrentMonth().AddMonths(1).AddDays(-1);
+					break;
+				case YukariStatisticsPeriod.LastMonth:
+					YukariStatisticsPeriodFrom = CurrentMonth().AddMonths(-1);
+					YukariStatisticsPeriodTo = CurrentMonth().AddDays(-1);
+					break;
+				case YukariStatisticsPeriod.ThisYear:
+					YukariStatisticsPeriodFrom = ThisYear();
+					YukariStatisticsPeriodTo = ThisYear().AddYears(1).AddDays(-1);
+					break;
+				case YukariStatisticsPeriod.LastYear:
+					YukariStatisticsPeriodFrom = ThisYear().AddYears(-1);
+					YukariStatisticsPeriodTo = ThisYear().AddDays(-1);
+					break;
+				case YukariStatisticsPeriod.Custom:
+					YukariStatisticsPeriodFrom = YukariStatisticsPeriodTo = null;
+					break;
+			}
+
+			// 期間指定
+			IsCustomYukariStatisticsPeriodEnabled = yukariStatisticsPeriod == YukariStatisticsPeriod.Custom;
 		}
 
 		// --------------------------------------------------------------------

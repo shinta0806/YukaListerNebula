@@ -114,7 +114,7 @@ namespace YukaLister.ViewModels.EditMasterWindowViewModels
 		}
 
 		// 摘要選択ボタンのコンテキストメニュー
-		public List<MenuItem> ContextMenuButtonSelectOpEdItems { get; set; } = new();
+		public List<Control> ContextMenuButtonSelectOpEdItems { get; set; } = new();
 
 		// 摘要
 		private String? _opEd;

@@ -215,6 +215,24 @@ namespace YukaLister.Models.SharedMisc
 		__End__,
 	}
 
+	// --------------------------------------------------------------------
+	// ゆかり統計の出力対象期間
+	// --------------------------------------------------------------------
+	public enum YukariStatisticsPeriod
+	{
+		Today,          // 今日
+		Yesterday,      // 昨日
+		Separator1,
+		CurrentMonth,   // 今月
+		LastMonth,      // 先月
+		Separator2,
+		ThisYear,       // 今年
+		LastYear,       // 昨年
+		Separator3,
+		Custom,         // 期間指定
+		__End__,
+	}
+
 	// ====================================================================
 	// public デリゲート
 	// ====================================================================
@@ -641,6 +659,9 @@ namespace YukaLister.Models.SharedMisc
 
 		// 一時的に付与する ID の接頭辞
 		public const String TEMP_ID_PREFIX = "!";
+
+		// ゆかり統計の出力対象期間
+		public static readonly String[] YUKARI_STATISTICS_PERIOD_LABELS = { "今日", "昨日", String.Empty, "今月", "先月", String.Empty, "今年", "昨年", String.Empty, "期間指定" };
 
 		// ツールチップを長く表示する場合の時間 [ms]
 		public const Int32 TOOL_TIP_LONG_DURATION = 20 * 1000;

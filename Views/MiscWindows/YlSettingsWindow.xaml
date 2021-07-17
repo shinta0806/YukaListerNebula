@@ -243,8 +243,19 @@
             </TabItem>
             <TabItem Header="ゆかり統計" >
                 <StackPanel>
+                    <StackPanel Orientation="Horizontal" Margin="0,20,0,0">
+                        <Label Content="出力対象期間：" Width="170" HorizontalContentAlignment="Right" />
+                        <ComboBox ItemsSource="{Binding YukariStatisticsPeriodItems}" SelectedIndex="{Binding SelectedYukariStatisticsPeriodIndex}" Width="150" materialDesign:ComboBoxAssist.ClassicMode="True" >
+                        </ComboBox>
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal" Margin="170,5,0,0" IsEnabled="{Binding IsCustomYukariStatisticsPeriodEnabled}" >
+                        <DatePicker SelectedDate="{Binding YukariStatisticsPeriodFrom}" Language="ja-JP" Width="100" />
+                        <Label Content="～" Margin="10,0,10,0" />
+                        <DatePicker SelectedDate="{Binding YukariStatisticsPeriodTo}" Language="ja-JP" Width="100" />
+                    </StackPanel>
+                    <CheckBox Content="属性未確認の予約情報も出力する" IsChecked="{Binding OutputAttributesNone}" Margin="170,10,0,0" />
                     <DockPanel Margin="0,20,20,0">
-                        <Label Content="統計出力先ファイル (_F)：" Target="{Binding ElementName=TextBoxYukariStatisticsFile}" Width="170" HorizontalContentAlignment="Right"/>
+                        <Label Content="統計出力先ファイル (_F)：" Target="{Binding ElementName=TextBoxYukariStatisticsFile}" Width="170" HorizontalContentAlignment="Right" />
                         <Button Height="Auto" Content="参照 (_B)" Style="{StaticResource MaterialDesignRaisedLightButton}" Margin="0" DockPanel.Dock="Right" Width="100" Padding="0,4" Command="{Binding ButtonBrowseYukariStatisticsFileClickedCommand}" />
                         <TextBox Name="TextBoxYukariStatisticsFile" Text="{Binding YukariStatisticsPath}" VerticalAlignment="Center" Margin="0,0,10,0"/>
                     </DockPanel>

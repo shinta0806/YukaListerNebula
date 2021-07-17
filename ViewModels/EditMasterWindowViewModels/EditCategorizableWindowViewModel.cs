@@ -73,7 +73,7 @@ namespace YukaLister.ViewModels.EditMasterWindowViewModels
 		}
 
 		// カテゴリー選択ボタンのコンテキストメニュー
-		public List<MenuItem> ContextMenuButtonSelectCategoryItems { get; set; } = new();
+		public List<Control> ContextMenuButtonSelectCategoryItems { get; set; } = new();
 
 		// カテゴリー名
 		private String? _categoryName;

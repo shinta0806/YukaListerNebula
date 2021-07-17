@@ -141,7 +141,7 @@ namespace YukaLister.ViewModels.MiscWindowViewModels
 		}
 
 		// タグボタンのコンテキストメニュー
-		public List<MenuItem> ContextMenuButtonVarItems { get; set; } = new();
+		public List<Control> ContextMenuButtonVarItems { get; set; } = new();
 
 		// ファイル命名規則
 		public ObservableCollection<String> FileNameRules { get; set; } = new();

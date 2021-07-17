@@ -64,7 +64,7 @@ namespace YukaLister.ViewModels.EditMasterWindowViewModels
 		// --------------------------------------------------------------------
 
 		// 年齢制限選択ボタンのコンテキストメニュー
-		public List<MenuItem> ContextMenuButtonSelectAgeLimitItems { get; set; } = new();
+		public List<Control> ContextMenuButtonSelectAgeLimitItems { get; set; } = new();
 
 		// 年齢制限
 		private String? _ageLimit;
