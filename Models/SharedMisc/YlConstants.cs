@@ -229,6 +229,8 @@ namespace YukaLister.Models.SharedMisc
 		ThisYear,       // 今年
 		LastYear,       // 昨年
 		Separator3,
+		All,            // 全期間
+		Separator4,
 		Custom,         // 期間指定
 		__End__,
 	}
@@ -661,7 +663,7 @@ namespace YukaLister.Models.SharedMisc
 		public const String TEMP_ID_PREFIX = "!";
 
 		// ゆかり統計の出力対象期間
-		public static readonly String[] YUKARI_STATISTICS_PERIOD_LABELS = { "今日", "昨日", String.Empty, "今月", "先月", String.Empty, "今年", "昨年", String.Empty, "期間指定" };
+		public static readonly String[] YUKARI_STATISTICS_PERIOD_LABELS = { "今日", "昨日", String.Empty, "今月", "先月", String.Empty, "今年", "昨年", String.Empty, "全期間", String.Empty, "期間指定" };
 
 		// ツールチップを長く表示する場合の時間 [ms]
 		public const Int32 TOOL_TIP_LONG_DURATION = 20 * 1000;

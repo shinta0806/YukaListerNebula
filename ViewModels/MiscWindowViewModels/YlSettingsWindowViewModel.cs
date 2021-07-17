@@ -1525,14 +1525,6 @@ namespace YukaLister.ViewModels.MiscWindowViewModels
 				{
 					throw new Exception("ゆかり統計出力先フォルダーを指定してください。");
 				}
-				if (YukariStatisticsPeriodFrom == null)
-				{
-					throw new Exception("出力対象期間（開始）を指定してください。");
-				}
-				if (YukariStatisticsPeriodTo == null)
-				{
-					throw new Exception("出力対象期間（終了）を指定してください。");
-				}
 
 #if false
 				if (YukaListerModel.Instance.EnvModel.YukaListerWholeStatus == YukaListerStatus.Running)
@@ -1879,15 +1871,13 @@ namespace YukaLister.ViewModels.MiscWindowViewModels
 		// --------------------------------------------------------------------
 		private Task OutputYukariStatisticsByWorker(Object? _)
 		{
-			Debug.Assert(YukariStatisticsPeriodFrom != null && YukariStatisticsPeriodTo != null, "OutputYukariStatisticsByWorker() YukariStatisticsPeriodFrom, YukariStatisticsPeriodTo is null");
-
 			// タイトル行
 			List<String> titleColumns = new(new String[] { "No", "PC", "予約日", "ルーム名", "カテゴリー", "タイアップ名", "摘要", "年齢制限", "リリース日", "リリース年", "シリーズ", "制作会社名",
 					"楽曲名", "歌手名", "作詞者", "作曲者", "編曲者", "ファイル", "動画制作者" });
 
 			// 出力対象期間
-			Double periodFrom = JulianDay.DateTimeToModifiedJulianDate(YukariStatisticsPeriodFrom.Value.ToUniversalTime());
-			Double periodTo = JulianDay.DateTimeToModifiedJulianDate(YukariStatisticsPeriodTo.Value.AddDays(1).ToUniversalTime());
+			Double periodFrom = YukariStatisticsPeriodFrom == null ? 0.0 : JulianDay.DateTimeToModifiedJulianDate(YukariStatisticsPeriodFrom.Value.ToUniversalTime());
+			Double periodTo = JulianDay.DateTimeToModifiedJulianDate((YukariStatisticsPeriodTo == null ? DateTime.Today : YukariStatisticsPeriodTo.Value).AddDays(1).ToUniversalTime());
 
 			// 内容
 			using YukariStatisticsContext yukariStatisticsContext = YukariStatisticsContext.CreateContext(out DbSet<TYukariStatistics> yukariStatistics);
@@ -2049,6 +2039,7 @@ namespace YukaLister.ViewModels.MiscWindowViewModels
 					YukariStatisticsPeriodFrom = ThisYear().AddYears(-1);
 					YukariStatisticsPeriodTo = ThisYear().AddDays(-1);
 					break;
+				case YukariStatisticsPeriod.All:
 				case YukariStatisticsPeriod.Custom:
 					YukariStatisticsPeriodFrom = YukariStatisticsPeriodTo = null;
 					break;

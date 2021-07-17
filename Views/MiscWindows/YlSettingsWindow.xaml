@@ -249,9 +249,9 @@
                         </ComboBox>
                     </StackPanel>
                     <StackPanel Orientation="Horizontal" Margin="170,5,0,0" IsEnabled="{Binding IsCustomYukariStatisticsPeriodEnabled}" >
-                        <DatePicker SelectedDate="{Binding YukariStatisticsPeriodFrom}" Language="ja-JP" Width="100" />
+                        <DatePicker Name="DatePickerYukariStatisticsPeriodFrom" SelectedDate="{Binding YukariStatisticsPeriodFrom}" Language="ja-JP" Width="100" ToolTip="yyyy/mm/dd" ToolTipService.ShowDuration="{x:Static msm:YlConstants.TOOL_TIP_LONG_DURATION}" materialDesign:HintAssist.Hint="{Binding ElementName=DatePickerYukariStatisticsPeriodFrom, Path=ToolTip}" />
                         <Label Content="～" Margin="10,0,10,0" />
-                        <DatePicker SelectedDate="{Binding YukariStatisticsPeriodTo}" Language="ja-JP" Width="100" />
+                        <DatePicker Name="DatePickerYukariStatisticsPeriodTo" SelectedDate="{Binding YukariStatisticsPeriodTo}" Language="ja-JP" Width="100" ToolTip="yyyy/mm/dd" ToolTipService.ShowDuration="{x:Static msm:YlConstants.TOOL_TIP_LONG_DURATION}" materialDesign:HintAssist.Hint="{Binding ElementName=DatePickerYukariStatisticsPeriodTo, Path=ToolTip}" />
                     </StackPanel>
                     <CheckBox Content="属性未確認の予約情報も出力する" IsChecked="{Binding OutputAttributesNone}" Margin="170,10,0,0" />
                     <DockPanel Margin="0,20,20,0">
