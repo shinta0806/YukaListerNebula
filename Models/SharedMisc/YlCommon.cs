@@ -434,20 +434,16 @@ namespace YukaLister.Models.SharedMisc
 		// --------------------------------------------------------------------
 		public static async Task InputIdPrefixIfNeededWithInvoke(ViewModel viewModel)
 		{
-			YukaListerModel.Instance.EnvModel.LogWriter.LogMessage(Common.TRACE_EVENT_TYPE_STATUS, "InputIdPrefixIfNeededWithInvoke() start");
 			// 設定済なら直ちに返る
 			if (!String.IsNullOrEmpty(YukaListerModel.Instance.EnvModel.YlSettings.IdPrefix))
 			{
 				return;
 			}
 
-			YukaListerModel.Instance.EnvModel.LogWriter.LogMessage(Common.TRACE_EVENT_TYPE_STATUS, "InputIdPrefixIfNeededWithInvoke() a");
 			await DispatcherHelper.UIDispatcher.Invoke(new Func<Task>(async () =>
 			{
 				// 現在設定中なら待機
-				YukaListerModel.Instance.EnvModel.LogWriter.LogMessage(Common.TRACE_EVENT_TYPE_STATUS, "InputIdPrefixIfNeededWithInvoke() b");
 				await WaitInputIdPrefix();
-				YukaListerModel.Instance.EnvModel.LogWriter.LogMessage(Common.TRACE_EVENT_TYPE_STATUS, "InputIdPrefixIfNeededWithInvoke() c");
 
 				// 設定開始
 				_isInputtingIdPrefix = true;
@@ -456,22 +452,18 @@ namespace YukaLister.Models.SharedMisc
 				if (String.IsNullOrEmpty(YukaListerModel.Instance.EnvModel.YlSettings.IdPrefix))
 				{
 					// 設定済でない場合に限り、ユーザーに入力してもらう
-					YukaListerModel.Instance.EnvModel.LogWriter.LogMessage(Common.TRACE_EVENT_TYPE_STATUS, "InputIdPrefixIfNeededWithInvoke() d");
 					using InputIdPrefixWindowViewModel inputIdPrefixWindowViewModel = new();
 					viewModel.Messenger.Raise(new TransitionMessage(inputIdPrefixWindowViewModel, YlConstants.MESSAGE_KEY_OPEN_INPUT_ID_PREFIX_WINDOW));
 				}
 
 				// 設定終了
-				YukaListerModel.Instance.EnvModel.LogWriter.LogMessage(Common.TRACE_EVENT_TYPE_STATUS, "InputIdPrefixIfNeededWithInvoke() e");
 				_isInputtingIdPrefix = false;
 			}));
 
-			YukaListerModel.Instance.EnvModel.LogWriter.LogMessage(Common.TRACE_EVENT_TYPE_STATUS, "InputIdPrefixIfNeededWithInvoke() f");
 			if (String.IsNullOrEmpty(YukaListerModel.Instance.EnvModel.YlSettings.IdPrefix))
 			{
 				throw new OperationCanceledException();
 			}
-			YukaListerModel.Instance.EnvModel.LogWriter.LogMessage(Common.TRACE_EVENT_TYPE_STATUS, "InputIdPrefixIfNeededWithInvoke() end");
 		}
 
 		// --------------------------------------------------------------------

@@ -883,6 +883,20 @@ namespace YukaLister.ViewModels
 		}
 
 		// --------------------------------------------------------------------
+		// ネビュラコアからのエラーを表示
+		// 大量にエラーが出た場合もユーザーがなんとか操作できるよう、1 度に出すエラーは 1 つ
+		// --------------------------------------------------------------------
+		private static void DisplayNebulaCoreError()
+		{
+			if (!YukaListerModel.Instance.EnvModel.NebulaCoreErrors.TryTake(out String? error))
+			{
+				return;
+			}
+
+			YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(TraceEventType.Error, error);
+		}
+
+		// --------------------------------------------------------------------
 		// インストールフォルダーについての警告メッセージ
 		// --------------------------------------------------------------------
 		private static String? InstallWarningMessage()
@@ -1485,20 +1499,6 @@ namespace YukaLister.ViewModels
 					break;
 			}
 			SetYukaListerStatusBackground(currentWholeStatus);
-		}
-
-		// --------------------------------------------------------------------
-		// ネビュラコアからのエラーを表示
-		// 大量にエラーが出た場合もユーザーがなんとか操作できるよう、1 度に出すエラーは 1 つ
-		// --------------------------------------------------------------------
-		private void DisplayNebulaCoreError()
-		{
-			if (!YukaListerModel.Instance.EnvModel.NebulaCoreErrors.TryTake(out String? error))
-			{
-				return;
-			}
-
-			YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(TraceEventType.Error, error);
 		}
 	}
 }

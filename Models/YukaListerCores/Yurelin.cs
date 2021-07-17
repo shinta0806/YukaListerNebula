@@ -118,8 +118,114 @@ namespace YukaLister.Models.YukaListerCores
 		}
 
 		// ====================================================================
-		// private メンバー変数
+		// private static メンバー関数
 		// ====================================================================
+
+		// --------------------------------------------------------------------
+		// TFound → TYukariStatistics へコピー（属性確認済ではない場合のみ）
+		// --------------------------------------------------------------------
+		private static void CopyFoundToYukariStatisticsIfNeeded(DbSet<TFound> founds, TYukariStatistics yukariStatistics)
+		{
+			if (yukariStatistics.AttributesDone)
+			{
+				return;
+			}
+
+			TFound? found = founds.FirstOrDefault(x => x.Path == yukariStatistics.RequestMoviePath);
+			if (found == null)
+			{
+				Debug.WriteLine("CopyFoundToYukariStatisticsIfNeeded() 属性確認しようとしたが見つからない " + yukariStatistics.RequestMoviePath);
+				return;
+			}
+			if (found.FileSize < 0)
+			{
+				Debug.WriteLine("CopyFoundToYukariStatisticsIfNeeded() 属性確認しようとしたがまだ整理されていない " + yukariStatistics.RequestMoviePath);
+				return;
+			}
+
+			yukariStatistics.AttributesDone = true;
+			yukariStatistics.Worker = found.Worker;
+			yukariStatistics.SongReleaseDate = found.SongReleaseDate;
+			yukariStatistics.CategoryName = found.Category;
+			yukariStatistics.TieUpName = found.TieUpName;
+			yukariStatistics.TieUpAgeLimit = found.TieUpAgeLimit;
+			yukariStatistics.MakerName = found.MakerName;
+			yukariStatistics.TieUpGroupName = found.TieUpGroupName;
+			yukariStatistics.SongName = found.SongName;
+			yukariStatistics.SongOpEd = found.SongOpEd;
+			yukariStatistics.ArtistName = found.ArtistName;
+			yukariStatistics.LyristName = found.LyristName;
+			yukariStatistics.ComposerName = found.ComposerName;
+			yukariStatistics.ArrangerName = found.ArrangerName;
+
+			yukariStatistics.Dirty = true;
+			Debug.WriteLine("CopyFoundToYukariStatisticsIfNeeded() 属性確認実施 " + yukariStatistics.RequestMoviePath);
+		}
+
+		// --------------------------------------------------------------------
+		// TYukariRequest → TYukariStatistics へコピー
+		// --------------------------------------------------------------------
+		private static void CopyYukariRequestToYukariStatistics(TYukariRequest yukariRequest, TYukariStatistics yukariStatistics)
+		{
+			// EF Core では、代入しても実際の値が更新されていなければ更新と判定されない（無駄な保存が発生しない）模様なので、プログラムでは更新チェックはせずに常に代入する
+			// 途中で変わるものについては、変わったら Dirty フラグを立てる必要がある
+			yukariStatistics.RequestId = yukariRequest.Id;
+			yukariStatistics.RequestMoviePath = yukariRequest.Path;
+			yukariStatistics.RequestSinger = yukariRequest.Singer;
+
+			yukariStatistics.Dirty |= yukariStatistics.RequestComment != yukariRequest.Comment;
+			yukariStatistics.RequestComment = yukariRequest.Comment;
+
+			yukariStatistics.Dirty |= yukariStatistics.RequestOrder != yukariRequest.Order;
+			yukariStatistics.RequestOrder = yukariRequest.Order;
+
+			yukariStatistics.Dirty |= yukariStatistics.RequestKeyChange != yukariRequest.KeyChange;
+			yukariStatistics.RequestKeyChange = yukariRequest.KeyChange;
+		}
+
+		// --------------------------------------------------------------------
+		// request.db の 1 レコードが既に統計に追加されていればその統計レコードを返す
+		// --------------------------------------------------------------------
+		private static TYukariStatistics? ExistStatisticsRecord(DbSet<TYukariStatistics> yukariStatistics, TYukariRequest yukariRequest)
+		{
+			// request.db ファイル名、ゆかり予約 Id、Path、Singer のすべてが一致したものを既存レコードとする
+			// かつ、この PC で追加したレコード（ID 接頭辞の先頭が一致するレコード）を既存レコードとする
+			// かつ、推定予約日時が全消去検知日時以降のものを既存レコードとする
+			// ルーム名は途中で変更されることがあるので判定に使用しない
+			return yukariStatistics.Where(x => x.RequestTime >= YukaListerModel.Instance.EnvModel.YlSettings.LastYukariRequestClearTime
+					&& x.RequestId == yukariRequest.Id && x.RequestDatabasePath == YukaListerModel.Instance.EnvModel.YlSettings.YukariRequestDatabasePath()
+					&& x.RequestMoviePath == yukariRequest.Path && x.RequestSinger == yukariRequest.Singer
+					&& EF.Functions.Like(x.Id, $"{YukaListerModel.Instance.EnvModel.YlSettings.IdPrefix}%")).OrderByDescending(x => x.RequestTime).FirstOrDefault();
+		}
+
+		// --------------------------------------------------------------------
+		// request.db 全消去日時を必要に応じて更新
+		// --------------------------------------------------------------------
+		private static void UpdateLastYukariRequestClearTimeIfNeeded(DbSet<TYukariRequest> yukariRequests)
+		{
+			if (yukariRequests.Any())
+			{
+				return;
+			}
+
+			// タイミングによっては、request.db 更新検知後 UPDATE_YUKARI_STATISTICS_DELAY_TIME ミリ秒経ってから Yurelin がアクティブ化されるため、
+			// 安全マージンを取って UPDATE_YUKARI_STATISTICS_DELAY_TIME ミリ秒前に全消去を検知したことにする
+			DateTime utc = DateTime.UtcNow;
+			utc = utc.AddMilliseconds(-YlConstants.UPDATE_YUKARI_STATISTICS_DELAY_TIME);
+
+			Debug.WriteLine("UpdateLastYukariRequestClearTimeIfNeeded() 全消去を検知 " + utc.ToString(YlConstants.DATE_FORMAT + " " + YlConstants.TIME_FORMAT));
+			YukaListerModel.Instance.EnvModel.YlSettings.LastYukariRequestClearTime = JulianDay.DateTimeToModifiedJulianDate(utc);
+			YukaListerModel.Instance.EnvModel.YlSettings.Save();
+		}
+
+		// --------------------------------------------------------------------
+		// 統計を必要に応じて更新
+		// --------------------------------------------------------------------
+		private static void UpdateExistStatisticsIfNeeded(TYukariStatistics existStatistics, TYukariRequest yukariRequest, DbSet<TFound> founds)
+		{
+			CopyYukariRequestToYukariStatistics(yukariRequest, existStatistics);
+			CopyFoundToYukariStatisticsIfNeeded(founds, existStatistics);
+		}
 
 		// ====================================================================
 		// private メンバー関数
@@ -174,112 +280,6 @@ namespace YukaLister.Models.YukaListerCores
 					UpdateExistStatisticsIfNeeded(existStatisticsRecord, yukariRequest, founds);
 				}
 			}
-		}
-
-		// --------------------------------------------------------------------
-		// TFound → TYukariStatistics へコピー（属性確認済ではない場合のみ）
-		// --------------------------------------------------------------------
-		private void CopyFoundToYukariStatisticsIfNeeded(DbSet<TFound> founds, TYukariStatistics yukariStatistics)
-		{
-			if (yukariStatistics.AttributesDone)
-			{
-				return;
-			}
-
-			TFound? found = founds.FirstOrDefault(x => x.Path == yukariStatistics.RequestMoviePath);
-			if (found == null)
-			{
-				Debug.WriteLine("CopyFoundToYukariStatisticsIfNeeded() 属性確認しようとしたが見つからない " + yukariStatistics.RequestMoviePath);
-				return;
-			}
-			if (found.FileSize < 0)
-			{
-				Debug.WriteLine("CopyFoundToYukariStatisticsIfNeeded() 属性確認しようとしたがまだ整理されていない " + yukariStatistics.RequestMoviePath);
-				return;
-			}
-
-			yukariStatistics.AttributesDone = true;
-			yukariStatistics.Worker = found.Worker;
-			yukariStatistics.SongReleaseDate = found.SongReleaseDate;
-			yukariStatistics.CategoryName = found.Category;
-			yukariStatistics.TieUpName = found.TieUpName;
-			yukariStatistics.TieUpAgeLimit = found.TieUpAgeLimit;
-			yukariStatistics.MakerName = found.MakerName;
-			yukariStatistics.TieUpGroupName = found.TieUpGroupName;
-			yukariStatistics.SongName = found.SongName;
-			yukariStatistics.SongOpEd = found.SongOpEd;
-			yukariStatistics.ArtistName = found.ArtistName;
-			yukariStatistics.LyristName = found.LyristName;
-			yukariStatistics.ComposerName = found.ComposerName;
-			yukariStatistics.ArrangerName = found.ArrangerName;
-
-			yukariStatistics.Dirty = true;
-			Debug.WriteLine("CopyFoundToYukariStatisticsIfNeeded() 属性確認実施 " + yukariStatistics.RequestMoviePath);
-		}
-
-		// --------------------------------------------------------------------
-		// TYukariRequest → TYukariStatistics へコピー
-		// --------------------------------------------------------------------
-		private void CopyYukariRequestToYukariStatistics(TYukariRequest yukariRequest, TYukariStatistics yukariStatistics)
-		{
-			// EF Core では、代入しても実際の値が更新されていなければ更新と判定されない（無駄な保存が発生しない）模様なので、プログラムでは更新チェックはせずに常に代入する
-			// 途中で変わるものについては、変わったら Dirty フラグを立てる必要がある
-			yukariStatistics.RequestId = yukariRequest.Id;
-			yukariStatistics.RequestMoviePath = yukariRequest.Path;
-			yukariStatistics.RequestSinger = yukariRequest.Singer;
-
-			yukariStatistics.Dirty |= yukariStatistics.RequestComment != yukariRequest.Comment;
-			yukariStatistics.RequestComment = yukariRequest.Comment;
-
-			yukariStatistics.Dirty |= yukariStatistics.RequestOrder != yukariRequest.Order;
-			yukariStatistics.RequestOrder = yukariRequest.Order;
-
-			yukariStatistics.Dirty |= yukariStatistics.RequestKeyChange != yukariRequest.KeyChange;
-			yukariStatistics.RequestKeyChange = yukariRequest.KeyChange;
-		}
-
-		// --------------------------------------------------------------------
-		// request.db の 1 レコードが既に統計に追加されていればその統計レコードを返す
-		// --------------------------------------------------------------------
-		private TYukariStatistics? ExistStatisticsRecord(DbSet<TYukariStatistics> yukariStatistics, TYukariRequest yukariRequest)
-		{
-			// request.db ファイル名、ゆかり予約 Id、Path、Singer のすべてが一致したものを既存レコードとする
-			// かつ、この PC で追加したレコード（ID 接頭辞の先頭が一致するレコード）を既存レコードとする
-			// かつ、推定予約日時が全消去検知日時以降のものを既存レコードとする
-			// ルーム名は途中で変更されることがあるので判定に使用しない
-			return yukariStatistics.Where(x => x.RequestTime >= YukaListerModel.Instance.EnvModel.YlSettings.LastYukariRequestClearTime
-					&& x.RequestId == yukariRequest.Id && x.RequestDatabasePath == YukaListerModel.Instance.EnvModel.YlSettings.YukariRequestDatabasePath()
-					&& x.RequestMoviePath == yukariRequest.Path && x.RequestSinger == yukariRequest.Singer
-					&& EF.Functions.Like(x.Id, $"{YukaListerModel.Instance.EnvModel.YlSettings.IdPrefix}%")).OrderByDescending(x => x.RequestTime).FirstOrDefault();
-		}
-
-		// --------------------------------------------------------------------
-		// request.db 全消去日時を必要に応じて更新
-		// --------------------------------------------------------------------
-		private void UpdateLastYukariRequestClearTimeIfNeeded(DbSet<TYukariRequest> yukariRequests)
-		{
-			if (yukariRequests.Any())
-			{
-				return;
-			}
-
-			// タイミングによっては、request.db 更新検知後 UPDATE_YUKARI_STATISTICS_DELAY_TIME ミリ秒経ってから Yurelin がアクティブ化されるため、
-			// 安全マージンを取って UPDATE_YUKARI_STATISTICS_DELAY_TIME ミリ秒前に全消去を検知したことにする
-			DateTime utc = DateTime.UtcNow;
-			utc = utc.AddMilliseconds(-YlConstants.UPDATE_YUKARI_STATISTICS_DELAY_TIME);
-
-			Debug.WriteLine("UpdateLastYukariRequestClearTimeIfNeeded() 全消去を検知 " + utc.ToString(YlConstants.DATE_FORMAT + " " + YlConstants.TIME_FORMAT));
-			YukaListerModel.Instance.EnvModel.YlSettings.LastYukariRequestClearTime = JulianDay.DateTimeToModifiedJulianDate(utc);
-			YukaListerModel.Instance.EnvModel.YlSettings.Save();
-		}
-
-		// --------------------------------------------------------------------
-		// 統計を必要に応じて更新
-		// --------------------------------------------------------------------
-		private void UpdateExistStatisticsIfNeeded(TYukariStatistics existStatistics, TYukariRequest yukariRequest, DbSet<TFound> founds)
-		{
-			CopyYukariRequestToYukariStatistics(yukariRequest, existStatistics);
-			CopyFoundToYukariStatisticsIfNeeded(founds, existStatistics);
 		}
 	}
 }

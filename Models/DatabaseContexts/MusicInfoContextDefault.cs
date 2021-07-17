@@ -258,13 +258,13 @@ namespace YukaLister.Models.DatabaseContexts
 		private const String FILE_NAME_MUSIC_INFO_DATABASE = "NebulaMusicInfo" + Common.FILE_EXT_SQLITE3;
 
 		// ====================================================================
-		// private メンバー関数
+		// private static メンバー関数
 		// ====================================================================
 
 		// --------------------------------------------------------------------
 		// カテゴリーテーブルのレコードを作成
 		// --------------------------------------------------------------------
-		private TCategory CreateCategoryRecord(Int32 idNumber, String name, String? ruby = null)
+		private static TCategory CreateCategoryRecord(Int32 idNumber, String name, String? ruby = null)
 		{
 			String? normalizedName = YlCommon.NormalizeDbString(name);
 			(String? normalizedRubyForMusicInfo, _, _) = YlCommon.NormalizeDbRubyForMusicInfo(ruby);
@@ -291,6 +291,10 @@ namespace YukaLister.Models.DatabaseContexts
 				KeywordRubyForSearch = null,
 			};
 		}
+
+		// ====================================================================
+		// private メンバー関数
+		// ====================================================================
 
 		// --------------------------------------------------------------------
 		// カテゴリーマスターテーブルの既定レコードを挿入

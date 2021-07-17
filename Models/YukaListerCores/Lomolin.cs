@@ -28,6 +28,7 @@ using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+
 using YukaLister.Models.SharedMisc;
 using YukaLister.Models.YukaListerModels;
 
@@ -149,7 +150,6 @@ namespace YukaLister.Models.YukaListerCores
 		// カウンター名
 		private const String COUNTER_NAME_PERCENT_DISK_TIME = "% Disk Time";
 		private const String COUNTER_NAME_PERCENT_PROCESSOR_TIME = "% Processor Time";
-		private const String COUNTER_NAME_WORKING_SET_PRIVATE = "Working Set - Private";
 
 		// インスタンス名
 		private const String INSTANCE_NAME_EVERYTHING = "Everything";
@@ -198,10 +198,10 @@ namespace YukaLister.Models.YukaListerCores
 		private PerformanceCounter? _cpuAllCounter;
 
 		// プロセスごとの CPU 負荷
-		private Dictionary<String, PerformanceCounter> _cpuCounters = new();
+		private readonly Dictionary<String, PerformanceCounter> _cpuCounters = new();
 
 		// ドライブごとのディスク負荷
-		private Dictionary<String, PerformanceCounter> _diskCounters = new();
+		private readonly Dictionary<String, PerformanceCounter> _diskCounters = new();
 
 		// 詳細ログ（負荷監視専用）
 		private readonly LogWriter _logWriterMonitor = new(YlConstants.APP_ID + YlConstants.MONITOR_ID);
