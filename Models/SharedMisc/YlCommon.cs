@@ -597,9 +597,9 @@ namespace YukaLister.Models.SharedMisc
 		// --------------------------------------------------------------------
 		// 関数を非同期駆動
 		// --------------------------------------------------------------------
-		public static async Task LaunchTaskAsync<T>(SemaphoreSlim semaphoreSlim, TaskAsyncDelegate<T> deleg, T vari, String taskName) where T : class?
+		public static async Task<Boolean> LaunchTaskAsync<T>(SemaphoreSlim semaphoreSlim, TaskAsyncDelegate<T> deleg, T vari, String taskName) where T : class?
 		{
-			await Task.Run(async () =>
+			return await Task<Boolean>.Run(async () =>
 			{
 				semaphoreSlim.Wait();
 				try
@@ -610,15 +610,18 @@ namespace YukaLister.Models.SharedMisc
 					YukaListerModel.Instance.EnvModel.LogWriter.LogMessage(Common.TRACE_EVENT_TYPE_STATUS, "バックグラウンド処理開始：" + taskName);
 					await deleg(vari);
 					YukaListerModel.Instance.EnvModel.LogWriter.LogMessage(Common.TRACE_EVENT_TYPE_STATUS, "バックグラウンド処理終了：" + taskName);
+					return true;
 				}
 				catch (OperationCanceledException)
 				{
 					YukaListerModel.Instance.EnvModel.LogWriter.LogMessage(TraceEventType.Error, "バックグラウンド処理中止：" + taskName);
+					return false;
 				}
 				catch (Exception excep)
 				{
 					YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(TraceEventType.Error, taskName + " 実行時エラー：\n" + excep.Message);
 					YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, "　スタックトレース：\n" + excep.StackTrace);
+					return false;
 				}
 				finally
 				{

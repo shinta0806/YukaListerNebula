@@ -1542,7 +1542,11 @@ namespace YukaLister.ViewModels.MiscWindowViewModels
 
 				// 出力
 				ProgressBarOutputYukariStatisticsVisibility = Visibility.Visible;
-				await YlCommon.LaunchTaskAsync<Object?>(_semaphoreSlim, OutputYukariStatisticsByWorker, null, "ゆかり統計出力");
+				Boolean result = await YlCommon.LaunchTaskAsync<Object?>(_semaphoreSlim, OutputYukariStatisticsByWorker, null, "ゆかり統計出力");
+				if (!result)
+				{
+					return;
+				}
 				YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(TraceEventType.Information, "ゆかり統計出力が完了しました。");
 
 				// 表示
@@ -1884,6 +1888,12 @@ namespace YukaLister.ViewModels.MiscWindowViewModels
 			yukariStatisticsContext.ChangeTracker.QueryTrackingBehavior = QueryTrackingBehavior.NoTracking;
 			List<TYukariStatistics> targetStatistics = yukariStatistics.
 					Where(x => periodFrom <= x.RequestTime && x.RequestTime < periodTo && (OutputAttributesNone || x.AttributesDone) && !x.Invalid).ToList();
+
+			if (targetStatistics.Count == 0)
+			{
+				throw new Exception("対象となる予約がありませんでした。");
+			}
+
 			List<List<String>> contents = new(targetStatistics.Count);
 			Int32 index = 1;
 			foreach (TYukariStatistics yukariStatisticsRecord in targetStatistics)
