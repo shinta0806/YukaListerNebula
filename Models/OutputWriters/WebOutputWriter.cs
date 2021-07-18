@@ -1120,6 +1120,10 @@ namespace YukaLister.Models.OutputWriters
 					"ほ" => "「ヴォ（ボ）」から始まる" + YlConstants.OUTPUT_ITEM_NAMES[(Int32)chapterItem] + "一覧もここに掲載されています。<br>",
 					_ => null,
 				};
+				if (isAdult && kindFileName == KIND_FILE_NAME_TIE_UP_GROUP)
+				{
+					additionalNode += "成人向けタイアップと一般タイアップの両方を掲載しています。<br>";
+				}
 				if (additionalNode != null)
 				{
 					template = template.Replace(HTML_VAR_ADDITIONAL_NOTICE, additionalNode);
@@ -1349,6 +1353,7 @@ namespace YukaLister.Models.OutputWriters
 			// タイアップ名とそれに紐付く楽曲群
 			Dictionary<String, List<TFound>> tieUpNamesAndTFounds = new();
 
+			// シリーズ別リストに限り、成人向けのリストに一般向けも含む（シリーズに含まれる全てをここを起点に一覧できるようにするため）
 			var joined = _founds.Join(_tieUpGroupSequencesInMemory, f => f.TieUpId, s => s.Id, (f, s) => new
 			{
 				found = f,
@@ -1361,7 +1366,7 @@ namespace YukaLister.Models.OutputWriters
 			})
 			.Where(x => x.Found.TieUpId != null && x.Found.SongId != null
 					&& (((WebOutputSettings)OutputSettings).OutputHeadMisc || x.TieUpGroup.Ruby != null)
-					&& (isAdult ? x.Found.TieUpAgeLimit >= YlConstants.AGE_LIMIT_CERO_Z : x.Found.TieUpAgeLimit < YlConstants.AGE_LIMIT_CERO_Z))
+					&& (isAdult || x.Found.TieUpAgeLimit < YlConstants.AGE_LIMIT_CERO_Z))
 					.OrderBy(x => x.TieUpGroup.Ruby).ThenBy(x => x.TieUpGroup.Name).ThenBy(x => x.Found.Head).ThenBy(x => x.Found.TieUpRuby).
 					ThenBy(x => x.Found.TieUpName).ThenBy(x => x.Found.SongRuby).ThenBy(x => x.Found.SongName).ToList();
 
