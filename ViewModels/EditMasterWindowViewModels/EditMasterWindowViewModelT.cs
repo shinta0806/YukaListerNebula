@@ -679,9 +679,9 @@ namespace YukaLister.ViewModels.EditMasterWindowViewModels
 					String? add = null;
 					if (numDups > 0)
 					{
-						add = "\n\n【注意】\n変更後の名前は既にデータベースに登録されています。";
+						add = "【注意】\n変更後の" + _caption + "名「" + normalizedName + "」は既にデータベースに登録されています。\n\n";
 					}
-					if (MessageBox.Show(_caption + "名を「" + SelectedMaster.Name + "」から「" + normalizedName + "」に変更しますか？" + add, "確認",
+					if (MessageBox.Show(add + _caption + "名を「" + SelectedMaster.Name + "」から「" + normalizedName + "」に変更しますか？", "確認",
 							MessageBoxButton.YesNo, MessageBoxImage.Exclamation) == MessageBoxResult.No)
 					{
 						Name = SelectedMaster.Name;
