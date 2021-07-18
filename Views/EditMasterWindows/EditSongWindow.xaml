@@ -176,13 +176,8 @@
             <Button Content="検索 (_4)" Grid.Row="2" Grid.Column="2" Height="Auto" FontSize="12" Padding="2" Style="{StaticResource MaterialDesignRaisedLightButton}" Margin="5" Command="{Binding ButtonSearchTagClickedCommand}"/>
             <Label Content="{Binding TagDisplayNames}" Margin="0" Grid.Row="2" Grid.Column="3"/>
             <Button Content="複数タグ検索 (_G)" Grid.Row="2" Grid.Column="4" Height="Auto" FontSize="12" Padding="2" Style="{StaticResource MaterialDesignRaisedLightButton}" Margin="5,5,0,5" Command="{Binding ButtonEditTagClickedCommand}"/>
-            <Label Content="リリース日 (_R)：" Target="{Binding ElementName=TextBoxReleaseYear}" Margin="0" Grid.Row="0" Grid.Column="5" HorizontalAlignment="Right"/>
-            <TextBox Name="TextBoxReleaseYear" Text="{Binding ReleaseYear}" Grid.Column="6" Margin="0" Grid.Row="0" VerticalAlignment="Center" HorizontalContentAlignment="Right"/>
-            <Label Content="年" Margin="0" Grid.Row="0" Grid.Column="7"/>
-            <TextBox Text="{Binding ReleaseMonth}" Grid.Column="8" Margin="0" Grid.Row="0" VerticalAlignment="Center" HorizontalContentAlignment="Right"/>
-            <Label Content="月" Margin="0" Grid.Row="0" Grid.Column="9"/>
-            <TextBox Text="{Binding ReleaseDay}" Grid.Column="10" Margin="0" Grid.Row="0" VerticalAlignment="Center" HorizontalContentAlignment="Right"/>
-            <Label Content="日" Margin="0" Grid.Row="0" Grid.Column="11"/>
+            <Label Content="リリース日 (_R)：" Target="{Binding ElementName=DatePickerReleaseDate}" Margin="0" Grid.Row="0" Grid.Column="5" HorizontalAlignment="Right"/>
+            <DatePicker Name="DatePickerReleaseDate" SelectedDate="{Binding ReleaseDate}" Language="ja-JP" ToolTip="yyyy/mm/dd" ToolTipService.ShowDuration="{x:Static msm:YlConstants.TOOL_TIP_LONG_DURATION}" materialDesign:HintAssist.Hint="{Binding ElementName=DatePickerReleaseDate, Path=ToolTip}" Grid.Row="0" Grid.Column="6" Grid.ColumnSpan="3" />
             <Label Content="検索ワード (_W)：" Target="{Binding ElementName=TextBoxKeyword}" Margin="0" Grid.Row="1" Grid.Column="5" HorizontalAlignment="Right"/>
             <TextBox Name="TextBoxKeyword" Text="{Binding Keyword}" ToolTip="{Binding KeywordHint}" ToolTipService.ShowDuration="{x:Static msm:YlConstants.TOOL_TIP_LONG_DURATION}" materialDesign:HintAssist.Hint="{Binding ElementName=TextBoxKeyword, Path=ToolTip}" Grid.Column="6" Margin="0" Grid.Row="1" VerticalAlignment="Center" Grid.ColumnSpan="6"/>
         </Grid>

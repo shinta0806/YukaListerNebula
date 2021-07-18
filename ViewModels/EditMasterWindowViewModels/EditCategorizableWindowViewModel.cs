@@ -83,6 +83,15 @@ namespace YukaLister.ViewModels.EditMasterWindowViewModels
 			set => RaisePropertyChangedIfSet(ref _categoryName, value);
 		}
 
+		// リリース年月日
+		private DateTime? _releaseDate;
+		public DateTime? ReleaseDate
+		{
+			get => _releaseDate;
+			set => RaisePropertyChangedIfSet(ref _releaseDate, value);
+		}
+
+#if false
 		// リリース年
 		private String? _releaseYear;
 		public String? ReleaseYear
@@ -106,6 +115,7 @@ namespace YukaLister.ViewModels.EditMasterWindowViewModels
 			get => _releaseDay;
 			set => RaisePropertyChangedIfSet(ref _releaseDay, value);
 		}
+#endif
 
 		// --------------------------------------------------------------------
 		// コマンド
@@ -227,7 +237,7 @@ namespace YukaLister.ViewModels.EditMasterWindowViewModels
 
 			// IRcCategorizable
 			master.CategoryId = _categoryId;
-			master.ReleaseDate = YlCommon.StringsToMjd("リリース日", ReleaseYear, ReleaseMonth, ReleaseDay);
+			master.ReleaseDate = ReleaseDate == null ? YlConstants.INVALID_MJD : JulianDay.DateTimeToModifiedJulianDate(ReleaseDate.Value);
 		}
 
 		// --------------------------------------------------------------------
@@ -261,7 +271,7 @@ namespace YukaLister.ViewModels.EditMasterWindowViewModels
 			}
 
 			// リリース日
-			(ReleaseYear, ReleaseMonth, ReleaseDay) = YlCommon.MjdToStrings(master.ReleaseDate);
+			ReleaseDate = master.ReleaseDate <= YlConstants.INVALID_MJD ? null : JulianDay.ModifiedJulianDateToDateTime(master.ReleaseDate);
 		}
 
 		// ====================================================================

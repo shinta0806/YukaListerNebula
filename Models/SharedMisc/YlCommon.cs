@@ -739,6 +739,7 @@ namespace YukaLister.Models.SharedMisc
 			return milli * 10000L;
 		}
 
+#if false
 		// --------------------------------------------------------------------
 		// 日付に合わせて年月日文字列を設定
 		// --------------------------------------------------------------------
@@ -754,6 +755,7 @@ namespace YukaLister.Models.SharedMisc
 				return (aReleaseDate.Year.ToString(), aReleaseDate.Month.ToString(), aReleaseDate.Day.ToString());
 			}
 		}
+#endif
 
 		// --------------------------------------------------------------------
 		// 楽曲情報データベースに登録するフリガナの表記揺れを減らす
@@ -902,6 +904,7 @@ namespace YukaLister.Models.SharedMisc
 			return String.IsNullOrEmpty(ids) ? new() : ids.Split(YlConstants.VAR_VALUE_DELIMITER[0], StringSplitOptions.RemoveEmptyEntries).ToList();
 		}
 
+#if false
 		// --------------------------------------------------------------------
 		// 年月日の文字列から日付を生成
 		// ＜例外＞ Exception
@@ -1003,6 +1006,7 @@ namespace YukaLister.Models.SharedMisc
 
 			return JulianDay.DateTimeToModifiedJulianDate(new DateTime(year, month, day));
 		}
+#endif
 
 		// --------------------------------------------------------------------
 		// テンポラリフォルダーのパス（末尾 '\\'）
