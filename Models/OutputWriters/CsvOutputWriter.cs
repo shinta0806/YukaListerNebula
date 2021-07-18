@@ -35,7 +35,7 @@ namespace YukaLister.Models.OutputWriters
 			// プロパティー
 			FormatName = "CSV";
 			TopFileName = "List.csv";
-			OutputSettings = new CsvOutputSettings();
+			//OutputSettings = new CsvOutputSettings();
 		}
 
 		// ====================================================================
@@ -193,6 +193,14 @@ namespace YukaLister.Models.OutputWriters
 		// ====================================================================
 		// protected メンバー関数
 		// ====================================================================
+
+		// --------------------------------------------------------------------
+		// 出力設定を生成
+		// --------------------------------------------------------------------
+		protected override void GenerateOutputSettingsCore()
+		{
+			OutputSettings = new CsvOutputSettings();
+		}
 
 		// --------------------------------------------------------------------
 		// コンストラクターでは行えない準備などを実施

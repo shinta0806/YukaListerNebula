@@ -89,9 +89,31 @@ namespace YukaLister.Models.OutputWriters
 		}
 
 		// --------------------------------------------------------------------
+		// 出力設定を生成
+		// --------------------------------------------------------------------
+		public void GenerateOutputSettings()
+		{
+			GenerateOutputSettingsCore();
+			OutputSettings.AdjustAfterGenerateOrLoad();
+		}
+
+		// --------------------------------------------------------------------
 		// リスト出力
 		// --------------------------------------------------------------------
 		public abstract void Output();
+
+		// --------------------------------------------------------------------
+		// 出力設定の読み込み
+		// --------------------------------------------------------------------
+		public void PrepareOutputSettings()
+		{
+			// 設定読み込み
+			GenerateOutputSettings();
+			OutputSettings.Load();
+
+			// OutputSettings.OutputAllItems に基づく設定（コンストラクターでは OutputSettings がロードされていない）
+			_runtimeOutputItems = OutputSettings.RuntimeOutputItems();
+		}
 
 		// ====================================================================
 		// protected 定数
@@ -232,15 +254,16 @@ namespace YukaLister.Models.OutputWriters
 		}
 
 		// --------------------------------------------------------------------
+		// 出力設定を生成
+		// --------------------------------------------------------------------
+		protected abstract void GenerateOutputSettingsCore();
+
+		// --------------------------------------------------------------------
 		// コンストラクターでは行えない準備などを実施
 		// --------------------------------------------------------------------
 		protected virtual void PrepareOutput()
 		{
-			// 設定読み込み
-			OutputSettings.Load();
-
-			// OutputSettings.OutputAllItems に基づく設定（コンストラクターでは OutputSettings がロードされていない）
-			_runtimeOutputItems = OutputSettings.RuntimeOutputItems();
+			PrepareOutputSettings();
 		}
 
 		// --------------------------------------------------------------------

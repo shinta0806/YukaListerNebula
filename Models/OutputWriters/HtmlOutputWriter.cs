@@ -29,7 +29,7 @@ namespace YukaLister.Models.OutputWriters
 			// プロパティー
 			FormatName = "HTML";
 			TopFileName = "index" + Common.FILE_EXT_HTML;
-			OutputSettings = new HtmlOutputSettings();
+			//OutputSettings = new HtmlOutputSettings();
 
 			// メンバー変数
 			_additionalDescription = null;
@@ -37,6 +37,10 @@ namespace YukaLister.Models.OutputWriters
 			_additionalNavi = null;
 			_listLinkArg = null;
 		}
+
+		// ====================================================================
+		// public メンバー関数
+		// ====================================================================
 
 		// ====================================================================
 		// protected メンバー関数
@@ -48,6 +52,14 @@ namespace YukaLister.Models.OutputWriters
 		protected override String? FileNameDescription(String? fileName)
 		{
 			return fileName;
+		}
+
+		// --------------------------------------------------------------------
+		// 出力設定を生成
+		// --------------------------------------------------------------------
+		protected override void GenerateOutputSettingsCore()
+		{
+			OutputSettings = new HtmlOutputSettings();
 		}
 
 		// --------------------------------------------------------------------

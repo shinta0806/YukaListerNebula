@@ -38,7 +38,7 @@ namespace YukaLister.Models.OutputWriters
 			// プロパティー
 			FormatName = "ゆかり用 PHP";
 			TopFileName = "index" + Common.FILE_EXT_PHP;
-			OutputSettings = new YukariOutputSettings();
+			//OutputSettings = new YukariOutputSettings();
 
 			// メンバー変数
 			String listLinkArg = ListLinkArg();
@@ -126,6 +126,14 @@ namespace YukaLister.Models.OutputWriters
 
 			return "<?php empty($yukarisearchlink) ? print \"" + fileName + "\" : print \"<a href=\\\"\".$yukarisearchlink.\"" + HttpUtility.UrlEncode(fileName)
 					+ "\\\">" + fileName + "</a>\";?>";
+		}
+
+		// --------------------------------------------------------------------
+		// 出力設定を生成
+		// --------------------------------------------------------------------
+		protected override void GenerateOutputSettingsCore()
+		{
+			OutputSettings = new YukariOutputSettings();
 		}
 
 		// --------------------------------------------------------------------

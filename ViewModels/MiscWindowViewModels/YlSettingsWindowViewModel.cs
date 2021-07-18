@@ -1786,6 +1786,22 @@ namespace YukaLister.ViewModels.MiscWindowViewModels
 			return columns;
 		}
 
+		// --------------------------------------------------------------------
+		// 今月 1 日
+		// --------------------------------------------------------------------
+		private static DateTime CurrentMonth()
+		{
+			return DateTime.Today.AddDays(-(DateTime.Today.Day - 1));
+		}
+
+		// --------------------------------------------------------------------
+		// 今年の 1 月 1 日
+		// --------------------------------------------------------------------
+		private static DateTime ThisYear()
+		{
+			return CurrentMonth().AddMonths(-(CurrentMonth().Month - 1));
+		}
+
 		// ====================================================================
 		// private メンバー関数
 		// ====================================================================
@@ -1835,14 +1851,6 @@ namespace YukaLister.ViewModels.MiscWindowViewModels
 					SyncServer += "/";
 				}
 			}
-		}
-
-		// --------------------------------------------------------------------
-		// 今月 1 日
-		// --------------------------------------------------------------------
-		private DateTime CurrentMonth()
-		{
-			return DateTime.Today.AddDays(-(DateTime.Today.Day - 1));
 		}
 
 		// --------------------------------------------------------------------
@@ -2007,14 +2015,6 @@ namespace YukaLister.ViewModels.MiscWindowViewModels
 
 			// ゆかり統計タブ
 			YukariStatisticsPath = YukaListerModel.Instance.EnvModel.YlSettings.YukariStatisticsPath;
-		}
-
-		// --------------------------------------------------------------------
-		// 今年の 1 月 1 日
-		// --------------------------------------------------------------------
-		private DateTime ThisYear()
-		{
-			return CurrentMonth().AddMonths(-(CurrentMonth().Month - 1));
 		}
 
 		// --------------------------------------------------------------------

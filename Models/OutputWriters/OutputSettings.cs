@@ -55,6 +55,14 @@ namespace YukaLister.Models.OutputWriters
 		// ====================================================================
 
 		// --------------------------------------------------------------------
+		// 生成・読み込み後の調整
+		// --------------------------------------------------------------------
+		public virtual void AdjustAfterGenerateOrLoad()
+		{
+			AddSelectedOutputItemsIfNeeded();
+		}
+
+		// --------------------------------------------------------------------
 		// 読み込み
 		// 派生クラスでオーバーライドする際は、派生クラス読み込み後にここを呼ぶ
 		// --------------------------------------------------------------------
@@ -62,6 +70,7 @@ namespace YukaLister.Models.OutputWriters
 		{
 			try
 			{
+				// 派生クラスの分は読み込まず、自クラスの分のみ読み込んで、インスタンス（派生クラスの場合もありえる）にマージする
 				OutputSettings tmp = new();
 				tmp = Common.Deserialize(SettingsPath(), tmp);
 				Common.ShallowCopyProperties(tmp, this);
@@ -73,7 +82,7 @@ namespace YukaLister.Models.OutputWriters
 			}
 			try
 			{
-				AdjustAfterLoad();
+				AdjustAfterGenerateOrLoad();
 			}
 			catch (Exception excep)
 			{
@@ -123,6 +132,7 @@ namespace YukaLister.Models.OutputWriters
 			}
 			try
 			{
+				// 派生クラスの分は保存せず、自クラスの分のみ保存する
 				OutputSettings tmp = new();
 				Common.ShallowCopyProperties(this, tmp);
 				Common.Serialize(SettingsPath(), tmp);
@@ -137,25 +147,6 @@ namespace YukaLister.Models.OutputWriters
 		// ====================================================================
 		// protected メンバー関数
 		// ====================================================================
-
-		// --------------------------------------------------------------------
-		// 読み込み後の調整
-		// --------------------------------------------------------------------
-		protected virtual void AdjustAfterLoad()
-		{
-			if (SelectedOutputItems.Count == 0)
-			{
-				SelectedOutputItems.Add(OutputItems.TieUpName);
-				SelectedOutputItems.Add(OutputItems.SongOpEd);
-				SelectedOutputItems.Add(OutputItems.SongName);
-				SelectedOutputItems.Add(OutputItems.ArtistName);
-				SelectedOutputItems.Add(OutputItems.SmartTrack);
-				SelectedOutputItems.Add(OutputItems.Worker);
-				SelectedOutputItems.Add(OutputItems.Comment);
-				SelectedOutputItems.Add(OutputItems.FileName);
-				SelectedOutputItems.Add(OutputItems.FileSize);
-			}
-		}
 
 		// --------------------------------------------------------------------
 		// 保存前の調整
@@ -175,5 +166,27 @@ namespace YukaLister.Models.OutputWriters
 		{
 			return Common.UserAppDataFolderPath() + nameof(OutputSettings) + Common.FILE_EXT_CONFIG;
 		}
+
+		// --------------------------------------------------------------------
+		// SelectedOutputItems が空ならデフォルト値を追加
+		// --------------------------------------------------------------------
+		private void AddSelectedOutputItemsIfNeeded()
+		{
+			if (SelectedOutputItems.Count > 0)
+			{
+				return;
+			}
+
+			SelectedOutputItems.Add(OutputItems.TieUpName);
+			SelectedOutputItems.Add(OutputItems.SongOpEd);
+			SelectedOutputItems.Add(OutputItems.SongName);
+			SelectedOutputItems.Add(OutputItems.ArtistName);
+			SelectedOutputItems.Add(OutputItems.SmartTrack);
+			SelectedOutputItems.Add(OutputItems.Worker);
+			SelectedOutputItems.Add(OutputItems.Comment);
+			SelectedOutputItems.Add(OutputItems.FileName);
+			SelectedOutputItems.Add(OutputItems.FileSize);
+		}
+
 	}
 }
