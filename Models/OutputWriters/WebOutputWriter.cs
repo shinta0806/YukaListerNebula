@@ -22,6 +22,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Security.Cryptography;
 using System.Text;
 
 using YukaLister.Models.Database;
@@ -51,6 +52,8 @@ namespace YukaLister.Models.OutputWriters
 			_thNames[(Int32)OutputItems.Worker] = "制作";
 			_thNames[(Int32)OutputItems.SmartTrack] = "On</th><th>Off";
 			_thNames[(Int32)OutputItems.FileSize] = "サイズ";
+
+			Debug.WriteLine("WebOutputWriter() HashSize: " + _md5Provider.HashSize);
 		}
 
 		// ====================================================================
@@ -295,6 +298,32 @@ namespace YukaLister.Models.OutputWriters
 		}
 
 		// --------------------------------------------------------------------
+		// リソース解放
+		// --------------------------------------------------------------------
+		protected override void Dispose(Boolean isDisposing)
+		{
+			base.Dispose(isDisposing);
+
+			if (_isDisposed)
+			{
+				return;
+			}
+
+			// マネージドリソース解放
+			if (isDisposing)
+			{
+				_md5Provider.Dispose();
+			}
+
+			// アンマネージドリソース解放
+			// 今のところ無し
+			// アンマネージドリソースを持つことになった場合、ファイナライザの実装が必要
+
+			// 解放完了
+			_isDisposed = true;
+		}
+
+		// --------------------------------------------------------------------
 		// リストに出力するファイル名の表現
 		// --------------------------------------------------------------------
 		protected abstract String? FileNameDescription(String? fileName);
@@ -378,11 +407,14 @@ namespace YukaLister.Models.OutputWriters
 		// 期別リストの年数
 		private const Int32 SEASON_YEARS = 5;
 
+		// MD5 文字列長
+		private const Int32 MD5_STRING_LENGTH = 32;
+
 		// 文字列を HEX に変換する際の最大長
 		// C:\Users\ユーザー名\AppData\Local\Temp\YukaLister\PID..\2_22\List_Artist_GroupName_Hex1_Hex2.html
 		// Hex1 / Hex2 は MAX_HEX_SOURCE_LENGTH の 2 倍の長さになる
 		// 長くなるのは Hex1 か Hex2 のどちらかという前提で、パスの長さが 256 を超えない程度の指定にする
-		private const Int32 MAX_HEX_SOURCE_LENGTH = 70;
+		//private const Int32 MAX_HEX_SOURCE_LENGTH = 70;
 
 		// 開発者支援サイトリンク
 		private const String SUPPORT_LINK = "<a href=\"" + YlConstants.URL_FANTIA + "\" target=\"_blank\"><img src=\""
@@ -397,6 +429,12 @@ namespace YukaLister.Models.OutputWriters
 
 		// リストを一時的に出力するフォルダー（末尾 '\\'）
 		private String? _tempFolderPath;
+
+		// MD5 生成
+		private MD5CryptoServiceProvider _md5Provider = new();
+
+		// Dispose フラグ
+		private Boolean _isDisposed;
 
 		// ====================================================================
 		// private static メンバー関数
@@ -438,15 +476,6 @@ namespace YukaLister.Models.OutputWriters
 			// 人物データベースにルビが無い場合に名前から頭文字を取るようにすると、「その他」とひらがなが入り乱れてしまうため、
 			// ルビが無い場合は常に「その他」を返すようにする
 			return !String.IsNullOrEmpty(person.Ruby) ? YlCommon.Head(person.Ruby) : YlConstants.HEAD_MISC;
-		}
-
-		// --------------------------------------------------------------------
-		// 文字を UTF-16 HEX に変換
-		// --------------------------------------------------------------------
-		private static String StringToHex(String str)
-		{
-			Byte[] byteData = Encoding.Unicode.GetBytes(str);
-			return BitConverter.ToString(byteData, 0, Math.Min(byteData.Length, MAX_HEX_SOURCE_LENGTH)).Replace("-", String.Empty).ToLower();
 		}
 
 		// --------------------------------------------------------------------
@@ -1777,6 +1806,25 @@ namespace YukaLister.Models.OutputWriters
 			{
 				ReplaceListContent(pageInfoTree.Children[i], oldStr, newStr);
 			}
+		}
+
+		// --------------------------------------------------------------------
+		// 文字列を MD5_STRING_LENGTH 文字以下の HEX 表記に変換
+		// --------------------------------------------------------------------
+		private String StringToHex(String str)
+		{
+			Byte[] byteData;
+			if (str.Length * 4 < MD5_STRING_LENGTH)
+			{
+				// Unicode HEX 表記にすると 1 文字は 4 文字になる。それが MD5_STRING_LENGTH 文字未満であれば、それを返す
+				byteData = Encoding.Unicode.GetBytes(str);
+			}
+			else
+			{
+				// MD5 ハッシュを返す
+				byteData = _md5Provider.ComputeHash(Encoding.Unicode.GetBytes(str));
+			}
+			return BitConverter.ToString(byteData).Replace("-", String.Empty).ToLower();
 		}
 
 		// --------------------------------------------------------------------
