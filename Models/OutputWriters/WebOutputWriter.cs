@@ -84,11 +84,10 @@ namespace YukaLister.Models.OutputWriters
 			GenerateTagHeadAndTags();
 
 			// 内容の調整
-			Debug.Assert(_topPage != null, "WebOutputWriter.Output() _topPage is null");
 			AdjustList(_topPage);
 
 			// 一時フォルダーへの出力
-			OutputList(_topPage!);
+			OutputList(_topPage);
 
 			// インデックス系を「更新中」表示にする
 			OutputNoticeIndexes();
@@ -575,14 +574,17 @@ namespace YukaLister.Models.OutputWriters
 			stringBuilder.Append(">\n");
 			stringBuilder.Append("<label for=\"label" + chapterIndex + "\">" + ChapterValue(chapterItem, founds[0]) + "　（"
 					+ founds.Count.ToString("#,0") + " 曲）");
-			TTieUpGroup? tieUpGroup = DbCommon.SelectMasterByName(_tieUpGroupsInMemory, founds[0].TieUpGroupName);
-			if (chapterItem == OutputItems.TieUpName && tieUpGroup != null)
+			if (chapterItem == OutputItems.TieUpName && founds[0].TieUpId != null)
 			{
 				// 章の区切りがタイアップ名の場合、シリーズがあるなら記載する
-				stringBuilder.Append("　<a class=\"series\" href=\"");
-				stringBuilder.Append(OutputFileName(founds[0].TieUpAgeLimit >= YlConstants.AGE_LIMIT_CERO_Z, KIND_FILE_NAME_TIE_UP_GROUP,
-						TieUpGroupHead(tieUpGroup), tieUpGroup.Name + YlConstants.TIE_UP_GROUP_SUFFIX) + _listLinkArg);
-				stringBuilder.Append("\">" + tieUpGroup.Name + YlConstants.TIE_UP_GROUP_SUFFIX + "</a>");
+				List<TTieUpGroup> tieUpGroups = DbCommon.SelectSequencedTieUpGroupsByTieUpId(_tieUpGroupSequencesInMemory, _tieUpGroupsInMemory, founds[0].TieUpId!);
+				foreach(TTieUpGroup tieUpGroup in tieUpGroups)
+				{
+					stringBuilder.Append("　<a class=\"series\" href=\"");
+					stringBuilder.Append(OutputFileName(founds[0].TieUpAgeLimit >= YlConstants.AGE_LIMIT_CERO_Z, KIND_FILE_NAME_TIE_UP_GROUP,
+							TieUpGroupHead(tieUpGroup), tieUpGroup.Name + YlConstants.TIE_UP_GROUP_SUFFIX) + _listLinkArg);
+					stringBuilder.Append("\">" + tieUpGroup.Name + YlConstants.TIE_UP_GROUP_SUFFIX + "</a>");
+				}
 			}
 			stringBuilder.Append("</label>\n");
 			stringBuilder.Append("<div class=\"accchild\">\n");
@@ -1342,6 +1344,35 @@ namespace YukaLister.Models.OutputWriters
 
 			// タイアップ名とそれに紐付く楽曲群
 			Dictionary<String, List<TFound>> tieUpNamesAndTFounds = new();
+
+#if DEBUG
+			var joined2 = _founds.Join(_tieUpGroupSequencesInMemory, f => f.TieUpId, s => s.Id, (f, s) => new
+			{
+				found = f,
+				sequence = s,
+			}).Where(x => !x.sequence.Invalid);
+			foreach (var j2 in joined2)
+			{
+				Debug.WriteLine("GenerateTieUpGroupHeadAndTieUpGroupsCore() LinkId: " + j2.sequence.LinkId);
+			}
+
+			var joined3 = _founds.Join(_tieUpGroupSequencesInMemory, f => f.TieUpId, s => s.Id, (f, s) => new
+			{
+				found = f,
+				sequence = s,
+			}).Where(x => !x.sequence.Invalid)
+			.Join(_tieUpGroupsInMemory, m => m.sequence.LinkId, g => g.Id, (m, g) => new
+			{
+				Found = m.found,
+				TieUpGroup = g,
+			});
+			foreach (var j3 in joined3)
+			{
+				TFound f = j3.Found;
+				TTieUpGroup g = j3.TieUpGroup;
+				Debug.WriteLine("GenerateTieUpGroupHeadAndTieUpGroupsCore() Name: " + j3.TieUpGroup.Name);
+			}
+#endif
 
 			var joined = _founds.Join(_tieUpGroupSequencesInMemory, f => f.TieUpId, s => s.Id, (f, s) => new
 			{
