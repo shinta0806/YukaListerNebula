@@ -74,7 +74,7 @@ namespace YukaLister.ViewModels.EditMasterWindowViewModels
 			String? normalizedName = YlCommon.NormalizeDbString(Name);
 			if (!String.IsNullOrEmpty(normalizedName))
 			{
-				(_, Int32 numDups) = GetSameNameRecords(normalizedName);
+				(_, Int32 numDups) = GetSameNameRecordsCaseInsensitive(normalizedName);
 				if (numDups > 0)
 				{
 					throw new Exception(_caption + "「" + normalizedName + "」は既に登録されています。\n同じ名前の" + _caption + "は登録できません。");

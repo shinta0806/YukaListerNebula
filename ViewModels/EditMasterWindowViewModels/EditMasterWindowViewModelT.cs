@@ -416,7 +416,7 @@ namespace YukaLister.ViewModels.EditMasterWindowViewModels
 			}
 
 			// 同名の既存レコード数をカウント
-			(List<T> dups, Int32 numDups) = GetSameNameRecords(normalizedName);
+			(List<T> dups, Int32 numDups) = GetSameNameRecordsCaseInsensitive(normalizedName);
 
 			// 同名が既に登録されている場合
 			if (numDups > 0)
@@ -463,13 +463,13 @@ namespace YukaLister.ViewModels.EditMasterWindowViewModels
 		}
 
 		// --------------------------------------------------------------------
-		// 同名の既存レコード数をカウント
+		// 同名（大文字小文字違いを含む）の既存レコード数をカウント
 		// ＜返値＞ numDups は、現在選択されているマスターは除いた数
 		// --------------------------------------------------------------------
-		protected (List<T> dups, Int32 numDups) GetSameNameRecords(String normalizedName)
+		protected (List<T> dups, Int32 numDups) GetSameNameRecordsCaseInsensitive(String normalizedName)
 		{
 			// レコード一覧
-			List<T> dups = DbCommon.SelectMastersByName(_records, normalizedName);
+			List<T> dups = DbCommon.SelectMastersByNameCaseInsensitive(_records, normalizedName);
 
 			// カウント
 			Int32 numDups = 0;
@@ -652,16 +652,8 @@ namespace YukaLister.ViewModels.EditMasterWindowViewModels
 					return;
 				}
 
-				// 編集中の ID 以外で同名があるか検索
-				List<T> dups = DbCommon.SelectMastersByName(_records, normalizedName);
-				Int32 numDups = 0;
-				foreach (T dup in dups)
-				{
-					if (dup.Id != SelectedMaster.Id)
-					{
-						numDups++;
-					}
-				}
+				// 編集中の ID 以外で同名（大文字小文字違い含む）があるか検索
+				(List<T> dups, Int32 numDups) = GetSameNameRecordsCaseInsensitive(normalizedName);
 
 				// 確認
 				if (String.IsNullOrEmpty(SelectedMaster.Name))

@@ -551,6 +551,18 @@ namespace YukaLister.Models.DatabaseAssist
 		}
 
 		// --------------------------------------------------------------------
+		// 楽曲情報データベースから IRcMaster をすべて検索（大文字小文字を区別しない）
+		// --------------------------------------------------------------------
+		public static List<T> SelectMastersByNameCaseInsensitive<T>(IQueryable<T> records, String? name, Boolean includesInvalid = false) where T : class, IRcMaster
+		{
+			if (String.IsNullOrEmpty(name))
+			{
+				return new List<T>();
+			}
+			return records.Where(x => EF.Functions.Like(x.Name, $"{name}") && (includesInvalid || !x.Invalid)).ToList();
+		}
+
+		// --------------------------------------------------------------------
 		// 楽曲情報データベースから楽曲に紐付く人物を検索
 		// sequenceRecords の型によって歌手、作曲者、作詞者、編曲者のいずれかを検索
 		// 現時点では includesInvalid == true の用途が思いつかないため引数として includesInvalid は装備しない
