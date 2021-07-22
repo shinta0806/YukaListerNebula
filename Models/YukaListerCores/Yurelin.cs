@@ -74,7 +74,7 @@ namespace YukaLister.Models.YukaListerCores
 					{
 						continue;
 					}
-					if (!YukaListerModel.Instance.EnvModel.YlSettings.IsYukariRequestDatabasePathValid())
+					if (!YukaListerModel.Instance.EnvModel.YlSettings.IsYukariRequestDatabaseValid())
 					{
 						continue;
 					}

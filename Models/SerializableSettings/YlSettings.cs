@@ -16,11 +16,13 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Text;
 using System.Windows;
 
 using YukaLister.Models.Database;
 using YukaLister.Models.DatabaseAssist;
+using YukaLister.Models.DatabaseContexts;
 using YukaLister.Models.SharedMisc;
 using YukaLister.Models.YukaListerModels;
 
@@ -249,11 +251,36 @@ namespace YukaLister.Models.SerializableSettings
 		}
 
 		// --------------------------------------------------------------------
-		// ゆかり設定ファイルが正しく指定されているかどうか
+		// ゆかり request.db が正しく指定されているかどうか
 		// --------------------------------------------------------------------
 		public Boolean IsYukariRequestDatabasePathValid()
 		{
 			return File.Exists(YukariRequestDatabasePath());
+		}
+
+		// --------------------------------------------------------------------
+		// ゆかり request.db が内容も含めて正しいかどうか
+		// --------------------------------------------------------------------
+		public Boolean IsYukariRequestDatabaseValid()
+		{
+			if (!IsYukariRequestDatabasePathValid())
+			{
+				return false;
+			}
+
+			// 無効なファイルを YukariRequestContext で開くとクエリ実行時にエラーとなる
+			try
+			{
+				using YukariRequestContext yukariRequestContext = YukariRequestContext.CreateContext(out DbSet<TYukariRequest> yukariRequests);
+				yukariRequests.Any();
+			}
+			catch (Exception)
+			{
+				YukaListerModel.Instance.EnvModel.LogWriter.LogMessage(TraceEventType.Error, "ゆかり request.db が無効です：" + YukariRequestDatabasePath());
+				return false;
+			}
+
+			return true;
 		}
 
 		// --------------------------------------------------------------------
@@ -329,7 +356,7 @@ namespace YukaLister.Models.SerializableSettings
 		{
 			if (String.IsNullOrEmpty(YukariRequestDatabasePathSeed))
 			{
-				return @"C:\xampp\htdocs\" + YUKARI_CONFIG_DEFAULT_DB_NAME;
+				return Common.MakeAbsolutePath(Path.GetDirectoryName(YukariConfigPath()), YUKARI_CONFIG_DEFAULT_DB_NAME);
 			}
 			else if (Path.IsPathRooted(YukariRequestDatabasePathSeed))
 			{
