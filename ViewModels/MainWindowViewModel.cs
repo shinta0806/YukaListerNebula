@@ -390,13 +390,43 @@ namespace YukaLister.ViewModels
 		#endregion
 
 		#region ヘルプメニューアイテムの制御
-		public static ListenerCommand<String>? MehuItemHelpClickedCommand
+		public static ListenerCommand<String>? MenuItemHelpClickedCommand
 		{
 			get => YukaListerModel.Instance.EnvModel.HelpClickedCommand;
 		}
 		#endregion
 
-		#region 履歴メニューアイテムの制御
+		#region よくある質問メニューアイテムの制御
+
+		private ViewModelCommand? _menuItemFaqClickedCommand;
+
+		public ViewModelCommand MenuItemFaqClickedCommand
+		{
+			get
+			{
+				if (_menuItemFaqClickedCommand == null)
+				{
+					_menuItemFaqClickedCommand = new ViewModelCommand(MenuItemFaqClicked);
+				}
+				return _menuItemFaqClickedCommand;
+			}
+		}
+
+		public void MenuItemFaqClicked()
+		{
+			try
+			{
+				YlCommon.ShellExecute(YlConstants.URL_FAQ);
+			}
+			catch (Exception excep)
+			{
+				YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(TraceEventType.Error, "よくある質問メニュークリック時エラー：\n" + excep.Message);
+				YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, "　スタックトレース：\n" + excep.StackTrace);
+			}
+		}
+		#endregion
+
+		#region 改訂履歴メニューアイテムの制御
 		private ViewModelCommand? _menuItemHistoryClickedCommand;
 
 		public ViewModelCommand MenuItemHistoryClickedCommand

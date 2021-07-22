@@ -617,6 +617,16 @@ namespace YukaLister.Models.SharedMisc
 		public static readonly Double INVALID_MJD = JulianDay.DateTimeToModifiedJulianDate(new DateTime(INVALID_YEAR, 1, 1));
 
 		// --------------------------------------------------------------------
+		// URL
+		// --------------------------------------------------------------------
+
+		// Fantia
+		public const String URL_FANTIA = "https://fantia.jp/fanclubs/65509";
+
+		// よくある質問
+		public const String URL_FAQ = "https://github.com/shinta0806/YukaListerNebula/issues?q=label%3Aquestion+sort%3Aupdated-desc";
+
+		// --------------------------------------------------------------------
 		// その他
 		// --------------------------------------------------------------------
 
@@ -682,9 +692,6 @@ namespace YukaLister.Models.SharedMisc
 
 		// 検索の方向
 		public const String FIND_DIRECTION_BACKWARD = "Backward";
-
-		// Fantia
-		public const String URL_FANTIA = "https://fantia.jp/fanclubs/65509";
 
 		// TCP リトライ回数
 		public const Int32 TCP_NUM_RETRIES = 5;

@@ -75,7 +75,8 @@
                 </behaviors:Interaction.Triggers>
                 <Button.ContextMenu>
                     <ContextMenu>
-                        <MenuItem Header="ヘルプ (_H)" Command="{Binding MehuItemHelpClickedCommand}" />
+                        <MenuItem Header="ヘルプ (_H)" Command="{Binding MenuItemHelpClickedCommand}" />
+                        <MenuItem Header="よくある質問 (_F)" Command="{Binding MenuItemFaqClickedCommand}" />
                         <Separator />
                         <MenuItem Header="改訂履歴 (_U)" Command="{Binding MenuItemHistoryClickedCommand}" />
                         <MenuItem Header="バージョン情報 (_A)" Command="{Binding MenuItemAboutClickedCommand}" />
