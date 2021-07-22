@@ -75,16 +75,7 @@ namespace YukaLister.ViewModels.MiscWindowViewModels
 		public Int32 SelectedTabIndex
 		{
 			get => _selectedTabIndex;
-			set
-			{
-				if (RaisePropertyChangedIfSet(ref _selectedTabIndex, value))
-				{
-					if (_selectedTabIndex == (Int32)YlSettingsTabItem.YukariStatistics)
-					{
-						_ = TabItemYukariStatisticsSelected();
-					}
-				}
-			}
+			set => RaisePropertyChangedIfSet(ref _selectedTabIndex, value);
 		}
 
 		// OK ボタンフォーカス
@@ -1655,9 +1646,6 @@ namespace YukaLister.ViewModels.MiscWindowViewModels
 		// private メンバー変数
 		// ====================================================================
 
-		// 属性未確認のゆかり統計データを自動更新したか
-		private Boolean _yukariStatisticsAutoUpdated;
-
 		// タスクが多重起動されるのを抑止する
 		private readonly SemaphoreSlim _semaphoreSlim = new(1);
 
@@ -2157,86 +2145,6 @@ namespace YukaLister.ViewModels.MiscWindowViewModels
 			{
 				throw new Exception("ドロップされたファイルの種類を自動判定できませんでした。\n参照ボタンからファイルを指定して下さい。\n" + notHandledFiles);
 			}
-		}
-
-		// --------------------------------------------------------------------
-		// ゆかり統計タブの選択
-		// --------------------------------------------------------------------
-		private async Task TabItemYukariStatisticsSelected()
-		{
-			try
-			{
-				Debug.WriteLine("TabItemYukariStatisticsSelected()");
-				if (YukaListerModel.Instance.EnvModel.YukaListerWholeStatus != YukaListerStatus.Ready)
-				{
-					return;
-				}
-				if (_yukariStatisticsAutoUpdated)
-				{
-					return;
-				}
-				_yukariStatisticsAutoUpdated = true;
-				await YlCommon.LaunchTaskAsync<Object?>(_semaphoreSlim, UpdateYukariStatisticsByWorker, null, "ゆかり統計データ更新");
-			}
-			catch (Exception excep)
-			{
-				YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(TraceEventType.Error, "ゆかり統計タブ選択時エラー：\n" + excep.Message);
-				YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, "　スタックトレース：\n" + excep.StackTrace);
-			}
-		}
-
-		// --------------------------------------------------------------------
-		// ゆかり統計データ更新
-		// ワーカースレッドで実行される前提
-		// --------------------------------------------------------------------
-		private Task UpdateYukariStatisticsByWorker(Object? _)
-		{
-			Debug.WriteLine("UpdateYukariStatisticsByWorker()");
-			using YukariStatisticsContext yukariStatisticsContext = YukariStatisticsContext.CreateContext(out DbSet<TYukariStatistics> yukariStatistics);
-			IQueryable<TYukariStatistics> targetYukariStatistics = yukariStatistics.Where(x => !x.AttributesDone && !x.Invalid);
-			foreach (TYukariStatistics oneStatistics in targetYukariStatistics)
-			{
-				if (!File.Exists(oneStatistics.RequestMoviePath))
-				{
-					continue;
-				}
-				String requestMovieFolder = Path.GetDirectoryName(oneStatistics.RequestMoviePath) ?? String.Empty;
-				if (YlCommon.FindSettingsFolder(requestMovieFolder) == null)
-				{
-					continue;
-				}
-				Debug.WriteLine("UpdateYukariStatisticsByWorker() 設定：" + oneStatistics.RequestMoviePath);
-
-				// TFound 下準備
-				FileInfo fileInfo = new(oneStatistics.RequestMoviePath);
-				TFound found = new()
-				{
-					Path = oneStatistics.RequestMoviePath,
-					Folder = requestMovieFolder,
-					ParentFolder = requestMovieFolder,
-					LastWriteTime = JulianDay.DateTimeToModifiedJulianDate(fileInfo.LastWriteTime),
-					FileSize = fileInfo.Length,
-				};
-
-				// フォルダー設定を読み込む
-				FolderSettingsInDisk folderSettingsInDisk = YlCommon.LoadFolderSettings(found.Folder);
-				FolderSettingsInMemory folderSettingsInMemory = YlCommon.CreateFolderSettingsInMemory(folderSettingsInDisk);
-
-				using ListContextInMemory listContextInMemory = ListContextInMemory.CreateContext(out DbSet<TFound> founds,
-						out DbSet<TPerson> people, out DbSet<TArtistSequence> artistSequences, out DbSet<TComposerSequence> composerSequences,
-						out DbSet<TTieUpGroup> tieUpGroups, out DbSet<TTieUpGroupSequence> tieUpGroupSequences,
-						out DbSet<TTag> tags, out DbSet<TTagSequence> tagSequences);
-				using TFoundSetter foundSetter = new(listContextInMemory, people, artistSequences, composerSequences, tieUpGroups, tieUpGroupSequences, tags, tagSequences);
-
-				// TFound 設定
-				foundSetter.SetTFoundValues(found, folderSettingsInMemory);
-
-				// 統計設定
-				DbCommon.CopyFoundToYukariStatistics(found, oneStatistics);
-			}
-
-			yukariStatisticsContext.SaveChanges();
-			return Task.CompletedTask;
 		}
 	}
 }

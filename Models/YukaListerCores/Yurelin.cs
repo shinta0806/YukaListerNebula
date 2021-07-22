@@ -14,11 +14,14 @@ using Shinta;
 
 using System;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
 using YukaLister.Models.Database;
+using YukaLister.Models.Database.Masters;
+using YukaLister.Models.Database.Sequences;
 using YukaLister.Models.DatabaseAssist;
 using YukaLister.Models.DatabaseContexts;
 using YukaLister.Models.SharedMisc;
@@ -50,6 +53,9 @@ namespace YukaLister.Models.YukaListerCores
 
 		// メインウィンドウ
 		public MainWindowViewModel? MainWindowViewModel { get; set; }
+
+		// 過去の統計データ（request.db にない予約）を更新するか
+		public Boolean UpdatePastStatistics { get; set; }
 
 		// ====================================================================
 		// protected メンバー関数
@@ -90,7 +96,7 @@ namespace YukaLister.Models.YukaListerCores
 					listContextInDisk.ChangeTracker.QueryTrackingBehavior = QueryTrackingBehavior.NoTracking;
 					UpdateLastYukariRequestClearTimeIfNeeded(yukariRequests);
 
-					// 統計更新
+					// request.db にある予約の統計更新
 					await AnalyzeYukariRequests(yukariStatistics, yukariRequests, founds);
 #if DEBUG
 					Boolean hasChangesBak = yukariStatisticsContext.ChangeTracker.HasChanges();
@@ -104,8 +110,16 @@ namespace YukaLister.Models.YukaListerCores
 #if DEBUG
 					Debug.WriteLine("Yurelin.CoreMain() 更新フラグ " + hasChangesBak.ToString());
 					Debug.WriteLine("Yurelin.CoreMain() 実際のファイル更新 " + (lastWriteTimeBak == yukariStatisticsContext.LastWriteMjd() ? "なし" : "有り"));
-					Debug.Assert(hasChangesBak == (lastWriteTimeBak != yukariStatisticsContext.LastWriteMjd()), "Yurelin.CoreMain() フラグが実際と異なった");
+					Debug.Assert(hasChangesBak == (lastWriteTimeBak != yukariStatisticsContext.LastWriteMjd()), "Yurelin.CoreMain() フラグが実際と異なった Bak: "
+							+ JulianDay.ModifiedJulianDateToDateTime(lastWriteTimeBak).ToString(YlConstants.TIME_FORMAT)
+							+ ", 現在: " + JulianDay.ModifiedJulianDateToDateTime(yukariStatisticsContext.LastWriteMjd()).ToString(YlConstants.TIME_FORMAT));
 #endif
+
+					if (UpdatePastStatistics)
+					{
+						// 過去の統計（request.db にないものを含む）更新
+						UpdatePast();
+					}
 				}
 				catch (OperationCanceledException)
 				{
@@ -214,6 +228,59 @@ namespace YukaLister.Models.YukaListerCores
 		{
 			CopyYukariRequestToYukariStatistics(yukariRequest, existStatistics);
 			CopyFoundToYukariStatisticsIfNeeded(founds, existStatistics);
+		}
+
+		// --------------------------------------------------------------------
+		// 過去の統計を更新
+		// --------------------------------------------------------------------
+		private void UpdatePast()
+		{
+			Debug.WriteLine("UpdatePast()");
+			using YukariStatisticsContext yukariStatisticsContext = YukariStatisticsContext.CreateContext(out DbSet<TYukariStatistics> yukariStatistics);
+			IQueryable<TYukariStatistics> targetYukariStatistics = yukariStatistics.Where(x => !x.AttributesDone && !x.Invalid);
+			foreach (TYukariStatistics oneStatistics in targetYukariStatistics)
+			{
+				if (!File.Exists(oneStatistics.RequestMoviePath))
+				{
+					continue;
+				}
+				String requestMovieFolder = Path.GetDirectoryName(oneStatistics.RequestMoviePath) ?? String.Empty;
+				if (YlCommon.FindSettingsFolder(requestMovieFolder) == null)
+				{
+					continue;
+				}
+				Debug.WriteLine("UpdatePast() 設定：" + oneStatistics.RequestMoviePath);
+
+				// TFound 下準備
+				FileInfo fileInfo = new(oneStatistics.RequestMoviePath);
+				TFound found = new()
+				{
+					Path = oneStatistics.RequestMoviePath,
+					Folder = requestMovieFolder,
+					ParentFolder = requestMovieFolder,
+					LastWriteTime = JulianDay.DateTimeToModifiedJulianDate(fileInfo.LastWriteTime),
+					FileSize = fileInfo.Length,
+				};
+
+				// フォルダー設定を読み込む
+				FolderSettingsInDisk folderSettingsInDisk = YlCommon.LoadFolderSettings(found.Folder);
+				FolderSettingsInMemory folderSettingsInMemory = YlCommon.CreateFolderSettingsInMemory(folderSettingsInDisk);
+
+				using ListContextInMemory listContextInMemory = ListContextInMemory.CreateContext(out DbSet<TFound> founds,
+						out DbSet<TPerson> people, out DbSet<TArtistSequence> artistSequences, out DbSet<TComposerSequence> composerSequences,
+						out DbSet<TTieUpGroup> tieUpGroups, out DbSet<TTieUpGroupSequence> tieUpGroupSequences,
+						out DbSet<TTag> tags, out DbSet<TTagSequence> tagSequences);
+				using TFoundSetter foundSetter = new(listContextInMemory, people, artistSequences, composerSequences, tieUpGroups, tieUpGroupSequences, tags, tagSequences);
+
+				// TFound 設定
+				foundSetter.SetTFoundValues(found, folderSettingsInMemory);
+
+				// 統計設定
+				DbCommon.CopyFoundToYukariStatistics(found, oneStatistics);
+			}
+
+			yukariStatisticsContext.SaveChanges();
+			UpdatePastStatistics = false;
 		}
 
 		// ====================================================================

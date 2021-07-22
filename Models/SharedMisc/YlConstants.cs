@@ -192,6 +192,7 @@ namespace YukaLister.Models.SharedMisc
 		__End__,
 	}
 
+#if false
 	// --------------------------------------------------------------------
 	// 環境設定ウィンドウのタブアイテム
 	// --------------------------------------------------------------------
@@ -205,6 +206,7 @@ namespace YukaLister.Models.SharedMisc
 		MusicInfoDatabaseView,
 		YukariStatistics,
 	}
+#endif
 
 	// --------------------------------------------------------------------
 	// ゆかりすたー NEBULA のどのパーツの動作状況を示すか
@@ -271,7 +273,7 @@ namespace YukaLister.Models.SharedMisc
 		public const String APP_ID = "YukaLister";
 		public const String APP_GENERATION = "NEBULA";
 		public const String APP_NAME_J = "ゆかりすたー " + APP_GENERATION + " ";
-		public const String APP_VER = "Ver 3.92";
+		public const String APP_VER = "Ver 4.23";
 		public const String COPYRIGHT_J = "Copyright (C) 2021 by SHINTA";
 
 		// --------------------------------------------------------------------

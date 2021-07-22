@@ -734,27 +734,25 @@ namespace YukaLister.ViewModels
 				_timerUpdateUi.Tick += new EventHandler(TimerUpdateUi_Tick);
 				_timerUpdateUi.Start();
 
-#if DEBUGz
-				Debug.WriteLine("Initialize() db path: " + YukaListerModel.Instance.EnvModel.YlSettings.YukariRequestDatabasePath());
-				using YukariRequestContext requestDbContext = YukariRequestContext.CreateContext(out DbSet<TYukariRequest> yukariRequests);
-				List<TYukariRequest> requests = yukariRequests.ToList();
-				foreach (TYukariRequest yukariRequest in requests)
-				{
-					Debug.WriteLine("Initialize() yukariRequest: " + yukariRequest.Id + ", " + yukariRequest.Path);
-				}
-#endif
-
 				// 時間がかかるかもしれない処理を非同期で実行
 				await AutoTargetAllDrivesAsync();
-
-				// 統計データ作成
-				YlCommon.ActivateYurelinIfNeeded();
 
 				// Web サーバー
 				StartWebServerIfNeeded();
 
-				// サーバー同期
-				YlCommon.ActivateSyclinIfNeeded();
+				// 過去の統計データが更新されるようにする
+				YukaListerModel.Instance.EnvModel.Yurelin.UpdatePastStatistics = true;
+				if (YukaListerModel.Instance.EnvModel.YlSettings.SyncMusicInfoDb)
+				{
+					// サーバー同期
+					// 統計データ作成は遅くとも Syclin スリープ時には行われる
+					YlCommon.ActivateSyclinIfNeeded();
+				}
+				else
+				{
+					// 統計データ作成
+					YlCommon.ActivateYurelinIfNeeded();
+				}
 
 				// スタートアップ終了
 				YukaListerModel.Instance.EnvModel.YukaListerPartsStatus[(Int32)YukaListerPartsStatusIndex.Startup] = YukaListerStatus.Ready;
