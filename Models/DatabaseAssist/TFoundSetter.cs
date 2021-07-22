@@ -37,14 +37,13 @@ namespace YukaLister.Models.DatabaseAssist
 		// --------------------------------------------------------------------
 		// コンストラクター
 		// --------------------------------------------------------------------
-		public TFoundSetter(ListContextInMemory listContextInMemory, DbSet<TFound> listFounds,
+		public TFoundSetter(ListContextInMemory listContextInMemory, 
 				DbSet<TPerson> listPeople, DbSet<TArtistSequence> listArtistSequences, DbSet<TComposerSequence> listComposerSequences,
 				DbSet<TTieUpGroup> listTieUpGroups, DbSet<TTieUpGroupSequence> listTieUpGroupSequences,
 				DbSet<TTag> listTags, DbSet<TTagSequence> listTagSequences)
 		{
 			Debug.Assert(listContextInMemory.ChangeTracker.QueryTrackingBehavior == QueryTrackingBehavior.TrackAll, "TFoundSetter() bad QueryTrackingBehavior");
 			_listContextInMemory = listContextInMemory;
-			_ = listFounds;
 			_listPeople = listPeople;
 			_listArtistSequences = listArtistSequences;
 			_ = listComposerSequences;

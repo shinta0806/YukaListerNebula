@@ -103,6 +103,29 @@ namespace YukaLister.Models.DatabaseAssist
 		}
 
 		// --------------------------------------------------------------------
+		// TFound → TYukariStatistics へコピー
+		// --------------------------------------------------------------------
+		public static void CopyFoundToYukariStatistics(TFound found, TYukariStatistics yukariStatistics)
+		{
+			yukariStatistics.AttributesDone = found.FileSize >= 0;
+			yukariStatistics.Worker = found.Worker;
+			yukariStatistics.SongReleaseDate = found.SongReleaseDate;
+			yukariStatistics.CategoryName = found.Category;
+			yukariStatistics.TieUpName = found.TieUpName;
+			yukariStatistics.TieUpAgeLimit = found.TieUpAgeLimit;
+			yukariStatistics.MakerName = found.MakerName;
+			yukariStatistics.TieUpGroupName = found.TieUpGroupName;
+			yukariStatistics.SongName = found.SongName;
+			yukariStatistics.SongOpEd = found.SongOpEd;
+			yukariStatistics.ArtistName = found.ArtistName;
+			yukariStatistics.LyristName = found.LyristName;
+			yukariStatistics.ComposerName = found.ComposerName;
+			yukariStatistics.ArrangerName = found.ArrangerName;
+
+			yukariStatistics.Dirty = true;
+		}
+
+		// --------------------------------------------------------------------
 		// 標準的な計算方法で算出される DisplayCategoryName
 		// --------------------------------------------------------------------
 		public static String? DisplayCategoryNameByDefaultAlgorithm(String? displayCategoryName, String? categoryId)

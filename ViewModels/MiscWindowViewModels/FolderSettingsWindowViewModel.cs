@@ -1264,7 +1264,7 @@ namespace YukaLister.ViewModels.MiscWindowViewModels
 					out DbSet<TPerson> people, out DbSet<TArtistSequence> artistSequences, out DbSet<TComposerSequence> composerSequences,
 					out DbSet<TTieUpGroup> tieUpGroups, out DbSet<TTieUpGroupSequence> tieUpGroupSequences,
 					out DbSet<TTag> tags, out DbSet<TTagSequence> tagSequences);
-			using TFoundSetter foundSetter = new(listContextInMemory, founds, people, artistSequences, composerSequences, tieUpGroups, tieUpGroupSequences, tags, tagSequences);
+			using TFoundSetter foundSetter = new(listContextInMemory, people, artistSequences, composerSequences, tieUpGroups, tieUpGroupSequences, tags, tagSequences);
 			Dictionary<String, String> ruleMap = YlCommon.CreateRuleDictionaryWithDescription();
 			foreach (String filePath in filePathes)
 			{
@@ -1489,7 +1489,7 @@ namespace YukaLister.ViewModels.MiscWindowViewModels
 					out DbSet<TPerson> people, out DbSet<TArtistSequence> artistSequences, out DbSet<TComposerSequence> composerSequences,
 					out DbSet<TTieUpGroup> tieUpGroups, out DbSet<TTieUpGroupSequence> tieUpGroupSequences,
 					out DbSet<TTag> tags, out DbSet<TTagSequence> tagSequences);
-			using TFoundSetter foundSetter = new(listContextInMemory, founds, people, artistSequences, composerSequences, tieUpGroups, tieUpGroupSequences, tags, tagSequences);
+			using TFoundSetter foundSetter = new(listContextInMemory, people, artistSequences, composerSequences, tieUpGroups, tieUpGroupSequences, tags, tagSequences);
 			using MusicInfoContextDefault musicInfoContext = MusicInfoContextDefault.CreateContext(out DbSet<TSong> songs);
 			musicInfoContext.ChangeTracker.QueryTrackingBehavior = QueryTrackingBehavior.NoTracking;
 			MusicInfoContextDefault.GetDbSet(musicInfoContext, out DbSet<TSongAlias> songAliases);

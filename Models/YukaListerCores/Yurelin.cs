@@ -5,7 +5,7 @@
 // ============================================================================
 
 // ----------------------------------------------------------------------------
-//
+// ゆかり request.db に現在存在している予約からのみ統計データを作成・更新する
 // ----------------------------------------------------------------------------
 
 using Microsoft.EntityFrameworkCore;
@@ -19,6 +19,7 @@ using System.Threading;
 using System.Threading.Tasks;
 
 using YukaLister.Models.Database;
+using YukaLister.Models.DatabaseAssist;
 using YukaLister.Models.DatabaseContexts;
 using YukaLister.Models.SharedMisc;
 using YukaLister.Models.YukaListerModels;
@@ -146,23 +147,7 @@ namespace YukaLister.Models.YukaListerCores
 				Debug.WriteLine("CopyFoundToYukariStatisticsIfNeeded() 属性確認しようとしたがまだ整理されていない " + yukariStatistics.RequestMoviePath);
 				return;
 			}
-
-			yukariStatistics.AttributesDone = true;
-			yukariStatistics.Worker = found.Worker;
-			yukariStatistics.SongReleaseDate = found.SongReleaseDate;
-			yukariStatistics.CategoryName = found.Category;
-			yukariStatistics.TieUpName = found.TieUpName;
-			yukariStatistics.TieUpAgeLimit = found.TieUpAgeLimit;
-			yukariStatistics.MakerName = found.MakerName;
-			yukariStatistics.TieUpGroupName = found.TieUpGroupName;
-			yukariStatistics.SongName = found.SongName;
-			yukariStatistics.SongOpEd = found.SongOpEd;
-			yukariStatistics.ArtistName = found.ArtistName;
-			yukariStatistics.LyristName = found.LyristName;
-			yukariStatistics.ComposerName = found.ComposerName;
-			yukariStatistics.ArrangerName = found.ArrangerName;
-
-			yukariStatistics.Dirty = true;
+			DbCommon.CopyFoundToYukariStatistics(found, yukariStatistics);
 			Debug.WriteLine("CopyFoundToYukariStatisticsIfNeeded() 属性確認実施 " + yukariStatistics.RequestMoviePath);
 		}
 

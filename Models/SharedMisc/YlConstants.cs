@@ -193,6 +193,20 @@ namespace YukaLister.Models.SharedMisc
 	}
 
 	// --------------------------------------------------------------------
+	// 環境設定ウィンドウのタブアイテム
+	// --------------------------------------------------------------------
+	public enum YlSettingsTabItem
+	{
+		Settings,
+		ListTarget,
+		ListOutput,
+		Maintenance,
+		MusicInfoDatabaseSettings,
+		MusicInfoDatabaseView,
+		YukariStatistics,
+	}
+
+	// --------------------------------------------------------------------
 	// ゆかりすたー NEBULA のどのパーツの動作状況を示すか
 	// --------------------------------------------------------------------
 	public enum YukaListerPartsStatusIndex
