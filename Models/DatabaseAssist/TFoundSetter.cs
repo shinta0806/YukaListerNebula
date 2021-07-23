@@ -37,7 +37,7 @@ namespace YukaLister.Models.DatabaseAssist
 		// --------------------------------------------------------------------
 		// コンストラクター
 		// --------------------------------------------------------------------
-		public TFoundSetter(ListContextInMemory listContextInMemory, 
+		public TFoundSetter(ListContextInMemory listContextInMemory,
 				DbSet<TPerson> listPeople, DbSet<TArtistSequence> listArtistSequences, DbSet<TComposerSequence> listComposerSequences,
 				DbSet<TTieUpGroup> listTieUpGroups, DbSet<TTieUpGroupSequence> listTieUpGroupSequences,
 				DbSet<TTag> listTags, DbSet<TTagSequence> listTagSequences)
@@ -103,10 +103,10 @@ namespace YukaLister.Models.DatabaseAssist
 			// 楽曲名で検索
 			List<TSong> songs = DbCommon.SelectMastersByName(_songs, dicByFile[YlConstants.RULE_VAR_TITLE]);
 
-			// タイアップ名・年齢制限で絞り込み
+			// タイアップで絞り込み
+			Dictionary<TSong, TTieUp> songsAndTieUps = new();
 			if (songs.Count > 1)
 			{
-				Dictionary<TSong, TTieUp> songsAndTieUps = new();
 				foreach (TSong song in songs)
 				{
 					TTieUp? tieUpOfSong = DbCommon.SelectBaseById(_tieUps, song.TieUpId);
@@ -150,28 +150,10 @@ namespace YukaLister.Models.DatabaseAssist
 						songs = songsWithTieUpCategory;
 					}
 				}
-
-				// タイアップの年齢制限で絞り込み
-				if (songs.Count > 1 && dicByFile[YlConstants.RULE_VAR_AGE_LIMIT] != null)
-				{
-					Int32 dicAgeLimt = Common.StringToInt32(dicByFile[YlConstants.RULE_VAR_AGE_LIMIT]);
-					List<TSong> songsWithAgeLimit = new();
-					foreach (KeyValuePair<TSong, TTieUp> kvp in songsAndTieUps)
-					{
-						if (0 <= kvp.Value.AgeLimit && kvp.Value.AgeLimit < YlConstants.AGE_LIMIT_CERO_Z && 0 <= dicAgeLimt && dicAgeLimt < YlConstants.AGE_LIMIT_CERO_Z
-								|| kvp.Value.AgeLimit == YlConstants.AGE_LIMIT_CERO_Z && dicAgeLimt == YlConstants.AGE_LIMIT_CERO_Z)
-						{
-							songsWithAgeLimit.Add(kvp.Key);
-						}
-					}
-					if (songsWithAgeLimit.Any())
-					{
-						songs = songsWithAgeLimit;
-					}
-				}
 			}
 
 			// 楽曲のカテゴリーで絞り込み
+			// タイアップの年齢制限より先に絞り込む（一般アニメと VOCALOID の 2 つがある場合、年齢制限を先にするとタイアップの付いていない VOCALOID が絞り込みから外れてしまう）
 			if (songs.Count > 1 && dicByFile[YlConstants.RULE_VAR_CATEGORY] != null)
 			{
 				List<TSong> songsWithCategory = new();
@@ -204,6 +186,25 @@ namespace YukaLister.Models.DatabaseAssist
 				if (songsWithArtist.Any())
 				{
 					songs = songsWithArtist;
+				}
+			}
+
+			// タイアップの年齢制限で絞り込み
+			if (songs.Count > 1 && dicByFile[YlConstants.RULE_VAR_AGE_LIMIT] != null)
+			{
+				Int32 dicAgeLimt = Common.StringToInt32(dicByFile[YlConstants.RULE_VAR_AGE_LIMIT]);
+				List<TSong> songsWithAgeLimit = new();
+				foreach (KeyValuePair<TSong, TTieUp> kvp in songsAndTieUps)
+				{
+					if (0 <= kvp.Value.AgeLimit && kvp.Value.AgeLimit < YlConstants.AGE_LIMIT_CERO_Z && 0 <= dicAgeLimt && dicAgeLimt < YlConstants.AGE_LIMIT_CERO_Z
+							|| kvp.Value.AgeLimit == YlConstants.AGE_LIMIT_CERO_Z && dicAgeLimt == YlConstants.AGE_LIMIT_CERO_Z)
+					{
+						songsWithAgeLimit.Add(kvp.Key);
+					}
+				}
+				if (songsWithAgeLimit.Any())
+				{
+					songs = songsWithAgeLimit;
 				}
 			}
 
