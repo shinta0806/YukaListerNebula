@@ -100,21 +100,18 @@ namespace YukaLister.Models.DatabaseAssist
 		// --------------------------------------------------------------------
 		public List<TSong> FindSongsByMusicInfoDatabase(Dictionary<String, String?> dicByFile)
 		{
+#if DEBUGz
+			if (dicByFile[YlConstants.RULE_VAR_TITLE] == "バイバイ")
+			{
+			}
+#endif
 			// 楽曲名で検索
 			List<TSong> songs = DbCommon.SelectMastersByName(_songs, dicByFile[YlConstants.RULE_VAR_TITLE]);
 
 			// タイアップで絞り込み
-			Dictionary<TSong, TTieUp> songsAndTieUps = new();
 			if (songs.Count > 1)
 			{
-				foreach (TSong song in songs)
-				{
-					TTieUp? tieUpOfSong = DbCommon.SelectBaseById(_tieUps, song.TieUpId);
-					if (tieUpOfSong != null)
-					{
-						songsAndTieUps[song] = tieUpOfSong;
-					}
-				}
+				Dictionary<TSong, TTieUp> songsAndTieUps = SongsAndTieUps(songs);
 
 				// タイアップ名で絞り込み
 				if (songs.Count > 1 && dicByFile[YlConstants.RULE_VAR_PROGRAM] != null)
@@ -194,6 +191,7 @@ namespace YukaLister.Models.DatabaseAssist
 			{
 				Int32 dicAgeLimt = Common.StringToInt32(dicByFile[YlConstants.RULE_VAR_AGE_LIMIT]);
 				List<TSong> songsWithAgeLimit = new();
+				Dictionary<TSong, TTieUp> songsAndTieUps = SongsAndTieUps(songs);
 				foreach (KeyValuePair<TSong, TTieUp> kvp in songsAndTieUps)
 				{
 					if (0 <= kvp.Value.AgeLimit && kvp.Value.AgeLimit < YlConstants.AGE_LIMIT_CERO_Z && 0 <= dicAgeLimt && dicAgeLimt < YlConstants.AGE_LIMIT_CERO_Z
@@ -901,6 +899,23 @@ namespace YukaLister.Models.DatabaseAssist
 
 			// タグ
 			(record.TagName, record.TagRuby) = ConcatMasterNamesAndRubies(DbCommon.SelectSequencedTagsBySongId(_tagSequences, _tags, selectedSong.Id).ToList<IRcMaster>());
+		}
+
+		// --------------------------------------------------------------------
+		// 楽曲と紐付くタイアップ
+		// --------------------------------------------------------------------
+		private Dictionary<TSong, TTieUp> SongsAndTieUps(List<TSong> songs)
+		{
+			Dictionary<TSong, TTieUp> songsAndTieUps = new();
+			foreach (TSong song in songs)
+			{
+				TTieUp? tieUpOfSong = DbCommon.SelectBaseById(_tieUps, song.TieUpId);
+				if (tieUpOfSong != null)
+				{
+					songsAndTieUps[song] = tieUpOfSong;
+				}
+			}
+			return songsAndTieUps;
 		}
 	}
 }
