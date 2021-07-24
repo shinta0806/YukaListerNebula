@@ -91,32 +91,6 @@ namespace YukaLister.ViewModels.EditMasterWindowViewModels
 			set => RaisePropertyChangedIfSet(ref _releaseDate, value);
 		}
 
-#if false
-		// リリース年
-		private String? _releaseYear;
-		public String? ReleaseYear
-		{
-			get => _releaseYear;
-			set => RaisePropertyChangedIfSet(ref _releaseYear, value);
-		}
-
-		// リリース月
-		private String? _releaseMonth;
-		public String? ReleaseMonth
-		{
-			get => _releaseMonth;
-			set => RaisePropertyChangedIfSet(ref _releaseMonth, value);
-		}
-
-		// リリース日
-		private String? _releaseDay;
-		public String? ReleaseDay
-		{
-			get => _releaseDay;
-			set => RaisePropertyChangedIfSet(ref _releaseDay, value);
-		}
-#endif
-
 		// --------------------------------------------------------------------
 		// コマンド
 		// --------------------------------------------------------------------

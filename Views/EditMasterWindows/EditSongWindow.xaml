@@ -98,7 +98,7 @@
             <Label Content="{Binding TieUpDisplayName}" Margin="0" Grid.Row="3" Grid.Column="3"/>
             <Button Content="タイアップ詳細編集 (_T)" Grid.Row="3" Grid.Column="4" Height="Auto" FontSize="12" Padding="2" Style="{StaticResource MaterialDesignRaisedLightButton}" Margin="5,5,0,5" Command="{Binding ButtonEditTieUpClickedCommand}"/>
             <Label Content="摘要 (_K)：" Target="{Binding ElementName=TextBoxOpEd}" Margin="0" Grid.Row="4" Grid.Column="0" HorizontalAlignment="Right"/>
-            <Button Name="ButtonSelectOpEd" Content="選択 (_2)" Grid.Row="4" Grid.Column="2" Height="Auto" FontSize="12" Padding="2" Style="{StaticResource MaterialDesignRaisedLightButton}" Margin="5" >
+            <Button Name="ButtonSelectOpEd" Content="選択 (_2)" IsEnabled="{Binding IsTieUpEnabled}" Grid.Row="4" Grid.Column="2" Height="Auto" FontSize="12" Padding="2" Style="{StaticResource MaterialDesignRaisedLightButton}" Margin="5" >
                 <behaviors:Interaction.Triggers>
                     <behaviors:EventTrigger EventName="Click">
                         <behaviors:ChangePropertyAction TargetObject="{Binding ContextMenu, ElementName=ButtonSelectOpEd}" PropertyName="IsOpen" Value="True"/>
@@ -110,7 +110,7 @@
                     </ContextMenu>
                 </Button.ContextMenu>
             </Button>
-            <TextBox Name="TextBoxOpEd" Text="{Binding OpEd}" Grid.Column="3" Margin="0" Grid.Row="4" VerticalAlignment="Center" />
+            <TextBox Name="TextBoxOpEd" Text="{Binding OpEd}" IsEnabled="{Binding IsTieUpEnabled}" Grid.Column="3" Margin="0" Grid.Row="4" VerticalAlignment="Center" />
             <Label Content="歌手あり (_S)：" Target="{Binding ElementName=CheckBoxHasArtist}" Margin="0" Grid.Row="0" Grid.Column="6" HorizontalAlignment="Right"/>
             <CheckBox Name="CheckBoxHasArtist" IsChecked="{Binding HasArtist}" Grid.Row="0" Grid.Column="7" />
             <Button Content="検索 (_5)" Grid.Row="0" Grid.Column="8" Height="Auto" FontSize="12" Padding="2" Style="{StaticResource MaterialDesignRaisedLightButton}" Margin="5" Command="{Binding ButtonSearchArtistClickedCommand}"/>
