@@ -63,7 +63,7 @@
     </behaviors:Interaction.Triggers>
 
     <StackPanel>
-        <TabControl Height="600" Width="570" Margin="10,10,10,0" SelectedIndex="{Binding SelectedTabIndex}" sb:FileDropAttachedBehavior.DropCommand="{Binding TabControlFileDropCommand}">
+        <TabControl Height="500" Width="600" Margin="10,10,10,0" SelectedIndex="{Binding SelectedTabIndex}" sb:FileDropAttachedBehavior.DropCommand="{Binding TabControlFileDropCommand}">
             <TabItem Header="設定" >
                 <StackPanel >
                     <DockPanel Margin="20,20,20,0">
@@ -169,59 +169,7 @@
                     </StackPanel>
                 </StackPanel>
             </TabItem>
-            <TabItem Header="楽曲情報 DB 設定" >
-                <StackPanel>
-                    <Label Content="ファイルから楽曲情報データベースをインポートする (_M)" Margin="20,15,20,0" Target="{Binding ElementName=TextBoxImportYukaListerPath}" />
-                    <DockPanel Margin="40,0,20,0">
-                        <Button Height="Auto" Content="参照 (_1)" Style="{StaticResource MaterialDesignRaisedLightButton}" Margin="0" DockPanel.Dock="Right" Width="100" Command="{Binding ButtonBrowseImportYukaListerClickedCommand}"/>
-                        <TextBox Name="TextBoxImportYukaListerPath" Text="{Binding ImportYukaListerPath}" ToolTip="インポート元ファイル" ToolTipService.ShowDuration="{x:Static msm:YlConstants.TOOL_TIP_LONG_DURATION}" materialDesign:HintAssist.Hint="{Binding ElementName=TextBoxImportYukaListerPath, Path=ToolTip}" VerticalAlignment="Center" Margin="0,0,10,0" />
-                    </DockPanel>
-                    <DockPanel Margin="40,10,20,0">
-                        <StackPanel>
-                            <CheckBox Content="タグ情報をインポートする (_T)" IsChecked="{Binding ImportTag}" />
-                            <CheckBox Content="同名の情報も極力インポートする (_N)" IsChecked="{Binding ImportSameName}" Margin="0,10,0,0" />
-                            <Label Content="※ON にするとデータが重複しやすくなりますので注意" Margin="20,0,0,0" Foreground="Gray" />
-                        </StackPanel>
-                        <Button Height="Auto" Content="インポート (_I)" Style="{StaticResource MaterialDesignRaisedLightButton}" Margin="0" Width="160" HorizontalAlignment="Right" Command="{Binding ButtonImportClickedCommand}" VerticalAlignment="Bottom"/>
-                    </DockPanel>
-                    <Label Content="楽曲情報データベースをファイルへエクスポートする (_X)" Target="{Binding ElementName=TextBoxExportYukaListerPath}" Margin="20,15,20,0" />
-                    <DockPanel Margin="40,0,20,0">
-                        <Button Height="Auto" Content="参照 (_2)" Style="{StaticResource MaterialDesignRaisedLightButton}" Margin="0" DockPanel.Dock="Right" Width="100" Command="{Binding ButtonBrowseExportYukaListerClickedCommand}"/>
-                        <TextBox Name="TextBoxExportYukaListerPath" Text="{Binding ExportYukaListerPath}" ToolTip="エクスポート先ファイル" ToolTipService.ShowDuration="{x:Static msm:YlConstants.TOOL_TIP_LONG_DURATION}" materialDesign:HintAssist.Hint="{Binding ElementName=TextBoxExportYukaListerPath, Path=ToolTip}" VerticalAlignment="Center" Margin="0,0,10,0"/>
-                    </DockPanel>
-                    <StackPanel Margin="0,10,20,0">
-                        <Button Height="Auto" Content="エクスポート (_E)" Style="{StaticResource MaterialDesignRaisedLightButton}" Margin="0" Width="160" HorizontalAlignment="Right" Command="{Binding ButtonExportClickedCommand}"/>
-                    </StackPanel>
-                    <Label Content="楽曲情報データベースの内容をすべて削除する" Margin="20,15,20,0" />
-                    <StackPanel Margin="0,0,20,0">
-                        <Button Height="Auto" Content="すべて削除する (_D)" Style="{StaticResource MaterialDesignRaisedLightButton}" Margin="0" Width="160" HorizontalAlignment="Right" Command="{Binding ButtonDeleteAllClickedCommand}"/>
-                    </StackPanel>
-                    <CheckBox Content="楽曲情報データベースを同期する (_S)" IsChecked="{Binding SyncMusicInfoDb}" Margin="20,15,0,0"/>
-                    <DockPanel Margin="0,10,20,0" IsEnabled="{Binding SyncMusicInfoDb}">
-                        <Label Content="サーバー URL (_U)：" Target="{Binding ElementName=TextBoxSyncServer}" Width="170" HorizontalContentAlignment="Right"/>
-                        <TextBox Name="TextBoxSyncServer" Text="{Binding SyncServer}" VerticalAlignment="Center"/>
-                    </DockPanel>
-                    <DockPanel Margin="0,10,20,0" IsEnabled="{Binding SyncMusicInfoDb}">
-                        <Label Content="アカウント名 (_A)：" Target="{Binding ElementName=TextBoxSyncAccount}" Width="170" HorizontalContentAlignment="Right"/>
-                        <TextBox Name="TextBoxSyncAccount" Text="{Binding SyncAccount}" VerticalAlignment="Center"/>
-                    </DockPanel>
-                    <DockPanel Margin="0,10,20,0" IsEnabled="{Binding SyncMusicInfoDb}">
-                        <Label Content="パスワード (_P)：" Target="{Binding ElementName=PasswordBoxSyncPassword}" Width="170" HorizontalContentAlignment="Right"/>
-                        <PasswordBox Name="PasswordBoxSyncPassword" VerticalAlignment="Center">
-                            <behaviors:Interaction.Behaviors>
-                                <l:PasswordBoxBindingSupportBehavior Password="{Binding SyncPassword}" />
-                            </behaviors:Interaction.Behaviors>
-                        </PasswordBox>
-                    </DockPanel>
-                    <StackPanel Margin="20,10,0,0" IsEnabled="{Binding SyncMusicInfoDb}">
-                        <Label Content="強制的に楽曲情報データベースの内容をサーバーに合わせる（ローカルデータは失われます）"/>
-                    </StackPanel>
-                    <StackPanel Margin="0,10,20,0">
-                        <Button Height="Auto" Content="強制的に合わせる (_F)" Style="{StaticResource MaterialDesignRaisedLightButton}" Margin="0" Width="160" DockPanel.Dock="Right" HorizontalAlignment="Right" Command="{Binding ButtonRegetClickedCommand}"/>
-                    </StackPanel>
-                </StackPanel>
-            </TabItem>
-            <TabItem Header="楽曲情報 DB 一覧" >
+            <TabItem Header="楽曲情報一覧" >
                 <StackPanel>
                     <DockPanel Margin="0,10,0,0">
                         <Border BorderBrush="{DynamicResource {x:Static SystemColors.ControlLightBrushKey}}" BorderThickness="1" Height="3" VerticalAlignment="Center" Margin="0" Width="20"/>
@@ -239,6 +187,50 @@
                     <Button Content="楽曲一覧 (_S)" Style="{StaticResource MaterialDesignRaisedLightButton}" Width="180" Height="Auto" Padding="4" Command="{Binding ButtonSongsClickedCommand}" HorizontalAlignment="Left" Margin="20,10,0,0" />
                     <Button Content="人物一覧 (_P)" Style="{StaticResource MaterialDesignRaisedLightButton}" Width="180" Height="Auto" Padding="4" Command="{Binding ButtonPeopleClickedCommand}" HorizontalAlignment="Left" Margin="20,10,0,0" />
                     <Button Content="タグ一覧 (_Z)" Style="{StaticResource MaterialDesignRaisedLightButton}" Width="180" Height="Auto" Padding="4" Command="{Binding ButtonTagsClickedCommand}" HorizontalAlignment="Left" Margin="20,10,0,0" />
+                </StackPanel>
+            </TabItem>
+            <TabItem Header="楽曲情報一括操作" >
+                <StackPanel>
+                    <DockPanel Margin="0,10,0,0">
+                        <Border BorderBrush="{DynamicResource {x:Static SystemColors.ControlLightBrushKey}}" BorderThickness="1" Height="3" VerticalAlignment="Center" Margin="0" Width="20"/>
+                        <Label Content="インポート" Margin="10,0"/>
+                        <Border BorderBrush="{DynamicResource {x:Static SystemColors.ControlLightBrushKey}}" BorderThickness="1" Height="3" VerticalAlignment="Center" Margin="0"/>
+                    </DockPanel>
+                    <Label Content="ファイルから楽曲情報データベースをインポートする (_M)" Margin="20,10,20,0" Target="{Binding ElementName=TextBoxImportYukaListerPath}" />
+                    <DockPanel Margin="40,0,20,0">
+                        <Button Height="Auto" Content="参照 (_1)" Style="{StaticResource MaterialDesignRaisedLightButton}" Margin="0" DockPanel.Dock="Right" Width="100" Command="{Binding ButtonBrowseImportYukaListerClickedCommand}"/>
+                        <TextBox Name="TextBoxImportYukaListerPath" Text="{Binding ImportYukaListerPath}" ToolTip="インポート元ファイル" ToolTipService.ShowDuration="{x:Static msm:YlConstants.TOOL_TIP_LONG_DURATION}" materialDesign:HintAssist.Hint="{Binding ElementName=TextBoxImportYukaListerPath, Path=ToolTip}" VerticalAlignment="Center" Margin="0,0,10,0" />
+                    </DockPanel>
+                    <DockPanel Margin="40,10,20,0">
+                        <StackPanel>
+                            <CheckBox Content="タグ情報をインポートする (_T)" IsChecked="{Binding ImportTag}" />
+                            <CheckBox Content="同名の情報も極力インポートする (_N)" IsChecked="{Binding ImportSameName}" Margin="0,10,0,0" />
+                            <Label Content="※ON にするとデータが重複しやすくなりますので注意" Margin="20,0,0,0" Foreground="Gray" />
+                        </StackPanel>
+                        <Button Height="Auto" Content="インポート (_I)" Style="{StaticResource MaterialDesignRaisedLightButton}" Margin="0" Width="160" HorizontalAlignment="Right" Command="{Binding ButtonImportClickedCommand}" VerticalAlignment="Bottom"/>
+                    </DockPanel>
+                    <DockPanel Margin="0,20,0,0">
+                        <Border BorderBrush="{DynamicResource {x:Static SystemColors.ControlLightBrushKey}}" BorderThickness="1" Height="3" VerticalAlignment="Center" Margin="0" Width="20"/>
+                        <Label Content="エクスポート" Margin="10,0"/>
+                        <Border BorderBrush="{DynamicResource {x:Static SystemColors.ControlLightBrushKey}}" BorderThickness="1" Height="3" VerticalAlignment="Center" Margin="0"/>
+                    </DockPanel>
+                    <Label Content="楽曲情報データベースをファイルへエクスポートする (_X)" Target="{Binding ElementName=TextBoxExportYukaListerPath}" Margin="20,10,20,0" />
+                    <DockPanel Margin="40,0,20,0">
+                        <Button Height="Auto" Content="参照 (_2)" Style="{StaticResource MaterialDesignRaisedLightButton}" Margin="0" DockPanel.Dock="Right" Width="100" Command="{Binding ButtonBrowseExportYukaListerClickedCommand}"/>
+                        <TextBox Name="TextBoxExportYukaListerPath" Text="{Binding ExportYukaListerPath}" ToolTip="エクスポート先ファイル" ToolTipService.ShowDuration="{x:Static msm:YlConstants.TOOL_TIP_LONG_DURATION}" materialDesign:HintAssist.Hint="{Binding ElementName=TextBoxExportYukaListerPath, Path=ToolTip}" VerticalAlignment="Center" Margin="0,0,10,0"/>
+                    </DockPanel>
+                    <StackPanel Margin="0,10,20,0">
+                        <Button Height="Auto" Content="エクスポート (_E)" Style="{StaticResource MaterialDesignRaisedLightButton}" Margin="0" Width="160" HorizontalAlignment="Right" Command="{Binding ButtonExportClickedCommand}"/>
+                    </StackPanel>
+                    <DockPanel Margin="0,20,0,0">
+                        <Border BorderBrush="{DynamicResource {x:Static SystemColors.ControlLightBrushKey}}" BorderThickness="1" Height="3" VerticalAlignment="Center" Margin="0" Width="20"/>
+                        <Label Content="すべて削除" Margin="10,0"/>
+                        <Border BorderBrush="{DynamicResource {x:Static SystemColors.ControlLightBrushKey}}" BorderThickness="1" Height="3" VerticalAlignment="Center" Margin="0"/>
+                    </DockPanel>
+                    <Label Content="楽曲情報データベースの内容をすべて削除する" Margin="20,10,20,0" />
+                    <StackPanel Margin="0,0,20,0">
+                        <Button Height="Auto" Content="すべて削除する (_D)" Style="{StaticResource MaterialDesignRaisedLightButton}" Margin="0" Width="160" HorizontalAlignment="Right" Command="{Binding ButtonDeleteAllClickedCommand}"/>
+                    </StackPanel>
                 </StackPanel>
             </TabItem>
             <TabItem Header="ゆかり統計" >
@@ -263,6 +255,33 @@
                         <Button Height="Auto" Content="ゆかり統計出力 (_Y)" Style="{StaticResource MaterialDesignRaisedLightButton}" Margin="0" Width="200" DockPanel.Dock="Right" Command="{Binding ButtonOutputYukariStatisticsClickedCommand}" />
                         <ProgressBar Height="Auto" Margin="0,0,10,0" Visibility="{Binding ProgressBarOutputYukariStatisticsVisibility}" IsIndeterminate="True" />
                     </DockPanel>
+                </StackPanel>
+            </TabItem>
+            <TabItem Header="同期" >
+                <StackPanel>
+                    <CheckBox Content="楽曲情報データベースを同期する (_S)" IsChecked="{Binding SyncMusicInfoDb}" Margin="20,20,0,0"/>
+                    <DockPanel Margin="0,10,20,0" IsEnabled="{Binding SyncMusicInfoDb}">
+                        <Label Content="サーバー URL (_U)：" Target="{Binding ElementName=TextBoxSyncServer}" Width="170" HorizontalContentAlignment="Right"/>
+                        <TextBox Name="TextBoxSyncServer" Text="{Binding SyncServer}" VerticalAlignment="Center"/>
+                    </DockPanel>
+                    <DockPanel Margin="0,10,20,0" IsEnabled="{Binding SyncMusicInfoDb}">
+                        <Label Content="アカウント名 (_A)：" Target="{Binding ElementName=TextBoxSyncAccount}" Width="170" HorizontalContentAlignment="Right"/>
+                        <TextBox Name="TextBoxSyncAccount" Text="{Binding SyncAccount}" VerticalAlignment="Center"/>
+                    </DockPanel>
+                    <DockPanel Margin="0,10,20,0" IsEnabled="{Binding SyncMusicInfoDb}">
+                        <Label Content="パスワード (_P)：" Target="{Binding ElementName=PasswordBoxSyncPassword}" Width="170" HorizontalContentAlignment="Right"/>
+                        <PasswordBox Name="PasswordBoxSyncPassword" VerticalAlignment="Center">
+                            <behaviors:Interaction.Behaviors>
+                                <l:PasswordBoxBindingSupportBehavior Password="{Binding SyncPassword}" />
+                            </behaviors:Interaction.Behaviors>
+                        </PasswordBox>
+                    </DockPanel>
+                    <StackPanel Margin="20,10,0,0" IsEnabled="{Binding SyncMusicInfoDb}">
+                        <Label Content="強制的に楽曲情報データベースの内容をサーバーに合わせる（ローカルデータは失われます）"/>
+                    </StackPanel>
+                    <StackPanel Margin="0,10,20,0">
+                        <Button Height="Auto" Content="強制的に合わせる (_F)" Style="{StaticResource MaterialDesignRaisedLightButton}" Margin="0" Width="160" DockPanel.Dock="Right" HorizontalAlignment="Right" Command="{Binding ButtonRegetClickedCommand}"/>
+                    </StackPanel>
                 </StackPanel>
             </TabItem>
         </TabControl>
