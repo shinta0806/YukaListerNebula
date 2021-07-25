@@ -192,7 +192,6 @@ namespace YukaLister.Models.SharedMisc
 		__End__,
 	}
 
-#if false
 	// --------------------------------------------------------------------
 	// 環境設定ウィンドウのタブアイテム
 	// --------------------------------------------------------------------
@@ -202,11 +201,12 @@ namespace YukaLister.Models.SharedMisc
 		ListTarget,
 		ListOutput,
 		Maintenance,
-		MusicInfoDatabaseSettings,
-		MusicInfoDatabaseView,
+		MusicInfoList,
+		MusicInfoBatch,
 		YukariStatistics,
+		Sync,
+		__End__,
 	}
-#endif
 
 	// --------------------------------------------------------------------
 	// ゆかりすたー NEBULA のどのパーツの動作状況を示すか

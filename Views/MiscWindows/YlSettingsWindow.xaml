@@ -65,6 +65,9 @@
     <StackPanel>
         <TabControl Height="500" Width="600" Margin="10,10,10,0" SelectedIndex="{Binding SelectedTabIndex}" sb:FileDropAttachedBehavior.DropCommand="{Binding TabControlFileDropCommand}">
             <TabItem Header="設定" >
+                <TabItem.DataContext>
+                    <Binding Path="YlSettingsTabItemSettingsViewModel" />
+                </TabItem.DataContext>
                 <StackPanel >
                     <DockPanel Margin="20,20,20,0">
                         <Label Content="ゆかり設定ファイル (_Y)：" Target="{Binding ElementName=TextBoxYukariConfigPathSeed}" VerticalAlignment="Center" Width="140" HorizontalContentAlignment="Right" />
@@ -81,6 +84,9 @@
                 </StackPanel>
             </TabItem>
             <TabItem Header="リスト対象">
+                <TabItem.DataContext>
+                    <Binding Path="YlSettingsTabItemListTargetViewModel" />
+                </TabItem.DataContext>
                 <StackPanel>
                     <StackPanel Orientation="Horizontal" Margin="0,20,0,0">
                         <Label Content="リスト化対象ファイルの拡張子 (_E)：" Target="{Binding ElementName=ListBoxTargetExts}" Width="220" HorizontalContentAlignment="Right"/>
@@ -97,6 +103,9 @@
                 </StackPanel>
             </TabItem>
             <TabItem Header="リスト出力">
+                <TabItem.DataContext>
+                    <Binding Path="YlSettingsTabItemListOutputViewModel" />
+                </TabItem.DataContext>
                 <StackPanel>
                     <DockPanel Margin="0,10,0,0">
                         <Border BorderBrush="{DynamicResource {x:Static SystemColors.ControlLightBrushKey}}" BorderThickness="1" Height="3" VerticalAlignment="Center" Margin="0" Width="20"/>
@@ -116,9 +125,6 @@
                             <TextBlock Text="{Binding YukariListFolder}" TextTrimming="CharacterEllipsis" />
                         </Label>
                     </DockPanel>
-                    <StackPanel Margin="20,10,0,0">
-                        <CheckBox Visibility="Hidden" IsChecked="{Binding ConfirmOutputYukariList}" Content="ゆかりリクエスト用リスト出力前に確認する (_N)" />
-                    </StackPanel>
                     <DockPanel Margin="0,20,0,0">
                         <Border BorderBrush="{DynamicResource {x:Static SystemColors.ControlLightBrushKey}}" BorderThickness="1" Height="3" VerticalAlignment="Center" Margin="0" Width="20"/>
                         <Label Content="閲覧用リスト" Margin="10,0"/>
@@ -151,6 +157,9 @@
                 </StackPanel>
             </TabItem>
             <TabItem Header="メンテナンス">
+                <TabItem.DataContext>
+                    <Binding Path="YlSettingsTabItemMaintenanceViewModel" />
+                </TabItem.DataContext>
                 <StackPanel>
                     <StackPanel Margin="20,20,0,0">
                         <CheckBox Content="ゆかりすたーの最新情報・更新版を自動的に確認する (_L)" IsChecked="{Binding CheckRss}" />
@@ -170,6 +179,9 @@
                 </StackPanel>
             </TabItem>
             <TabItem Header="楽曲情報一覧" >
+                <TabItem.DataContext>
+                    <Binding Path="YlSettingsTabItemMusicInfoListViewModel" />
+                </TabItem.DataContext>
                 <StackPanel>
                     <DockPanel Margin="0,10,0,0">
                         <Border BorderBrush="{DynamicResource {x:Static SystemColors.ControlLightBrushKey}}" BorderThickness="1" Height="3" VerticalAlignment="Center" Margin="0" Width="20"/>
@@ -190,6 +202,9 @@
                 </StackPanel>
             </TabItem>
             <TabItem Header="楽曲情報一括操作" >
+                <TabItem.DataContext>
+                    <Binding Path="YlSettingsTabItemMusicInfoBatchViewModel" />
+                </TabItem.DataContext>
                 <StackPanel>
                     <DockPanel Margin="0,10,0,0">
                         <Border BorderBrush="{DynamicResource {x:Static SystemColors.ControlLightBrushKey}}" BorderThickness="1" Height="3" VerticalAlignment="Center" Margin="0" Width="20"/>
@@ -234,6 +249,9 @@
                 </StackPanel>
             </TabItem>
             <TabItem Header="ゆかり統計" >
+                <TabItem.DataContext>
+                    <Binding Path="YlSettingsTabItemYukariStatisticsViewModel" />
+                </TabItem.DataContext>
                 <StackPanel>
                     <StackPanel Orientation="Horizontal" Margin="0,20,0,0">
                         <Label Content="出力対象期間：" Width="170" HorizontalContentAlignment="Right" />
@@ -258,6 +276,9 @@
                 </StackPanel>
             </TabItem>
             <TabItem Header="同期" >
+                <TabItem.DataContext>
+                    <Binding Path="YlSettingsTabItemSyncViewModel" />
+                </TabItem.DataContext>
                 <StackPanel>
                     <CheckBox Content="楽曲情報データベースを同期する (_S)" IsChecked="{Binding SyncMusicInfoDb}" Margin="20,20,0,0"/>
                     <DockPanel Margin="0,10,20,0" IsEnabled="{Binding SyncMusicInfoDb}">

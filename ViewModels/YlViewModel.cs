@@ -5,7 +5,7 @@
 // ============================================================================
 
 // ----------------------------------------------------------------------------
-// スプラッシュウィンドウ ViewModel 以外のすべての ViewModel に適用する
+// スプラッシュウィンドウ ViewModel 以外のすべてのウィンドウの ViewModel に適用する
 // ----------------------------------------------------------------------------
 
 using Livet;
@@ -77,24 +77,10 @@ namespace YukaLister.ViewModels
 			YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, GetType().Name + " 初期化中...");
 		}
 
-		// ====================================================================
-		// protected メンバー関数
-		// ====================================================================
-
-		// --------------------------------------------------------------------
-		// リソース解放
-		// --------------------------------------------------------------------
-		protected override void Dispose(Boolean isDisposing)
-		{
-			base.Dispose(isDisposing);
-
-			YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, GetType().Name + " 破棄中...");
-		}
-
 		// --------------------------------------------------------------------
 		// 開くダイアログを表示し、ファイルパスを取得
 		// --------------------------------------------------------------------
-		protected String? PathByOpeningDialog(String title, String filter, String? path)
+		public String? PathByOpeningDialog(String title, String filter, String? path)
 		{
 			OpeningFileSelectionMessage message = new(YlConstants.MESSAGE_KEY_OPEN_OPEN_FILE_DIALOG);
 			message.Title = title;
@@ -116,7 +102,7 @@ namespace YukaLister.ViewModels
 		// --------------------------------------------------------------------
 		// 保存ダイアログを表示し、ファイルパスを取得
 		// --------------------------------------------------------------------
-		protected String? PathBySavingDialog(String title, String filter, String? path)
+		public String? PathBySavingDialog(String title, String filter, String? path)
 		{
 			SavingFileSelectionMessage message = new(YlConstants.MESSAGE_KEY_OPEN_SAVE_FILE_DIALOG);
 			message.Title = title;
@@ -133,6 +119,20 @@ namespace YukaLister.ViewModels
 			}
 
 			return message.Response[0];
+		}
+
+		// ====================================================================
+		// protected メンバー関数
+		// ====================================================================
+
+		// --------------------------------------------------------------------
+		// リソース解放
+		// --------------------------------------------------------------------
+		protected override void Dispose(Boolean isDisposing)
+		{
+			base.Dispose(isDisposing);
+
+			YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, GetType().Name + " 破棄中...");
 		}
 	}
 }
