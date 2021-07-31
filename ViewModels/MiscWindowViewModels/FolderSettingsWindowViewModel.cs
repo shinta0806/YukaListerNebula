@@ -1485,7 +1485,7 @@ namespace YukaLister.ViewModels.MiscWindowViewModels
 			// マッチ準備
 			FolderSettingsInDisk folderSettingsInDisk = YlCommon.LoadFolderSettings(FolderPath);
 			FolderSettingsInMemory folderSettingsInMemory = YlCommon.CreateFolderSettingsInMemory(folderSettingsInDisk);
-			using ListContextInMemory listContextInMemory = ListContextInMemory.CreateContext(out DbSet<TFound> founds,
+			using ListContextInMemory listContextInMemory = ListContextInMemory.CreateContext(out DbSet<TFound> _,
 					out DbSet<TPerson> people, out DbSet<TArtistSequence> artistSequences, out DbSet<TComposerSequence> composerSequences,
 					out DbSet<TTieUpGroup> tieUpGroups, out DbSet<TTieUpGroupSequence> tieUpGroupSequences,
 					out DbSet<TTag> tags, out DbSet<TTagSequence> tagSequences);

@@ -97,7 +97,7 @@ namespace YukaLister.ViewModels.TabItemViewModels
 		protected YlViewModel _windowViewModel;
 
 		// ====================================================================
-		// protected メンバー関数
+		// protected static メンバー関数
 		// ====================================================================
 
 		// --------------------------------------------------------------------
@@ -105,7 +105,7 @@ namespace YukaLister.ViewModels.TabItemViewModels
 		// ＜引数＞ exts: 小文字前提
 		// ＜例外＞ Exception
 		// --------------------------------------------------------------------
-		protected String DroppedFile(String[] pathes, String[] exts)
+		protected static String DroppedFile(String[] pathes, String[] exts)
 		{
 			String dropped = String.Empty;
 			String unknown = String.Empty;
@@ -149,7 +149,7 @@ namespace YukaLister.ViewModels.TabItemViewModels
 		// ドロップされたフォルダー名を 1 つ取得
 		// ＜例外＞ Exception
 		// --------------------------------------------------------------------
-		protected String DroppedFolder(String[] pathes)
+		protected static String DroppedFolder(String[] pathes)
 		{
 			String? folderPath = null;
 			foreach (String path in pathes)

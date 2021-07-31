@@ -339,7 +339,7 @@ namespace YukaLister.ViewModels.MiscWindowViewModels
 		// ====================================================================
 
 		// タブアイテムの ViewModel
-		private TabItemViewModel[] _ylSettingsTabItemViewModels;
+		private readonly TabItemViewModel[] _ylSettingsTabItemViewModels;
 
 		// ====================================================================
 		// private メンバー関数

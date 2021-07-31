@@ -268,7 +268,7 @@ namespace YukaLister.ViewModels.TabItemViewModels
 			}
 		}
 
-		public void ButtonDeleteAllYukariStatisticsClicked()
+		public static void ButtonDeleteAllYukariStatisticsClicked()
 		{
 			try
 			{

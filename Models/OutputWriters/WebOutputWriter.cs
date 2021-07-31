@@ -431,7 +431,7 @@ namespace YukaLister.Models.OutputWriters
 		private String? _tempFolderPath;
 
 		// MD5 生成
-		private MD5CryptoServiceProvider _md5Provider = new();
+		private readonly MD5CryptoServiceProvider _md5Provider = new();
 
 		// Dispose フラグ
 		private Boolean _isDisposed;

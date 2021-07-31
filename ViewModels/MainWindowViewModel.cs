@@ -412,7 +412,7 @@ namespace YukaLister.ViewModels
 			}
 		}
 
-		public void MenuItemFaqClicked()
+		public static void MenuItemFaqClicked()
 		{
 			try
 			{
