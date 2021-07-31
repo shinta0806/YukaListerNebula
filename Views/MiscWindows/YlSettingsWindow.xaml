@@ -259,8 +259,8 @@
                         <Border BorderBrush="{DynamicResource {x:Static SystemColors.ControlLightBrushKey}}" BorderThickness="1" Height="3" VerticalAlignment="Center" Margin="0"/>
                     </DockPanel>
                     <StackPanel Orientation="Horizontal" Margin="0,10,0,0">
-                        <Label Content="出力対象期間：" Width="170" HorizontalContentAlignment="Right" />
-                        <ComboBox ItemsSource="{Binding YukariStatisticsPeriodItems}" SelectedIndex="{Binding SelectedYukariStatisticsPeriodIndex}" Width="150" materialDesign:ComboBoxAssist.ClassicMode="True" >
+                        <Label Content="出力対象期間 (_P)：" Target="{Binding ElementName=ComboBoxYukariStatisticsPeriod}" Width="170" HorizontalContentAlignment="Right" />
+                        <ComboBox Name="ComboBoxYukariStatisticsPeriod" ItemsSource="{Binding YukariStatisticsPeriodItems}" SelectedIndex="{Binding SelectedYukariStatisticsPeriodIndex}" Width="150" materialDesign:ComboBoxAssist.ClassicMode="True" >
                         </ComboBox>
                     </StackPanel>
                     <StackPanel Orientation="Horizontal" Margin="170,5,0,0" IsEnabled="{Binding IsCustomYukariStatisticsPeriodEnabled}" >
@@ -268,7 +268,7 @@
                         <Label Content="～" Margin="10,0,10,0" />
                         <DatePicker Name="DatePickerYukariStatisticsPeriodTo" SelectedDate="{Binding YukariStatisticsPeriodTo}" Language="ja-JP" Width="100" ToolTip="yyyy/mm/dd" ToolTipService.ShowDuration="{x:Static msm:YlConstants.TOOL_TIP_LONG_DURATION}" materialDesign:HintAssist.Hint="{Binding ElementName=DatePickerYukariStatisticsPeriodTo, Path=ToolTip}" />
                     </StackPanel>
-                    <CheckBox Content="属性未確認の予約情報も出力する" IsChecked="{Binding OutputAttributesNone}" Margin="170,10,0,0" />
+                    <CheckBox Content="属性未確認の予約情報も出力する (_A)" IsChecked="{Binding OutputAttributesNone}" Margin="170,10,0,0" />
                     <DockPanel Margin="0,20,20,0">
                         <Label Content="統計出力先ファイル (_F)：" Target="{Binding ElementName=TextBoxYukariStatisticsFile}" Width="170" HorizontalContentAlignment="Right" />
                         <Button Height="Auto" Content="参照 (_B)" Style="{StaticResource MaterialDesignRaisedLightButton}" Margin="0" DockPanel.Dock="Right" Width="100" Padding="0,4" Command="{Binding ButtonBrowseYukariStatisticsFileClickedCommand}" />
