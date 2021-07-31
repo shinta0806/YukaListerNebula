@@ -70,16 +70,6 @@ namespace YukaLister.ViewModels.TabItemViewModels
 			set => RaisePropertyChangedIfSet(ref _yukariListFolder, value);
 		}
 
-#if false
-		// ゆかりリクエスト用リスト出力前に確認する
-		private Boolean _confirmOutputYukariList;
-		public Boolean ConfirmOutputYukariList
-		{
-			get => _confirmOutputYukariList;
-			set => RaisePropertyChangedIfSet(ref _confirmOutputYukariList, value);
-		}
-#endif
-
 		// リスト出力クラス群
 		public ObservableCollection<OutputWriter> OutputWriters { get; set; } = new();
 
@@ -141,7 +131,7 @@ namespace YukaLister.ViewModels.TabItemViewModels
 
 				// ViewModel 経由でリスト出力設定ウィンドウを開く
 				using OutputSettingsWindowViewModel outputSettingsWindowViewModel = yukariOutputWriter.CreateOutputSettingsWindowViewModel();
-				Messenger.Raise(new TransitionMessage(outputSettingsWindowViewModel, YlConstants.MESSAGE_KEY_OPEN_OUTPUT_SETTINGS_WINDOW));
+				_windowViewModel.Messenger.Raise(new TransitionMessage(outputSettingsWindowViewModel, YlConstants.MESSAGE_KEY_OPEN_OUTPUT_SETTINGS_WINDOW));
 
 				if (!outputSettingsWindowViewModel.IsOk)
 				{
@@ -186,7 +176,7 @@ namespace YukaLister.ViewModels.TabItemViewModels
 
 				// ViewModel 経由でリスト出力設定ウィンドウを開く
 				using OutputSettingsWindowViewModel outputSettingsWindowViewModel = SelectedOutputWriter.CreateOutputSettingsWindowViewModel();
-				Messenger.Raise(new TransitionMessage(outputSettingsWindowViewModel, YlConstants.MESSAGE_KEY_OPEN_OUTPUT_SETTINGS_WINDOW));
+				_windowViewModel.Messenger.Raise(new TransitionMessage(outputSettingsWindowViewModel, YlConstants.MESSAGE_KEY_OPEN_OUTPUT_SETTINGS_WINDOW));
 
 				if (!outputSettingsWindowViewModel.IsOk)
 				{
@@ -283,16 +273,6 @@ namespace YukaLister.ViewModels.TabItemViewModels
 		// ====================================================================
 		// public メンバー関数
 		// ====================================================================
-
-#if false
-		// --------------------------------------------------------------------
-		// 入力された値が適正か確認
-		// ＜例外＞ Exception
-		// --------------------------------------------------------------------
-		public override void CheckInput()
-		{
-		}
-#endif
 
 		// --------------------------------------------------------------------
 		// 初期化

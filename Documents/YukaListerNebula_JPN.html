@@ -829,21 +829,32 @@ SyncServer フォルダー内のファイルを Web サーバーに組み込み�
 <p>
 ゆかりの設定ファイルがある場所を指定します。絶対パスまたは相対パスで指定できます。<br>
 <br>
-ゆかりおよびゆかりすたー NEBULAを標準のフォルダーにインストールしている場合は、この項目はデフォルトのままにしておいて下さい。<br>
+ゆかりおよびゆかりすたー NEBULAを標準のフォルダーにインストールしている場合は、この項目はデフォルト（下記）のままにしておいて下さい。<br>
 </p>
+
+<blockquote>
+..\config.ini
+</blockquote>
 
 <a name="AutoTarget"></a>
 <h3>起動時やリムーバブルメディア接続時、前回のフォルダーを自動的に追加する</h3>
 
 <p>
-このオプションを有効にしておくと、ゆかり検索対象フォルダーの追加の手間が省けます。<br>
+このオプションを有効にすると、ゆかり検索対象フォルダーの追加の手間が省けます。<br>
 </p>
 
 <a name="ServerForYukari"></a>
 <h3>ゆかり用サーバー機能を提供する</h3>
 
 <p>
-このオプションを有効にしておくと、ゆかり上でのプレビュー等が可能になります。<br>
+このオプションを有効にすると、ゆかり上でのプレビュー（オフライン運用時）等が可能になります。<br>
+</p>
+
+<a name="AdditionalSearchData"></a>
+<h3>ゆかり用の追加検索支援データを出力する</h3>
+
+<p>
+このオプションを有効にすると、ゆかりの検索精度向上に役立つデータを出力します。ただし、現時点ではゆかり側が未対応のため、効果はありません。<br>
 </p>
 
 <a name="IdSettouji"></a>
@@ -928,7 +939,13 @@ ID を区別できるようにするためのものなので、任意の文字�
 <h3>ゆかりすたーの最新情報・更新版を自動的に確認する</h3>
 
 <p>
-ゆかりすたー NEBULA に関する最新情報や更新版があるかどうか、インターネット上で自動的に確認し、ある場合は表示・バージョンアップを行うことができます。<br>
+ゆかりすたー NEBULA に関する最新情報や更新版があるかどうか、インターネット上で自動的に確認します。最新情報が見つかった場合は、ブラウザで表示します。更新版（新バージョン）がリリースされた場合は、更新版をインストールします。Ver 4.3 現在、最新情報の確認は 3 日ごとに行います。<br>
+<br>
+最新情報表示・更新版のインストール前には、表示・インストールをするかどうかの確認が行われます。表示・インストールをしないを選択した場合、当該情報・バージョンについては次回以降は表示されませんのでご注意下さい。<br>
+<br>
+「今すぐ最新情報を確認する」ボタンをクリックすると、直ちに確認が行われます。<br>
+<br>
+なお、ゆかりすたー NEBULA に限らず、世の中のアプリケーション全般に言えることですが、最新情報の取得や更新版のインストールを行う設定を有効にしている場合、悪意ある第三者に配信サーバーが乗っ取られた場合など、誤情報や悪意あるアプリケーションなどが紛れ込むリスクがありますのでご承知おき下さい。一方で、正常に機能していれば、バグ修正が速やかに適用されるなど、安全性が高まるメリットもあります。<br>
 </p>
 
 <a name="Setteinobackup"></a>
@@ -938,29 +955,78 @@ ID を区別できるようにするためのものなので、任意の文字�
 ゆかりすたー NEBULA の設定を保存します。動作に問題が発生したときに開発者とやり取りする際、手助けになる場合があります。<br>
 </p>
 
-<a name="GakkyokujouhoudatabasewoDoukisuru"></a>
-<h3>楽曲情報データベースを同期する</h3>
+<a name="Setteinofukugen"></a>
+<h3>設定の復元</h3>
 
 <p>
-同期については<a href="#Douki">同期</a>章をご覧ください。<br>
+バックアップしておいたゆかりすたー NEBULA の設定を読み込みます。<br>
 </p>
 
-<a name="Importtab"></a>
-<h2>インポートタブ</h2>
+<a name="Gakkyokujouhouichiran"></a>
+<h2>楽曲情報一覧タブ</h2>
 
 <p>
-インポートタブでは、エクスポートタブでエクスポートしたゆかりすたー情報ファイルから、楽曲情報を取り込みます。<br>
+入力した楽曲情報データベースの内容を種類ごとに一覧表示できます。<br>
+</p>
+
+<a name="GakkyokujouhouikkatsusousaImport"></a>
+<h2>楽曲情報一括操作タブ：インポート</h2>
+
+<p>
+エクスポートでエクスポートしておいたゆかりすたー情報ファイルから、楽曲情報を取り込みます。<br>
 <br>
-インポート元を指定してから、インポートボタンをクリックしてください。なお、ファイルを指定する際は、参照ボタンで指定することもできますし、エクスプローラーからファイルをドラッグ＆ドロップしても指定することができます。<br>
+インポート元ファイルを指定してから、インポートボタンをクリックしてください。なお、ファイルを指定する際は、参照ボタンで指定することもできますし、エクスプローラーからファイルをドラッグ＆ドロップしても指定することができます。<br>
+<br>
+「タグ情報をインポートする」を有効にすると、インポート元ファイルに含まれているタグ情報も取り込みます。<br>
+<br>
+「同名の情報も極力インポートする」を有効にすると、インポート元ファイルの楽曲情報と同じ名前の楽曲情報が楽曲情報データベースに既に存在している場合でも取り込みます。有効にするとデータが重複しやすくなりますので注意してください。<br>
 </p>
-
-<a name="Exporttab"></a>
-<h2>エクスポートタブ</h2>
+  
+<a name="GakkyokujouhouikkatsusousaExport"></a>
+<h2>楽曲情報一括操作タブ：エクスポート</h2>
 
 <p>
 楽曲情報データベースの内容を外部ストレージに保存することで、バックアップを取ることができます。<br>
 <br>
 エクスポート先を指定してから、エクスポートボタンをクリックして下さい。<br>
+</p>
+  
+<a name="GakkyokujouhouikkatsusousaDeleteAll"></a>
+<h2>楽曲情報一括操作タブ：すべて削除</h2>
+
+<p>
+楽曲情報データベースの内容をすべて削除します。これまで入力してきた内容が失われますので注意してください。<br>
+</p>
+
+<a name="YukaritoukeiSyutsuryoku"></a>
+<h2>ゆかり統計タブ：出力</h2>
+
+<p>
+ゆかりで予約された曲の一覧を、楽曲情報データベースによる属性情報も含めて CSV 形式で出力します。Excel などのスプレッドシートソフトで集計することにより、例えば、「アニメの曲が人気」などの統計的な傾向をつかむことができます。<br>
+<br>
+「出力対象期間」は、ゆかりでいつ予約された曲を出力するかを指定します。ただし、予約日は推定情報となるので、必ずしも正確ではない場合があります。<br>
+<br>
+「属性未確認の予約情報も出力する」を有効にすると、属性確認できていない予約曲の情報も出力します。<br>
+<br>
+「統計出力先ファイル」は、出力する CSV のファイル名を指定します。<br>
+<br>
+指定後、「ゆかり統計出力」ボタンをクリックすると、CSV ファイルが出力されます。<br>
+</p>
+
+<a name="YukaritoukeiDeleteAll"></a>
+<h2>ゆかり統計タブ：すべて削除</h2>
+
+<p>
+ゆかり統計情報をすべて削除します。<br>
+<br>
+なお、すべて削除しても、ゆかり側の動作には影響ありません。<br>
+</p>
+
+<a name="KankyousetteiDouki"></a>
+<h2>同期タブ</h2>
+
+<p>
+同期については<a href="#Douki">同期</a>章をご覧ください。<br>
 </p>
 
 <a name="Listshutsuryokusettei"></a>
@@ -1290,8 +1356,13 @@ DDD さんは楽曲名の頭文字でファイルを整理していますので�
 <div class="SideMenuItemH2"><a href="#ListsyutsuryokutabYukari">リスト出力タブ：ゆかりリクエスト用リスト（PHP）</a></div>
 <div class="SideMenuItemH2"><a href="#ListsyutsuryokutabEtsuran">リスト出力タブ：閲覧用リスト（PHP）</a></div>
 <div class="SideMenuItemH2"><a href="#Maintenancetab">メンテナンスタブ</a></div>
-<div class="SideMenuItemH2"><a href="#Importtab">インポートタブ</a></div>
-<div class="SideMenuItemH2"><a href="#Exporttab">エクスポートタブ</a></div>
+<div class="SideMenuItemH2"><a href="#Gakkyokujouhouichiran">楽曲情報一覧タブ</a></div>
+<div class="SideMenuItemH2"><a href="#GakkyokujouhouikkatsusousaImport">楽曲情報一括操作タブ：インポート</a></div>
+<div class="SideMenuItemH2"><a href="#GakkyokujouhouikkatsusousaExport">楽曲情報一括操作タブ：エクスポート</a></div>
+<div class="SideMenuItemH2"><a href="#GakkyokujouhouikkatsusousaDeleteAll">楽曲情報一括操作タブ：すべて削除</a></div>
+<div class="SideMenuItemH2"><a href="#YukaritoukeiSyutsuryoku">ゆかり統計タブ：出力</a></div>
+<div class="SideMenuItemH2"><a href="#YukaritoukeiDeleteAll">ゆかり統計タブ：すべて削除</a></div>
+<div class="SideMenuItemH2"><a href="#KankyousetteiDouki">同期タブ</a></div>
 <div class="SideMenuItemH1"><a href="#Listshutsuryokusettei">リスト出力設定</a></div>
 <div class="SideMenuItemH2"><a href="#Kihonsetteitab">基本設定タブ</a></div>
 <div class="SideMenuItemH2"><a href="#Htmltab">HTML タブ</a></div>

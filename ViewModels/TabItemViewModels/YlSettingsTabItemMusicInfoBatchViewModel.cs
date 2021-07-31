@@ -152,7 +152,7 @@ namespace YukaLister.ViewModels.TabItemViewModels
 
 				// ViewModel 経由でインポート・エクスポートウィンドウを開く
 				using ImportWindowViewModel importWindowViewModel = new(ImportYukaListerPath, ImportTag, ImportSameName);
-				Messenger.Raise(new TransitionMessage(importWindowViewModel, YlConstants.MESSAGE_KEY_OPEN_IMPORT_EXPORT_WINDOW));
+				_windowViewModel.Messenger.Raise(new TransitionMessage(importWindowViewModel, YlConstants.MESSAGE_KEY_OPEN_IMPORT_EXPORT_WINDOW));
 
 				// IdPrefix の更新を反映
 				//IdPrefix = YukaListerModel.Instance.EnvModel.YlSettings.IdPrefix;
@@ -224,7 +224,7 @@ namespace YukaLister.ViewModels.TabItemViewModels
 
 				// ViewModel 経由でインポート・エクスポートウィンドウを開く
 				using ExportWindowViewModel exportWindowViewModel = new(ExportYukaListerPath);
-				Messenger.Raise(new TransitionMessage(exportWindowViewModel, YlConstants.MESSAGE_KEY_OPEN_IMPORT_EXPORT_WINDOW));
+				_windowViewModel.Messenger.Raise(new TransitionMessage(exportWindowViewModel, YlConstants.MESSAGE_KEY_OPEN_IMPORT_EXPORT_WINDOW));
 			}
 			catch (Exception excep)
 			{
