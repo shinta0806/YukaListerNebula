@@ -9,41 +9,16 @@
 // ----------------------------------------------------------------------------
 
 using Livet.Commands;
-using Livet.Messaging;
-using Livet.Messaging.IO;
 using Livet.Messaging.Windows;
-
-using Microsoft.EntityFrameworkCore;
 
 using Shinta;
 
 using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Diagnostics;
-using System.IO;
-using System.IO.Compression;
-using System.Linq;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
 
-using YukaLister.Models.Database;
-using YukaLister.Models.Database.Masters;
-using YukaLister.Models.Database.Sequences;
-using YukaLister.Models.DatabaseAssist;
-using YukaLister.Models.DatabaseContexts;
-using YukaLister.Models.OutputWriters;
-using YukaLister.Models.SerializableSettings;
 using YukaLister.Models.SharedMisc;
 using YukaLister.Models.YukaListerModels;
-using YukaLister.ViewModels.ImportExportWindowViewModels;
-using YukaLister.ViewModels.OutputSettingsWindowViewModels;
 using YukaLister.ViewModels.TabItemViewModels;
-using YukaLister.ViewModels.ViewMastersWindowViewModels;
 
 namespace YukaLister.ViewModels.MiscWindowViewModels
 {

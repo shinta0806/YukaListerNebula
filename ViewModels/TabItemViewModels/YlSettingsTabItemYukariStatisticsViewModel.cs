@@ -8,17 +8,14 @@
 // 
 // ----------------------------------------------------------------------------
 
-using Livet;
 using Livet.Commands;
-using Livet.EventListeners;
-using Livet.Messaging;
-using Livet.Messaging.IO;
-using Livet.Messaging.Windows;
+
 using Microsoft.EntityFrameworkCore;
+
 using Shinta;
+
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Text;
@@ -26,7 +23,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using YukaLister.Models;
+
 using YukaLister.Models.Database;
 using YukaLister.Models.DatabaseContexts;
 using YukaLister.Models.SharedMisc;
@@ -252,6 +249,43 @@ namespace YukaLister.ViewModels.TabItemViewModels
 			finally
 			{
 				ProgressBarOutputYukariStatisticsVisibility = Visibility.Hidden;
+			}
+		}
+		#endregion
+
+		#region すべて削除するボタンの制御
+		private ViewModelCommand? _buttonDeleteAllYukariStatisticsClickedCommand;
+
+		public ViewModelCommand ButtonDeleteAllYukariStatisticsClickedCommand
+		{
+			get
+			{
+				if (_buttonDeleteAllYukariStatisticsClickedCommand == null)
+				{
+					_buttonDeleteAllYukariStatisticsClickedCommand = new ViewModelCommand(ButtonDeleteAllYukariStatisticsClicked);
+				}
+				return _buttonDeleteAllYukariStatisticsClickedCommand;
+			}
+		}
+
+		public void ButtonDeleteAllYukariStatisticsClicked()
+		{
+			try
+			{
+				if (MessageBox.Show("ゆかり統計をすべて削除します。\n復活できません。\nすべて削除してよろしいですか？", "確認",
+						MessageBoxButton.YesNo, MessageBoxImage.Exclamation) == MessageBoxResult.No)
+				{
+					return;
+				}
+
+				using YukariStatisticsContext yukariStatisticsContext = YukariStatisticsContext.CreateContext(out DbSet<TProperty> _);
+				yukariStatisticsContext.CreateDatabase();
+				YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(TraceEventType.Information, "ゆかり統計データベースを削除しました。");
+			}
+			catch (Exception excep)
+			{
+				YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(TraceEventType.Error, "ゆかり統計すべて削除ボタンクリック時エラー：\n" + excep.Message);
+				YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, "　スタックトレース：\n" + excep.StackTrace);
 			}
 		}
 		#endregion

@@ -8,21 +8,14 @@
 // 
 // ----------------------------------------------------------------------------
 
-using Livet;
 using Livet.Commands;
-using Livet.EventListeners;
-using Livet.Messaging;
-using Livet.Messaging.IO;
-using Livet.Messaging.Windows;
+
 using Shinta;
+
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
 using System.Diagnostics;
-using System.Linq;
-using System.Text;
 using System.Windows;
-using YukaLister.Models;
+
 using YukaLister.Models.SharedMisc;
 using YukaLister.Models.YukaListerModels;
 using YukaLister.ViewModels.MiscWindowViewModels;

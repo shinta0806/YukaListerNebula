@@ -242,10 +242,10 @@
                         <Label Content="すべて削除" Margin="10,0"/>
                         <Border BorderBrush="{DynamicResource {x:Static SystemColors.ControlLightBrushKey}}" BorderThickness="1" Height="3" VerticalAlignment="Center" Margin="0"/>
                     </DockPanel>
-                    <Label Content="楽曲情報データベースの内容をすべて削除する" Margin="20,10,20,0" />
-                    <StackPanel Margin="0,0,20,0">
-                        <Button Height="Auto" Content="すべて削除する (_D)" Style="{StaticResource MaterialDesignRaisedLightButton}" Margin="0" Width="160" HorizontalAlignment="Right" Command="{Binding ButtonDeleteAllClickedCommand}"/>
-                    </StackPanel>
+                    <DockPanel Margin="20,10,20,0" LastChildFill="False" >
+                        <Label Content="楽曲情報データベースの内容をすべて削除する" VerticalAlignment="Center" />
+                        <Button Height="Auto" Content="すべて削除する (_D)" Style="{StaticResource MaterialDesignRaisedLightButton}" Margin="0" Width="160" HorizontalAlignment="Right" Command="{Binding ButtonDeleteAllClickedCommand}" DockPanel.Dock="Right"/>
+                    </DockPanel>
                 </StackPanel>
             </TabItem>
             <TabItem Header="ゆかり統計" >
@@ -253,7 +253,12 @@
                     <Binding Path="YlSettingsTabItemYukariStatisticsViewModel" />
                 </TabItem.DataContext>
                 <StackPanel>
-                    <StackPanel Orientation="Horizontal" Margin="0,20,0,0">
+                    <DockPanel Margin="0,10,0,0">
+                        <Border BorderBrush="{DynamicResource {x:Static SystemColors.ControlLightBrushKey}}" BorderThickness="1" Height="3" VerticalAlignment="Center" Margin="0" Width="20"/>
+                        <Label Content="出力" Margin="10,0"/>
+                        <Border BorderBrush="{DynamicResource {x:Static SystemColors.ControlLightBrushKey}}" BorderThickness="1" Height="3" VerticalAlignment="Center" Margin="0"/>
+                    </DockPanel>
+                    <StackPanel Orientation="Horizontal" Margin="0,10,0,0">
                         <Label Content="出力対象期間：" Width="170" HorizontalContentAlignment="Right" />
                         <ComboBox ItemsSource="{Binding YukariStatisticsPeriodItems}" SelectedIndex="{Binding SelectedYukariStatisticsPeriodIndex}" Width="150" materialDesign:ComboBoxAssist.ClassicMode="True" >
                         </ComboBox>
@@ -272,6 +277,15 @@
                     <DockPanel Margin="170,10,20,0" >
                         <Button Height="Auto" Content="ゆかり統計出力 (_Y)" Style="{StaticResource MaterialDesignRaisedLightButton}" Margin="0" Width="200" DockPanel.Dock="Right" Command="{Binding ButtonOutputYukariStatisticsClickedCommand}" />
                         <ProgressBar Height="Auto" Margin="0,0,10,0" Visibility="{Binding ProgressBarOutputYukariStatisticsVisibility}" IsIndeterminate="True" />
+                    </DockPanel>
+                    <DockPanel Margin="0,20,0,0">
+                        <Border BorderBrush="{DynamicResource {x:Static SystemColors.ControlLightBrushKey}}" BorderThickness="1" Height="3" VerticalAlignment="Center" Margin="0" Width="20"/>
+                        <Label Content="すべて削除" Margin="10,0"/>
+                        <Border BorderBrush="{DynamicResource {x:Static SystemColors.ControlLightBrushKey}}" BorderThickness="1" Height="3" VerticalAlignment="Center" Margin="0"/>
+                    </DockPanel>
+                    <DockPanel Margin="20,10,20,0" LastChildFill="False" >
+                        <Label Content="ゆかり統計をすべて削除する" VerticalAlignment="Center" />
+                        <Button Height="Auto" Content="すべて削除する (_D)" Style="{StaticResource MaterialDesignRaisedLightButton}" Margin="0" Width="160" HorizontalAlignment="Right" Command="{Binding ButtonDeleteAllYukariStatisticsClickedCommand}" DockPanel.Dock="Right"/>
                     </DockPanel>
                 </StackPanel>
             </TabItem>

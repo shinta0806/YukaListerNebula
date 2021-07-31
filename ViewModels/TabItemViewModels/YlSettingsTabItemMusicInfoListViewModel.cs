@@ -8,24 +8,19 @@
 // 
 // ----------------------------------------------------------------------------
 
-using Livet;
 using Livet.Commands;
-using Livet.EventListeners;
 using Livet.Messaging;
-using Livet.Messaging.IO;
-using Livet.Messaging.Windows;
+
 using Microsoft.EntityFrameworkCore;
+
 using Shinta;
+
 using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.ComponentModel;
 using System.Diagnostics;
-using System.Linq;
-using System.Text;
 using System.Windows.Controls;
 using System.Windows.Data;
-using YukaLister.Models;
+
 using YukaLister.Models.Database;
 using YukaLister.Models.Database.Masters;
 using YukaLister.Models.DatabaseAssist;
