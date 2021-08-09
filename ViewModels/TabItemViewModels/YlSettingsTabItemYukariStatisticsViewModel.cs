@@ -127,7 +127,7 @@ namespace YukaLister.ViewModels.TabItemViewModels
 			set => RaisePropertyChangedIfSet(ref _yukariStatisticsPath, value);
 		}
 
-		// プログレスバー表示
+		// ゆかり統計出力プログレスバー表示
 		private Visibility _progressBarOutputYukariStatisticsVisibility;
 		public Visibility ProgressBarOutputYukariStatisticsVisibility
 		{
@@ -137,6 +137,20 @@ namespace YukaLister.ViewModels.TabItemViewModels
 				if (RaisePropertyChangedIfSet(ref _progressBarOutputYukariStatisticsVisibility, value))
 				{
 					ButtonOutputYukariStatisticsClickedCommand.RaiseCanExecuteChanged();
+				}
+			}
+		}
+
+		// ゆかり統計最新化プログレスバー表示
+		private Visibility _progressBarUpdateYukariStatisticsVisibility;
+		public Visibility ProgressBarUpdateYukariStatisticsVisibility
+		{
+			get => _progressBarUpdateYukariStatisticsVisibility;
+			set
+			{
+				if (RaisePropertyChangedIfSet(ref _progressBarUpdateYukariStatisticsVisibility, value))
+				{
+					ButtonUpdateYukariStatisticsClickedCommand.RaiseCanExecuteChanged();
 				}
 			}
 		}
@@ -253,6 +267,48 @@ namespace YukaLister.ViewModels.TabItemViewModels
 		}
 		#endregion
 
+		#region 最新化するボタンの制御
+		private ViewModelCommand? _buttonUpdateYukariStatisticsClickedCommand;
+
+		public ViewModelCommand ButtonUpdateYukariStatisticsClickedCommand
+		{
+			get
+			{
+				if (_buttonUpdateYukariStatisticsClickedCommand == null)
+				{
+					_buttonUpdateYukariStatisticsClickedCommand = new ViewModelCommand(ButtonUpdateYukariStatisticsClicked, CanButtonUpdateYukariStatisticsClicked);
+				}
+				return _buttonUpdateYukariStatisticsClickedCommand;
+			}
+		}
+
+		public Boolean CanButtonUpdateYukariStatisticsClicked()
+		{
+			return ProgressBarUpdateYukariStatisticsVisibility != Visibility.Visible;
+		}
+
+		public async void ButtonUpdateYukariStatisticsClicked()
+		{
+			try
+			{
+				// 最新化
+				ProgressBarUpdateYukariStatisticsVisibility = Visibility.Visible;
+				await YlCommon.LaunchTaskAsync<Object?>(_semaphoreSlim, UpdateYukariStatisticsByWorker, null, "ゆかり統計最新化");
+				YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(TraceEventType.Information, "予約当時の動画ファイルが現存しているものについて、可能な限り、ゆかり統計の属性情報を最新化しました。");
+
+			}
+			catch (Exception excep)
+			{
+				YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(TraceEventType.Error, "ゆかり統計出力ボタンクリック時エラー：\n" + excep.Message);
+				YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, "　スタックトレース：\n" + excep.StackTrace);
+			}
+			finally
+			{
+				ProgressBarUpdateYukariStatisticsVisibility = Visibility.Hidden;
+			}
+		}
+		#endregion
+
 		#region すべて削除するボタンの制御
 		private ViewModelCommand? _buttonDeleteAllYukariStatisticsClickedCommand;
 
@@ -316,6 +372,7 @@ namespace YukaLister.ViewModels.TabItemViewModels
 
 			// プログレスバー
 			ProgressBarOutputYukariStatisticsVisibility = Visibility.Hidden;
+			ProgressBarUpdateYukariStatisticsVisibility = Visibility.Hidden;
 		}
 
 		// --------------------------------------------------------------------
@@ -437,6 +494,25 @@ namespace YukaLister.ViewModels.TabItemViewModels
 		}
 
 		// --------------------------------------------------------------------
+		// ゆかり統計の属性情報を最新化
+		// ワーカースレッドで実行される前提
+		// --------------------------------------------------------------------
+		private Task UpdateYukariStatisticsByWorker(Object? _)
+		{
+			// Yurelin に最新化を依頼
+			YukaListerModel.Instance.EnvModel.Yurelin.UpdatePastYukariStatisticsKind = UpdatePastYukariStatisticsKind.All;
+			YlCommon.ActivateYurelinIfNeeded();
+
+			// 最新化されるまで待機
+			while (YukaListerModel.Instance.EnvModel.Yurelin.UpdatePastYukariStatisticsKind != UpdatePastYukariStatisticsKind.None)
+			{
+				Thread.Sleep(Common.GENERAL_SLEEP_TIME);
+			}
+
+			return Task.CompletedTask;
+		}
+
+		// --------------------------------------------------------------------
 		// ゆかり統計出力対象期間コントロールを更新
 		// --------------------------------------------------------------------
 		private void UpdateYukariStatisticsPeriodControls()
@@ -477,7 +553,5 @@ namespace YukaLister.ViewModels.TabItemViewModels
 			// 期間指定
 			IsCustomYukariStatisticsPeriodEnabled = yukariStatisticsPeriod == YukariStatisticsPeriod.Custom;
 		}
-
-
 	}
 }

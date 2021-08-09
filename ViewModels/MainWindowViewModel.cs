@@ -741,11 +741,11 @@ namespace YukaLister.ViewModels
 				StartWebServerIfNeeded();
 
 				// 過去の統計データが更新されるようにする
-				YukaListerModel.Instance.EnvModel.Yurelin.UpdatePastStatistics = true;
+				YukaListerModel.Instance.EnvModel.Yurelin.UpdatePastYukariStatisticsKind = UpdatePastYukariStatisticsKind.Fast;
 				if (YukaListerModel.Instance.EnvModel.YlSettings.SyncMusicInfoDb)
 				{
-					// サーバー同期
-					// 統計データ作成は遅くとも Syclin スリープ時には行われる
+					// サーバー同期が有効なら同期する
+					// 統計データ作成は遅くとも Syclin スリープ時には行われるので、明示的には作成しない
 					YlCommon.ActivateSyclinIfNeeded();
 				}
 				else

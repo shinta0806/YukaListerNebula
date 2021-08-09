@@ -193,6 +193,16 @@ namespace YukaLister.Models.SharedMisc
 	}
 
 	// --------------------------------------------------------------------
+	// 過去の統計データを更新するか
+	// --------------------------------------------------------------------
+	public enum UpdatePastYukariStatisticsKind
+	{
+		None,	// 更新しない
+		Fast,	// 属性未確認のみ更新
+		All,	// すべて更新
+	}
+
+	// --------------------------------------------------------------------
 	// 環境設定ウィンドウのタブアイテム
 	// --------------------------------------------------------------------
 	public enum YlSettingsTabItem
@@ -273,7 +283,7 @@ namespace YukaLister.Models.SharedMisc
 		public const String APP_ID = "YukaLister";
 		public const String APP_GENERATION = "NEBULA";
 		public const String APP_NAME_J = "ゆかりすたー " + APP_GENERATION + " ";
-		public const String APP_VER = "Ver 4.23";
+		public const String APP_VER = "Ver 4.40";
 		public const String COPYRIGHT_J = "Copyright (C) 2021 by SHINTA";
 
 		// --------------------------------------------------------------------

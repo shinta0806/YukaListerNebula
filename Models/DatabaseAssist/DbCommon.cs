@@ -103,11 +103,17 @@ namespace YukaLister.Models.DatabaseAssist
 		}
 
 		// --------------------------------------------------------------------
-		// TFound → TYukariStatistics へコピー
+		// TFound → TYukariStatistics へコピー（TFound の属性情報がある場合のみ）
 		// --------------------------------------------------------------------
-		public static void CopyFoundToYukariStatistics(TFound found, TYukariStatistics yukariStatistics)
+		public static void CopyFoundToYukariStatisticsIfAttributesPrepared(TFound found, TYukariStatistics yukariStatistics)
 		{
-			yukariStatistics.AttributesDone = found.FileSize >= 0;
+			if (found.FileSize < 0)
+			{
+				Debug.WriteLine("CopyFoundToYukariStatisticsIfAttributesPrepared() 属性確認しようとしたがまだ整理されていない " + yukariStatistics.RequestMoviePath);
+				return;
+			}
+
+			yukariStatistics.AttributesDone = true;
 			yukariStatistics.Worker = found.Worker;
 			yukariStatistics.SongReleaseDate = found.SongReleaseDate;
 			yukariStatistics.CategoryName = found.Category;
@@ -123,6 +129,8 @@ namespace YukaLister.Models.DatabaseAssist
 			yukariStatistics.ArrangerName = found.ArrangerName;
 
 			yukariStatistics.Dirty = true;
+
+			Debug.WriteLine("CopyFoundToYukariStatisticsIfAttributesPrepared() 属性確認実施 " + yukariStatistics.RequestMoviePath);
 		}
 
 		// --------------------------------------------------------------------

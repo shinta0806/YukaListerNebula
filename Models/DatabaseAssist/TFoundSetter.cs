@@ -262,7 +262,7 @@ namespace YukaLister.Models.DatabaseAssist
 
 		// --------------------------------------------------------------------
 		// 検出ファイルレコードの値を、フォルダー設定や楽曲情報データベースから検索して設定する
-		// oRecord.Path は事前に設定されている必要がある
+		// record.Path は事前に設定されている必要がある
 		// --------------------------------------------------------------------
 		public void SetTFoundValues(TFound record, FolderSettingsInMemory folderSettingsInMemory)
 		{

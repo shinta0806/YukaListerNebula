@@ -55,7 +55,7 @@ namespace YukaLister.Models.YukaListerCores
 		public MainWindowViewModel? MainWindowViewModel { get; set; }
 
 		// 過去の統計データ（request.db にない予約）を更新するか
-		public Boolean UpdatePastStatistics { get; set; }
+		public UpdatePastYukariStatisticsKind UpdatePastYukariStatisticsKind { get; set; }
 
 		// ====================================================================
 		// protected メンバー関数
@@ -115,7 +115,7 @@ namespace YukaLister.Models.YukaListerCores
 							+ ", 現在: " + JulianDay.ModifiedJulianDateToDateTime(yukariStatisticsContext.LastWriteMjd()).ToString(YlConstants.TIME_FORMAT));
 #endif
 
-					if (UpdatePastStatistics)
+					if (UpdatePastYukariStatisticsKind != UpdatePastYukariStatisticsKind.None)
 					{
 						// 過去の統計（request.db にないものを含む）更新
 						UpdatePast();
@@ -141,7 +141,7 @@ namespace YukaLister.Models.YukaListerCores
 		// ====================================================================
 
 		// --------------------------------------------------------------------
-		// TFound → TYukariStatistics へコピー（属性確認済ではない場合のみ）
+		// TFound → TYukariStatistics へコピー（ゆかり統計が属性確認済ではない場合のみ）
 		// --------------------------------------------------------------------
 		private static void CopyFoundToYukariStatisticsIfNeeded(DbSet<TFound> founds, TYukariStatistics yukariStatistics)
 		{
@@ -156,13 +156,7 @@ namespace YukaLister.Models.YukaListerCores
 				Debug.WriteLine("CopyFoundToYukariStatisticsIfNeeded() 属性確認しようとしたが見つからない " + yukariStatistics.RequestMoviePath);
 				return;
 			}
-			if (found.FileSize < 0)
-			{
-				Debug.WriteLine("CopyFoundToYukariStatisticsIfNeeded() 属性確認しようとしたがまだ整理されていない " + yukariStatistics.RequestMoviePath);
-				return;
-			}
-			DbCommon.CopyFoundToYukariStatistics(found, yukariStatistics);
-			Debug.WriteLine("CopyFoundToYukariStatisticsIfNeeded() 属性確認実施 " + yukariStatistics.RequestMoviePath);
+			DbCommon.CopyFoundToYukariStatisticsIfAttributesPrepared(found, yukariStatistics);
 		}
 
 		// --------------------------------------------------------------------
@@ -237,9 +231,14 @@ namespace YukaLister.Models.YukaListerCores
 		{
 			Debug.WriteLine("UpdatePast()");
 			using YukariStatisticsContext yukariStatisticsContext = YukariStatisticsContext.CreateContext(out DbSet<TYukariStatistics> yukariStatistics);
-			IQueryable<TYukariStatistics> targetYukariStatistics = yukariStatistics.Where(x => !x.AttributesDone && !x.Invalid);
+			IQueryable<TYukariStatistics> targetYukariStatistics = yukariStatistics.Where(x => (UpdatePastYukariStatisticsKind == UpdatePastYukariStatisticsKind.All || !x.AttributesDone) && !x.Invalid);
 			foreach (TYukariStatistics oneStatistics in targetYukariStatistics)
 			{
+#if DEBUGz
+				if (oneStatistics.RequestMoviePath == @"D:\TempD\TestNkl\TST9_楽曲情報編集\テストタイアップ1_テスト楽曲101_ファイル歌手1,初音ミク.mp4")
+				{
+				}
+#endif
 				if (!File.Exists(oneStatistics.RequestMoviePath))
 				{
 					continue;
@@ -276,11 +275,11 @@ namespace YukaLister.Models.YukaListerCores
 				foundSetter.SetTFoundValues(found, folderSettingsInMemory);
 
 				// 統計設定
-				DbCommon.CopyFoundToYukariStatistics(found, oneStatistics);
+				DbCommon.CopyFoundToYukariStatisticsIfAttributesPrepared(found, oneStatistics);
 			}
 
 			yukariStatisticsContext.SaveChanges();
-			UpdatePastStatistics = false;
+			UpdatePastYukariStatisticsKind = UpdatePastYukariStatisticsKind.None;
 		}
 
 		// ====================================================================
