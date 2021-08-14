@@ -421,7 +421,10 @@ namespace YukaLister.Models.SyncClient
 					_logWriterSyncDetail.LogMessage(TraceEventType.Error, "別名レコード設定時エラー：" + excep.Message);
 					continue;
 				}
-				UpdateBaseDatabaseIfNeeded(records, newRecord, ref numImports);
+#if DEBUGz
+				Debug.WriteLine("ImportAlias() " + newRecord.GetType().Name + ", " + newRecord.Alias);
+#endif
+				UpdateAliasDatabaseIfNeeded(records, newRecord, ref numImports);
 				DisplayMusicInfoStatusIfNeeded(tableIndex, ref numChecks);
 
 				YukaListerModel.Instance.EnvModel.AppCancellationTokenSource.Token.ThrowIfCancellationRequested();
@@ -528,6 +531,25 @@ namespace YukaLister.Models.SyncClient
 			_yukariStatisticsContext.SaveChanges();
 
 			return numImports;
+		}
+
+		// --------------------------------------------------------------------
+		// 同期データで楽曲情報データベースを更新
+		// IRcAlias 用
+		// --------------------------------------------------------------------
+		private void UpdateAliasDatabaseIfNeeded<T>(DbSet<T> records, T newRecord, ref Int32 numImports) where T : class, IRcAlias
+		{
+			// 原因不明だが newRecord.Alias が既存のものと重複しているケースが発生した
+			// EditMusicInfoWindowViewModel.Save() では無効データも含めて重複チェックをしているのだが……
+			// あまりきれいな方法ではないが、ここでも重複チェックを行い、重複している場合は強制的にはじくようにする
+			if (DbCommon.SelectAliasByAlias(records, newRecord.Alias, true) != null)
+			{
+				_logWriterSyncDetail.LogMessage(Common.TRACE_EVENT_TYPE_STATUS, "新規登録不可（別名重複）：" + newRecord.Id + " / " + newRecord.Alias);
+			}
+			else
+			{
+				UpdateBaseDatabaseIfNeeded(records, newRecord, ref numImports);
+			}
 		}
 
 		// --------------------------------------------------------------------

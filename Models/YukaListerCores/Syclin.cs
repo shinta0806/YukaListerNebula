@@ -23,6 +23,7 @@ using System.Threading;
 using System.Threading.Tasks;
 
 using YukaLister.Models.Database;
+using YukaLister.Models.DatabaseAssist;
 using YukaLister.Models.DatabaseContexts;
 using YukaLister.Models.SharedMisc;
 using YukaLister.Models.SyncClient;
@@ -131,6 +132,8 @@ namespace YukaLister.Models.YukaListerCores
 				}
 				catch (Exception excep)
 				{
+					DbCommon.LogDatabaseExceptionIfCan(excep);
+
 					// メッセージボックスではなくステータスバーにエラー表示
 					MainWindowViewModel.SetStatusBarMessageWithInvoke(TraceEventType.Error, excep.Message);
 					YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, "　スタックトレース：\n" + excep.StackTrace);

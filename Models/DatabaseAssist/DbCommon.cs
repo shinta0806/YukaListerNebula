@@ -10,6 +10,7 @@
 
 using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
 
 using Shinta;
 
@@ -18,6 +19,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Text;
 
 using YukaLister.Models.Database;
 using YukaLister.Models.Database.Aliases;
@@ -278,6 +280,29 @@ namespace YukaLister.Models.DatabaseAssist
 		public static String ListDatabasePath(YlSettings ylSettings)
 		{
 			return YukariDatabaseFullFolder(ylSettings) + FILE_NAME_LIST_DATABASE_IN_DISK;
+		}
+
+		// --------------------------------------------------------------------
+		// 例外がデータベース系の場合に詳細をログする
+		// --------------------------------------------------------------------
+		public static void LogDatabaseExceptionIfCan(Exception excep)
+		{
+			if (excep is DbUpdateException dbUpdateExcep)
+			{
+				StringBuilder stringBuilder = new();
+				stringBuilder.Append("DbUpdateException Entries\n");
+				foreach (EntityEntry entry in dbUpdateExcep.Entries)
+				{
+					stringBuilder.Append("Name: " + entry.Entity.GetType().Name + ", State: " + entry.State);
+					if (entry.Entity is IRcBase rcBase)
+					{
+						stringBuilder.Append(", ID: " + rcBase.Id);
+					}
+					stringBuilder.Append("\n");
+				}
+				stringBuilder.Append("Inner Message: " + dbUpdateExcep.InnerException?.Message);
+				YukaListerModel.Instance.EnvModel.LogWriter.LogMessage(TraceEventType.Error, stringBuilder.ToString());
+			}
 		}
 
 		// --------------------------------------------------------------------
