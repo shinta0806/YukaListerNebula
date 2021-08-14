@@ -123,9 +123,11 @@ namespace YukaLister.ViewModels.TabItemViewModels
 					throw new Exception("現在、同期処理を実行中のため、合わせられません。\n同期処理が終了してから合わせてください。");
 				}
 
-				if (MessageBox.Show("ローカルの楽曲情報データベースをすべて削除してから、内容をサーバーに合わせます。\n"
-						+ "タグ情報および、サーバーにアップロードしていないデータは全て失われます。\n"
-						+ "事前にエクスポートすることをお薦めします。\n内容をサーバーに合わせてよろしいですか？", "確認",
+				if (MessageBox.Show("ローカルの楽曲情報データベース・ゆかり統計データベースをすべて削除してから、内容をサーバーに合わせます。\n\n"
+						+ "【注意】\n"
+						+ "サーバーにアップロードしていないデータおよび、楽曲情報データベースのタグ情報は全て失われます。\n"
+						+ "事前に楽曲情報データベースをエクスポートすることをお薦めします。\n\n"
+						+ "内容をサーバーに合わせてよろしいですか？", "確認",
 						MessageBoxButton.YesNo, MessageBoxImage.Exclamation) == MessageBoxResult.No)
 				{
 					return;
