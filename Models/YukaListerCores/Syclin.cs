@@ -102,9 +102,11 @@ namespace YukaLister.Models.YukaListerCores
 					// データベースをバックアップ
 					using MusicInfoContextDefault musicInfoContextDefault = MusicInfoContextDefault.CreateContext(out DbSet<TProperty> _);
 					musicInfoContextDefault.BackupDatabase();
+					using YukariStatisticsContext yukariStatisticsContext = YukariStatisticsContext.CreateContext(out DbSet<TProperty> _);
+					yukariStatisticsContext.BackupDatabase();
 
 					// 再取得の場合は楽曲情報データベース初期化
-					CreateMusicInfoDbIfNeeded(musicInfoContextDefault);
+					CreateDatabaseIfNeeded(musicInfoContextDefault, yukariStatisticsContext);
 
 					// ダウンロード
 					(Int32 numTotalDownloads, Int32 numTotalImports) = DownloadSyncData();
@@ -208,9 +210,9 @@ namespace YukaLister.Models.YukaListerCores
 		// ====================================================================
 
 		// --------------------------------------------------------------------
-		// 再取得の場合は楽曲情報データベースを初期化
+		// 再取得の場合は楽曲情報データベース・ゆかり統計データベースを初期化
 		// --------------------------------------------------------------------
-		private void CreateMusicInfoDbIfNeeded(MusicInfoContextDefault musicInfoContextDefault)
+		private void CreateDatabaseIfNeeded(MusicInfoContextDefault musicInfoContextDefault, YukariStatisticsContext yukariStatisticsContext)
 		{
 			if (!IsReget)
 			{
@@ -219,6 +221,10 @@ namespace YukaLister.Models.YukaListerCores
 
 			YukaListerModel.Instance.EnvModel.LogWriter.LogMessage(Common.TRACE_EVENT_TYPE_STATUS, "サーバーデータ再取得のため楽曲情報データベースを初期化。");
 			musicInfoContextDefault.CreateDatabase();
+
+			YukaListerModel.Instance.EnvModel.LogWriter.LogMessage(Common.TRACE_EVENT_TYPE_STATUS, "サーバーデータ再取得のためゆかり統計データベースを初期化。");
+			yukariStatisticsContext.CreateDatabase();
+
 			IsReget = false;
 		}
 

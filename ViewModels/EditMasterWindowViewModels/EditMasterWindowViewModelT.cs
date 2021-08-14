@@ -283,6 +283,8 @@ namespace YukaLister.ViewModels.EditMasterWindowViewModels
 			}
 			catch (Exception excep)
 			{
+				DbCommon.LogDatabaseExceptionIfCan(excep);
+
 				YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(TraceEventType.Error, "OK ボタンクリック時エラー：\n" + excep.Message);
 				YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, "　スタックトレース：\n" + excep.StackTrace);
 			}
