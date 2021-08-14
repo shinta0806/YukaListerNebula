@@ -542,7 +542,8 @@ namespace YukaLister.Models.SyncClient
 			// 原因不明だが newRecord.Alias が既存のものと重複しているケースが発生した
 			// EditMusicInfoWindowViewModel.Save() では無効データも含めて重複チェックをしているのだが……
 			// あまりきれいな方法ではないが、ここでも重複チェックを行い、重複している場合は強制的にはじくようにする
-			if (DbCommon.SelectAliasByAlias(records, newRecord.Alias, true) != null)
+			T? existRecord = DbCommon.SelectAliasByAlias(records, newRecord.Alias, true);
+			if (existRecord != null && existRecord.Id != newRecord.Id)
 			{
 				_logWriterSyncDetail.LogMessage(Common.TRACE_EVENT_TYPE_STATUS, "新規登録不可（別名重複）：" + newRecord.Id + " / " + newRecord.Alias);
 			}
