@@ -22,7 +22,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Windows;
-using System.Windows.Threading;
 
 using YukaLister.Models.DatabaseAssist;
 using YukaLister.Models.SharedMisc;
@@ -41,7 +40,6 @@ namespace YukaLister.ViewModels
 		// --------------------------------------------------------------------
 		public void Close()
 		{
-			_timer?.Stop();
 			Messenger.Raise(new WindowActionMessage(YlConstants.MESSAGE_KEY_WINDOW_CLOSE));
 		}
 
@@ -109,40 +107,14 @@ namespace YukaLister.ViewModels
 				_mainWindowViewModel.Width = adjustedRect.Width;
 				_mainWindowViewModel.Height = adjustedRect.Height;
 			}
-			OpenMainWindow();
-
-			// メッセージがうまく伝播されないのかメインウィンドウが開かないことがあるかもしれないため、時間差で再度開くようにする（不要かもしれないが念のため）
-			_timer = new DispatcherTimer()
-			{
-				Interval = TimeSpan.FromSeconds(1.0),
-			};
-			_timer.Tick += (s, e) =>
-			{
-				OpenMainWindow();
-			};
-			_timer.Start();
+			Messenger.Raise(new TransitionMessage(_mainWindowViewModel, YlConstants.MESSAGE_KEY_OPEN_MAIN_WINDOW));
 		}
 
 		// ====================================================================
 		// private メンバー変数
 		// ====================================================================
 
-		// メインウィンドウ
+		// メインウィンドウ（アプリ終了時まで保持する必要がある）
 		private MainWindowViewModel? _mainWindowViewModel;
-
-		// メインウィンドウを確実に開くためのタイマー
-		private DispatcherTimer? _timer;
-
-		// ====================================================================
-		// private メンバー関数
-		// ====================================================================
-
-		// --------------------------------------------------------------------
-		// メインウィンドウを開く
-		// --------------------------------------------------------------------
-		private void OpenMainWindow()
-		{
-			Messenger.Raise(new TransitionMessage(_mainWindowViewModel, YlConstants.MESSAGE_KEY_OPEN_MAIN_WINDOW));
-		}
 	}
 }
