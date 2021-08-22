@@ -298,7 +298,7 @@ namespace YukaLister.Models.DatabaseAssist
 					{
 						stringBuilder.Append(", ID: " + rcBase.Id);
 					}
-					stringBuilder.Append("\n");
+					stringBuilder.Append('\n');
 				}
 				stringBuilder.Append("Inner Message: " + dbUpdateExcep.InnerException?.Message);
 				YukaListerModel.Instance.EnvModel.LogWriter.LogMessage(TraceEventType.Error, stringBuilder.ToString());
