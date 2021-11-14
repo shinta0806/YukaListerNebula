@@ -61,8 +61,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="LivetCask" Version="4.0.1" />
-    <PackageReference Include="LivetExtensions" Version="4.0.1" />
+    <PackageReference Include="LivetCask" Version="4.0.2-pre202111140437" />
+    <PackageReference Include="LivetExtensions" Version="4.0.2-pre202111140437" />
     <PackageReference Include="MaterialDesignColors" Version="2.0.3" />
     <PackageReference Include="MaterialDesignThemes" Version="4.2.1" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="6.0.0" />

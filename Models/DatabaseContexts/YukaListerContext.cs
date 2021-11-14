@@ -13,6 +13,8 @@ using Microsoft.EntityFrameworkCore;
 using Shinta;
 
 using System;
+using System.Data.Common;
+using System.Diagnostics;
 using System.IO;
 
 using YukaLister.Models.Database;
@@ -115,12 +117,35 @@ namespace YukaLister.Models.DatabaseContexts
 		// --------------------------------------------------------------------
 		public abstract String DatabasePath();
 
+#if false
+		// --------------------------------------------------------------------
+		// IDisposable.Dispose()
+		// --------------------------------------------------------------------
+		public override void Dispose()
+		{
+			Dispose(true);
+			GC.SuppressFinalize(this);
+			base.Dispose();
+		}
+#endif
+
 		// --------------------------------------------------------------------
 		// ファイルの最終更新日時 UTC
 		// --------------------------------------------------------------------
 		public DateTime LastWriteDateTime()
 		{
-			return new FileInfo(DatabasePath()).LastWriteTimeUtc;
+			String databasePath = DatabasePath();
+			DateTime dateTime = new FileInfo(databasePath).LastWriteTimeUtc;
+			try
+			{
+				LastWriteDateTimeSub(Path.ChangeExtension(databasePath, Common.FILE_EXT_SQLITE3_SHM), ref dateTime);
+				LastWriteDateTimeSub(Path.ChangeExtension(databasePath, Common.FILE_EXT_SQLITE3_WAL), ref dateTime);
+			}
+			catch (Exception)
+			{
+			}
+			Debug.WriteLine("LastWriteDateTime() " + Path.GetFileName(databasePath) + " " + dateTime.ToString());
+			return dateTime;
 		}
 
 		// --------------------------------------------------------------------
@@ -142,12 +167,62 @@ namespace YukaLister.Models.DatabaseContexts
 		// protected メンバー関数
 		// ====================================================================
 
+#if false
+		// --------------------------------------------------------------------
+		// リソース解放
+		// --------------------------------------------------------------------
+		protected virtual void Dispose(Boolean isDisposing)
+		{
+			if (_isDisposed)
+			{
+				return;
+			}
+
+			// マネージドリソース解放
+			if (isDisposing)
+			{
+				Debug.WriteLine("Dispose() " + GetType().Name);
+				Database.CloseConnection();
+			}
+
+			// アンマネージドリソース解放
+			// 今のところ無し
+			// アンマネージドリソースを持つことになった場合、ファイナライザの実装が必要
+
+			// 解放完了
+			_isDisposed = true;
+		}
+#endif
+
 		// --------------------------------------------------------------------
 		// データベース設定
 		// --------------------------------------------------------------------
 		protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 		{
 			optionsBuilder.UseSqlite(DbCommon.Connect(DatabasePath()));
+		}
+
+		// ====================================================================
+		// private メンバー変数
+		// ====================================================================
+
+		// Dispose フラグ
+		//private Boolean _isDisposed;
+
+		// ====================================================================
+		// private メンバー関数
+		// ====================================================================
+
+		// --------------------------------------------------------------------
+		// ファイルの最終更新日時 UTC を更新
+		// --------------------------------------------------------------------
+		private void LastWriteDateTimeSub(String path, ref DateTime dateTime)
+		{
+			DateTime subDateTime = new FileInfo(path).LastWriteTimeUtc;
+			if (subDateTime > dateTime)
+			{
+				dateTime = subDateTime;
+			}
 		}
 	}
 }
