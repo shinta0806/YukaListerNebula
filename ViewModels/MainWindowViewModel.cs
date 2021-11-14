@@ -654,7 +654,7 @@ namespace YukaLister.ViewModels
 		{
 			try
 			{
-				await AddFolderAsync(folderSelectionMessage.Response);
+				await AddFolderAsync(folderSelectionMessage.Response[0]);
 			}
 			catch (Exception excep)
 			{

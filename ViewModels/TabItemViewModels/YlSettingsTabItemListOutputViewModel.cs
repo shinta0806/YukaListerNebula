@@ -298,11 +298,11 @@ namespace YukaLister.ViewModels.TabItemViewModels
 		{
 			try
 			{
-				if (String.IsNullOrEmpty(folderSelectionMessage.Response))
+				if (String.IsNullOrEmpty(folderSelectionMessage.Response[0]))
 				{
 					return;
 				}
-				ListFolder = folderSelectionMessage.Response;
+				ListFolder = folderSelectionMessage.Response[0];
 			}
 			catch (Exception excep)
 			{
