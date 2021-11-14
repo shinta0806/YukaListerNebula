@@ -81,7 +81,7 @@ namespace YukaLister.Models.YukaListerCores
 		// --------------------------------------------------------------------
 		// ネビュラコアのメインルーチン
 		// --------------------------------------------------------------------
-		protected abstract Task CoreMain();
+		protected abstract Task CoreMainAsync();
 
 		// --------------------------------------------------------------------
 		// リソース解放
@@ -120,14 +120,15 @@ namespace YukaLister.Models.YukaListerCores
 
 		// --------------------------------------------------------------------
 		// ネビュラコアのメインルーチンを稼働開始
+		// イベントハンドラー的なシグニチャー
 		// --------------------------------------------------------------------
-		private async Task StartCoreMain()
+		private async void StartCoreMain()
 		{
 			// アプリ終了時に強制終了されないように設定
 			Thread.CurrentThread.IsBackground = false;
 
 			YukaListerModel.Instance.EnvModel.LogWriter.LogMessage(Common.TRACE_EVENT_TYPE_STATUS, GetType().Name + " の稼働を開始します。");
-			await CoreMain();
+			await CoreMainAsync();
 			YukaListerModel.Instance.EnvModel.LogWriter.LogMessage(Common.TRACE_EVENT_TYPE_STATUS, GetType().Name + " の稼働を終了します。");
 		}
 	}

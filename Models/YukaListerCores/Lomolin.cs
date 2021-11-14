@@ -61,7 +61,7 @@ namespace YukaLister.Models.YukaListerCores
 		// --------------------------------------------------------------------
 		// ネビュラコア（負荷監視）のメインルーチン
 		// --------------------------------------------------------------------
-		protected override Task CoreMain()
+		protected override Task CoreMainAsync()
 		{
 			// 急ぎではないのでプライオリティーを下げるが、Lowest だとビジー状態で進まないかもしれないので、一段だけ下げる
 			Thread.CurrentThread.Priority = ThreadPriority.BelowNormal;

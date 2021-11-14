@@ -54,7 +54,7 @@ namespace YukaLister.Models.YukaListerCores
 		// --------------------------------------------------------------------
 		// ネビュラコア（動画リスト作成）のメインルーチン
 		// --------------------------------------------------------------------
-		protected override async Task CoreMain()
+		protected override async Task CoreMainAsync()
 		{
 			// リスト出力時の処理が重いことによるトラブルの可能性がゼロではないため、プライオリティーを下げる（チケット #97）
 			Thread.CurrentThread.Priority = ThreadPriority.Lowest;

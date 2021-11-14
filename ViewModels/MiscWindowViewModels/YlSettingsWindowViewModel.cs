@@ -153,29 +153,13 @@ namespace YukaLister.ViewModels.MiscWindowViewModels
 			}
 		}
 
-		// UpdaterLauncher
+		// UpdaterLauncher（添付ビヘイビアにより起動）
 		private UpdaterLauncher? _updaterLauncher;
 		public UpdaterLauncher? UpdaterLauncher
 		{
 			get => _updaterLauncher;
 			set => RaisePropertyChangedIfSet(ref _updaterLauncher, value);
 		}
-
-#if false
-		// ゆかりすたーでエクスポートしたファイルをインポート
-		private Boolean _importYukaListerMode;
-		public Boolean ImportYukaListerMode
-		{
-			get => _importYukaListerMode;
-			set
-			{
-				if (RaisePropertyChangedIfSet(ref _importYukaListerMode, value))
-				{
-					ButtonBrowseImportYukaListerClickedCommand.RaiseCanExecuteChanged();
-				}
-			}
-		}
-#endif
 
 		// --------------------------------------------------------------------
 		// 一般のプロパティー
@@ -377,9 +361,6 @@ namespace YukaLister.ViewModels.MiscWindowViewModels
 			{
 				_ylSettingsTabItemViewModels[i].SettingsToProperties();
 			}
-
-			// インポートタブ
-			//ImportYukaListerMode = true;
 		}
 	}
 }

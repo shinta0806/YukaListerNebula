@@ -8,6 +8,8 @@
     <IncludeNativeLibrariesForSelfExtract>true</IncludeNativeLibrariesForSelfExtract>
     <DebugType>embedded</DebugType>
     <ApplicationIcon>Icon\YukaListerアイコン_1.ico</ApplicationIcon>
+    <Authors>SHINTA</Authors>
+    <Copyright>Copyright © by SHINTA</Copyright>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
@@ -33,6 +35,7 @@
     <Compile Include="..\..\_Common\Behaviors\FileDropAttachedBehavior.cs" Link="_Common\Behaviors\FileDropAttachedBehavior.cs" />
     <Compile Include="..\..\_Common\Behaviors\IsFocusedAttachedBehavior.cs" Link="_Common\Behaviors\IsFocusedAttachedBehavior.cs" />
     <Compile Include="..\..\_Common\Behaviors\LaunchUpdaterAttachedBehavior.cs" Link="_Common\Behaviors\LaunchUpdaterAttachedBehavior.cs" />
+    <Compile Include="..\..\_Common\Behaviors\SelectorBindingSupportBehavior.cs" Link="_Common\Behaviors\SelectorBindingSupportBehavior.cs" />
     <Compile Include="..\..\_Common\Behaviors\WindowBindingSupportBehavior.cs" Link="_Common\Behaviors\WindowBindingSupportBehavior.cs" />
     <Compile Include="..\..\_Common\CsvManager.cs" Link="_Common\CsvManager.cs" />
     <Compile Include="..\..\_Common\Downloader.cs" Link="_Common\Downloader.cs" />

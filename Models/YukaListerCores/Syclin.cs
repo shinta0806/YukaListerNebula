@@ -65,7 +65,7 @@ namespace YukaLister.Models.YukaListerCores
 		// --------------------------------------------------------------------
 		// ネビュラコア（同期）のメインルーチン
 		// --------------------------------------------------------------------
-		protected override Task CoreMain()
+		protected override async Task CoreMainAsync()
 		{
 #if DEBUGz
 			Debug.WriteLine("priority before: " + Thread.CurrentThread.Priority.ToString());
@@ -97,7 +97,7 @@ namespace YukaLister.Models.YukaListerCores
 
 					// ログイン
 					MainWindowViewModel.SetStatusBarMessageWithInvoke(Common.TRACE_EVENT_TYPE_STATUS, "同期準備中...");
-					LoginToSyncServer();
+					await LoginToSyncServerAsync();
 
 					// データベースをバックアップ
 					using MusicInfoContextDefault musicInfoContextDefault = MusicInfoContextDefault.CreateContext(out DbSet<TProperty> _);
@@ -109,14 +109,14 @@ namespace YukaLister.Models.YukaListerCores
 					CreateDatabaseIfNeeded(musicInfoContextDefault, yukariStatisticsContext);
 
 					// ダウンロード
-					(Int32 numTotalDownloads, Int32 numTotalImports) = DownloadSyncData();
+					(Int32 numTotalDownloads, Int32 numTotalImports) = await DownloadSyncDataAsync();
 
 					// アップロード
-					Int32 numTotalUploads = UploadSyncData();
+					Int32 numTotalUploads = await UploadSyncDataAsync();
 					if (numTotalUploads > 0)
 					{
 						// アップロードを行った場合は、自身がアップロードしたデータの更新日・Dirty を更新するために再ダウンロードが必要
-						(numTotalDownloads, numTotalImports) = DownloadSyncData();
+						(numTotalDownloads, numTotalImports) = await DownloadSyncDataAsync();
 					}
 
 					// 完了表示
@@ -130,7 +130,7 @@ namespace YukaLister.Models.YukaListerCores
 				}
 				catch (OperationCanceledException)
 				{
-					return Task.CompletedTask;
+					return;
 				}
 				catch (Exception excep)
 				{
@@ -145,32 +145,6 @@ namespace YukaLister.Models.YukaListerCores
 				TimeSpan timeSpan = new(YlCommon.MiliToHNano(Environment.TickCount - startTick));
 				YukaListerModel.Instance.EnvModel.LogWriter.LogMessage(Common.TRACE_EVENT_TYPE_STATUS, GetType().Name + " スリープ化：アクティブ時間：" + timeSpan.ToString(@"hh\:mm\:ss"));
 			}
-		}
-
-		// --------------------------------------------------------------------
-		// リソース解放
-		// --------------------------------------------------------------------
-		protected override void Dispose(Boolean isDisposing)
-		{
-			base.Dispose(isDisposing);
-
-			if (_isDisposed)
-			{
-				return;
-			}
-
-			// マネージドリソース解放
-			if (isDisposing)
-			{
-				_downloader.Dispose();
-			}
-
-			// アンマネージドリソース解放
-			// 今のところ無し
-			// アンマネージドリソースを持つことになった場合、ファイナライザの実装が必要
-
-			// 解放完了
-			_isDisposed = true;
 		}
 
 		// ====================================================================
@@ -202,9 +176,6 @@ namespace YukaLister.Models.YukaListerCores
 		// 詳細ログ（同期専用）
 		private readonly LogWriter _logWriterSyncDetail = new(YlConstants.APP_ID + YlConstants.SYNC_DETAIL_ID);
 
-		// Dispose フラグ
-		private Boolean _isDisposed;
-
 		// ====================================================================
 		// private メンバー関数
 		// ====================================================================
@@ -232,11 +203,11 @@ namespace YukaLister.Models.YukaListerCores
 		// アップロードを拒否されたレコードの更新日をサーバーからダウンロード
 		// YukaListerModel.Instance.EnvModel.YlSettings.LastSyncDownloadDate を更新し、次回ダウンロード時に拒否レコードが上書きされるようにする
 		// --------------------------------------------------------------------
-		private void DownloadRejectDate()
+		private async Task DownloadRejectDateAsync()
 		{
 			try
 			{
-				String? rejectDateString = _downloader.Download(SyncUrl(SYNC_MODE_NAME_DOWNLOAD_REJECT_DATE), Encoding.UTF8);
+				(_, String rejectDateString) = await _downloader.DownloadAsStringAsync(SyncUrl(SYNC_MODE_NAME_DOWNLOAD_REJECT_DATE), Encoding.UTF8);
 				if (String.IsNullOrEmpty(rejectDateString))
 				{
 					throw new Exception("サーバーからの確認結果が空です。");
@@ -260,7 +231,7 @@ namespace YukaLister.Models.YukaListerCores
 		// LastSyncDownloadDate も再度ダウンロードする（同日にデータが追加されている可能性があるため）
 		// ＜例外＞
 		// --------------------------------------------------------------------
-		private (Int32 numTotalDownloads, Int32 numTotalImports) DownloadSyncData()
+		private async Task<(Int32 numTotalDownloads, Int32 numTotalImports)> DownloadSyncDataAsync()
 		{
 			Debug.Assert(MainWindowViewModel != null, "DownloadSyncData() no main window");
 
@@ -282,7 +253,7 @@ namespace YukaLister.Models.YukaListerCores
 
 				// ダウンロード
 				String downloadPath = YlCommon.TempPath();
-				_downloader.Download(SyncUrl(SYNC_MODE_NAME_DOWNLOAD_SYNC_DATA) + "&Date=" + targetDate.ToString(YlConstants.SYNC_URL_DATE_FORMAT), downloadPath);
+				await _downloader.DownloadAsFileAsync(SyncUrl(SYNC_MODE_NAME_DOWNLOAD_SYNC_DATA) + "&Date=" + targetDate.ToString(YlConstants.SYNC_URL_DATE_FORMAT), downloadPath);
 
 				FileInfo fileInfo = new(downloadPath);
 				if (fileInfo.Length == 0)
@@ -324,11 +295,11 @@ namespace YukaLister.Models.YukaListerCores
 		// --------------------------------------------------------------------
 		// ネットワークが利用可能かどうか（簡易判定）
 		// --------------------------------------------------------------------
-		private Boolean IsNetworkAvailable()
+		private async Task<Boolean> IsNetworkAvailableAsync()
 		{
 			try
 			{
-				_downloader.Download("https://www.google.com/", Encoding.UTF8);
+				await _downloader.DownloadAsStringAsync("https://www.google.com/", Encoding.UTF8);
 				return true;
 			}
 			catch (Exception)
@@ -340,7 +311,7 @@ namespace YukaLister.Models.YukaListerCores
 		// --------------------------------------------------------------------
 		// 楽曲情報データベース同期サーバーにログインする
 		// --------------------------------------------------------------------
-		private void LoginToSyncServer()
+		private async Task LoginToSyncServerAsync()
 		{
 			// SID 取得
 			String? sid = null;
@@ -365,12 +336,13 @@ namespace YukaLister.Models.YukaListerCores
 				{ "AppVer", YlConstants.APP_VER },
 			};
 			MainWindowViewModel?.SetStatusBarMessageWithInvoke(Common.TRACE_EVENT_TYPE_STATUS, "データベース同期サーバーにログインします...");
-			Post(postParams);
+			await PostAsync(postParams);
 
 			// ログイン結果確認
-			if (SyncPostErrorExists(out String? errMessage))
+			(Boolean errorExists, String? errorMessage) = await SyncPostErrorExistsAsync();
+			if (errorExists)
 			{
-				throw new Exception("データベース同期サーバーにログインできませんでした。" + errMessage);
+				throw new Exception("データベース同期サーバーにログインできませんでした。" + errorMessage);
 			}
 
 			MainWindowViewModel?.SetStatusBarMessageWithInvoke(Common.TRACE_EVENT_TYPE_STATUS, "データベース同期サーバーにログインしました。同期処理中です...");
@@ -382,17 +354,17 @@ namespace YukaLister.Models.YukaListerCores
 		// POST データ送信
 		// ＜例外＞ Exception, OperationCanceledException
 		// --------------------------------------------------------------------
-		private void Post(Dictionary<String, String?> postParams, Dictionary<String, String>? files = null)
+		private async Task PostAsync(Dictionary<String, String?> postParams, Dictionary<String, String>? files = null)
 		{
 			try
 			{
-				_downloader.Post(YukaListerModel.Instance.EnvModel.YlSettings.SyncServer + FILE_NAME_CP_MAIN, postParams, files);
+				await _downloader.PostAndDownloadAsStringAsync(YukaListerModel.Instance.EnvModel.YlSettings.SyncServer + FILE_NAME_CP_MAIN, Encoding.UTF8, postParams, files);
 				Thread.Sleep(SYNC_INTERVAL);
 				YukaListerModel.Instance.EnvModel.AppCancellationTokenSource.Token.ThrowIfCancellationRequested();
 			}
 			catch (Exception)
 			{
-				if (IsNetworkAvailable())
+				if (await IsNetworkAvailableAsync())
 				{
 					// ネットワークが利用可能なのに例外になった場合は、サーバーアドレスが間違っているか、サーバーが混んでいる可能性が高い
 					throw new Exception("データベース同期サーバーに接続できませんでした。サーバーアドレスが間違っているか、サーバーが混んでいます。");
@@ -406,13 +378,14 @@ namespace YukaLister.Models.YukaListerCores
 
 		// --------------------------------------------------------------------
 		// 楽曲情報データベース同期サーバーへの POST でエラーが発生したかどうか
+		// 本来は POST 時の返値を見れば良いが、過去との互換性のために、エラーを問い合わせる仕様となっている
 		// ＜例外＞ Exception
 		// --------------------------------------------------------------------
-		private Boolean SyncPostErrorExists(out String? errMessage)
+		private async Task<(Boolean errorExists, String? errorMessage)> SyncPostErrorExistsAsync()
 		{
 			try
 			{
-				String? status = _downloader.Download(SyncUrl(SYNC_MODE_NAME_DOWNLOAD_POST_ERROR), Encoding.UTF8);
+				(_, String status) = await _downloader.DownloadAsStringAsync(SyncUrl(SYNC_MODE_NAME_DOWNLOAD_POST_ERROR), Encoding.UTF8);
 				if (String.IsNullOrEmpty(status))
 				{
 					throw new Exception("サーバーからの確認結果が空です。");
@@ -421,15 +394,12 @@ namespace YukaLister.Models.YukaListerCores
 				{
 					if (!status.Contains(YlConstants.APP_GENERATION))
 					{
-						errMessage = "サーバーの互換性がありません。";
-						return true;
+						return (true, "サーバーの互換性がありません。");
 					}
-					errMessage = null;
-					return false;
+					return (false, null);
 				}
 
-				errMessage = status[1..];
-				return true;
+				return (true, status[1..]);
 			}
 			catch (Exception excep)
 			{
@@ -449,7 +419,7 @@ namespace YukaLister.Models.YukaListerCores
 		// 同期データをサーバーへアップロード
 		// ＜返値＞ アップロード件数合計
 		// --------------------------------------------------------------------
-		private Int32 UploadSyncData()
+		private async Task<Int32> UploadSyncDataAsync()
 		{
 			_logWriterSyncDetail.LogMessage(Common.TRACE_EVENT_TYPE_STATUS, "アップロード開始");
 			using SyncDataExporter syncDataExporter = new();
@@ -467,15 +437,15 @@ namespace YukaLister.Models.YukaListerCores
 
 				// アップロード
 				_logWriterSyncDetail.LogMessage(Common.TRACE_EVENT_TYPE_STATUS, "アップロード中... " + YlConstants.MUSIC_INFO_TABLE_NAME_LABELS[(Int32)i]);
-				numTotalUploads += UploadSyncDataCore(YlConstants.MUSIC_INFO_DB_TABLE_NAMES[(Int32)i], musicInfoCsvHead, musicInfoCsvContents);
+				numTotalUploads += await UploadSyncDataCoreAsync(YlConstants.MUSIC_INFO_DB_TABLE_NAMES[(Int32)i], musicInfoCsvHead, musicInfoCsvContents);
 			}
 
 			// ゆかり統計データベース
 			(List<String> yukariStatisticsCsvHead, List<List<String>> yukariStatisticsCsvContents) = syncDataExporter.ExportYukariStatisticsDatabase();
 			_logWriterSyncDetail.LogMessage(Common.TRACE_EVENT_TYPE_STATUS, "アップロード中... ゆかり統計");
-			numTotalUploads += UploadSyncDataCore(TYukariStatistics.TABLE_NAME_YUKARI_STATISTICS, yukariStatisticsCsvHead, yukariStatisticsCsvContents);
+			numTotalUploads += await UploadSyncDataCoreAsync(TYukariStatistics.TABLE_NAME_YUKARI_STATISTICS, yukariStatisticsCsvHead, yukariStatisticsCsvContents);
 
-			DownloadRejectDate();
+			await DownloadRejectDateAsync();
 			_logWriterSyncDetail.LogMessage(Common.TRACE_EVENT_TYPE_STATUS, "アップロード完了");
 			return numTotalUploads;
 		}
@@ -484,7 +454,7 @@ namespace YukaLister.Models.YukaListerCores
 		// 同期データをサーバーへアップロード
 		// ＜返値＞ アップロード件数合計
 		// --------------------------------------------------------------------
-		private Int32 UploadSyncDataCore(String tableName, List<String> csvHead, List<List<String>> csvContents)
+		private async Task<Int32> UploadSyncDataCoreAsync(String tableName, List<String> csvHead, List<List<String>> csvContents)
 		{
 			Debug.Assert(MainWindowViewModel != null, "UploadSyncDataCore() no main window");
 
@@ -513,12 +483,13 @@ namespace YukaLister.Models.YukaListerCores
 				{
 					_logWriterSyncDetail.LogMessage(Common.TRACE_EVENT_TYPE_STATUS, "データ：" + uploadContents[k][0]);
 				}
-				Post(postParams, uploadFiles);
+				await PostAsync(postParams, uploadFiles);
 
 				// アップロード結果確認
-				if (SyncPostErrorExists(out String? errMessage))
+				(Boolean errorExists, String? errorMessage) = await SyncPostErrorExistsAsync();
+				if (errorExists)
 				{
-					throw new Exception("同期データをアップロードできませんでした：" + errMessage);
+					throw new Exception("同期データをアップロードできませんでした：" + errorMessage);
 				}
 
 				// 状況

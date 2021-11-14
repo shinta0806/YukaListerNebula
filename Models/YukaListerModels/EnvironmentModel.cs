@@ -10,6 +10,7 @@
 
 using Livet;
 using Livet.Commands;
+
 using Shinta;
 
 using System;
@@ -20,6 +21,7 @@ using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+
 using YukaLister.Models.DatabaseContexts;
 using YukaLister.Models.SerializableSettings;
 using YukaLister.Models.SharedMisc;

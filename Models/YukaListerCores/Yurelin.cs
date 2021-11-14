@@ -64,7 +64,7 @@ namespace YukaLister.Models.YukaListerCores
 		// --------------------------------------------------------------------
 		// ネビュラコア（統計データ作成）のメインルーチン
 		// --------------------------------------------------------------------
-		protected override async Task CoreMain()
+		protected override async Task CoreMainAsync()
 		{
 			// 急ぎではないのでプライオリティーを下げる
 			Thread.CurrentThread.Priority = ThreadPriority.Lowest;

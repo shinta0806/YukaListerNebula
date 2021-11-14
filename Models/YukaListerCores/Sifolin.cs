@@ -54,7 +54,7 @@ namespace YukaLister.Models.YukaListerCores
 		// --------------------------------------------------------------------
 		// ネビュラコア（検索データ作成）のメインルーチン
 		// --------------------------------------------------------------------
-		protected override Task CoreMain()
+		protected override Task CoreMainAsync()
 		{
 			while (true)
 			{
