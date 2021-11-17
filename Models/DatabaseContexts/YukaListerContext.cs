@@ -8,6 +8,7 @@
 //
 // ----------------------------------------------------------------------------
 
+using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
 
 using Shinta;
@@ -199,7 +200,8 @@ namespace YukaLister.Models.DatabaseContexts
 		// --------------------------------------------------------------------
 		protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 		{
-			optionsBuilder.UseSqlite(DbCommon.Connect(DatabasePath()));
+			using SqliteConnection sqliteConnection = DbCommon.Connect(DatabasePath());
+			optionsBuilder.UseSqlite(sqliteConnection);
 		}
 
 		// ====================================================================

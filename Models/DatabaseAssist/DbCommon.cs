@@ -98,8 +98,6 @@ namespace YukaLister.Models.DatabaseAssist
 			SqliteConnectionStringBuilder stringBuilder = new()
 			{
 				DataSource = path,
-				//BusyTimeout = 100, // default = 0?
-				//PrepareRetries = 10, // default = 0?
 			};
 			return new SqliteConnection(stringBuilder.ToString());
 		}

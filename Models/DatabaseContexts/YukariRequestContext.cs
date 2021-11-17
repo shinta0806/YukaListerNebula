@@ -8,6 +8,7 @@
 // データベースプロパティーテーブルが存在しないため YukaListerContext の派生にはしない
 // ----------------------------------------------------------------------------
 
+using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
 
 using Shinta;
@@ -86,7 +87,8 @@ namespace YukaLister.Models.DatabaseContexts
 		// --------------------------------------------------------------------
 		protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 		{
-			optionsBuilder.UseSqlite(DbCommon.Connect(YukaListerModel.Instance.EnvModel.YlSettings.YukariRequestDatabasePath()));
+			using SqliteConnection sqliteConnection = DbCommon.Connect(YukaListerModel.Instance.EnvModel.YlSettings.YukariRequestDatabasePath());
+			optionsBuilder.UseSqlite(sqliteConnection);
 		}
 
 		// --------------------------------------------------------------------
