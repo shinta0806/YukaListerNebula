@@ -168,7 +168,6 @@
                         <Button Height="Auto" Content="今すぐ最新情報を確認する (_N)" Style="{StaticResource MaterialDesignRaisedLightButton}" Margin="0" Width="210" DockPanel.Dock="Right" Padding="4" Command="{Binding ButtonCheckRssClickedCommand}"/>
                         <ProgressBar Height="Auto" Margin="0,0,10,0" Visibility="{Binding ProgressBarCheckRssVisibility}" IsIndeterminate="True"/>
                     </DockPanel>
-                    <Label Content="（「セルフ再起動したため終了します」というメッセージの後、しばらくしてから確認結果が表示されます）" Foreground="{DynamicResource MaterialDesignBodyLight}" HorizontalContentAlignment="Right" />
                     <StackPanel Margin="20,10,0,0">
                         <Label Content="設定のバックアップ（ファイルに保存）"/>
                     </StackPanel>

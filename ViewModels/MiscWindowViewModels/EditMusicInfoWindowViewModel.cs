@@ -672,6 +672,9 @@ namespace YukaLister.ViewModels.MiscWindowViewModels
 #if DEBUG
 				Title = "［デバッグ］" + Title;
 #endif
+#if TEST
+				Title = "［テスト］" + Title;
+#endif
 
 				// コンポーネントや楽曲情報データベースによるエイリアスを指定しない状態での情報を使うため、YlCommon を使う
 				Dictionary<String, String?> dicByFilePure = YlCommon.MatchFileNameRulesAndFolderRuleForSearch(_filePath);

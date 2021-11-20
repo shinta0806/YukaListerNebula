@@ -268,6 +268,9 @@ namespace YukaLister.ViewModels.ReportWindowViewModels
 #if DEBUG
 				Title = "［デバッグ］" + Title;
 #endif
+#if TEST
+				Title = "［テスト］" + Title;
+#endif
 
 				// 対応状況選択肢
 				List<String> statusStrings = new();

@@ -296,6 +296,10 @@ namespace YukaLister.ViewModels.MiscWindowViewModels
 #if DEBUG
 				Title = "［デバッグ］" + Title;
 #endif
+#if TEST
+				Title = "［テスト］" + Title;
+#endif
+
 				for (Int32 i = 0; i < _ylSettingsTabItemViewModels.Length; i++)
 				{
 					_ylSettingsTabItemViewModels[i].Initialize();

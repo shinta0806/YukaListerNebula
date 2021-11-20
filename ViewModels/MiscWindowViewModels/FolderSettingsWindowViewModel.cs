@@ -1027,6 +1027,9 @@ namespace YukaLister.ViewModels.MiscWindowViewModels
 #if DEBUG
 				Title = "［デバッグ］" + Title;
 #endif
+#if TEST
+				Title = "［テスト］" + Title;
+#endif
 
 				// タグボタンのコンテキストメニュー
 				List<String> labels = CreateRuleVarLabels();

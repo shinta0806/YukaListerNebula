@@ -187,6 +187,9 @@ namespace YukaLister.ViewModels.ImportExportWindowViewModels
 #if DEBUG
 				Title = "［デバッグ］" + Title;
 #endif
+#if TEST
+				Title = "［テスト］" + Title;
+#endif
 
 				YukaListerModel.Instance.EnvModel.LogWriter.AppendDisplayText = AppendDisplayText;
 

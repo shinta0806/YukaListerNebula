@@ -452,6 +452,9 @@ namespace YukaLister.ViewModels.EditSequenceWindowViewModels
 #if DEBUG
 				Title = "［デバッグ］" + Title;
 #endif
+#if TEST
+				Title = "［テスト］" + Title;
+#endif
 
 				// ラベル
 				Description = "「検索して追加」ボタンで" + _caption + "を追加して下さい。複数追加も可能です。";

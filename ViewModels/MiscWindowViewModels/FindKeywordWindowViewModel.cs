@@ -242,6 +242,9 @@ namespace YukaLister.ViewModels.MiscWindowViewModels
 #if DEBUG
 				Title = "［デバッグ］" + Title;
 #endif
+#if TEST
+				Title = "［テスト］" + Title;
+#endif
 			}
 			catch (Exception excep)
 			{

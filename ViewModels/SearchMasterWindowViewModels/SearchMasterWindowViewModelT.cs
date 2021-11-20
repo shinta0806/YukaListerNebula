@@ -292,6 +292,10 @@ namespace YukaLister.ViewModels.SearchMasterWindowViewModels
 #if DEBUG
 				Title = "［デバッグ］" + Title;
 #endif
+#if TEST
+				Title = "［テスト］" + Title;
+#endif
+				
 				// 説明
 				Description = _itemName + "を、既に登録されている情報から検索します。";
 

@@ -681,6 +681,9 @@ namespace YukaLister.ViewModels
 #if DEBUG
 				Title = "［デバッグ］" + Title;
 #endif
+#if TEST
+				Title = "［テスト］" + Title;
+#endif
 
 				// イベントハンドラー
 				TargetFolderInfo.IsOpenChanged = TargetFolderInfoIsOpenChanged;

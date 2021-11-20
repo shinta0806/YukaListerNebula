@@ -192,6 +192,10 @@ namespace YukaLister.ViewModels.ReportWindowViewModels
 #if DEBUG
 				Title = "［デバッグ］" + Title;
 #endif
+#if TEST
+				Title = "［テスト］" + Title;
+#endif
+
 				// 絞り込み
 				ShowOnlyOpened = true;
 			}

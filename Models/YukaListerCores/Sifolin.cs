@@ -648,6 +648,9 @@ namespace YukaLister.Models.YukaListerCores
 
 			// 作業
 			CacheToDiskCore(targetFolderInfo);
+#if TEST
+			YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(TraceEventType.Information, "CacheToDisk() キャッシュ追加：" + targetFolderInfo.TargetPath);
+#endif
 
 			// 動作状況設定
 			targetFolderInfo.SetFolderTaskDetail(FolderTaskDetail.CacheToDisk, FolderTaskDetail.FindSubFolders);

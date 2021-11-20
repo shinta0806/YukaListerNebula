@@ -309,6 +309,9 @@ namespace YukaLister.ViewModels.EditMasterWindowViewModels
 #if DEBUG
 				Title = "［デバッグ］" + Title;
 #endif
+#if TEST
+				Title = "［テスト］" + Title;
+#endif
 
 				// キャプション
 				IdCaption = _caption + " ID (_I)：";

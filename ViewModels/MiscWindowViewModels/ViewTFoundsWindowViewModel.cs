@@ -597,6 +597,10 @@ namespace YukaLister.ViewModels.MiscWindowViewModels
 #if DEBUG
 				Title = "［デバッグ］" + Title;
 #endif
+#if TEST
+				Title = "［テスト］" + Title;
+#endif
+
 				// 出力項目
 				OutputSettings outputSettings = new();
 				outputSettings.Load();
