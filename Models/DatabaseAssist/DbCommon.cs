@@ -19,6 +19,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 
 using YukaLister.Models.Database;
@@ -113,24 +114,57 @@ namespace YukaLister.Models.DatabaseAssist
 				return;
 			}
 
+			yukariStatistics.Dirty |= !yukariStatistics.AttributesDone;
 			yukariStatistics.AttributesDone = true;
-			yukariStatistics.Worker = found.Worker;
-			yukariStatistics.SongReleaseDate = found.SongReleaseDate;
-			yukariStatistics.CategoryName = found.Category;
-			yukariStatistics.TieUpName = found.TieUpName;
-			yukariStatistics.TieUpAgeLimit = found.TieUpAgeLimit;
-			yukariStatistics.MakerName = found.MakerName;
-			yukariStatistics.TieUpGroupName = found.TieUpGroupName;
-			yukariStatistics.SongName = found.SongName;
-			yukariStatistics.SongOpEd = found.SongOpEd;
-			yukariStatistics.ArtistName = found.ArtistName;
-			yukariStatistics.LyristName = found.LyristName;
-			yukariStatistics.ComposerName = found.ComposerName;
-			yukariStatistics.ArrangerName = found.ArrangerName;
 
-			yukariStatistics.Dirty = true;
+			CopyFoundToYukariStatisticsIfUpdated(found, nameof(found.Worker), yukariStatistics, nameof(yukariStatistics.Worker));
+			CopyFoundToYukariStatisticsIfUpdated(found, nameof(found.SongReleaseDate), yukariStatistics, nameof(yukariStatistics.SongReleaseDate));
+			CopyFoundToYukariStatisticsIfUpdated(found, nameof(found.Category), yukariStatistics, nameof(yukariStatistics.CategoryName));
+			CopyFoundToYukariStatisticsIfUpdated(found, nameof(found.TieUpName), yukariStatistics, nameof(yukariStatistics.TieUpName));
+			CopyFoundToYukariStatisticsIfUpdated(found, nameof(found.TieUpAgeLimit), yukariStatistics, nameof(yukariStatistics.TieUpAgeLimit));
+			CopyFoundToYukariStatisticsIfUpdated(found, nameof(found.MakerName), yukariStatistics, nameof(yukariStatistics.MakerName));
+			CopyFoundToYukariStatisticsIfUpdated(found, nameof(found.TieUpGroupName), yukariStatistics, nameof(yukariStatistics.TieUpGroupName));
+			CopyFoundToYukariStatisticsIfUpdated(found, nameof(found.SongName), yukariStatistics, nameof(yukariStatistics.SongName));
+			CopyFoundToYukariStatisticsIfUpdated(found, nameof(found.SongOpEd), yukariStatistics, nameof(yukariStatistics.SongOpEd));
+			CopyFoundToYukariStatisticsIfUpdated(found, nameof(found.ArtistName), yukariStatistics, nameof(yukariStatistics.ArtistName));
+			CopyFoundToYukariStatisticsIfUpdated(found, nameof(found.LyristName), yukariStatistics, nameof(yukariStatistics.LyristName));
+			CopyFoundToYukariStatisticsIfUpdated(found, nameof(found.ComposerName), yukariStatistics, nameof(yukariStatistics.ComposerName));
+			CopyFoundToYukariStatisticsIfUpdated(found, nameof(found.ArrangerName), yukariStatistics, nameof(yukariStatistics.ArrangerName));
 
 			Debug.WriteLine("CopyFoundToYukariStatisticsIfAttributesPrepared() 属性確認実施 " + yukariStatistics.RequestMoviePath);
+		}
+
+		// --------------------------------------------------------------------
+		// TFound → TYukariStatistics へプロパティーを 1 つコピー（TFound と TYukariStatistics が異なる場合のみ）
+		// --------------------------------------------------------------------
+		public static void CopyFoundToYukariStatisticsIfUpdated(TFound found, String foundPropertyName, TYukariStatistics yukariStatistics, String statisticsPropertyName)
+		{
+			Type foundType = typeof(TFound);
+			PropertyInfo? foundPropertyInfo = foundType.GetProperty(foundPropertyName);
+			Type statisticsType = typeof(TYukariStatistics);
+			PropertyInfo? statisticsPropertyInfo = statisticsType.GetProperty(statisticsPropertyName);
+			Debug.Assert(foundPropertyInfo != null && statisticsPropertyInfo != null, "CopyFoundToYukariStatisticsIfUpdated() bad propertyName");
+
+			Object? foundValue = foundPropertyInfo.GetValue(found);
+			Object? statisticsValue = statisticsPropertyInfo.GetValue(yukariStatistics);
+
+			if (foundPropertyInfo.PropertyType == typeof(String))
+			{
+				// String の場合は null と String.Empty を同値扱い
+				if (String.IsNullOrEmpty((String?)foundValue) && String.IsNullOrEmpty((String?)statisticsValue))
+				{
+					return;
+				}
+			}
+			if (foundValue == null && statisticsValue == null || foundValue?.Equals(statisticsValue) == true)
+			{
+				return;
+			}
+
+			// 異なるのでコピー
+			Debug.WriteLine("CopyFoundToYukariStatisticsIfUpdated() copy " + yukariStatistics.Id + ", " + foundPropertyInfo.Name + ": " + foundValue);
+			statisticsPropertyInfo.SetValue(yukariStatistics, foundValue);
+			yukariStatistics.Dirty = true;
 		}
 
 		// --------------------------------------------------------------------
