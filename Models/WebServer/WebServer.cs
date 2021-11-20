@@ -193,7 +193,7 @@ namespace YukaLister.Models.WebServer
 					Int32 eqPos = optionStrings[i].IndexOf('=');
 					if (0 < eqPos && eqPos < optionStrings[i].Length - 1)
 					{
-						options[optionStrings[i].Substring(0, eqPos)] = optionStrings[i][(eqPos + 1)..];
+						options[optionStrings[i][..eqPos]] = optionStrings[i][(eqPos + 1)..];
 					}
 				}
 			}
@@ -301,7 +301,7 @@ namespace YukaLister.Models.WebServer
 				// 生成するサムネイルのサイズを計算
 				Int32 thumbWidth = width;
 				Int32 aThumbHeight = (Int32)(thumbWidth / THUMB_ASPECT_RATIO);
-				Debug.WriteLine("[" + Thread.CurrentThread.ManagedThreadId + "] CreateThumb() Thumb size: " + thumbWidth + " x " + aThumbHeight);
+				Debug.WriteLine("[" + Environment.CurrentManagedThreadId + "] CreateThumb() Thumb size: " + thumbWidth + " x " + aThumbHeight);
 
 				// 動画のリサイズサイズを計算
 				Double playerAspectRatio = (Double)player.NaturalVideoWidth / player.NaturalVideoHeight;
@@ -318,7 +318,7 @@ namespace YukaLister.Models.WebServer
 					resizeWidth = (Int32)(resizeHeight * THUMB_ASPECT_RATIO);
 				}
 				Double scale = (Double)resizeWidth / player.NaturalVideoWidth;
-				Debug.WriteLine("[" + Thread.CurrentThread.ManagedThreadId + "] CreateThumb() Resize size: " + resizeWidth + " x " + resizeHeight);
+				Debug.WriteLine("[" + Environment.CurrentManagedThreadId + "] CreateThumb() Resize size: " + resizeWidth + " x " + resizeHeight);
 
 				// 縮小
 				TransformedBitmap scaledBitmap = new(origBitmap, new ScaleTransform(scale, scale));

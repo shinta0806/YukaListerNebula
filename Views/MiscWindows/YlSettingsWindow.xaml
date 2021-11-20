@@ -279,16 +279,6 @@
                     </DockPanel>
                     <DockPanel Margin="0,20,0,0">
                         <Border BorderBrush="{DynamicResource {x:Static SystemColors.ControlLightBrushKey}}" BorderThickness="1" Height="3" VerticalAlignment="Center" Margin="0" Width="20"/>
-                        <Label Content="属性情報最新化" Margin="10,0"/>
-                        <Border BorderBrush="{DynamicResource {x:Static SystemColors.ControlLightBrushKey}}" BorderThickness="1" Height="3" VerticalAlignment="Center" Margin="0"/>
-                    </DockPanel>
-                    <DockPanel Margin="20,10,20,0" LastChildFill="False" >
-                        <Label Content="ゆかり統計の属性情報を最新化する" VerticalAlignment="Center" />
-                        <Button Height="Auto" Content="最新化する (_U)" Style="{StaticResource MaterialDesignRaisedLightButton}" Margin="0" Width="160" HorizontalAlignment="Right" Command="{Binding ButtonUpdateYukariStatisticsClickedCommand}" DockPanel.Dock="Right" />
-                        <ProgressBar Width="120" Height="Auto" Margin="0,0,10,0" Visibility="{Binding ProgressBarUpdateYukariStatisticsVisibility}" IsIndeterminate="True" DockPanel.Dock="Right" />
-                    </DockPanel>
-                    <DockPanel Margin="0,20,0,0">
-                        <Border BorderBrush="{DynamicResource {x:Static SystemColors.ControlLightBrushKey}}" BorderThickness="1" Height="3" VerticalAlignment="Center" Margin="0" Width="20"/>
                         <Label Content="すべて削除" Margin="10,0"/>
                         <Border BorderBrush="{DynamicResource {x:Static SystemColors.ControlLightBrushKey}}" BorderThickness="1" Height="3" VerticalAlignment="Center" Margin="0"/>
                     </DockPanel>

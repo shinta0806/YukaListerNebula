@@ -1179,13 +1179,13 @@ namespace YukaLister.ViewModels
 			}
 
 			// α・βの注意
-			if (YlConstants.APP_VER.Contains("α"))
+			if (YlConstants.APP_VER.Contains('α'))
 			{
 				newVerMsg += "\n\nこのバージョンは開発途上のアルファバージョンです。\n"
 						+ "使用前にヘルプをよく読み、注意してお使い下さい。";
 				type = TraceEventType.Warning;
 			}
-			else if (YlConstants.APP_VER.Contains("β"))
+			else if (YlConstants.APP_VER.Contains('β'))
 			{
 				newVerMsg += "\n\nこのバージョンは開発途上のベータバージョンです。\n"
 						+ "使用前にヘルプをよく読み、注意してお使い下さい。";

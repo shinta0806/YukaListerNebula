@@ -1387,7 +1387,7 @@ namespace YukaLister.ViewModels.MiscWindowViewModels
 				}
 				else
 				{
-					FileNameRule = FileNameRule.Substring(0, FileNameRuleSelectionStart) + wrappedVarName
+					FileNameRule = FileNameRule[..FileNameRuleSelectionStart] + wrappedVarName
 							+ FileNameRule[(FileNameRuleSelectionStart + FileNameRuleSelectionLength)..];
 				}
 

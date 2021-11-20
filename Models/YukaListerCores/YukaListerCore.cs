@@ -63,7 +63,7 @@ namespace YukaLister.Models.YukaListerCores
 		// --------------------------------------------------------------------
 		public void Start()
 		{
-			Debug.Assert(Thread.CurrentThread.ManagedThreadId == DispatcherHelper.UIDispatcher.Thread.ManagedThreadId, "Start() not UI thread");
+			Debug.Assert(Environment.CurrentManagedThreadId == DispatcherHelper.UIDispatcher.Thread.ManagedThreadId, "Start() not UI thread");
 
 			// UI スレッドから呼ばれる前提のため、この方法で排他にできる
 			if (MainTask != null)

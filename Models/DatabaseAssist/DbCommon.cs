@@ -647,7 +647,7 @@ namespace YukaLister.Models.DatabaseAssist
 			{
 				return new List<T>();
 			}
-			return records.Where(x => EF.Functions.Like(x.Name, $"{name}") && (includesInvalid || !x.Invalid)).ToList();
+			return records.Where(x => x.Name != null && EF.Functions.Like(x.Name, $"{name}") && (includesInvalid || !x.Invalid)).ToList();
 		}
 
 		// --------------------------------------------------------------------

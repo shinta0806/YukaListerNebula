@@ -141,20 +141,6 @@ namespace YukaLister.ViewModels.TabItemViewModels
 			}
 		}
 
-		// ゆかり統計最新化プログレスバー表示
-		private Visibility _progressBarUpdateYukariStatisticsVisibility;
-		public Visibility ProgressBarUpdateYukariStatisticsVisibility
-		{
-			get => _progressBarUpdateYukariStatisticsVisibility;
-			set
-			{
-				if (RaisePropertyChangedIfSet(ref _progressBarUpdateYukariStatisticsVisibility, value))
-				{
-					ButtonUpdateYukariStatisticsClickedCommand.RaiseCanExecuteChanged();
-				}
-			}
-		}
-
 		// --------------------------------------------------------------------
 		// コマンド
 		// --------------------------------------------------------------------
@@ -222,17 +208,6 @@ namespace YukaLister.ViewModels.TabItemViewModels
 					throw new Exception("ゆかり統計出力先フォルダーを指定してください。");
 				}
 
-#if false
-				if (YukaListerModel.Instance.EnvModel.YukaListerWholeStatus == YukaListerStatus.Running)
-				{
-					if (MessageBox.Show("データ更新中のため、今すぐリスト出力しても完全なリストにはなりません。\n今すぐリスト出力しますか？",
-							"確認", MessageBoxButton.YesNo, MessageBoxImage.Exclamation) != MessageBoxResult.Yes)
-					{
-						return;
-					}
-				}
-#endif
-
 				// ウィンドウのキャンセルボタンが押された場合でも出力先は確定
 				YukaListerModel.Instance.EnvModel.YlSettings.YukariStatisticsPath = YukariStatisticsPath;
 
@@ -263,48 +238,6 @@ namespace YukaLister.ViewModels.TabItemViewModels
 			finally
 			{
 				ProgressBarOutputYukariStatisticsVisibility = Visibility.Hidden;
-			}
-		}
-		#endregion
-
-		#region 最新化するボタンの制御
-		private ViewModelCommand? _buttonUpdateYukariStatisticsClickedCommand;
-
-		public ViewModelCommand ButtonUpdateYukariStatisticsClickedCommand
-		{
-			get
-			{
-				if (_buttonUpdateYukariStatisticsClickedCommand == null)
-				{
-					_buttonUpdateYukariStatisticsClickedCommand = new ViewModelCommand(ButtonUpdateYukariStatisticsClicked, CanButtonUpdateYukariStatisticsClicked);
-				}
-				return _buttonUpdateYukariStatisticsClickedCommand;
-			}
-		}
-
-		public Boolean CanButtonUpdateYukariStatisticsClicked()
-		{
-			return ProgressBarUpdateYukariStatisticsVisibility != Visibility.Visible;
-		}
-
-		public async void ButtonUpdateYukariStatisticsClicked()
-		{
-			try
-			{
-				// 最新化
-				ProgressBarUpdateYukariStatisticsVisibility = Visibility.Visible;
-				await YlCommon.LaunchTaskAsync<Object?>(_semaphoreSlim, UpdateYukariStatisticsByWorker, null, "ゆかり統計最新化");
-				YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(TraceEventType.Information, "予約当時の動画ファイルが現存しているものについて、可能な限り、ゆかり統計の属性情報を最新化しました。");
-
-			}
-			catch (Exception excep)
-			{
-				YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(TraceEventType.Error, "ゆかり統計出力ボタンクリック時エラー：\n" + excep.Message);
-				YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, "　スタックトレース：\n" + excep.StackTrace);
-			}
-			finally
-			{
-				ProgressBarUpdateYukariStatisticsVisibility = Visibility.Hidden;
 			}
 		}
 		#endregion
@@ -372,7 +305,6 @@ namespace YukaLister.ViewModels.TabItemViewModels
 
 			// プログレスバー
 			ProgressBarOutputYukariStatisticsVisibility = Visibility.Hidden;
-			ProgressBarUpdateYukariStatisticsVisibility = Visibility.Hidden;
 		}
 
 		// --------------------------------------------------------------------
@@ -428,6 +360,10 @@ namespace YukaLister.ViewModels.TabItemViewModels
 		// --------------------------------------------------------------------
 		private Task OutputYukariStatisticsByWorker(Object? _)
 		{
+			// ゆかり統計の属性情報を最新化
+			UpdateYukariStatistics();
+			YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, "予約当時の動画ファイルが現存しているものについて、可能な限り、ゆかり統計の属性情報を最新化しました。");
+
 			// タイトル行
 			List<String> titleColumns = new(new String[] { "No", "PC", "予約日", "ルーム名", "カテゴリー", "タイアップ名", "摘要", "年齢制限", "リリース日", "リリース年", "シリーズ", "制作会社名",
 					"楽曲名", "歌手名", "作詞者", "作曲者", "編曲者", "ファイル", "動画制作者" });
@@ -495,9 +431,8 @@ namespace YukaLister.ViewModels.TabItemViewModels
 
 		// --------------------------------------------------------------------
 		// ゆかり統計の属性情報を最新化
-		// ワーカースレッドで実行される前提
 		// --------------------------------------------------------------------
-		private Task UpdateYukariStatisticsByWorker(Object? _)
+		private static void UpdateYukariStatistics()
 		{
 			// Yurelin に最新化を依頼
 			YukaListerModel.Instance.EnvModel.Yurelin.UpdatePastYukariStatisticsKind = UpdatePastYukariStatisticsKind.All;
@@ -508,8 +443,6 @@ namespace YukaLister.ViewModels.TabItemViewModels
 			{
 				Thread.Sleep(Common.GENERAL_SLEEP_TIME);
 			}
-
-			return Task.CompletedTask;
 		}
 
 		// --------------------------------------------------------------------

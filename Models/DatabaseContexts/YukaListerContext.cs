@@ -218,7 +218,7 @@ namespace YukaLister.Models.DatabaseContexts
 		// --------------------------------------------------------------------
 		// ファイルの最終更新日時 UTC を更新
 		// --------------------------------------------------------------------
-		private void LastWriteDateTimeSub(String path, ref DateTime dateTime)
+		private static void LastWriteDateTimeSub(String path, ref DateTime dateTime)
 		{
 			DateTime subDateTime = new FileInfo(path).LastWriteTimeUtc;
 			if (subDateTime > dateTime)
