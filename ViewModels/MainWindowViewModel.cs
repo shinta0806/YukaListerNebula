@@ -699,67 +699,72 @@ namespace YukaLister.ViewModels
 				Debug.Assert(YlConstants.OUTPUT_ITEM_NAMES.Length == (Int32)OutputItems.__End__, "MainWindow.Initialize() bad OUTPUT_ITEM_NAMES length");
 				Debug.Assert(YlConstants.YUKARI_STATISTICS_PERIOD_LABELS.Length == (Int32)YukariStatisticsPeriod.__End__, "MainWindow.Initialize() bad YUKARI_STATISTICS_PERIOD_LABELS");
 
-				// 環境の変化に対応
-				DoVerChangedIfNeeded();
-				LaunchUpdaterIfNeeded();
-
 				// 参照設定
 				YukaListerModel.Instance.EnvModel.Kamlin.MainWindowViewModel = this;
 				YukaListerModel.Instance.EnvModel.Yurelin.MainWindowViewModel = this;
 				YukaListerModel.Instance.EnvModel.Syclin.MainWindowViewModel = this;
 
-				// 動作状況
-				YukaListerModel.Instance.EnvModel.YukaListerPartsStatus[(Int32)YukaListerPartsStatusIndex.Startup] = YukaListerStatus.Running;
-				YukaListerModel.Instance.EnvModel.YukaListerPartsStatusMessage[(Int32)YukaListerPartsStatusIndex.Startup]
-						= YukaListerModel.Instance.EnvModel.YlSettings.AddFolderOnDeviceArrived ? "前回のゆかり検索対象フォルダーを確認中..." : "起動処理中...";
-				UpdateYukaListerEnvironmentStatus();
+				// 環境の変化に対応
+				DoVerChangedIfNeeded();
 
-				// ゆかり設定ファイル config.ini 監視
-				CompositeDisposable.Add(_fileSystemWatcherYukariConfig);
-				_fileSystemWatcherYukariConfig.Created += new FileSystemEventHandler(FileSystemWatcherYukariConfig_Changed);
-				_fileSystemWatcherYukariConfig.Deleted += new FileSystemEventHandler(FileSystemWatcherYukariConfig_Changed);
-				_fileSystemWatcherYukariConfig.Changed += new FileSystemEventHandler(FileSystemWatcherYukariConfig_Changed);
-				SetFileSystemWatcherYukariConfig();
-
-				// ゆかり予約ファイル request.db 監視
-				CompositeDisposable.Add(_fileSystemWatcherYukariRequestDatabase);
-				_fileSystemWatcherYukariRequestDatabase.Created += new FileSystemEventHandler(FileSystemWatcherYukariRequestDatabase_Changed);
-				_fileSystemWatcherYukariRequestDatabase.Deleted += new FileSystemEventHandler(FileSystemWatcherYukariRequestDatabase_Changed);
-				_fileSystemWatcherYukariRequestDatabase.Changed += new FileSystemEventHandler(FileSystemWatcherYukariRequestDatabase_Changed);
-				SetFileSystemWatcherYukariRequestDatabase();
-
-				// リスト問題報告データベース監視
-				CompositeDisposable.Add(_fileSystemWatcherReportDatabase);
-				_fileSystemWatcherReportDatabase.Created += new FileSystemEventHandler(FileSystemWatcherReportDatabase_Changed);
-				_fileSystemWatcherReportDatabase.Deleted += new FileSystemEventHandler(FileSystemWatcherReportDatabase_Changed);
-				_fileSystemWatcherReportDatabase.Changed += new FileSystemEventHandler(FileSystemWatcherReportDatabase_Changed);
-				SetFileSystemWatcherReportDatabase();
-				UpdateReportsBadge();
-
-				// UI 更新タイマー
-				_timerUpdateUi.Interval = TimeSpan.FromSeconds(1.0);
-				_timerUpdateUi.Tick += new EventHandler(TimerUpdateUi_Tick);
-				_timerUpdateUi.Start();
-
-				// 時間がかかるかもしれない処理を非同期で実行
-				await AutoTargetAllDrivesAsync();
-
-				// Web サーバー
-				StartWebServerIfNeeded();
-
-				// 過去の統計データが更新されるようにする
-				YukaListerModel.Instance.EnvModel.Yurelin.UpdatePastYukariStatisticsKind = UpdatePastYukariStatisticsKind.Fast;
-				if (YukaListerModel.Instance.EnvModel.YlSettings.SyncMusicInfoDb)
+				await Task.Run(async () =>
 				{
-					// サーバー同期が有効なら同期する
-					// 統計データ作成は遅くとも Syclin スリープ時には行われるので、明示的には作成しない
-					YlCommon.ActivateSyclinIfNeeded();
-				}
-				else
-				{
-					// 統計データ作成
-					YlCommon.ActivateYurelinIfNeeded();
-				}
+					// 動作状況
+					YukaListerModel.Instance.EnvModel.YukaListerPartsStatus[(Int32)YukaListerPartsStatusIndex.Startup] = YukaListerStatus.Running;
+					YukaListerModel.Instance.EnvModel.YukaListerPartsStatusMessage[(Int32)YukaListerPartsStatusIndex.Startup]
+							= YukaListerModel.Instance.EnvModel.YlSettings.AddFolderOnDeviceArrived ? "前回のゆかり検索対象フォルダーを確認中..." : "起動処理中...";
+					UpdateYukaListerEnvironmentStatus();
+
+					// ゆかり設定ファイル config.ini 監視
+					CompositeDisposable.Add(_fileSystemWatcherYukariConfig);
+					_fileSystemWatcherYukariConfig.Created += new FileSystemEventHandler(FileSystemWatcherYukariConfig_Changed);
+					_fileSystemWatcherYukariConfig.Deleted += new FileSystemEventHandler(FileSystemWatcherYukariConfig_Changed);
+					_fileSystemWatcherYukariConfig.Changed += new FileSystemEventHandler(FileSystemWatcherYukariConfig_Changed);
+					SetFileSystemWatcherYukariConfig();
+
+					// ゆかり予約ファイル request.db 監視
+					CompositeDisposable.Add(_fileSystemWatcherYukariRequestDatabase);
+					_fileSystemWatcherYukariRequestDatabase.Created += new FileSystemEventHandler(FileSystemWatcherYukariRequestDatabase_Changed);
+					_fileSystemWatcherYukariRequestDatabase.Deleted += new FileSystemEventHandler(FileSystemWatcherYukariRequestDatabase_Changed);
+					_fileSystemWatcherYukariRequestDatabase.Changed += new FileSystemEventHandler(FileSystemWatcherYukariRequestDatabase_Changed);
+					SetFileSystemWatcherYukariRequestDatabase();
+
+					// リスト問題報告データベース監視
+					CompositeDisposable.Add(_fileSystemWatcherReportDatabase);
+					_fileSystemWatcherReportDatabase.Created += new FileSystemEventHandler(FileSystemWatcherReportDatabase_Changed);
+					_fileSystemWatcherReportDatabase.Deleted += new FileSystemEventHandler(FileSystemWatcherReportDatabase_Changed);
+					_fileSystemWatcherReportDatabase.Changed += new FileSystemEventHandler(FileSystemWatcherReportDatabase_Changed);
+					SetFileSystemWatcherReportDatabase();
+					UpdateReportsBadge();
+
+					// UI 更新タイマー
+					_timerUpdateUi.Interval = TimeSpan.FromSeconds(1.0);
+					_timerUpdateUi.Tick += new EventHandler(TimerUpdateUi_Tick);
+					_timerUpdateUi.Start();
+
+					// ちょちょいと自動更新 2 起動
+					LaunchUpdaterIfNeeded();
+
+					// 接続されているドライブの自動接続
+					await AutoTargetAllDrivesAsync();
+
+					// Web サーバー
+					StartWebServerIfNeeded();
+
+					// 過去の統計データが更新されるようにする
+					YukaListerModel.Instance.EnvModel.Yurelin.UpdatePastYukariStatisticsKind = UpdatePastYukariStatisticsKind.Fast;
+					if (YukaListerModel.Instance.EnvModel.YlSettings.SyncMusicInfoDb)
+					{
+						// サーバー同期が有効なら同期する
+						// 統計データ作成は遅くとも Syclin スリープ時には行われるので、明示的には作成しない
+						YlCommon.ActivateSyclinIfNeeded();
+					}
+					else
+					{
+						// 統計データ作成
+						YlCommon.ActivateYurelinIfNeeded();
+					}
+				});
 
 				// スタートアップ終了
 				YukaListerModel.Instance.EnvModel.YukaListerPartsStatus[(Int32)YukaListerPartsStatusIndex.Startup] = YukaListerStatus.Ready;
