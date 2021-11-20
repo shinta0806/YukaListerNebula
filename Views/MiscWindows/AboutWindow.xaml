@@ -47,13 +47,13 @@
             <StackPanel>
                 <StackPanel Orientation="Horizontal">
                     <Label Content="E メール：" HorizontalContentAlignment="Right" Width="110"/>
-                    <Label Content="shinta.0806@gmail.com"/>
+                    <Label Content="{x:Static msm:YlConstants.EMAIL_ADDRESS}"/>
                 </StackPanel>
                 <StackPanel Orientation="Horizontal">
                     <Label Content="ホームページ：" HorizontalContentAlignment="Right" Width="110"/>
                     <Label>
-                        <Hyperlink Command="{Binding LinkClickedCommand}" CommandParameter="{Binding Text, ElementName=TextBlockAutherWeb}" >
-                            <TextBlock Name="TextBlockAutherWeb" Text="http://shinta.coresv.com"/>
+                        <Hyperlink Command="{Binding LinkClickedCommand}" CommandParameter="{Binding Text, ElementName=TextBlockAuthorWeb}" >
+                            <TextBlock Name="TextBlockAuthorWeb" Text="{x:Static msm:YlConstants.URL_AUTHOR_WEB}"/>
                         </Hyperlink>
                     </Label>
                 </StackPanel>
@@ -61,7 +61,7 @@
                     <Label Content="Twitter：" HorizontalContentAlignment="Right" Width="110"/>
                     <Label>
                         <Hyperlink Command="{Binding LinkClickedCommand}" CommandParameter="{Binding Text, ElementName=TextBlockAutherTwitter}" >
-                            <TextBlock Name="TextBlockAutherTwitter" Text="https://twitter.com/shinta0806"/>
+                            <TextBlock Name="TextBlockAutherTwitter" Text="{x:Static msm:YlConstants.URL_TWITTER}"/>
                         </Hyperlink>
                     </Label>
                 </StackPanel>
@@ -81,7 +81,7 @@
                     <Label Content="配布ページ：" HorizontalContentAlignment="Right" Width="110"/>
                     <Label>
                         <Hyperlink Command="{Binding LinkClickedCommand}" CommandParameter="{Binding Text, ElementName=AppWeb}">
-                            <TextBlock Name="AppWeb" Text="http://shinta.coresv.com/software/yukalister-nebula-jpn/"/>
+                            <TextBlock Name="AppWeb" Text="{x:Static msm:YlConstants.URL_APP_WEB}"/>
                         </Hyperlink>
                     </Label>
                 </StackPanel>
@@ -89,7 +89,7 @@
                     <Label Content="サポートページ：" HorizontalContentAlignment="Right" Width="110"/>
                     <Label>
                         <Hyperlink Command="{Binding LinkClickedCommand}" CommandParameter="{Binding Text, ElementName=AppWebSupport}" >
-                            <TextBlock Name="AppWebSupport" Text="http://shinta.coresv.com/software/yukalister-nebula-jpn/#Support"/>
+                            <TextBlock Name="AppWebSupport" Text="{x:Static msm:YlConstants.URL_APP_WEB_SUPPORT}"/>
                         </Hyperlink>
                     </Label>
                 </StackPanel>

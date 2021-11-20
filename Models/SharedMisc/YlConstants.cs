@@ -197,9 +197,9 @@ namespace YukaLister.Models.SharedMisc
 	// --------------------------------------------------------------------
 	public enum UpdatePastYukariStatisticsKind
 	{
-		None,	// 更新しない
-		Fast,	// 属性未確認のみ更新
-		All,	// すべて更新
+		None,   // 更新しない
+		Fast,   // 属性未確認のみ更新
+		All,    // すべて更新
 	}
 
 	// --------------------------------------------------------------------
@@ -283,7 +283,7 @@ namespace YukaLister.Models.SharedMisc
 		public const String APP_ID = "YukaLister";
 		public const String APP_GENERATION = "NEBULA";
 		public const String APP_NAME_J = "ゆかりすたー " + APP_GENERATION + " ";
-		public const String APP_VER = "Ver 4.49";
+		public const String APP_VER = "Ver 4.56";
 		public const String COPYRIGHT_J = "Copyright (C) 2021 by SHINTA";
 
 		// --------------------------------------------------------------------
@@ -646,8 +646,23 @@ namespace YukaLister.Models.SharedMisc
 		// URL
 		// --------------------------------------------------------------------
 
+		// メールアドレス
+		public const String EMAIL_ADDRESS = "shinta.0806@gmail.com";
+
+		// ホームページ
+		public const String URL_AUTHOR_WEB = "https://shinta.coresv.com";
+
+		// Twitter
+		public const String URL_TWITTER = "https://twitter.com/shinta0806";
+
 		// Fantia
 		public const String URL_FANTIA = "https://fantia.jp/fanclubs/65509";
+
+		// アプリ配布ページ
+		public const String URL_APP_WEB = "https://shinta.coresv.com/software/yukalister-nebula-jpn/";
+
+		// アプリサポートページ
+		public const String URL_APP_WEB_SUPPORT = URL_APP_WEB + "#Support";
 
 		// よくある質問
 		public const String URL_FAQ = "https://github.com/shinta0806/YukaListerNebula/issues?q=label%3Aquestion+sort%3Aupdated-desc";
