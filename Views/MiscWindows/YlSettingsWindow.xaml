@@ -165,15 +165,15 @@
                         <CheckBox Content="ゆかりすたーの最新情報・更新版を自動的に確認する (_L)" IsChecked="{Binding CheckRss}" />
                     </StackPanel>
                     <DockPanel Margin="20,10,20,0">
-                        <Button Height="Auto" Content="今すぐ最新情報を確認する (_N)" Style="{StaticResource MaterialDesignRaisedLightButton}" Margin="0" Width="210" DockPanel.Dock="Right" Padding="4" Command="{Binding ButtonCheckRssClickedCommand}"/>
+                        <Button Height="Auto" Content="今すぐ最新情報・更新版を確認 (_N)" Style="{StaticResource MaterialDesignRaisedLightButton}" Margin="0" Width="220" DockPanel.Dock="Right" Padding="4" Command="{Binding ButtonCheckRssClickedCommand}"/>
                         <ProgressBar Height="Auto" Margin="0,0,10,0" Visibility="{Binding ProgressBarCheckRssVisibility}" IsIndeterminate="True"/>
                     </DockPanel>
                     <StackPanel Margin="20,10,0,0">
                         <Label Content="設定のバックアップ（ファイルに保存）"/>
                     </StackPanel>
                     <StackPanel Margin="0,10,20,0">
-                        <Button Height="Auto" Content="設定のバックアップ(_B)" Style="{StaticResource MaterialDesignRaisedLightButton}" Margin="0" Width="210" DockPanel.Dock="Right" HorizontalAlignment="Right" Command="{Binding ButtonBackupClickedCommand}" />
-                        <Button Height="Auto" Content="設定の復元(_R)" Style="{StaticResource MaterialDesignRaisedLightButton}" Margin="0,10,0,0" Width="210" DockPanel.Dock="Right" HorizontalAlignment="Right" Command="{Binding ButtonRestoreClickedCommand}" />
+                        <Button Height="Auto" Content="設定のバックアップ(_B)" Style="{StaticResource MaterialDesignRaisedLightButton}" Margin="0" Width="220" DockPanel.Dock="Right" HorizontalAlignment="Right" Command="{Binding ButtonBackupClickedCommand}" />
+                        <Button Height="Auto" Content="設定の復元(_R)" Style="{StaticResource MaterialDesignRaisedLightButton}" Margin="0,10,0,0" Width="220" DockPanel.Dock="Right" HorizontalAlignment="Right" Command="{Binding ButtonRestoreClickedCommand}" />
                     </StackPanel>
                 </StackPanel>
             </TabItem>

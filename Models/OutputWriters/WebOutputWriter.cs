@@ -437,72 +437,6 @@ namespace YukaLister.Models.OutputWriters
 		private Boolean _isDisposed;
 
 		// ====================================================================
-		// private static メンバー関数
-		// ====================================================================
-
-		// --------------------------------------------------------------------
-		// 章名として使用する値を返す
-		// --------------------------------------------------------------------
-		private static String ChapterValue(OutputItems chapterItem, TFound found)
-		{
-			switch (chapterItem)
-			{
-				case OutputItems.ArtistName:
-					return found.ArtistName ?? String.Empty;
-				case OutputItems.ComposerName:
-					return found.ComposerName ?? String.Empty;
-				case OutputItems.TieUpName:
-					return found.TieUpName ?? String.Empty;
-				default:
-					Debug.Assert(false, "ChapterValue() bad chapter item: " + chapterItem.ToString());
-					return "Bad";
-			}
-		}
-
-		// --------------------------------------------------------------------
-		// 章を終了する
-		// --------------------------------------------------------------------
-		private static void EndChapter(StringBuilder stringBuilder)
-		{
-			stringBuilder.Append("</table>\n");
-			stringBuilder.Append("</div>\n");
-		}
-
-		// --------------------------------------------------------------------
-		// 人物の頭文字
-		// --------------------------------------------------------------------
-		private static String PersonHead(TPerson person)
-		{
-			// 人物データベースにルビが無い場合に名前から頭文字を取るようにすると、「その他」とひらがなが入り乱れてしまうため、
-			// ルビが無い場合は常に「その他」を返すようにする
-			return !String.IsNullOrEmpty(person.Ruby) ? YlCommon.Head(person.Ruby) : YlConstants.HEAD_MISC;
-		}
-
-		// --------------------------------------------------------------------
-		// タグの頭文字
-		// --------------------------------------------------------------------
-		private static String TagHead(TTag tag)
-		{
-			return !String.IsNullOrEmpty(tag.Ruby) ? YlCommon.Head(tag.Ruby) : YlCommon.Head(tag.Name);
-		}
-
-		// --------------------------------------------------------------------
-		// タイアップグループ名の頭文字
-		// --------------------------------------------------------------------
-		private static String TieUpGroupHead(TTieUpGroup tieUpGroup)
-		{
-			return !String.IsNullOrEmpty(tieUpGroup.Ruby) ? YlCommon.Head(tieUpGroup.Ruby) : YlCommon.Head(tieUpGroup.Name);
-		}
-
-		// --------------------------------------------------------------------
-		// ゾーニング名称
-		// --------------------------------------------------------------------
-		private static String ZoneName(Boolean isAdult)
-		{
-			return isAdult ? "成人向け " : "一般 ";
-		}
-
-		// ====================================================================
 		// private メンバー関数
 		// ====================================================================
 
@@ -630,6 +564,25 @@ namespace YukaLister.Models.OutputWriters
 		}
 
 		// --------------------------------------------------------------------
+		// 章名として使用する値を返す
+		// --------------------------------------------------------------------
+		private static String ChapterValue(OutputItems chapterItem, TFound found)
+		{
+			switch (chapterItem)
+			{
+				case OutputItems.ArtistName:
+					return found.ArtistName ?? String.Empty;
+				case OutputItems.ComposerName:
+					return found.ComposerName ?? String.Empty;
+				case OutputItems.TieUpName:
+					return found.TieUpName ?? String.Empty;
+				default:
+					Debug.Assert(false, "ChapterValue() bad chapter item: " + chapterItem.ToString());
+					return "Bad";
+			}
+		}
+
+		// --------------------------------------------------------------------
 		// 古いリストを削除（インデックス以外）
 		// --------------------------------------------------------------------
 		private void DeleteOldListContents()
@@ -664,6 +617,15 @@ namespace YukaLister.Models.OutputWriters
 					YukaListerModel.Instance.EnvModel.LogWriter.LogMessage(TraceEventType.Error, "古いリストファイル " + Path.GetFileName(path) + " を削除できませんでした。");
 				}
 			}
+		}
+
+		// --------------------------------------------------------------------
+		// 章を終了する
+		// --------------------------------------------------------------------
+		private static void EndChapter(StringBuilder stringBuilder)
+		{
+			stringBuilder.Append("</table>\n");
+			stringBuilder.Append("</div>\n");
 		}
 
 		// --------------------------------------------------------------------
@@ -1791,6 +1753,16 @@ namespace YukaLister.Models.OutputWriters
 		}
 
 		// --------------------------------------------------------------------
+		// 人物の頭文字
+		// --------------------------------------------------------------------
+		private static String PersonHead(TPerson person)
+		{
+			// 人物データベースにルビが無い場合に名前から頭文字を取るようにすると、「その他」とひらがなが入り乱れてしまうため、
+			// ルビが無い場合は常に「その他」を返すようにする
+			return !String.IsNullOrEmpty(person.Ruby) ? YlCommon.Head(person.Ruby) : YlConstants.HEAD_MISC;
+		}
+
+		// --------------------------------------------------------------------
 		// ページ内容を置換
 		// --------------------------------------------------------------------
 		private void ReplaceListContent(WebPageInfoTree pageInfoTree, String oldStr, String? newStr)
@@ -1825,6 +1797,30 @@ namespace YukaLister.Models.OutputWriters
 				byteData = _md5Provider.ComputeHash(Encoding.Unicode.GetBytes(str));
 			}
 			return BitConverter.ToString(byteData).Replace("-", String.Empty).ToLower();
+		}
+
+		// --------------------------------------------------------------------
+		// タグの頭文字
+		// --------------------------------------------------------------------
+		private static String TagHead(TTag tag)
+		{
+			return !String.IsNullOrEmpty(tag.Ruby) ? YlCommon.Head(tag.Ruby) : YlCommon.Head(tag.Name);
+		}
+
+		// --------------------------------------------------------------------
+		// タイアップグループ名の頭文字
+		// --------------------------------------------------------------------
+		private static String TieUpGroupHead(TTieUpGroup tieUpGroup)
+		{
+			return !String.IsNullOrEmpty(tieUpGroup.Ruby) ? YlCommon.Head(tieUpGroup.Ruby) : YlCommon.Head(tieUpGroup.Name);
+		}
+
+		// --------------------------------------------------------------------
+		// ゾーニング名称
+		// --------------------------------------------------------------------
+		private static String ZoneName(Boolean isAdult)
+		{
+			return isAdult ? "成人向け " : "一般 ";
 		}
 
 		// --------------------------------------------------------------------
