@@ -427,6 +427,9 @@ namespace YukaLister.Models.OutputWriters
 		// テーブルに表示する項目名
 		private readonly List<String> _thNames;
 
+		// カテゴリーの順番
+		private Dictionary<String, Int32> _categoryOrders = new();
+
 		// リストを一時的に出力するフォルダー（末尾 '\\'）
 		private String? _tempFolderPath;
 
@@ -760,6 +763,9 @@ namespace YukaLister.Models.OutputWriters
 				GenerateOneList(pageInfoTree, tieUpNamesAndTFounds, isAdult,
 						kindFileName, prevFound.Category, prevFound.Head ?? String.Empty, OutputItems.TieUpName);
 			}
+
+			// カテゴリーソート
+			SortCategory(pageInfoTree);
 
 			// インデックス
 			GenerateIndexPageContent(pageInfoTree, isAdult, kindFileName, "カテゴリー名");
@@ -1587,6 +1593,39 @@ namespace YukaLister.Models.OutputWriters
 		}
 
 		// --------------------------------------------------------------------
+		// listerdb_config.ini で指定されているカテゴリー順を読み込む
+		// --------------------------------------------------------------------
+		private void LoadCategoryOrders()
+		{
+			if (_categoryOrders.Any())
+			{
+				// 読み込み済の場合はスキップ
+				return;
+			}
+
+			if (!YukaListerModel.Instance.EnvModel.YlSettings.IsYukariConfigPathValid())
+			{
+				return;
+			}
+			if (!File.Exists(YukaListerModel.Instance.EnvModel.YlSettings.YukariListerDbConfigPath()))
+			{
+				return;
+			}
+
+			String[] config = File.ReadAllLines(YukaListerModel.Instance.EnvModel.YlSettings.YukariListerDbConfigPath(), Encoding.UTF8);
+			for (Int32 line = 0; line < config.Length; line++)
+			{
+				Int32 eqPos = config[line].IndexOf('=');
+				if (eqPos < 0)
+				{
+					continue;
+				}
+				_categoryOrders[config[line][(eqPos + 1)..].Trim()] = line;
+			}
+
+		}
+
+		// --------------------------------------------------------------------
 		// 一時フォルダーからリストを移動
 		// --------------------------------------------------------------------
 		private void MoveList()
@@ -1778,6 +1817,63 @@ namespace YukaLister.Models.OutputWriters
 			{
 				ReplaceListContent(pageInfoTree.Children[i], oldStr, newStr);
 			}
+		}
+
+		// --------------------------------------------------------------------
+		// listerdb_config.ini に従ってカテゴリーの順番をソート
+		// https://github.com/bee7813993/KaraokeRequestorWeb/commit/e7076e87554a9df9496419fbd11719757a329a23
+		// --------------------------------------------------------------------
+		private void SortCategory(WebPageInfoTree pageInfoTree)
+		{
+			try
+			{
+				LoadCategoryOrders();
+				if (!_categoryOrders.Any())
+				{
+					return;
+				}
+				pageInfoTree.Children.Sort(SortCategoryComparer);
+			}
+			catch (Exception excep)
+			{
+				YukaListerModel.Instance.EnvModel.LogWriter.LogMessage(TraceEventType.Error, "カテゴリーソートエラー：\n" + excep.Message);
+				YukaListerModel.Instance.EnvModel.LogWriter.LogMessage(Common.TRACE_EVENT_TYPE_STATUS, "　スタックトレース：\n" + excep.StackTrace);
+			}
+		}
+
+		// --------------------------------------------------------------------
+		// ソート比較
+		// --------------------------------------------------------------------
+		private Int32 SortCategoryComparer(WebPageInfoTree lhs, WebPageInfoTree rhs)
+		{
+			Int32 lhsIndex = -1;
+			if (_categoryOrders.ContainsKey(lhs.Name))
+			{
+				lhsIndex = _categoryOrders[lhs.Name];
+			}
+			Int32 rhsIndex = -1;
+			if (_categoryOrders.ContainsKey(rhs.Name))
+			{
+				rhsIndex = _categoryOrders[rhs.Name];
+			}
+
+			if (lhsIndex >= 0 && rhsIndex >= 0)
+			{
+				// 両方 listerdb_config.ini で指定されている
+				return lhsIndex - rhsIndex;
+			}
+			if (lhsIndex < 0 && rhsIndex < 0)
+			{
+				// どちらも listerdb_config.ini で指定されていない
+				return String.Compare(lhs.Name, rhs.Name, StringComparison.OrdinalIgnoreCase);
+			}
+			if (lhsIndex >= 0)
+			{
+				// lhs のみ listerdb_config.ini で指定されている
+				return -1;
+			}
+			// rhs のみ listerdb_config.ini で指定されている
+			return 1;
 		}
 
 		// --------------------------------------------------------------------

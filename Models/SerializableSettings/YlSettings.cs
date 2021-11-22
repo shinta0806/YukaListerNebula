@@ -222,7 +222,7 @@ namespace YukaLister.Models.SerializableSettings
 			catch (Exception excep)
 			{
 				// エラーの場合は情報をクリア
-				YukariRequestDatabasePathSeed = YUKARI_CONFIG_DEFAULT_DB_NAME;
+				YukariRequestDatabasePathSeed = FILE_NAME_YUKARI_REQUEST_DB_DEFAULT;
 				YukariUseEasyAuth = false;
 				YukaListerModel.Instance.EnvModel.LogWriter.LogMessage(TraceEventType.Error, excep.Message + "サーバーに簡易認証を適用しません。");
 			}
@@ -350,13 +350,21 @@ namespace YukaLister.Models.SerializableSettings
 		}
 
 		// --------------------------------------------------------------------
+		// ゆかり listerdb_config.ini のフルパス
+		// --------------------------------------------------------------------
+		public String YukariListerDbConfigPath()
+		{
+			return Path.GetDirectoryName(YukariConfigPath()) + "\\" + FILE_NAME_YUKARI_LISTER_DB_CONFIG;
+		}
+
+		// --------------------------------------------------------------------
 		// ゆかり request.db のフルパス
 		// --------------------------------------------------------------------
 		public String YukariRequestDatabasePath()
 		{
 			if (String.IsNullOrEmpty(YukariRequestDatabasePathSeed))
 			{
-				return Common.MakeAbsolutePath(Path.GetDirectoryName(YukariConfigPath()), YUKARI_CONFIG_DEFAULT_DB_NAME);
+				return Common.MakeAbsolutePath(Path.GetDirectoryName(YukariConfigPath()), FILE_NAME_YUKARI_REQUEST_DB_DEFAULT);
 			}
 			else if (Path.IsPathRooted(YukariRequestDatabasePathSeed))
 			{
@@ -426,8 +434,11 @@ namespace YukaLister.Models.SerializableSettings
 		private const String YUKARI_CONFIG_KEY_NAME_USE_EASY_AUTH = "useeasyauth";
 		private const String YUKARI_CONFIG_KEY_NAME_EASY_AUTH_KEYWORD = "useeasyauth_word";
 
+		// listerdb_config.ini
+		private const String FILE_NAME_YUKARI_LISTER_DB_CONFIG = "listerdb_config.ini";
+
 		// デフォルト DB ファイル名
-		private const String YUKARI_CONFIG_DEFAULT_DB_NAME = "request.db";
+		private const String FILE_NAME_YUKARI_REQUEST_DB_DEFAULT = "request.db";
 
 		// ====================================================================
 		// private static メンバー関数
