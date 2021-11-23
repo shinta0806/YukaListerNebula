@@ -1217,9 +1217,12 @@ namespace YukaLister.ViewModels
 				return;
 			}
 
+			Debug.WriteLine(DateTime.Now.ToString("ss.fff") + " QuitServerIfNeededAsync() a");
 			Task task = _webServer.QuitAsync();
+			Debug.WriteLine(DateTime.Now.ToString("ss.fff") + " QuitServerIfNeededAsync() b");
 			_webServer = null;
 			await task;
+			Debug.WriteLine(DateTime.Now.ToString("ss.fff") + " QuitServerIfNeededAsync() c");
 		}
 
 		// --------------------------------------------------------------------
