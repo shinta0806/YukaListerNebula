@@ -1023,7 +1023,7 @@ namespace YukaLister.Models.SharedMisc
 		{
 			// マルチスレッドでも安全にインクリメント
 			Int32 counter = Interlocked.Increment(ref _tempPathCounter);
-			return TempFolderPath() + counter.ToString() + "_" + Thread.CurrentThread.ManagedThreadId.ToString();
+			return TempFolderPath() + counter.ToString() + "_" + Environment.CurrentManagedThreadId.ToString();
 		}
 
 		// --------------------------------------------------------------------

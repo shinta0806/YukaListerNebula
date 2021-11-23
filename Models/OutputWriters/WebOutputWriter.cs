@@ -46,6 +46,7 @@ namespace YukaLister.Models.OutputWriters
 		public WebOutputWriter(String listExt)
 		{
 			_listExt = listExt;
+			_md5 = MD5.Create();
 
 			// テーブル項目名（原則 YlCommon.OUTPUT_ITEM_NAMES だが一部見やすいよう変更）
 			_thNames = new(YlConstants.OUTPUT_ITEM_NAMES);
@@ -53,7 +54,7 @@ namespace YukaLister.Models.OutputWriters
 			_thNames[(Int32)OutputItems.SmartTrack] = "On</th><th>Off";
 			_thNames[(Int32)OutputItems.FileSize] = "サイズ";
 
-			Debug.WriteLine("WebOutputWriter() HashSize: " + _md5Provider.HashSize);
+			Debug.WriteLine("WebOutputWriter() HashSize: " + _md5.HashSize);
 		}
 
 		// ====================================================================
@@ -312,7 +313,7 @@ namespace YukaLister.Models.OutputWriters
 			// マネージドリソース解放
 			if (isDisposing)
 			{
-				_md5Provider.Dispose();
+				_md5.Dispose();
 			}
 
 			// アンマネージドリソース解放
@@ -410,12 +411,6 @@ namespace YukaLister.Models.OutputWriters
 		// MD5 文字列長
 		private const Int32 MD5_STRING_LENGTH = 32;
 
-		// 文字列を HEX に変換する際の最大長
-		// C:\Users\ユーザー名\AppData\Local\Temp\YukaLister\PID..\2_22\List_Artist_GroupName_Hex1_Hex2.html
-		// Hex1 / Hex2 は MAX_HEX_SOURCE_LENGTH の 2 倍の長さになる
-		// 長くなるのは Hex1 か Hex2 のどちらかという前提で、パスの長さが 256 を超えない程度の指定にする
-		//private const Int32 MAX_HEX_SOURCE_LENGTH = 70;
-
 		// 開発者支援サイトリンク
 		private const String SUPPORT_LINK = "<a href=\"" + YlConstants.URL_FANTIA + "\" target=\"_blank\"><img src=\""
 				+ FILE_NAME_BODY_FANTIA_LOGO + Common.FILE_EXT_PNG + "\" height=\"20\">開発者支援サイト</a>";
@@ -428,13 +423,13 @@ namespace YukaLister.Models.OutputWriters
 		private readonly List<String> _thNames;
 
 		// カテゴリーの順番
-		private Dictionary<String, Int32> _categoryOrders = new();
+		private readonly Dictionary<String, Int32> _categoryOrders = new();
 
 		// リストを一時的に出力するフォルダー（末尾 '\\'）
 		private String? _tempFolderPath;
 
 		// MD5 生成
-		private readonly MD5CryptoServiceProvider _md5Provider = new();
+		private readonly MD5 _md5;
 
 		// Dispose フラグ
 		private Boolean _isDisposed;
@@ -1890,7 +1885,7 @@ namespace YukaLister.Models.OutputWriters
 			else
 			{
 				// MD5 ハッシュを返す
-				byteData = _md5Provider.ComputeHash(Encoding.Unicode.GetBytes(str));
+				byteData = _md5.ComputeHash(Encoding.Unicode.GetBytes(str));
 			}
 			return BitConverter.ToString(byteData).Replace("-", String.Empty).ToLower();
 		}
