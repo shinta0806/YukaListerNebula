@@ -86,7 +86,7 @@ namespace YukaLister.Models.WebServer
 					// 終了コマンドを送信してサーバーの待機を終了させる
 					WebRequest request = WebRequest.Create(URL_LOCAL_HOST + YukaListerModel.Instance.EnvModel.YlSettings.WebServerPort.ToString() + '/' + SERVER_COMMAND_QUIT);
 					using WebResponse response = request.GetResponse();
-					YukaListerModel.Instance.EnvModel.LogWriter.LogMessage(Common.TRACE_EVENT_TYPE_STATUS, "プレビューサーバー終了");
+					YukaListerModel.Instance.EnvModel.LogWriter.LogMessage(Common.TRACE_EVENT_TYPE_STATUS, "プレビューサーバーから終了応答を受信。");
 				}
 				catch (Exception excep)
 				{
@@ -156,6 +156,9 @@ namespace YukaLister.Models.WebServer
 
 		// サムネイル生成時のタイムアウト [ms]
 		private const Int32 THUMB_TIMEOUT = 10 * 1000;
+
+		// 終了時のタイムアウト
+		private const Int32 QUIT_TIMEOUT = 30 * 1000;
 
 		// ====================================================================
 		// private メンバー変数
@@ -777,6 +780,7 @@ namespace YukaLister.Models.WebServer
 		private Task WebServerByWorker(Object? _)
 		{
 			HttpListener? listener = null;
+			Int32 numWebServerTasks = 0;
 			try
 			{
 				SetWebServerTasksLimit();
@@ -786,7 +790,6 @@ namespace YukaLister.Models.WebServer
 				listener.Prefixes.Add(URL_LOCAL_HOST + YukaListerModel.Instance.EnvModel.YlSettings.WebServerPort.ToString() + "/");
 				listener.Start();
 
-				Int32 numWebServerTasks = 0;
 				for (; ; )
 				{
 					try
@@ -820,6 +823,18 @@ namespace YukaLister.Models.WebServer
 			}
 			catch (OperationCanceledException)
 			{
+				// 実行中のタスクが終了するまで待機
+				Int32 quitStartTime = Environment.TickCount;
+				while (numWebServerTasks > 0)
+				{
+					if (Environment.TickCount - quitStartTime > QUIT_TIMEOUT)
+					{
+						YukaListerModel.Instance.EnvModel.LogWriter.LogMessage(Common.TRACE_EVENT_TYPE_STATUS, "プレビュー処理時にタイムアウトしました。");
+						break;
+					}
+					Thread.Sleep(Common.GENERAL_SLEEP_TIME);
+				}
+
 				YukaListerModel.Instance.EnvModel.LogWriter.LogMessage(Common.TRACE_EVENT_TYPE_STATUS, "プレビュー処理を終了しました。");
 			}
 			catch (Exception excep)
