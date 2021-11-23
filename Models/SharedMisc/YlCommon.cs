@@ -299,7 +299,7 @@ namespace YukaLister.Models.SharedMisc
 			Byte[] cipherBytes = Convert.FromBase64String(base64Text);
 
 			// 復号化
-			using AesManaged aes = new();
+			using Aes aes = Aes.Create();
 			using ICryptoTransform decryptor = aes.CreateDecryptor(ENCRYPT_KEY, ENCRYPT_IV);
 			using MemoryStream writeStream = new();
 			using (CryptoStream cryptoStream = new(writeStream, decryptor, CryptoStreamMode.Write))
@@ -397,7 +397,7 @@ namespace YukaLister.Models.SharedMisc
 			Byte[] plainBytes = Encoding.Unicode.GetBytes(plainText);
 
 			// 暗号化
-			using AesManaged aes = new();
+			using Aes aes = Aes.Create();
 			using ICryptoTransform encryptor = aes.CreateEncryptor(ENCRYPT_KEY, ENCRYPT_IV);
 			using MemoryStream writeStream = new();
 			using (CryptoStream cryptoStream = new(writeStream, encryptor, CryptoStreamMode.Write))
