@@ -88,7 +88,28 @@ namespace YukaLister.ViewModels.EditMasterWindowViewModels
 		public DateTime? ReleaseDate
 		{
 			get => _releaseDate;
-			set => RaisePropertyChangedIfSet(ref _releaseDate, value);
+			set
+			{
+				if (RaisePropertyChangedIfSet(ref _releaseDate, value))
+				{
+					if (_releaseDate == null)
+					{
+						DayOfWeek = null;
+					}
+					else
+					{
+						DayOfWeek = _releaseDate?.ToString(YlConstants.DAY_OF_WEEK_FORMAT);
+					}
+				}
+			}
+		}
+
+		// リリース年月日の曜日
+		private String? _dayOfWeek;
+		public String? DayOfWeek
+		{
+			get => _dayOfWeek;
+			set => RaisePropertyChangedIfSet(ref _dayOfWeek, value);
 		}
 
 		// --------------------------------------------------------------------

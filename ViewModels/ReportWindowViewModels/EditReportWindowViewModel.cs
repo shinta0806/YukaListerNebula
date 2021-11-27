@@ -75,7 +75,7 @@ namespace YukaLister.ViewModels.ReportWindowViewModels
 			get
 			{
 				DateTime registTime = JulianDay.ModifiedJulianDateToDateTime(Report.RegistTime);
-				return TimeZoneInfo.ConvertTimeFromUtc(registTime, TimeZoneInfo.Local).ToString(YlConstants.DATE_FORMAT + "（ddd） " + YlConstants.TIME_FORMAT);
+				return TimeZoneInfo.ConvertTimeFromUtc(registTime, TimeZoneInfo.Local).ToString(YlConstants.DATE_FORMAT + YlConstants.DAY_OF_WEEK_FORMAT + " " + YlConstants.TIME_FORMAT);
 			}
 		}
 

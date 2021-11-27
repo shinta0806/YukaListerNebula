@@ -689,6 +689,9 @@ namespace YukaLister.Models.SharedMisc
 		// 日付の書式指定子
 		public const String DATE_FORMAT = "yyyy/MM/dd";
 
+		// 曜日の書式指定子
+		public const String DAY_OF_WEEK_FORMAT = "（ddd）";
+
 		// 時刻の書式指定子
 		public const String TIME_FORMAT = "HH:mm:ss";
 
