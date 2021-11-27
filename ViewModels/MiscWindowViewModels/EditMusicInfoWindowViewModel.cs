@@ -397,7 +397,8 @@ namespace YukaLister.ViewModels.MiscWindowViewModels
 				if (editTieUpWindowViewModel.OkSelectedMaster != null)
 				{
 					Dictionary<String, String?> dicByFilePure = YlCommon.MatchFileNameRulesAndFolderRuleForSearch(_filePath);
-					if (String.IsNullOrEmpty(dicByFilePure[YlConstants.RULE_VAR_PROGRAM]) || editTieUpWindowViewModel.OkSelectedMaster.Name == dicByFilePure[YlConstants.RULE_VAR_PROGRAM])
+					if (String.IsNullOrEmpty(dicByFilePure[YlConstants.RULE_VAR_PROGRAM]) || editTieUpWindowViewModel.OkSelectedMaster.Name == dicByFilePure[YlConstants.RULE_VAR_PROGRAM]
+							|| DbCommon.SelectMasterByName(tieUps, dicByFilePure[YlConstants.RULE_VAR_PROGRAM]) != null)
 					{
 						UseTieUpAlias = false;
 					}
@@ -588,7 +589,8 @@ namespace YukaLister.ViewModels.MiscWindowViewModels
 				if (editSongWindowViewModel.OkSelectedMaster != null)
 				{
 					Dictionary<String, String?> dicByFilePure = YlCommon.MatchFileNameRulesAndFolderRuleForSearch(_filePath);
-					if (String.IsNullOrEmpty(dicByFilePure[YlConstants.RULE_VAR_TITLE]) || editSongWindowViewModel.OkSelectedMaster.Name == dicByFilePure[YlConstants.RULE_VAR_TITLE])
+					if (String.IsNullOrEmpty(dicByFilePure[YlConstants.RULE_VAR_TITLE]) || editSongWindowViewModel.OkSelectedMaster.Name == dicByFilePure[YlConstants.RULE_VAR_TITLE]
+							|| DbCommon.SelectMasterByName(songs, dicByFilePure[YlConstants.RULE_VAR_TITLE]) != null)
 					{
 						UseSongAlias = false;
 					}
@@ -772,7 +774,6 @@ namespace YukaLister.ViewModels.MiscWindowViewModels
 					TieUpOrigin = tieUp.Name;
 					return;
 				}
-
 			}
 
 			if (DbCommon.SelectMasterByName(foundSetter.TieUps, dicByFilePure[YlConstants.RULE_VAR_PROGRAM]) == null)

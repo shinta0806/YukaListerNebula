@@ -80,14 +80,14 @@ namespace YukaLister.Models.WebServer
 		{
 			try
 			{
-#if DEBUG
-				Thread.Sleep(2000);
-#endif
 				_tokenSource.Cancel();
 
 				// 終了コマンドを送信してサーバーの待機を終了させる（終了前提なので HttpClient は使い回さない）
 				using HttpClient httpClient = new();
 				HttpResponseMessage response = await httpClient.GetAsync(URL_LOCAL_HOST + YukaListerModel.Instance.EnvModel.YlSettings.WebServerPort.ToString() + '/' + SERVER_COMMAND_QUIT);
+#if DEBUGz
+				Thread.Sleep(2000);
+#endif
 				YukaListerModel.Instance.EnvModel.LogWriter.LogMessage(Common.TRACE_EVENT_TYPE_STATUS, "プレビューサーバーから終了応答を受信。");
 			}
 			catch (Exception excep)
