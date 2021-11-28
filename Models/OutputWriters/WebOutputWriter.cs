@@ -1530,12 +1530,12 @@ namespace YukaLister.Models.OutputWriters
 		// --------------------------------------------------------------------
 		// グループナビ文字列を生成
 		// --------------------------------------------------------------------
-		private String GroupNavi(Boolean newExists)
+		private String GroupNavi(Boolean enableNew)
 		{
 			StringBuilder stringBuilder = new();
 			stringBuilder.Append("<table>\n");
-			GroupNaviCore(stringBuilder, false, newExists);
-			GroupNaviCore(stringBuilder, true, newExists);
+			GroupNaviCore(stringBuilder, false, enableNew);
+			GroupNaviCore(stringBuilder, true, enableNew);
 			stringBuilder.Append("</table>\n");
 			return stringBuilder.ToString();
 		}
@@ -1544,13 +1544,13 @@ namespace YukaLister.Models.OutputWriters
 		// グループナビ文字列を生成
 		// ナビの順番は Output() と合わせる
 		// --------------------------------------------------------------------
-		private void GroupNaviCore(StringBuilder stringBuilder, Boolean isAdult, Boolean newExists)
+		private void GroupNaviCore(StringBuilder stringBuilder, Boolean isAdult, Boolean enableNew)
 		{
 			stringBuilder.Append("<tr>");
 			stringBuilder.Append("<td>　" + ZoneName(isAdult) + "　</td>");
 
 			// 新着を最優先
-			if (newExists)
+			if (enableNew)
 			{
 				stringBuilder.Append("<td class=\"exist\"><a href=\"" + IndexFileName(isAdult, KIND_FILE_NAME_NEW) + _listLinkArg + "\">　新着　</a></td>");
 			}

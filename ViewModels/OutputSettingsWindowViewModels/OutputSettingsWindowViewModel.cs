@@ -307,20 +307,18 @@ namespace YukaLister.ViewModels.OutputSettingsWindowViewModels
 				return;
 			}
 			using StreamReader reader = new(stream);
+			using XmlReader xml = XmlReader.Create(reader.BaseStream);
+			FrameworkElement? element = XamlReader.Load(xml) as FrameworkElement;
+			if (element == null)
 			{
-				XmlReader xml = XmlReader.Create(reader.BaseStream);
-				FrameworkElement? element = XamlReader.Load(xml) as FrameworkElement;
-				if (element == null)
-				{
-					YukaListerModel.Instance.EnvModel.LogWriter.LogMessage(TraceEventType.Error, "リソースからコントロールを生成できませんでした：" + controlName);
-				}
-				TabItem tabItem = new()
-				{
-					Header = caption,
-					Content = element,
-				};
-				TabItems.Add(tabItem);
+				YukaListerModel.Instance.EnvModel.LogWriter.LogMessage(TraceEventType.Error, "リソースからコントロールを生成できませんでした：" + controlName);
 			}
+			TabItem tabItem = new()
+			{
+				Header = caption,
+				Content = element,
+			};
+			TabItems.Add(tabItem);
 		}
 
 		// --------------------------------------------------------------------
