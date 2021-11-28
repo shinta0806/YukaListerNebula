@@ -187,6 +187,5 @@ namespace YukaLister.Models.OutputWriters
 			SelectedOutputItems.Add(OutputItems.FileName);
 			SelectedOutputItems.Add(OutputItems.FileSize);
 		}
-
 	}
 }

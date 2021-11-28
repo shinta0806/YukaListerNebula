@@ -1,8 +1,9 @@
 ﻿<UserControl xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:local="clr-namespace:YukaLister.Views.OutputSettingsControls"
+             xmlns:dd="clr-namespace:GongSolutions.Wpf.DragDrop;assembly=GongSolutions.Wpf.DragDrop"
+             xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800" >
 
@@ -17,6 +18,25 @@
             <TextBox Text="{Binding NewDays}" IsEnabled="{Binding EnableNew}" Width="40" Margin="10,0,10,0" VerticalAlignment="Center" HorizontalContentAlignment="Right"/>
             <Label Content="日以内に更新されたファイルを NEW （新着）に記載する (_N)" Target="{Binding ElementName=CheckBoxEnableNew}" />
         </StackPanel>
+        <StackPanel Orientation="Horizontal" Margin="0,10,0,0" >
+            <Label Content="グループナビゲーションの順番" />
+            <Label Content="※ドラッグ＆ドロップで順番を入れ替えられます。" Foreground="Gray" Margin="20,0,0,0" />
+        </StackPanel>
+        <ListBox ItemsSource="{Binding GroupNaviSequenceNames}" dd:DragDrop.IsDragSource="True" dd:DragDrop.IsDropTarget="True" dd:DragDrop.UseDefaultDragAdorner="True" HorizontalAlignment="Left" Margin="30,0,0,0" d:ItemsSource="{d:SampleData ItemCount=5}" >
+            <ListBox.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <StackPanel Margin="1" Orientation="Horizontal" />
+                </ItemsPanelTemplate>
+            </ListBox.ItemsPanel>
+            <ListBox.ItemTemplate>
+                <DataTemplate>
+                    <StackPanel Orientation="Horizontal">
+                        <materialDesign:PackIcon Kind="DragVertical" VerticalAlignment="Center" Foreground="Gray" />
+                        <TextBlock Text="{Binding}" Margin="5,0,0,0" />
+                    </StackPanel>
+                </DataTemplate>
+            </ListBox.ItemTemplate>
+        </ListBox>
         <CheckBox Content="歌手別リスト等において、ひらがな以外の頭文字を「その他」として出力する (_M)" IsChecked="{Binding OutputHeadMisc}" Margin="0,10,0,0"/>
     </StackPanel>
 

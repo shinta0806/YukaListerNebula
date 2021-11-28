@@ -697,6 +697,7 @@ namespace YukaLister.ViewModels
 				Debug.Assert(YlConstants.MUSIC_INFO_DB_TABLE_NAMES.Length == (Int32)MusicInfoTables.__End__, "MainWindow.Initialize() bad MUSIC_INFO_DB_TABLE_NAMES length");
 				Debug.Assert(YlConstants.MUSIC_INFO_TABLE_NAME_LABELS.Length == (Int32)MusicInfoTables.__End__, "MainWindow.Initialize() bad MUSIC_INFO_TABLE_NAME_LABELS length");
 				Debug.Assert(YlConstants.OUTPUT_ITEM_NAMES.Length == (Int32)OutputItems.__End__, "MainWindow.Initialize() bad OUTPUT_ITEM_NAMES length");
+				Debug.Assert(YlConstants.GROUP_NAVI_NAMES.Length == (Int32)GroupNaviItems.__End__, "MainWindow.Initialize() bad GROUP_NAVI_NAMES length");
 				Debug.Assert(YlConstants.YUKARI_STATISTICS_PERIOD_LABELS.Length == (Int32)YukariStatisticsPeriod.__End__, "MainWindow.Initialize() bad YUKARI_STATISTICS_PERIOD_LABELS");
 
 				// 参照設定

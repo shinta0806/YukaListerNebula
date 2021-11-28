@@ -11,8 +11,8 @@
 using Shinta;
 
 using System;
-using System.Reflection;
-using YukaLister.Models.Database.Masters;
+using System.Collections.Generic;
+
 using YukaLister.Models.SharedMisc;
 
 namespace YukaLister.Models.OutputWriters
@@ -31,6 +31,8 @@ namespace YukaLister.Models.OutputWriters
 			// 初期化
 			EnableNew = true;
 			NewDays = NEW_DAYS_DEFAULT;
+
+			// リストはデシリアライズ時に重複するため初期化しない
 		}
 
 		// ====================================================================
@@ -42,6 +44,9 @@ namespace YukaLister.Models.OutputWriters
 
 		// NEW と見なす日数
 		public Int32 NewDays { get; set; }
+
+		// グループナビの項目の順番（[0] は必ず GroupNaviItems.New に設定される）
+		public List<GroupNaviItems> GroupNaviSequence { get; set; } = new();
 
 		// 頭文字「その他」を出力する
 		public Boolean OutputHeadMisc { get; set; }
@@ -60,6 +65,7 @@ namespace YukaLister.Models.OutputWriters
 			{
 				NewDays = NEW_DAYS_DEFAULT;
 			}
+			SetGroupNaviSequenceIfNeeded();
 
 			// 基底クラス調整
 			base.AdjustAfterGenerateOrLoad();
@@ -119,8 +125,25 @@ namespace YukaLister.Models.OutputWriters
 		private const Int32 NEW_DAYS_DEFAULT = 31;
 
 		// ====================================================================
-		// private static メンバー関数
+		// private メンバー関数
 		// ====================================================================
+
+		// --------------------------------------------------------------------
+		// GroupNaviSequence が正しく設定されていない場合はデフォルト値を設定
+		// --------------------------------------------------------------------
+		private void SetGroupNaviSequenceIfNeeded()
+		{
+			if (GroupNaviSequence.Count == (Int32)GroupNaviItems.__End__ && GroupNaviSequence[0] == GroupNaviItems.New)
+			{
+				return;
+			}
+
+			GroupNaviSequence.Clear();
+			for (GroupNaviItems i = 0; i < GroupNaviItems.__End__; i++)
+			{
+				GroupNaviSequence.Add(i);
+			}
+		}
 
 		// --------------------------------------------------------------------
 		// 保存パス

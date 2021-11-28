@@ -5,14 +5,14 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              mc:Ignorable="d" 
-             d:DesignHeight="450" d:DesignWidth="800" >
+             d:DesignHeight="450" >
 
     <!-- 動的生成するため、以下を行う -->
     <!-- ビルドアクションを「埋め込みリソース」にする -->
     <!-- 紐付いている xaml.cs は削除する -->
     <!-- x:Class の記述を削除する -->
 
-    <StackPanel>
+    <StackPanel Width="550">
         <StackPanel.InputBindings>
             <KeyBinding Gesture="Alt+Up" Command="{Binding ButtonUpOutputItemClickedCommand}" />
             <KeyBinding Gesture="Alt+Down" Command="{Binding ButtonDownOutputItemClickedCommand}" />

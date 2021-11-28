@@ -55,6 +55,8 @@ namespace YukaLister.Models.OutputWriters
 			_thNames[(Int32)OutputItems.FileSize] = "サイズ";
 
 			Debug.WriteLine("WebOutputWriter() HashSize: " + _md5.HashSize);
+			Debug.Assert(KIND_FILE_NAMES.Length == (Int32)GroupNaviItems.__End__, "WebOutputWriter() bad KIND_FILE_NAMES.Length");
+			Debug.Assert(GROUP_NAMES.Length == (Int32)GroupNaviItems.__End__, "WebOutputWriter() bad GROUP_NAMES.Length");
 		}
 
 		// ====================================================================
@@ -77,15 +79,37 @@ namespace YukaLister.Models.OutputWriters
 			PrepareOutput();
 
 			// 内容の生成
-			// 生成の順番は GroupNaviCore() と合わせる
-			GenerateNew();
-			GenerateCategoryAndHeads();
-			GenerateTieUpGroupHeadAndTieUpGroups();
-			GenerateYearsAndSeasons();
-			GeneratePeriodAndHeads();
-			GenerateArtistAndHeads();
-			GenerateComposerAndHeads();
-			GenerateTagHeadAndTags();
+			// 生成の順番は GroupNaviSequence と合わせる
+			WebOutputSettings webOutputSettings = (WebOutputSettings)OutputSettings;
+			for (Int32 i = 0; i < webOutputSettings.GroupNaviSequence.Count; i++)
+			{
+				switch (webOutputSettings.GroupNaviSequence[i])
+				{
+					case GroupNaviItems.New:
+						GenerateNew();
+						break;
+					case GroupNaviItems.Category:
+						GenerateCategoryAndHeads();
+						break;
+					case GroupNaviItems.TieUpGroup:
+						GenerateTieUpGroupHeadAndTieUpGroups();
+						break;
+					case GroupNaviItems.SeasonAndPeriod:
+						GenerateYearsAndSeasons();
+						GeneratePeriodAndHeads();
+						break;
+					case GroupNaviItems.ArtistAndComposer:
+						GenerateArtistAndHeads();
+						GenerateComposerAndHeads();
+						break;
+					case GroupNaviItems.Tag:
+						GenerateTagHeadAndTags();
+						break;
+					default:
+						Debug.Assert(false, "Output() bad GroupNaviSequence");
+						break;
+				}
+			}
 
 			// 内容の調整
 			AdjustList(_topPage);
@@ -381,6 +405,23 @@ namespace YukaLister.Models.OutputWriters
 		private const String KIND_FILE_NAME_TAG = "Tag";
 		private const String KIND_FILE_NAME_TIE_UP_GROUP = "Series";
 
+		// リストの種類に応じたファイル名（GroupNaviItems 順、結合アイテムを除く）
+		private static readonly String[] KIND_FILE_NAMES =
+		{
+			KIND_FILE_NAME_NEW, KIND_FILE_NAME_CATEGORY, KIND_FILE_NAME_TIE_UP_GROUP, String.Empty, String.Empty, KIND_FILE_NAME_TAG,
+		};
+
+		// リストの種類の名前（GroupNaviItems 順、結合アイテムを除く）
+		private static readonly String[] GROUP_NAMES =
+		{
+			YlConstants.GROUP_NAME_NEW,
+			YlConstants.GROUP_NAME_CATEGORY,
+			YlConstants.GROUP_NAME_TIE_UP_GROUP,
+			String.Empty,
+			String.Empty,
+			YlConstants.GROUP_NAME_TAG,
+		};
+
 		// HTML テンプレートに記載されている変数
 		private const String HTML_VAR_ADDITIONAL_DESCRIPTION = "<!-- $AdditionalDescription$ -->";
 		private const String HTML_VAR_ADDITIONAL_HEADER = "<!-- $AdditionalHeader$ -->";
@@ -641,7 +682,7 @@ namespace YukaLister.Models.OutputWriters
 		private WebPageInfoTree GenerateArtistAndHeadsCore(Boolean isAdult)
 		{
 			WebPageInfoTree pageInfoTree = new();
-			pageInfoTree.Name = "歌手別";
+			pageInfoTree.Name = YlConstants.GROUP_NAME_ARTIST;
 			pageInfoTree.FileName = IndexFileName(isAdult, KIND_FILE_NAME_ARTIST);
 
 			// タイアップ名とそれに紐付く楽曲群
@@ -707,7 +748,7 @@ namespace YukaLister.Models.OutputWriters
 		private WebPageInfoTree GenerateCategoryAndHeadsCore(Boolean isAdult)
 		{
 			WebPageInfoTree pageInfoTree = new();
-			pageInfoTree.Name = "カテゴリー別";
+			pageInfoTree.Name = YlConstants.GROUP_NAME_CATEGORY;
 			pageInfoTree.FileName = IndexFileName(isAdult, KIND_FILE_NAME_CATEGORY);
 
 			IQueryable<TFound> queryResult = _founds.Where(x => x.TieUpName != null && (isAdult ? x.TieUpAgeLimit >= YlConstants.AGE_LIMIT_CERO_Z : x.TieUpAgeLimit < YlConstants.AGE_LIMIT_CERO_Z))
@@ -781,7 +822,7 @@ namespace YukaLister.Models.OutputWriters
 		private WebPageInfoTree GenerateComposerAndHeadsCore(Boolean isAdult)
 		{
 			WebPageInfoTree pageInfoTree = new();
-			pageInfoTree.Name = "作曲者別";
+			pageInfoTree.Name = YlConstants.GROUP_NAME_COMPOSER;
 			pageInfoTree.FileName = IndexFileName(isAdult, KIND_FILE_NAME_COMPOSER);
 
 			// タイアップ名とそれに紐付く楽曲群
@@ -996,7 +1037,7 @@ namespace YukaLister.Models.OutputWriters
 		private WebPageInfoTree GenerateNewCore(Boolean isAdult)
 		{
 			WebPageInfoTree pageInfoTree = new();
-			pageInfoTree.Name = "新着";
+			pageInfoTree.Name = YlConstants.GROUP_NAME_NEW;
 			pageInfoTree.FileName = IndexFileName(isAdult, KIND_FILE_NAME_NEW);
 
 			// 番組名とそれに紐付く楽曲群
@@ -1176,7 +1217,7 @@ namespace YukaLister.Models.OutputWriters
 		private WebPageInfoTree GeneratePeriodAndHeadsCore(Boolean isAdult)
 		{
 			WebPageInfoTree pageInfoTree = new();
-			pageInfoTree.Name = "年代別";
+			pageInfoTree.Name = YlConstants.GROUP_NAME_PERIOD;
 			pageInfoTree.FileName = IndexFileName(isAdult, KIND_FILE_NAME_PERIOD);
 
 			// 番組名とそれに紐付く楽曲群
@@ -1252,7 +1293,7 @@ namespace YukaLister.Models.OutputWriters
 		private WebPageInfoTree GenerateTagHeadAndTagsCore(Boolean isAdult)
 		{
 			WebPageInfoTree pageInfoTree = new();
-			pageInfoTree.Name = "タグ別";
+			pageInfoTree.Name = YlConstants.GROUP_NAME_TAG;
 			pageInfoTree.FileName = IndexFileName(isAdult, KIND_FILE_NAME_TAG);
 
 			// タイアップ名とそれに紐付く楽曲群
@@ -1339,7 +1380,7 @@ namespace YukaLister.Models.OutputWriters
 		private WebPageInfoTree GenerateTieUpGroupHeadAndTieUpGroupsCore(Boolean isAdult)
 		{
 			WebPageInfoTree pageInfoTree = new();
-			pageInfoTree.Name = "シリーズ別";
+			pageInfoTree.Name = YlConstants.GROUP_NAME_TIE_UP_GROUP;
 			pageInfoTree.FileName = IndexFileName(isAdult, KIND_FILE_NAME_TIE_UP_GROUP);
 
 			// タイアップ名とそれに紐付く楽曲群
@@ -1428,7 +1469,7 @@ namespace YukaLister.Models.OutputWriters
 		private WebPageInfoTree GenerateYearsAndSeasonsCore(Boolean isAdult)
 		{
 			WebPageInfoTree pageInfoTree = new();
-			pageInfoTree.Name = "期別";
+			pageInfoTree.Name = YlConstants.GROUP_NAME_SEASON;
 			pageInfoTree.FileName = IndexFileName(isAdult, KIND_FILE_NAME_SEASON);
 
 			// 年月日設定
@@ -1541,34 +1582,50 @@ namespace YukaLister.Models.OutputWriters
 		}
 
 		// --------------------------------------------------------------------
+		// グループナビ文字列を追加
+		// --------------------------------------------------------------------
+		private void GroupNaviAppend(StringBuilder stringBuilder, String indexFileName, String groupName)
+		{
+			stringBuilder.Append("<td class=\"exist\"><a href=\"" + indexFileName + _listLinkArg + "\">　" + groupName + "　</a></td>");
+		}
+
+		// --------------------------------------------------------------------
 		// グループナビ文字列を生成
-		// ナビの順番は Output() と合わせる
+		// ナビの順番は GroupNaviSequence と合わせる
 		// --------------------------------------------------------------------
 		private void GroupNaviCore(StringBuilder stringBuilder, Boolean isAdult, Boolean enableNew)
 		{
 			stringBuilder.Append("<tr>");
 			stringBuilder.Append("<td>　" + ZoneName(isAdult) + "　</td>");
+			WebOutputSettings webOutputSettings = (WebOutputSettings)OutputSettings;
 
-			// 新着を最優先
+			// 新着は指定されている場合のみ
 			if (enableNew)
 			{
-				stringBuilder.Append("<td class=\"exist\"><a href=\"" + IndexFileName(isAdult, KIND_FILE_NAME_NEW) + _listLinkArg + "\">　新着　</a></td>");
+				Debug.Assert(webOutputSettings.GroupNaviSequence[0] == GroupNaviItems.New, "GroupNaviCore() bad GroupNaviSequence[0]");
+				GroupNaviAppend(stringBuilder, IndexFileName(isAdult, KIND_FILE_NAME_NEW), YlConstants.GROUP_NAME_NEW);
 			}
 
-			// 全曲を網羅するカテゴリーと、関連するシリーズは新着に次ぐ優先
-			stringBuilder.Append("<td class=\"exist\"><a href=\"" + IndexFileName(isAdult, KIND_FILE_NAME_CATEGORY) + _listLinkArg + "\">　カテゴリー別　</a></td>");
-			stringBuilder.Append("<td class=\"exist\"><a href=\"" + IndexFileName(isAdult, KIND_FILE_NAME_TIE_UP_GROUP) + _listLinkArg + "\">　シリーズ別　</a></td>");
+			// それ以降を指定の順で
+			for (Int32 i = 1; i < webOutputSettings.GroupNaviSequence.Count; i++)
+			{
+				Int32 groupNavi = (Int32)webOutputSettings.GroupNaviSequence[i];
+				switch (groupNavi)
+				{
+					case (Int32)GroupNaviItems.SeasonAndPeriod:
+						GroupNaviAppend(stringBuilder, IndexFileName(isAdult, KIND_FILE_NAME_SEASON), YlConstants.GROUP_NAME_SEASON);
+						GroupNaviAppend(stringBuilder, IndexFileName(isAdult, KIND_FILE_NAME_PERIOD), YlConstants.GROUP_NAME_PERIOD);
+						break;
+					case (Int32)GroupNaviItems.ArtistAndComposer:
+						GroupNaviAppend(stringBuilder, IndexFileName(isAdult, KIND_FILE_NAME_ARTIST), YlConstants.GROUP_NAME_ARTIST);
+						GroupNaviAppend(stringBuilder, IndexFileName(isAdult, KIND_FILE_NAME_COMPOSER), YlConstants.GROUP_NAME_COMPOSER);
+						break;
+					default:
+						GroupNaviAppend(stringBuilder, IndexFileName(isAdult, KIND_FILE_NAMES[groupNavi]), GROUP_NAMES[groupNavi]);
+						break;
+				}
+			}
 
-			// 利用頻度が高い期別と、関連する年代別
-			stringBuilder.Append("<td class=\"exist\"><a href=\"" + IndexFileName(isAdult, KIND_FILE_NAME_SEASON) + _listLinkArg + "\">　期別　</a></td>");
-			stringBuilder.Append("<td class=\"exist\"><a href=\"" + IndexFileName(isAdult, KIND_FILE_NAME_PERIOD) + _listLinkArg + "\">　年代別　</a></td>");
-
-			// 人別はさほど優先度が高くない
-			stringBuilder.Append("<td class=\"exist\"><a href=\"" + IndexFileName(isAdult, KIND_FILE_NAME_ARTIST) + _listLinkArg + "\">　歌手別　</a></td>");
-			stringBuilder.Append("<td class=\"exist\"><a href=\"" + IndexFileName(isAdult, KIND_FILE_NAME_COMPOSER) + _listLinkArg + "\">　作曲者別　</a></td>");
-
-			// PC ごとに異なるタグ別は優先度低
-			stringBuilder.Append("<td class=\"exist\"><a href=\"" + IndexFileName(isAdult, KIND_FILE_NAME_TAG) + _listLinkArg + "\">　タグ別　</a></td>");
 			stringBuilder.Append("</tr>\n");
 		}
 

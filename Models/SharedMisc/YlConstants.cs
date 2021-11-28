@@ -86,6 +86,20 @@ namespace YukaLister.Models.SharedMisc
 	}
 
 	// --------------------------------------------------------------------
+	// HTML リスト上部グループナビの項目（デフォルトの並び順を兼ねる）
+	// --------------------------------------------------------------------
+	public enum GroupNaviItems
+	{
+		New,                // 新着を最優先
+		Category,           // 全曲を網羅するカテゴリーは最優先
+		TieUpGroup,         // カテゴリーと比較的関連性の高いシリーズ
+		SeasonAndPeriod,    // 利用頻度が高い期別と、関連する年代別
+		ArtistAndComposer,  // 人別はさほど優先度が高くない
+		Tag,                // PC ごとに異なるタグ別は優先度低
+		__End__,
+	}
+
+	// --------------------------------------------------------------------
 	// 楽曲情報データベースのテーブル
 	// 値を増やした場合は、MainWindow.Initialize() でチェックしている定数も併せて増やす
 	// --------------------------------------------------------------------
@@ -549,6 +563,22 @@ namespace YukaLister.Models.SharedMisc
 				"備考", "最終更新日時", "ファイルサイズ", "楽曲名", "楽曲フリガナ", "摘要", "リリース日",
 				"歌手名", "歌手フリガナ", "作詞者名", "作詞者フリガナ", "作曲者名", "作曲者フリガナ", "編曲者名", "編曲者フリガナ",
 				"タイアップ名", "タイアップフリガナ", "年齢制限", "カテゴリー", "タイアップグループ名", "タイアップグループフリガナ", "制作会社名", "制作会社フリガナ" };
+
+		// リストの種類の名前（グループナビ用の名前）
+		public const String GROUP_NAME_ARTIST = "歌手別";
+		public const String GROUP_NAME_CATEGORY = "カテゴリー別";
+		public const String GROUP_NAME_COMPOSER = "作曲者別";
+		public const String GROUP_NAME_NEW = "新着";
+		public const String GROUP_NAME_PERIOD = "年代別";
+		public const String GROUP_NAME_SEASON = "期別";
+		public const String GROUP_NAME_TAG = "タグ別";
+		public const String GROUP_NAME_TIE_UP_GROUP = "シリーズ別";
+
+		// リストの種類の名前（GroupNaviItems 順、結合アイテムは結合した名前）
+		public static readonly String[] GROUP_NAVI_NAMES =
+		{
+			GROUP_NAME_NEW, GROUP_NAME_CATEGORY, GROUP_NAME_TIE_UP_GROUP, GROUP_NAME_SEASON + "・" + GROUP_NAME_PERIOD, GROUP_NAME_ARTIST + "・" + GROUP_NAME_COMPOSER, GROUP_NAME_TAG,
+		};
 
 		// --------------------------------------------------------------------
 		// カテゴリー名

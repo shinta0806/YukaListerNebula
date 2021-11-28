@@ -11,6 +11,7 @@
 using Shinta;
 
 using System;
+using System.Collections.ObjectModel;
 using System.Diagnostics;
 
 using YukaLister.Models.OutputWriters;
@@ -65,6 +66,9 @@ namespace YukaLister.ViewModels.OutputSettingsWindowViewModels
 			get => _newDays;
 			set => RaisePropertyChangedIfSet(ref _newDays, value);
 		}
+
+		// グループナビの項目の順番（WebOutputSettings.GroupNaviSequence[0] を除く）
+		public ObservableCollection<String> GroupNaviSequenceNames { get; set; } = new();
 
 		// 頭文字その他出力
 		private Boolean _outputHeadMisc;
@@ -151,6 +155,18 @@ namespace YukaLister.ViewModels.OutputSettingsWindowViewModels
 				webOutputSettings.NewDays = Common.StringToInt32(NewDays);
 			}
 
+			// グループナビの項目の順番
+			webOutputSettings.GroupNaviSequence.RemoveRange(1, webOutputSettings.GroupNaviSequence.Count - 1);
+			for (Int32 i = 0; i < GroupNaviSequenceNames.Count; i++)
+			{
+				Int32 item = Array.IndexOf(YlConstants.GROUP_NAVI_NAMES, GroupNaviSequenceNames[i]);
+				if (item < 0)
+				{
+					continue;
+				}
+				webOutputSettings.GroupNaviSequence.Add((GroupNaviItems)item);
+			}
+
 			// 頭文字その他出力
 			webOutputSettings.OutputHeadMisc = OutputHeadMisc;
 		}
@@ -172,6 +188,13 @@ namespace YukaLister.ViewModels.OutputSettingsWindowViewModels
 
 			// 新着の日数
 			NewDays = webOutputSettings.NewDays.ToString();
+
+			// グループナビの項目の順番
+			GroupNaviSequenceNames.Clear();
+			for (Int32 i = 1; i < webOutputSettings.GroupNaviSequence.Count; i++)
+			{
+				GroupNaviSequenceNames.Add(YlConstants.GROUP_NAVI_NAMES[(Int32)webOutputSettings.GroupNaviSequence[i]]);
+			}
 
 			// 頭文字その他出力
 			OutputHeadMisc = webOutputSettings.OutputHeadMisc;
