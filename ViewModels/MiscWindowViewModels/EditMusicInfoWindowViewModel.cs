@@ -149,7 +149,7 @@ namespace YukaLister.ViewModels.MiscWindowViewModels
 					if (RaisePropertyChangedIfSet(ref _useTieUpAlias, value))
 					{
 						ButtonSearchTieUpOriginClickedCommand.RaiseCanExecuteChanged();
-						UpdateListItems();
+						UpdateListItems(true);
 						if (!_useTieUpAlias)
 						{
 							TieUpOrigin = null;
@@ -192,7 +192,7 @@ namespace YukaLister.ViewModels.MiscWindowViewModels
 					if (RaisePropertyChangedIfSet(ref _useSongAlias, value))
 					{
 						ButtonSearchSongOriginClickedCommand.RaiseCanExecuteChanged();
-						UpdateListItems();
+						UpdateListItems(true);
 						if (!_useSongAlias)
 						{
 							SongOrigin = null;
@@ -282,7 +282,8 @@ namespace YukaLister.ViewModels.MiscWindowViewModels
 
 				_isTieUpSearched = true;
 				TieUpOrigin = searchMasterWindowViewModel.OkSelectedMaster?.Name ?? TieUpOrigin;
-				UpdateListItems();
+				_tieUpId = searchMasterWindowViewModel.OkSelectedMaster?.Id ?? _tieUpId;
+				UpdateListItems(false);
 			}
 			catch (Exception excep)
 			{
@@ -364,30 +365,38 @@ namespace YukaLister.ViewModels.MiscWindowViewModels
 				}
 				else
 				{
-					List<TSong> songsByFoundSetter = foundSetterAliasSpecify.FindSongsByMusicInfoDatabase(dicByFile);
-					if (songsByFoundSetter.Count == 0)
+					if (_tieUpId != null)
 					{
-						// 楽曲が見当たらない場合はタイアップのみで判定する
-						if (sameNameTieUps.Count == 2)
-						{
-							// 新規以外が 1 つならそれをデフォルトにする
-							editTieUpWindowViewModel.DefaultMasterId = sameNameTieUps[1].Id;
-						}
-						else
-						{
-							// 新規以外が複数ある場合は新規をデフォルトにする
-							editTieUpWindowViewModel.DefaultMasterId = sameNameTieUps[0].Id;
-						}
-					}
-					else if (songsByFoundSetter.Count == 1)
-					{
-						// 楽曲を 1 つに絞り込めた場合はそれに紐付くタイアップをデフォルトにする
-						editTieUpWindowViewModel.DefaultMasterId = songsByFoundSetter[0].TieUpId;
+						// _tieUpId が指定されている場合はそれをデフォルトにする
+						editTieUpWindowViewModel.DefaultMasterId = _tieUpId;
 					}
 					else
 					{
-						// 1 つに絞り込めなかった場合は新規をデフォルトにする
-						editTieUpWindowViewModel.DefaultMasterId = sameNameTieUps[0].Id;
+						List<TSong> songsByFoundSetter = foundSetterAliasSpecify.FindSongsByMusicInfoDatabase(dicByFile);
+						if (songsByFoundSetter.Count == 0)
+						{
+							// 楽曲が見当たらない場合はタイアップのみで判定する
+							if (sameNameTieUps.Count == 2)
+							{
+								// 新規以外が 1 つならそれをデフォルトにする
+								editTieUpWindowViewModel.DefaultMasterId = sameNameTieUps[1].Id;
+							}
+							else
+							{
+								// 新規以外が複数ある場合は新規をデフォルトにする
+								editTieUpWindowViewModel.DefaultMasterId = sameNameTieUps[0].Id;
+							}
+						}
+						else if (songsByFoundSetter.Count == 1)
+						{
+							// 楽曲を 1 つに絞り込めた場合はそれに紐付くタイアップをデフォルトにする
+							editTieUpWindowViewModel.DefaultMasterId = songsByFoundSetter[0].TieUpId;
+						}
+						else
+						{
+							// 1 つに絞り込めなかった場合は新規をデフォルトにする
+							editTieUpWindowViewModel.DefaultMasterId = sameNameTieUps[0].Id;
+						}
 					}
 				}
 
@@ -407,11 +416,12 @@ namespace YukaLister.ViewModels.MiscWindowViewModels
 						UseTieUpAlias = true;
 						TieUpOrigin = editTieUpWindowViewModel.OkSelectedMaster.Name;
 					}
+					_tieUpId = editTieUpWindowViewModel.OkSelectedMaster.Id;
 				}
 
 				// タイアップが削除された場合もあるので常に更新する
 				RaisePropertyChanged(nameof(IsTieUpNameRegistered));
-				UpdateListItems();
+				UpdateListItems(false);
 			}
 			catch (Exception excep)
 			{
@@ -452,7 +462,8 @@ namespace YukaLister.ViewModels.MiscWindowViewModels
 
 				_isSongSearched = true;
 				SongOrigin = searchMasterWindowViewModel.OkSelectedMaster?.Name ?? SongOrigin;
-				UpdateListItems();
+				_songId = searchMasterWindowViewModel.OkSelectedMaster?.Id ?? _songId;
+				UpdateListItems(false);
 			}
 			catch (Exception excep)
 			{
@@ -569,16 +580,24 @@ namespace YukaLister.ViewModels.MiscWindowViewModels
 				}
 				else
 				{
-					List<TSong> songsByFoundSetter = foundSetterAliasSpecify.FindSongsByMusicInfoDatabase(dicByFile);
-					if (songsByFoundSetter.Count == 1)
+					if (_songId != null)
 					{
-						// 1 つに絞り込めた場合はそれをデフォルトにする
-						editSongWindowViewModel.DefaultMasterId = songsByFoundSetter[0].Id;
+						// _songId が指定されている場合はそれをデフォルトにする
+						editSongWindowViewModel.DefaultMasterId = _songId;
 					}
 					else
 					{
-						// 1 つに絞り込めなかった場合は新規をデフォルトにする
-						editSongWindowViewModel.DefaultMasterId = sameNameSongs[0].Id;
+						List<TSong> songsByFoundSetter = foundSetterAliasSpecify.FindSongsByMusicInfoDatabase(dicByFile);
+						if (songsByFoundSetter.Count == 1)
+						{
+							// 1 つに絞り込めた場合はそれをデフォルトにする
+							editSongWindowViewModel.DefaultMasterId = songsByFoundSetter[0].Id;
+						}
+						else
+						{
+							// 1 つに絞り込めなかった場合は新規をデフォルトにする
+							editSongWindowViewModel.DefaultMasterId = sameNameSongs[0].Id;
+						}
 					}
 				}
 
@@ -599,11 +618,12 @@ namespace YukaLister.ViewModels.MiscWindowViewModels
 						UseSongAlias = true;
 						SongOrigin = editSongWindowViewModel.OkSelectedMaster.Name;
 					}
+					_songId = editSongWindowViewModel.OkSelectedMaster.Id;
 				}
 
 				// 楽曲が削除された場合もあるので常に更新する
 				RaisePropertyChanged(nameof(IsSongNameRegistered));
-				UpdateListItems();
+				UpdateListItems(false);
 			}
 			catch (Exception excep)
 			{
@@ -695,7 +715,7 @@ namespace YukaLister.ViewModels.MiscWindowViewModels
 				ApplySongAlias(foundSetter, dicByFilePure);
 
 				// リスト表示予定項目
-				UpdateListItems();
+				UpdateListItems(true);
 			}
 			catch (Exception excep)
 			{
@@ -714,8 +734,14 @@ namespace YukaLister.ViewModels.MiscWindowViewModels
 		// タイアップを検索したかどうか
 		private Boolean _isTieUpSearched;
 
+		// タイアップ ID（UpdateListItems()、検索、タイアップ詳細編集で指定）
+		private String? _tieUpId;
+
 		// 楽曲を検索したかどうか
 		private Boolean _isSongSearched;
+
+		// 楽曲 ID（UpdateListItems()、検索、楽曲詳細編集で指定）
+		private String? _songId;
 
 		// ====================================================================
 		// private メンバー関数
@@ -966,7 +992,7 @@ namespace YukaLister.ViewModels.MiscWindowViewModels
 		// --------------------------------------------------------------------
 		// リストに表示される項目を更新
 		// --------------------------------------------------------------------
-		private void UpdateListItems()
+		private void UpdateListItems(Boolean updateId)
 		{
 			try
 			{
@@ -987,6 +1013,12 @@ namespace YukaLister.ViewModels.MiscWindowViewModels
 				ListTieUpName = found.TieUpName;
 				ListSongName = found.SongName;
 				ListArtistName = found.ArtistName;
+
+				if (updateId)
+				{
+					_tieUpId = found.TieUpId;
+					_songId = found.SongId;
+				}
 			}
 			catch (Exception excep)
 			{
