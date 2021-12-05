@@ -1729,12 +1729,30 @@ class	CPManager
 		while ( ($row = $stmt->fetch(PDO::FETCH_ASSOC)) !== FALSE ) {
 			$login_time = modified_julian_date_to_date_time($row['MAX('.FIELD_NAME_LOGIN_TIME.')']);
 			$login_time->setTimeZone(new DateTimeZone(date_default_timezone_get()));
+
+			$sub_sql = 'SELECT *'
+						.' FROM '.TABLE_NAME_LOGIN
+						.' WHERE '.FIELD_NAME_LOGIN_NAME.' = :name'
+						.' AND '.FIELD_NAME_LOGIN_SUCCESS.' = 1'
+						.' AND '.FIELD_NAME_LOGIN_TIME.' = :logintime';
+			$sub_stmt = $pdo->prepare($sub_sql);
+			$sub_stmt->bindValue(':name', $row[FIELD_NAME_ACCOUNT_NAME], PDO::PARAM_STR);
+			$sub_stmt->bindValue(':logintime', $row['MAX('.FIELD_NAME_LOGIN_TIME.')'], PDO::PARAM_STR);
+			$sub_stmt->execute();
+			$sub_row = $sub_stmt->fetch(PDO::FETCH_ASSOC);
+			$sub_stmt->closeCursor();
+			$client = '';
+			if ( $sub_row !== FALSE ) {
+				$client = $sub_row[FIELD_NAME_LOGIN_APP_VER];
+			}
+				
 			$update_time = modified_julian_date_to_date_time($row[FIELD_NAME_ACCOUNT_UPDATE_TIME]);
 			$update_time->setTimeZone(new DateTimeZone(date_default_timezone_get()));
 			$user_list .= '<tr><th>'.$row[FIELD_NAME_ACCOUNT_UID].'</th>'
 					.'<td>'.$row[FIELD_NAME_ACCOUNT_NAME].'</td>'
 					.'<td>'.($row[FIELD_NAME_ACCOUNT_ADMIN] ? '○' : '×').'</td>'
 					.'<td>'.($row['MAX('.FIELD_NAME_LOGIN_TIME.')'] > INVALID_MJD ? $login_time->format('Y/m/d H:i:s') : '-').'</td>'
+					.'<td>'.$client.'</td>'
 					.'<td>'.$update_time->format('Y/m/d H:i:s').'</td>'
 					.'<td><a href="#Change" onClick="changeUser('.$row[FIELD_NAME_ACCOUNT_UID].');">変更</a></td>'
 					.'<td><a href="#Init" onClick="initUser('.$row[FIELD_NAME_ACCOUNT_UID].');">初期化</a></td>'
