@@ -290,7 +290,7 @@ namespace YukaLister.Models.YukaListerModels
 			LogWriter.SimpleTraceListener.MaxSize = 10 * 1024 * 1024;
 			LogWriter.SimpleTraceListener.MaxOldGenerations = 5;
 			LogWriter.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, "起動しました：" + YlConstants.APP_NAME_J + " "
-					+ YlConstants.APP_VER + " ====================");
+					+ YlConstants.APP_VER + "  " + YlConstants.APP_DISTRIB + " ====================");
 #if DEBUG
 			LogWriter.ShowLogMessage(TraceEventType.Verbose, "デバッグモード：" + Common.DEBUG_ENABLED_MARK);
 #endif

@@ -5,7 +5,7 @@
 // ============================================================================
 
 // ----------------------------------------------------------------------------
-// 
+// ToDo: CreateContext 廃止
 // ----------------------------------------------------------------------------
 
 using Livet;
@@ -421,6 +421,36 @@ namespace YukaLister.ViewModels
 			catch (Exception excep)
 			{
 				YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(TraceEventType.Error, "よくある質問メニュークリック時エラー：\n" + excep.Message);
+				YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, "　スタックトレース：\n" + excep.StackTrace);
+			}
+		}
+		#endregion
+
+		#region サンプルフォルダーメニューアイテムの制御
+
+		private ViewModelCommand? _menuItemSampleFolderClickedCommand;
+
+		public ViewModelCommand MenuItemSampleFolderClickedCommand
+		{
+			get
+			{
+				if (_menuItemSampleFolderClickedCommand == null)
+				{
+					_menuItemSampleFolderClickedCommand = new ViewModelCommand(MenuItemSampleFolderClicked);
+				}
+				return _menuItemSampleFolderClickedCommand;
+			}
+		}
+
+		public void MenuItemSampleFolderClicked()
+		{
+			try
+			{
+				YlCommon.ShellExecute(YukaListerModel.Instance.EnvModel.ExeFullFolder + FOLDER_NAME_SAMPLE_FOLDER_SETTINGS);
+			}
+			catch (Exception excep)
+			{
+				YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(TraceEventType.Error, "サンプルフォルダーメニュークリック時エラー：\n" + excep.Message);
 				YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, "　スタックトレース：\n" + excep.StackTrace);
 			}
 		}
@@ -851,6 +881,9 @@ namespace YukaLister.ViewModels
 		// ====================================================================
 		// private メンバー定数
 		// ====================================================================
+
+		// サンプルフォルダー
+		private const String FOLDER_NAME_SAMPLE_FOLDER_SETTINGS = "SampleFolderSettings\\";
 
 		// 改訂履歴ファイル
 		private const String FILE_NAME_HISTORY = "YukaListerNebula_History_JPN" + Common.FILE_EXT_TXT;

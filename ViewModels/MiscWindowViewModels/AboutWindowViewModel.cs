@@ -57,6 +57,14 @@ namespace YukaLister.ViewModels.MiscWindowViewModels
 			set => RaisePropertyChangedIfSet(ref _appVer, value);
 		}
 
+		// 配布
+		private String _appDistrib = YlConstants.APP_DISTRIB;
+		public String AppDistrib
+		{
+			get => _appDistrib;
+			set => RaisePropertyChangedIfSet(ref _appDistrib, value);
+		}
+
 		// コピーライト
 		private String _copyright = YlConstants.COPYRIGHT_J;
 		public String Copyright

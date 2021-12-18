@@ -773,10 +773,13 @@ namespace YukaLister.Models.DatabaseAssist
 
 		// --------------------------------------------------------------------
 		// ゆかりすたーデータベースを保存するフォルダーのフルパス（末尾 '\\'）
+		// 設定のバックアップのやりやすさを考慮し、Common.UserAppDataFolderPath() の配下ではなく
+		// Common.UserAppDataFolderPath() と並列の階層とする
 		// --------------------------------------------------------------------
 		public static String YukaListerDatabaseFullFolder()
 		{
-			return YukaListerModel.Instance.EnvModel.ExeFullFolder + YlConstants.FOLDER_NAME_DATABASE;
+			return Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData, Environment.SpecialFolderOption.DoNotVerify) + "\\"
+					+ Common.FOLDER_NAME_SHINTA + Path.GetFileNameWithoutExtension(Environment.GetCommandLineArgs()[0]) + YlConstants.FOLDER_NAME_DATABASE;
 		}
 
 		// --------------------------------------------------------------------

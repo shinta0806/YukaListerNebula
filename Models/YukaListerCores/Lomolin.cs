@@ -405,7 +405,8 @@ namespace YukaLister.Models.YukaListerCores
 			{
 				_defenderWarned = YukaListerModel.Instance.EnvModel.NebulaCoreErrors.TryAdd("Windows Defender が高負荷になっています。\n\n"
 						+ "ゆかり・" + YlConstants.APP_NAME_J + "動作中は Windows Defender を無効化することを推奨します。\n"
-						+ "（Windows Defender 以外のセキュリティーソフトを使用することを推奨します）");
+						+ "（Windows Defender 以外のセキュリティーソフトを使用することを推奨します）\n\n"
+						+ "やり方については「よくある質問」を参照してください。");
 			}
 		}
 	}
