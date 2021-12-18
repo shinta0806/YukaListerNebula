@@ -39,7 +39,7 @@ namespace YukaLister.Models.SerializableSettings
 		// --------------------------------------------------------------------
 
 		// ゆかり設定ファイルのパス（相対または絶対）
-		public String YukariConfigPathSeed { get; set; } = @"..\" + YlConstants.FILE_NAME_YUKARI_CONFIG;
+		public String YukariConfigPathSeed { get; set; } = @"C:\xampp\htdocs\" + YlConstants.FILE_NAME_YUKARI_CONFIG;
 
 		// リムーバブルメディア接続時、前回のフォルダーを自動的に追加する
 		public Boolean AddFolderOnDeviceArrived { get; set; } = true;

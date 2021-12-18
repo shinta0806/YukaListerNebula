@@ -87,6 +87,150 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Update="Documents\HelpParts\H1BG.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Documents\HelpParts\H2BG.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Documents\HelpParts\MailAddrG2.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Documents\HelpParts\MailAddrG2Link.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Documents\HelpParts\Scroll.js">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Documents\HelpParts\SHIHelpG2.css">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Documents\HelpParts\THBG.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Documents\HelpParts\YukaListerNebula_FileListWindow.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Documents\HelpParts\YukaListerNebula_FolderSettingsWindow_File.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Documents\HelpParts\YukaListerNebula_FolderSettingsWindow_Folder.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Documents\HelpParts\YukaListerNebula_FolderSettingsWindow_Preview.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Documents\HelpParts\YukaListerNebula_FolderSettingsWindow_Preview_Bad.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Documents\HelpParts\YukaListerNebula_Icon.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Documents\HelpParts\YukaListerNebula_JPN_Databaseichiranwindow.html">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Documents\HelpParts\YukaListerNebula_JPN_Fileichiranwindow.html">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Documents\HelpParts\YukaListerNebula_JPN_FolderSettei.html">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Documents\HelpParts\YukaListerNebula_JPN_HoukokusaretamondainoKakunin.html">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Documents\HelpParts\YukaListerNebula_JPN_IdSettouji.html">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Documents\HelpParts\YukaListerNebula_JPN_Kankyousettei.html">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Documents\HelpParts\YukaListerNebula_JPN_KasyuSakushisyaSakkyokusyaHenkyokusyanoSentaku.html">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Documents\HelpParts\YukaListerNebula_JPN_Kihonsetteitab.html">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Documents\HelpParts\YukaListerNebula_JPN_NamaewoSoroeru.html">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Documents\HelpParts\YukaListerNebula_JPN_SeriesnoSentaku.html">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Documents\HelpParts\YukaListerNebula_JPN_TagnoSentaku.html">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Documents\HelpParts\YukaListerNebula_MainWindow.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Documents\HelpParts\YukaListerNebula_MeisyouWindow_Mitouroku.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Documents\HelpParts\YukaListerNebula_MeisyouWindow_Nayose.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Documents\HelpParts\YukaListerNebula_Report_Detail.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Documents\HelpParts\YukaListerNebula_Report_Link.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Documents\HelpParts\YukaListerNebula_Report_List.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Documents\HelpParts\YukaListerNebula_Report_Notice.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Documents\HelpParts\YukaListerNebula_Report_ReportForm.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Documents\HelpParts\YukaListerNebula_SmartScreen.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Documents\HelpParts\YukaListerNebula_ViewTieUpsWindow.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Documents\HelpParts\YukaListerNebula_YlSettingsWindow.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Documents\HelpParts\YukaListerNebula_YukariSearch_FileName.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Documents\HelpParts\YukaListerNebula_YukariSearch_TieUp.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Documents\HelpParts\YukaListerNebula_YukariSettings_Search.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Documents\HelpParts\YukaListerNebula_YukariSettings_TopMessage.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Documents\HelpParts\YukaListerNebula_YukariSettings_Version.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Documents\SampleFolderSettings\AAAさんの例\YukaLister.config">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Documents\SampleFolderSettings\AAAさんの例\さすがまさる君_まさるかにんげんのちから.mp4">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Documents\SampleFolderSettings\AAAさんの例\さるかに合戦_蜂が飛ぶ.mp4">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Documents\SampleFolderSettings\AAAさんの例\桃太郎_桃から生まれた.mp4">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Documents\SampleFolderSettings\BBBさんの例\YukaLister.config">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Documents\SampleFolderSettings\BBBさんの例\ゲーム\【おむすびころりん】ころころりん_BBB.mp4">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Documents\SampleFolderSettings\BBBさんの例\ゲーム\【おむすびころりん】隣のおじいさん※ハイレゾ音源_BBB.mp4">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Documents\SampleFolderSettings\BBBさんの例\特撮\【桃太郎】鬼をやっつけろ！_BBB.mp4">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Update="SyncServer\common_lib\CPCommon.php">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
