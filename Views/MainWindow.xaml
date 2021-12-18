@@ -14,7 +14,7 @@
     xmlns:vrw="clr-namespace:YukaLister.Views.ReportWindows"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     Title="{Binding Title}" Left="{Binding Left, Mode=TwoWay}" Top="{Binding Top, Mode=TwoWay}" Width="{Binding Width, Mode=TwoWay}" Height="{Binding Height, Mode=TwoWay}" 
-    MinWidth="600" MinHeight="330" ResizeMode="CanResizeWithGrip" Cursor="{Binding Cursor}" 
+    MinWidth="640" MinHeight="330" ResizeMode="CanResizeWithGrip" Cursor="{Binding Cursor}" 
     sb:FileDropAttachedBehavior.DropCommand="{Binding WindowFileDropCommand}" 
     sb:DeviceChangeAttachedBehavior.Command="{Binding WindowDeviceChangeCommand}" >
 
@@ -118,8 +118,8 @@
                 </behaviors:Interaction.Triggers>
             </Button>
             <Button Content="除外 (_X)" Style="{StaticResource MaterialDesignRaisedLightButton}" Width="100" Height="Auto" Margin="20,0,0,0" ToolTip="ゆかり検索対象フォルダーから除外" Command="{Binding ButtonRemoveTargetFolderClickedCommand}" />
-            <Button Content="フォルダー設定 (_F)" Style="{StaticResource MaterialDesignRaisedLightButton}" Width="140" Height="Auto" ToolTip="フォルダーの検索設定" DockPanel.Dock="Right" Padding="4" Command="{Binding ButtonFolderSettingsClickedCommand}" />
-            <Button Content="ファイル一覧 (_L)" Style="{StaticResource MaterialDesignRaisedLightButton}" Width="140" Height="Auto" Margin="0,0,20,0" ToolTip="ゆかり検索対象のファイルを一覧表示" DockPanel.Dock="Right" Padding="4" Command="{Binding ButtonTFoundsClickedCommand}" />
+            <Button Content="フォルダー設定 (_F)" Style="{StaticResource MaterialDesignRaisedLightButton}" Width="160" Height="Auto" ToolTip="フォルダーの検索設定" DockPanel.Dock="Right" Padding="4" Command="{Binding ButtonFolderSettingsClickedCommand}" />
+            <Button Content="検索可能ファイル一覧 (_L)" Style="{StaticResource MaterialDesignRaisedLightButton}" Width="160" Height="Auto" Margin="0,0,20,0" ToolTip="ゆかり検索対象のファイルを一覧表示" DockPanel.Dock="Right" Padding="4" Command="{Binding ButtonTFoundsClickedCommand}" />
         </DockPanel>
         <DataGrid AutoGenerateColumns="False" CanUserReorderColumns="False" CanUserSortColumns="False" CanUserResizeRows="False" CanUserAddRows="False" CanUserDeleteRows="False" 
                   SelectionMode="Single" ItemsSource="{Binding TargetFolderInfosVisible}" SelectedItem="{Binding SelectedTargetFolderInfo}" 
