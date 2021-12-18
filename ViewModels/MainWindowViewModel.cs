@@ -446,7 +446,7 @@ namespace YukaLister.ViewModels
 		{
 			try
 			{
-				YlCommon.ShellExecute(YukaListerModel.Instance.EnvModel.ExeFullFolder + FOLDER_NAME_SAMPLE_FOLDER_SETTINGS);
+				YlCommon.ShellExecute(YukaListerModel.Instance.EnvModel.ExeFullFolder + YlConstants.FOLDER_NAME_DOCUMENTS + FOLDER_NAME_SAMPLE_FOLDER_SETTINGS);
 			}
 			catch (Exception excep)
 			{
