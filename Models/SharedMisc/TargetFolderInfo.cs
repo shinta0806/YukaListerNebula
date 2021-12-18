@@ -38,10 +38,8 @@ namespace YukaLister.Models.SharedMisc
 			TargetPathLabel = ParentPath;
 			Level = 0;
 			FolderTaskKind = FolderTaskKind.Add;
-			_folderTaskDetail = (Int32)FolderTaskDetail.CacheToDisk;
+			_folderTaskDetail = (Int32)(YukaListerModel.Instance.EnvModel.YukaListerWholeStatus != YukaListerStatus.Error ? FolderTaskDetail.CacheToDisk : FolderTaskDetail.FindSubFolders);
 			Visible = true;
-			//WindowsApi.GetVolumeInformation(ParentPath[0..3], null, 0, out UInt32 volumeSerialNumber, out UInt32 maximumComponentLength, out FSF fileSystemFlags, null, 0);
-			//VolumeSerialNumber = volumeSerialNumber.ToString("X8") + SEPARATOR;
 		}
 
 		// --------------------------------------------------------------------
@@ -54,7 +52,6 @@ namespace YukaLister.Models.SharedMisc
 			Debug.Assert(targetPath[^1] != '\\', "TargetFolderInfo() path ends '\\'");
 
 			// 引数
-			//VolumeSerialNumber = volumeSerialNumber;
 			ParentPath = parentPath;
 			TargetPath = targetPath;
 			Level = level;
@@ -228,11 +225,13 @@ namespace YukaLister.Models.SharedMisc
 		// --------------------------------------------------------------------
 		private (String label, Brush brush) FolderTaskStatusLabelAndBrush()
 		{
+#if false
 			// 全体がエラーの場合はフォルダーもエラー
 			if (YukaListerModel.Instance.EnvModel.YukaListerWholeStatus == YukaListerStatus.Error)
 			{
 				return ("エラー解決待ち", YlConstants.BRUSH_STATUS_ERROR);
 			}
+#endif
 
 			// 対象外かどうか
 			if (FolderExcludeSettingsStatus == FolderExcludeSettingsStatus.True)
@@ -312,12 +311,6 @@ namespace YukaLister.Models.SharedMisc
 					}
 					brush = YlConstants.BRUSH_STATUS_RUNNING;
 					break;
-#if false
-				case FolderTaskStatus.Error:
-					label = "エラー";
-					brush = YlConstants.BRUSH_STATUS_ERROR;
-					break;
-#endif
 				case FolderTaskStatus.DoneInMemory:
 					switch (FolderTaskKind)
 					{
@@ -358,6 +351,5 @@ namespace YukaLister.Models.SharedMisc
 			}
 			return (label, brush);
 		}
-
 	}
 }

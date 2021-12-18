@@ -64,10 +64,12 @@ namespace YukaLister.Models.YukaListerCores
 				try
 				{
 					YukaListerModel.Instance.EnvModel.AppCancellationTokenSource.Token.ThrowIfCancellationRequested();
+#if false
 					if (YukaListerModel.Instance.EnvModel.YukaListerWholeStatus == YukaListerStatus.Error)
 					{
 						continue;
 					}
+#endif
 					if (YukaListerModel.Instance.ProjModel.UndoneTargetFolderInfo() == null)
 					{
 						continue;
@@ -91,12 +93,15 @@ namespace YukaLister.Models.YukaListerCores
 							continue;
 						}
 
-						// キャッシュ活用
-						targetFolderInfo = YukaListerModel.Instance.ProjModel.FindTargetFolderInfo(FolderTaskDetail.CacheToDisk);
-						if (targetFolderInfo != null)
+						// キャッシュ活用（全体の動作状況がエラーではない場合のみ）
+						if (YukaListerModel.Instance.EnvModel.YukaListerWholeStatus != YukaListerStatus.Error)
 						{
-							CacheToDisk(targetFolderInfo);
-							continue;
+							targetFolderInfo = YukaListerModel.Instance.ProjModel.FindTargetFolderInfo(FolderTaskDetail.CacheToDisk);
+							if (targetFolderInfo != null)
+							{
+								CacheToDisk(targetFolderInfo);
+								continue;
+							}
 						}
 
 						// すべてのフォルダーのキャッシュ活用が終わったら Yurelin をアクティブ化する
@@ -134,9 +139,16 @@ namespace YukaLister.Models.YukaListerCores
 						// メモリー DB → ディスク DB とキャッシュ DB
 						if (_isMemoryDbDirty)
 						{
-							MemoryToDisk();
+							// ディスク DB は全体の動作状況がエラーではない場合のみ
+							if (YukaListerModel.Instance.EnvModel.YukaListerWholeStatus != YukaListerStatus.Error)
+							{
+								MemoryToDisk();
+							}
+
+							// キャッシュ DB は常に
 							MemoryToCache();
 
+							_isMemoryDbDirty = false;
 							continue;
 						}
 
@@ -599,15 +611,9 @@ namespace YukaLister.Models.YukaListerCores
 			listContextInMemory.SaveChanges();
 			_isMemoryDbDirty = true;
 
-			// キャッシュが使われていない場合はディスク DB にも追加
-			if (!targetFolderInfo.IsCacheUsed)
+			// キャッシュが使われていない場合はディスク DB にも追加（全体の動作状況がエラーではない場合のみ）
+			if (YukaListerModel.Instance.EnvModel.YukaListerWholeStatus != YukaListerStatus.Error && !targetFolderInfo.IsCacheUsed)
 			{
-#if DEBUGz
-				foreach (TFound a in addRecords)
-				{
-					Debug.WriteLine("AddFileNamesCore() adding uid: " + a.Uid);
-				}
-#endif
 				using ListContextInDisk listContextInDisk = ListContextInDisk.CreateContext(out DbSet<TFound> diskFounds);
 				diskFounds.AddRange(addRecords);
 				listContextInDisk.SaveChanges();
@@ -766,7 +772,6 @@ namespace YukaLister.Models.YukaListerCores
 				sqliteConnectionInMemory.BackupDatabase(sqliteConnectionInDisk);
 				YukaListerModel.Instance.EnvModel.LogWriter.LogMessage(Common.TRACE_EVENT_TYPE_STATUS, "ゆかり用リストデータベースの作成が完了しました。");
 				YukaListerModel.Instance.ProjModel.SetAllFolderTaskStatusToDoneInDisk();
-				_isMemoryDbDirty = false;
 			}
 		}
 

@@ -103,7 +103,6 @@ namespace YukaLister.Models.YukaListerModels
 
 				// スリープ状態のデバイスだとここで時間がかかる
 				AdjustAutoTargetInfoIfNeeded(YlCommon.DriveLetter(parentFolder));
-				//ListCancellationTokenSource?.Cancel();
 			});
 		}
 

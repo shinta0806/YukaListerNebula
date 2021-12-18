@@ -1491,7 +1491,7 @@ namespace YukaLister.ViewModels
 						= YlConstants.APP_NAME_J + "は正常に動作しています。";
 
 				// Sifolin アクティブ化
-				YukaListerModel.Instance.EnvModel.Sifolin.MainEvent.Set();
+				//YukaListerModel.Instance.EnvModel.Sifolin.MainEvent.Set();
 			}
 
 			// 表示を強制更新

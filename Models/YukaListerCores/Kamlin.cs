@@ -67,8 +67,9 @@ namespace YukaLister.Models.YukaListerCores
 
 				try
 				{
-					//Debug.WriteLine("Kamlin.CoreMain() priority: " + Thread.CurrentThread.Priority.ToString());
 					YukaListerModel.Instance.EnvModel.AppCancellationTokenSource.Token.ThrowIfCancellationRequested();
+
+					// 全体の動作状況がエラーの場合はリスト作成しない
 					if (YukaListerModel.Instance.EnvModel.YukaListerWholeStatus == YukaListerStatus.Error)
 					{
 						continue;
