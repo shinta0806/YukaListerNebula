@@ -62,6 +62,14 @@ namespace YukaLister.ViewModels.TabItemViewModels
 		// View 通信用のプロパティー
 		// --------------------------------------------------------------------
 
+		// 警告表示
+		private Visibility _yukariListWarningVisibility = Visibility.Collapsed;
+		public Visibility YukariListWarningVisibility
+		{
+			get => _yukariListWarningVisibility;
+			set => RaisePropertyChangedIfSet(ref _yukariListWarningVisibility, value);
+		}
+
 		// ゆかり用リスト出力先フォルダー
 		private String? _yukariListFolder;
 		public String? YukariListFolder
@@ -116,10 +124,15 @@ namespace YukaLister.ViewModels.TabItemViewModels
 			{
 				if (_buttonYukariListSettingsClickedCommand == null)
 				{
-					_buttonYukariListSettingsClickedCommand = new ViewModelCommand(ButtonYukariListSettingsClicked);
+					_buttonYukariListSettingsClickedCommand = new ViewModelCommand(ButtonYukariListSettingsClicked, CanButtonYukariListSettingsClicked);
 				}
 				return _buttonYukariListSettingsClickedCommand;
 			}
+		}
+
+		public Boolean CanButtonYukariListSettingsClicked()
+		{
+			return YukaListerModel.Instance.EnvModel.YukaListerWholeStatus != YukaListerStatus.Error;
 		}
 
 		public void ButtonYukariListSettingsClicked()
@@ -279,6 +292,12 @@ namespace YukaLister.ViewModels.TabItemViewModels
 		// --------------------------------------------------------------------
 		public override void Initialize()
 		{
+			// 警告表示
+			if (YukaListerModel.Instance.EnvModel.YukaListerWholeStatus == YukaListerStatus.Error)
+			{
+				YukariListWarningVisibility = Visibility.Visible;
+			}
+
 			// リスト出力形式
 			HtmlOutputWriter htmlOutputWriter = new();
 			CompositeDisposable.Add(htmlOutputWriter);

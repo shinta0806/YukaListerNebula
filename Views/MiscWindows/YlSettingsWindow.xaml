@@ -114,17 +114,18 @@
                     </DockPanel>
                     <DockPanel Margin="20,10,20,0">
                         <Button Height="Auto" Content="出力設定 (_S)" Style="{StaticResource MaterialDesignRaisedLightButton}" Margin="0" DockPanel.Dock="Right" Width="100" Padding="0,4" Command="{Binding ButtonYukariListSettingsClickedCommand}"/>
-                        <Label Content="ゆかりリクエスト用リストは、常に自動的に出力・更新されます。"/>
+                        <Label Content="ゆかりリクエスト用リストは、自動的に出力・更新されます。"/>
                     </DockPanel>
                     <StackPanel Margin="20,10,0,0">
                         <Label Content="リスト出力先は、ゆかり設定ファイルがあるフォルダーの配下となります。"/>
                     </StackPanel>
-                    <DockPanel Margin="0,10,20,0">
+                    <DockPanel Margin="0,5,20,0">
                         <Label Content="リスト出力先フォルダー：" Width="170" HorizontalContentAlignment="Right"/>
                         <Label ToolTip="{Binding YukariListFolder}" ToolTipService.ShowDuration="{x:Static msm:YlConstants.TOOL_TIP_LONG_DURATION}" >
                             <TextBlock Text="{Binding YukariListFolder}" TextTrimming="CharacterEllipsis" />
                         </Label>
                     </DockPanel>
+                    <Label Content="※ゆかり設定ファイルが正しく指定されていないため、ゆかりリクエスト用リストは現在出力されません。" Visibility="{Binding YukariListWarningVisibility}" Foreground="Red" Margin="20,10,0,0" />
                     <DockPanel Margin="0,20,0,0">
                         <Border BorderBrush="{DynamicResource {x:Static SystemColors.ControlLightBrushKey}}" BorderThickness="1" Height="3" VerticalAlignment="Center" Margin="0" Width="20"/>
                         <Label Content="閲覧用リスト" Margin="10,0"/>
