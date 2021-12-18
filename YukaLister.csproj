@@ -12,12 +12,7 @@
     <Copyright>Copyright © by SHINTA</Copyright>
   </PropertyGroup>
 
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-    <DefineConstants>TRACE;DISTRIB_STOREz;TESTz</DefineConstants>
-    <NoWarn>1701;1702;1416</NoWarn>
-  </PropertyGroup>
-
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+  <PropertyGroup >
     <DefineConstants>TRACE;DISTRIB_STOREz;TESTz</DefineConstants>
     <NoWarn>1701;1702;1416</NoWarn>
   </PropertyGroup>
@@ -87,286 +82,112 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Update="Documents\HelpParts\H1BG.png">
+    <None Update="Documents\*.html">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Documents\HelpParts\H2BG.png">
+    <None Update="Documents\*.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Documents\HelpParts\MailAddrG2.png">
+    <None Update="Documents\HelpParts\*.css">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Documents\HelpParts\MailAddrG2Link.png">
+    <None Update="Documents\HelpParts\*.html">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Documents\HelpParts\Scroll.js">
+    <None Update="Documents\HelpParts\*.js">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Documents\HelpParts\SHIHelpG2.css">
+    <None Update="Documents\HelpParts\*.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Documents\HelpParts\THBG.png">
+    <None Update="Documents\SampleFolderSettings\AAAさんの例\*.config" >
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Documents\HelpParts\YukaListerNebula_FileListWindow.png">
+    <None Update="Documents\SampleFolderSettings\AAAさんの例\*.mp4" >
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Documents\HelpParts\YukaListerNebula_FolderSettingsWindow_File.png">
+    <None Update="Documents\SampleFolderSettings\BBBさんの例\*.config">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Documents\HelpParts\YukaListerNebula_FolderSettingsWindow_Folder.png">
+    <None Update="Documents\SampleFolderSettings\BBBさんの例\ゲーム\*.mp4">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Documents\HelpParts\YukaListerNebula_FolderSettingsWindow_Preview.png">
+    <None Update="Documents\SampleFolderSettings\BBBさんの例\特撮\*.mp4">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Documents\HelpParts\YukaListerNebula_FolderSettingsWindow_Preview_Bad.png">
+    <None Update="Documents\SampleFolderSettings\CCCさんの例\*.config">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Documents\HelpParts\YukaListerNebula_Icon.png">
+    <None Update="Documents\SampleFolderSettings\CCCさんの例\*.mp4">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Documents\HelpParts\YukaListerNebula_JPN_Databaseichiranwindow.html">
+    <None Update="Documents\SampleFolderSettings\DDDさんの例\*.config">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Documents\HelpParts\YukaListerNebula_JPN_Fileichiranwindow.html">
+    <None Update="Documents\SampleFolderSettings\DDDさんの例\*.mp4">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Documents\HelpParts\YukaListerNebula_JPN_FolderSettei.html">
+    <None Update="Documents\SampleFolderSettings\インポート用ファイル\*.ylexa">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Documents\HelpParts\YukaListerNebula_JPN_HoukokusaretamondainoKakunin.html">
+    <None Update="Documents\SampleFolderSettings\リスト出力結果\*.css">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Documents\HelpParts\YukaListerNebula_JPN_IdSettouji.html">
+    <None Update="Documents\SampleFolderSettings\リスト出力結果\*.html">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Documents\HelpParts\YukaListerNebula_JPN_Kankyousettei.html">
+    <None Update="Documents\SampleFolderSettings\リスト出力結果\*.js">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Documents\HelpParts\YukaListerNebula_JPN_KasyuSakushisyaSakkyokusyaHenkyokusyanoSentaku.html">
+    <None Update="Documents\SampleFolderSettings\リスト出力結果\*.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Documents\HelpParts\YukaListerNebula_JPN_Kihonsetteitab.html">
+    <None Update="SyncServer\*.css">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Documents\HelpParts\YukaListerNebula_JPN_NamaewoSoroeru.html">
+    <None Update="SyncServer\*.html">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Documents\HelpParts\YukaListerNebula_JPN_SeriesnoSentaku.html">
+    <None Update="SyncServer\*.js">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Documents\HelpParts\YukaListerNebula_JPN_TagnoSentaku.html">
+    <None Update="SyncServer\*.php">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Documents\HelpParts\YukaListerNebula_MainWindow.png">
+    <None Update="SyncServer\common_lib\*.html">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Documents\HelpParts\YukaListerNebula_MeisyouWindow_Mitouroku.png">
+    <None Update="SyncServer\common_lib\*.php">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Documents\HelpParts\YukaListerNebula_MeisyouWindow_Nayose.png">
+    <None Update="SyncServer\data\*.html">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Documents\HelpParts\YukaListerNebula_Report_Detail.png">
+    <None Update="SyncServer\image\*.html">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Documents\HelpParts\YukaListerNebula_Report_Link.png">
+    <None Update="SyncServer\image\*.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Documents\HelpParts\YukaListerNebula_Report_List.png">
+    <None Update="SyncServer\settings\*.html">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Documents\HelpParts\YukaListerNebula_Report_Notice.png">
+    <None Update="SyncServer\settings\*.php">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Documents\HelpParts\YukaListerNebula_Report_ReportForm.png">
+    <None Update="SyncServer\template\*.html">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Documents\HelpParts\YukaListerNebula_SmartScreen.png">
+    <None Update="Templates\*.tpl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Documents\HelpParts\YukaListerNebula_ViewTieUpsWindow.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="Documents\HelpParts\YukaListerNebula_YlSettingsWindow.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="Documents\HelpParts\YukaListerNebula_YukariSearch_FileName.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="Documents\HelpParts\YukaListerNebula_YukariSearch_TieUp.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="Documents\HelpParts\YukaListerNebula_YukariSettings_Search.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="Documents\HelpParts\YukaListerNebula_YukariSettings_TopMessage.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="Documents\HelpParts\YukaListerNebula_YukariSettings_Version.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="Documents\SampleFolderSettings\AAAさんの例\YukaLister.config">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="Documents\SampleFolderSettings\AAAさんの例\さすがまさる君_まさるかにんげんのちから.mp4">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="Documents\SampleFolderSettings\AAAさんの例\さるかに合戦_蜂が飛ぶ.mp4">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="Documents\SampleFolderSettings\AAAさんの例\桃太郎_桃から生まれた.mp4">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="Documents\SampleFolderSettings\BBBさんの例\YukaLister.config">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="Documents\SampleFolderSettings\BBBさんの例\ゲーム\【おむすびころりん】ころころりん_BBB.mp4">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="Documents\SampleFolderSettings\BBBさんの例\ゲーム\【おむすびころりん】隣のおじいさん※ハイレゾ音源_BBB.mp4">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="Documents\SampleFolderSettings\BBBさんの例\特撮\【桃太郎】鬼をやっつけろ！_BBB.mp4">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="SyncServer\common_lib\CPCommon.php">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="SyncServer\common_lib\CPManager.php">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="SyncServer\common_lib\index.html">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="SyncServer\common_lib\JulianDay.php">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="SyncServer\CPLogin.php">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="SyncServer\CPMain.php">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="SyncServer\CPStyle.css">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="SyncServer\data\index.html">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="SyncServer\image\H1BG.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="SyncServer\image\H2BG.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="SyncServer\image\index.html">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="SyncServer\image\SideMenuTitleBG.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="SyncServer\image\THBG.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="SyncServer\index.html">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="SyncServer\jquery-3.6.0.min.js">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="SyncServer\jquery.tablesorter.min.js">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="SyncServer\settings\DatabaseSettings_Sample.php">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="SyncServer\settings\DebugFlag.php">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="SyncServer\settings\index.html">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="SyncServer\template\index.html">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="SyncServer\template\TemplateChangeCurrentPWForm.html">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="SyncServer\template\TemplateContainerLogin.html">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="SyncServer\template\TemplateContainerMain.html">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="SyncServer\template\TemplateCreateMasterAccountForm.html">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="SyncServer\template\TemplateLoginForm.html">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="SyncServer\template\TemplateManageUsers.html">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="SyncServer\template\TemplateViewDebugMisc.html">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="SyncServer\template\TemplateViewDebugUploadTest.html">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="SyncServer\template\TemplateViewLog.html">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="SyncServer\template\TemplateViewNumCommit.html">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="SyncServer\template\TemplateViewNumData.html">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="SyncServer\template\TemplateViewStatus.html">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="Templates\FantiaLogo.tpl">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="Templates\HtmlCss.tpl">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="Templates\HtmlFreestyleIndexOneGroup.tpl">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="Templates\HtmlIndex.tpl">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="Templates\HtmlIndexNotice.tpl">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="Templates\HtmlIndexOneGroup.tpl">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="Templates\HtmlJs.tpl">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="Templates\HtmlList.tpl">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="Templates\YukariReportCommon.tpl">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="Templates\YukariReportEntry.tpl">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="Templates\YukariReportRegist.tpl">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="ThirdPartyDocuments\Livet\license-jp.txt">
+    <None Update="ThirdPartyDocuments\Livet\*.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Update="ThirdPartyDocuments\MaterialDesignInXamlToolkit\LICENSE">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="ThirdPartyDocuments\MaterialDesignInXamlToolkit\README.md">
+    <None Update="ThirdPartyDocuments\MaterialDesignInXamlToolkit\*.md">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>

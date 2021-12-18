@@ -136,19 +136,19 @@ namespace YukaLister.Models.YukaListerCores
 							continue;
 						}
 
-						// メモリー DB → ディスク DB とキャッシュ DB
-						if (_isMemoryDbDirty)
+						// メモリー DB → ディスク DB（全体の動作状況がエラーではない場合のみ）
+						if (_needsMemoryDbToDiskDb && YukaListerModel.Instance.EnvModel.YukaListerWholeStatus != YukaListerStatus.Error)
 						{
-							// ディスク DB は全体の動作状況がエラーではない場合のみ
-							if (YukaListerModel.Instance.EnvModel.YukaListerWholeStatus != YukaListerStatus.Error)
-							{
-								MemoryToDisk();
-							}
+							MemoryToDisk();
+							_needsMemoryDbToDiskDb = false;
+							continue;
+						}
 
-							// キャッシュ DB は常に
+						// メモリー DB → キャッシュ DB
+						if (_needsMemoryDbToCacheDb)
+						{
 							MemoryToCache();
-
-							_isMemoryDbDirty = false;
+							_needsMemoryDbToCacheDb = false;
 							continue;
 						}
 
@@ -210,8 +210,11 @@ namespace YukaLister.Models.YukaListerCores
 		// private メンバー変数
 		// ====================================================================
 
-		// メモリ DB 更新フラグ
-		private Boolean _isMemoryDbDirty;
+		// メモリー DB → ディスク DB 更新フラグ
+		private Boolean _needsMemoryDbToDiskDb;
+
+		// メモリー DB → キャッシュ DB 更新フラグ
+		private Boolean _needsMemoryDbToCacheDb;
 
 		// 直前のフォルダータスク詳細
 		private FolderTaskDetail _prevFolderTaskDetail;
@@ -609,7 +612,8 @@ namespace YukaLister.Models.YukaListerCores
 			// メモリー DB に追加
 			founds.AddRange(addRecords);
 			listContextInMemory.SaveChanges();
-			_isMemoryDbDirty = true;
+			_needsMemoryDbToDiskDb = true;
+			_needsMemoryDbToCacheDb = true;
 
 			// キャッシュが使われていない場合はディスク DB にも追加（全体の動作状況がエラーではない場合のみ）
 			if (YukaListerModel.Instance.EnvModel.YukaListerWholeStatus != YukaListerStatus.Error && !targetFolderInfo.IsCacheUsed)

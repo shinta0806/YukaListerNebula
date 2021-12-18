@@ -23,7 +23,6 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
@@ -346,6 +345,7 @@ namespace YukaLister.ViewModels
 					DbCommon.PrepareDatabases();
 					SetFileSystemWatcherYukariConfig();
 					UpdateYukaListerEnvironmentStatus();
+					YukaListerModel.Instance.EnvModel.Sifolin.MainEvent.Set();
 				}
 
 				// サーバー設定が変更された場合は起動・終了を行う
