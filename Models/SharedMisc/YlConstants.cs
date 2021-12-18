@@ -321,6 +321,9 @@ namespace YukaLister.Models.SharedMisc
 		// ゆかり用データベースを保存するフォルダー名
 		public const String FOLDER_NAME_LIST = "list\\";
 
+		// サンプルフォルダー
+		public const String FOLDER_NAME_SAMPLE_FOLDER_SETTINGS = "SampleFolderSettings\\";
+
 		// 各ドライブのゆかりすたー用ファイル群を保存するフォルダー名
 		public const String FOLDER_NAME_YUKALISTER_STATUS = APP_ID + "Status\\";
 

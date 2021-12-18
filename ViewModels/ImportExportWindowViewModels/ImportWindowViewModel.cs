@@ -26,6 +26,7 @@ using YukaLister.Models.Database.Sequences;
 using YukaLister.Models.DatabaseAssist;
 using YukaLister.Models.DatabaseContexts;
 using YukaLister.Models.SharedMisc;
+using YukaLister.Models.YukaListerModels;
 
 namespace YukaLister.ViewModels.ImportExportWindowViewModels
 {
@@ -41,7 +42,14 @@ namespace YukaLister.ViewModels.ImportExportWindowViewModels
 		public ImportWindowViewModel(String importYukaListerPath, Boolean importTag, Boolean importSameName)
 				: base("インポート")
 		{
-			_importYukaListerPath = importYukaListerPath;
+			if (Path.IsPathRooted(importYukaListerPath))
+			{
+				_importYukaListerPath = importYukaListerPath;
+			}
+			else
+			{
+				_importYukaListerPath = Common.MakeAbsolutePath(YukaListerModel.Instance.EnvModel.ExeFullFolder, importYukaListerPath);
+			}
 			_importTag = importTag;
 			_importSameName = importSameName;
 		}

@@ -446,7 +446,7 @@ namespace YukaLister.ViewModels
 		{
 			try
 			{
-				YlCommon.ShellExecute(YukaListerModel.Instance.EnvModel.ExeFullFolder + YlConstants.FOLDER_NAME_DOCUMENTS + FOLDER_NAME_SAMPLE_FOLDER_SETTINGS);
+				YlCommon.ShellExecute(YukaListerModel.Instance.EnvModel.ExeFullFolder + YlConstants.FOLDER_NAME_DOCUMENTS + YlConstants.FOLDER_NAME_SAMPLE_FOLDER_SETTINGS);
 			}
 			catch (Exception excep)
 			{
@@ -881,9 +881,6 @@ namespace YukaLister.ViewModels
 		// ====================================================================
 		// private メンバー定数
 		// ====================================================================
-
-		// サンプルフォルダー
-		private const String FOLDER_NAME_SAMPLE_FOLDER_SETTINGS = "SampleFolderSettings\\";
 
 		// 改訂履歴ファイル
 		private const String FILE_NAME_HISTORY = "YukaListerNebula_History_JPN" + Common.FILE_EXT_TXT;

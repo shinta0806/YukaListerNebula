@@ -58,7 +58,7 @@ namespace YukaLister.ViewModels.TabItemViewModels
 		// --------------------------------------------------------------------
 
 		// インポート元（ゆかりすたーでエクスポートしたファイル）のパス
-		private String? _importYukaListerPath;
+		private String? _importYukaListerPath = ".\\" + YlConstants.FOLDER_NAME_DOCUMENTS + YlConstants.FOLDER_NAME_SAMPLE_FOLDER_SETTINGS + "インポート用ファイル\\YukaListerInfo_サンプル.ylexa";
 		public String? ImportYukaListerPath
 		{
 			get => _importYukaListerPath;
@@ -153,9 +153,6 @@ namespace YukaLister.ViewModels.TabItemViewModels
 				// ViewModel 経由でインポート・エクスポートウィンドウを開く
 				using ImportWindowViewModel importWindowViewModel = new(ImportYukaListerPath, ImportTag, ImportSameName);
 				_windowViewModel.Messenger.Raise(new TransitionMessage(importWindowViewModel, YlConstants.MESSAGE_KEY_OPEN_IMPORT_EXPORT_WINDOW));
-
-				// IdPrefix の更新を反映
-				//IdPrefix = YukaListerModel.Instance.EnvModel.YlSettings.IdPrefix;
 			}
 			catch (Exception excep)
 			{
@@ -288,29 +285,5 @@ namespace YukaLister.ViewModels.TabItemViewModels
 		{
 			ImportYukaListerPath = DroppedFile(pathes, new String[] { YlConstants.FILE_EXT_YL_EXPORT_ARCHIVE });
 		}
-
-#if false
-		// --------------------------------------------------------------------
-		// 入力された値が適正か確認
-		// ＜例外＞ Exception
-		// --------------------------------------------------------------------
-		public override void CheckInput()
-		{
-		}
-
-		// --------------------------------------------------------------------
-		// プロパティーから設定に反映
-		// --------------------------------------------------------------------
-		public override void PropertiesToSettings()
-		{
-		}
-
-		// --------------------------------------------------------------------
-		// 設定をプロパティーに反映
-		// --------------------------------------------------------------------
-		public override void SettingsToProperties()
-		{
-		}
-#endif
 	}
 }
