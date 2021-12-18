@@ -475,7 +475,7 @@ namespace YukaLister.ViewModels
 		{
 			try
 			{
-				YlCommon.ShellExecute(YukaListerModel.Instance.EnvModel.ExeFullFolder + FILE_NAME_HISTORY);
+				YlCommon.ShellExecute(YukaListerModel.Instance.EnvModel.ExeFullFolder + YlConstants.FOLDER_NAME_DOCUMENTS + FILE_NAME_HISTORY);
 			}
 			catch (Exception excep)
 			{

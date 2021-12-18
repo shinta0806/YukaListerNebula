@@ -275,7 +275,6 @@ namespace YukaLister.Models.YukaListerModels
 		// --------------------------------------------------------------------
 		// フォルダー名
 		// --------------------------------------------------------------------
-		private const String FOLDER_NAME_DOCUMENTS = "Documents\\";
 		private const String FOLDER_NAME_HELP_PARTS = "HelpParts\\";
 
 		// ====================================================================
@@ -311,7 +310,7 @@ namespace YukaLister.Models.YukaListerModels
 				// アンカーが指定されている場合は状況依存型ヘルプを表示
 				if (!String.IsNullOrEmpty(anchor))
 				{
-					helpPath = ExeFullFolder + FOLDER_NAME_DOCUMENTS + FOLDER_NAME_HELP_PARTS + FILE_NAME_HELP_PREFIX + "_" + anchor + Common.FILE_EXT_HTML;
+					helpPath = ExeFullFolder + YlConstants.FOLDER_NAME_DOCUMENTS + FOLDER_NAME_HELP_PARTS + FILE_NAME_HELP_PREFIX + "_" + anchor + Common.FILE_EXT_HTML;
 					try
 					{
 						YlCommon.ShellExecute(helpPath);
@@ -325,7 +324,7 @@ namespace YukaLister.Models.YukaListerModels
 				}
 
 				// アンカーが指定されていない場合・状況依存型ヘルプを表示できなかった場合は通常のヘルプを表示
-				helpPath = ExeFullFolder + FOLDER_NAME_DOCUMENTS + FILE_NAME_HELP_PREFIX + Common.FILE_EXT_HTML;
+				helpPath = ExeFullFolder + YlConstants.FOLDER_NAME_DOCUMENTS + FILE_NAME_HELP_PREFIX + Common.FILE_EXT_HTML;
 				YlCommon.ShellExecute(helpPath);
 			}
 			catch (Exception excep)

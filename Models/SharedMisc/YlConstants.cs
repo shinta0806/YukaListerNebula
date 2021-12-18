@@ -312,6 +312,9 @@ namespace YukaLister.Models.SharedMisc
 		// ゆかりすたー用データベースを保存するフォルダー名
 		public const String FOLDER_NAME_DATABASE = "Database\\";
 
+		// ドキュメントフォルダー名
+		public const String FOLDER_NAME_DOCUMENTS = "Documents\\";
+
 		// リストテンプレートが保存されているフォルダー名
 		public const String FOLDER_NAME_TEMPLATES = "Templates\\";
 
