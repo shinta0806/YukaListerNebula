@@ -58,7 +58,7 @@ namespace YukaLister.ViewModels.TabItemViewModels
 		// --------------------------------------------------------------------
 
 		// インポート元（ゆかりすたーでエクスポートしたファイル）のパス
-		private String? _importYukaListerPath = ".\\" + YlConstants.FOLDER_NAME_DOCUMENTS + YlConstants.FOLDER_NAME_SAMPLE_FOLDER_SETTINGS + "インポート用ファイル\\YukaListerInfo_サンプル.ylexa";
+		private String? _importYukaListerPath = YlConstants.FOLDER_NAME_DOCUMENTS + YlConstants.FOLDER_NAME_SAMPLE_FOLDER_SETTINGS + "インポート用ファイル\\YukaListerInfo_サンプル.ylexa";
 		public String? ImportYukaListerPath
 		{
 			get => _importYukaListerPath;

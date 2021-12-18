@@ -145,6 +145,35 @@ namespace YukaLister.ViewModels.TabItemViewModels
 		}
 		#endregion
 
+		#region サーバープログラムボタンの制御
+		private ViewModelCommand? _buttonServerClickedCommand;
+
+		public ViewModelCommand ButtonServerClickedCommand
+		{
+			get
+			{
+				if (_buttonServerClickedCommand == null)
+				{
+					_buttonServerClickedCommand = new ViewModelCommand(ButtonServerClicked);
+				}
+				return _buttonServerClickedCommand;
+			}
+		}
+
+		public void ButtonServerClicked()
+		{
+			try
+			{
+				YlCommon.ShellExecute(YukaListerModel.Instance.EnvModel.ExeFullFolder + FOLDER_NAME_SYNC_SERVER);
+			}
+			catch (Exception excep)
+			{
+				YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(TraceEventType.Error, "サーバープログラムボタンクリック時エラー：\n" + excep.Message);
+				YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, "　スタックトレース：\n" + excep.StackTrace);
+			}
+		}
+		#endregion
+
 		// ====================================================================
 		// public メンバー関数
 		// ====================================================================
@@ -203,5 +232,12 @@ namespace YukaLister.ViewModels.TabItemViewModels
 			SyncAccount = YukaListerModel.Instance.EnvModel.YlSettings.SyncAccount;
 			SyncPassword = YlCommon.Decrypt(YukaListerModel.Instance.EnvModel.YlSettings.SyncPassword);
 		}
+
+		// ====================================================================
+		// public メンバー定数
+		// ====================================================================
+
+		// サーバープログラムフォルダー
+		private const String FOLDER_NAME_SYNC_SERVER = "SyncServer";
 	}
 }
