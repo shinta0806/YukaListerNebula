@@ -128,11 +128,15 @@ namespace YukaLister.Views.CustomControls
 			try
 			{
 				// クリア
-				drawingContext.DrawRectangle(Background, null, new(0, 0, ActualWidth, ActualHeight));
+				Rect drawingRect = new(0, 0, ActualWidth, ActualHeight);
+				drawingContext.DrawRectangle(Background, null, drawingRect);
 				if (TargetFolderInfo == null)
 				{
 					return;
 				}
+
+				// クリッピング
+				drawingContext.PushClip(new RectangleGeometry(drawingRect));
 
 				// エキスパンダー
 				Rect expanderRect = ExpanderRect();
@@ -144,6 +148,9 @@ namespace YukaLister.Views.CustomControls
 				Double x = expanderRect.Right + MARGIN_WIDTH;
 				Double y = (ActualHeight - text.Height) / 2;
 				drawingContext.DrawText(text, new Point(x, y));
+
+				// クリッピング解除
+				drawingContext.Pop();
 			}
 			catch (Exception excep)
 			{
