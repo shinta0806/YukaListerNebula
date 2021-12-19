@@ -121,6 +121,14 @@ namespace YukaLister.ViewModels
 			set => RaisePropertyChangedIfSet(ref _yukaListerStatusBackground, value);
 		}
 
+		// ゆかりすたー NEBULA 全体の動作状況のカーソル
+		private Cursor? _yukaListerStatusCursor;
+		public Cursor? YukaListerStatusCursor
+		{
+			get => _yukaListerStatusCursor;
+			set => RaisePropertyChangedIfSet(ref _yukaListerStatusCursor, value);
+		}
+
 		// 検索可能ファイル数
 		private String _numRecordsLabel = String.Empty;
 		public String NumRecordsLabel
@@ -265,6 +273,41 @@ namespace YukaLister.ViewModels
 				YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, "　スタックトレース：\n" + excep.StackTrace);
 			}
 		}
+		#endregion
+
+		#region ゆかりすたー NEBULA 全体の動作状況ラベルの制御
+
+		private ViewModelCommand? _labelYukaListerStatusClickedCommand;
+
+		public ViewModelCommand LabelYukaListerStatusClickedCommand
+		{
+			get
+			{
+				if (_labelYukaListerStatusClickedCommand == null)
+				{
+					_labelYukaListerStatusClickedCommand = new ViewModelCommand(LabelYukaListerStatusClicked);
+				}
+				return _labelYukaListerStatusClickedCommand;
+			}
+		}
+
+		public void LabelYukaListerStatusClicked()
+		{
+			try
+			{
+				if (String.IsNullOrEmpty(_labelYukaListerStatusUrl))
+				{
+					return;
+				}
+				YlCommon.ShellExecute(_labelYukaListerStatusUrl);
+			}
+			catch (Exception excep)
+			{
+				YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(TraceEventType.Error, "ゆかりすたー NEBULA 全体の動作状況ラベルクリック時エラー：\n" + excep.Message);
+				YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, "　スタックトレース：\n" + excep.StackTrace);
+			}
+		}
+
 		#endregion
 
 		#region リスト問題報告ボタンの制御
@@ -885,6 +928,9 @@ namespace YukaLister.ViewModels
 		// 改訂履歴ファイル
 		private const String FILE_NAME_HISTORY = "YukaListerNebula_History_JPN" + Common.FILE_EXT_TXT;
 
+		// 「ゆかり設定ファイルが正しく指定されていません」FAQ
+		private const String URL_BAD_YUKARI_CONFIG = "https://github.com/shinta0806/YukaListerNebula/issues/135";
+
 		// ====================================================================
 		// private メンバー変数
 		// ====================================================================
@@ -912,6 +958,9 @@ namespace YukaLister.ViewModels
 
 		// リスト問題報告データベース監視用
 		private readonly FileSystemWatcher _fileSystemWatcherReportDatabase = new();
+
+		// ゆかりすたー NEBULA 全体の動作状況ラベルクリック時に表示する URL
+		private String? _labelYukaListerStatusUrl;
 
 		// 検索可能ファイル数
 		private Int32 _numFounds;
@@ -1328,6 +1377,21 @@ namespace YukaLister.ViewModels
 		}
 
 		// --------------------------------------------------------------------
+		// ゆかりすたー NEBULA 全体の動作状況 URL に応じてカーソルを設定
+		// --------------------------------------------------------------------
+		private void SetYukaListerStatusCursor()
+		{
+			if (String.IsNullOrEmpty(_labelYukaListerStatusUrl))
+			{
+				YukaListerStatusCursor = null;
+			}
+			else
+			{
+				YukaListerStatusCursor = Cursors.Hand;
+			}
+		}
+
+		// --------------------------------------------------------------------
 		// Web サーバー設定が有効ならゆかり用の Web サーバーを開始
 		// --------------------------------------------------------------------
 		private void StartWebServerIfNeeded()
@@ -1470,6 +1534,7 @@ namespace YukaLister.ViewModels
 				YukaListerModel.Instance.EnvModel.YukaListerPartsStatus[(Int32)YukaListerPartsStatusIndex.Environment] = YukaListerStatus.Error;
 				YukaListerModel.Instance.EnvModel.YukaListerPartsStatusMessage[(Int32)YukaListerPartsStatusIndex.Environment]
 						= YukaListerStatusLabel = "ゆかり設定ファイルが正しく指定されていません。";
+				_labelYukaListerStatusUrl = URL_BAD_YUKARI_CONFIG;
 			}
 			else
 			{
@@ -1477,9 +1542,7 @@ namespace YukaLister.ViewModels
 				YukaListerModel.Instance.EnvModel.YukaListerPartsStatus[(Int32)YukaListerPartsStatusIndex.Environment] = YukaListerStatus.Ready;
 				YukaListerModel.Instance.EnvModel.YukaListerPartsStatusMessage[(Int32)YukaListerPartsStatusIndex.Environment]
 						= YlConstants.APP_NAME_J + "は正常に動作しています。";
-
-				// Sifolin アクティブ化
-				//YukaListerModel.Instance.EnvModel.Sifolin.MainEvent.Set();
+				_labelYukaListerStatusUrl = null;
 			}
 
 			// 表示を強制更新
@@ -1543,6 +1606,7 @@ namespace YukaLister.ViewModels
 					break;
 			}
 			SetYukaListerStatusBackground(currentWholeStatus);
+			SetYukaListerStatusCursor();
 		}
 	}
 }

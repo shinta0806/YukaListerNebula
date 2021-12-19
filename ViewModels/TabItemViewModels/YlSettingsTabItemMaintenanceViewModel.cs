@@ -63,8 +63,8 @@ namespace YukaLister.ViewModels.TabItemViewModels
 			set
 			{
 				if (_checkRss && !value
-						&& MessageBox.Show("最新情報・更新版の確認を無効にすると、" + YlConstants.APP_NAME_J
-						+ "の新版がリリースされても自動的にインストールされず、古いバージョンを使い続けることになります。\n"
+						&& MessageBox.Show("最新情報の確認を無効にすると、" + YlConstants.APP_NAME_J
+						+ "の新版がリリースされた際の更新内容などが表示されません。\n\n"
 						+ "本当に無効にしてもよろしいですか？", "警告", MessageBoxButton.YesNo, MessageBoxImage.Warning)
 						!= MessageBoxResult.Yes)
 				{
