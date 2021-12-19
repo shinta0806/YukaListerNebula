@@ -9,16 +9,15 @@
 // ----------------------------------------------------------------------------
 
 using Shinta;
+
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using YukaLister.Models.SharedMisc;
 
-namespace YukaLister.Models.SerializableSettings
+using YukaLister.Models.SharedMisc;
+using YukaLister.Models.YukaListerModels;
+
+namespace YukaLister.Models.Settings
 {
 	public class AutoTargetInfo : SerializableSettings
 	{
@@ -31,6 +30,7 @@ namespace YukaLister.Models.SerializableSettings
 		// driveLetter: "D:" のようにコロンまで
 		// --------------------------------------------------------------------
 		public AutoTargetInfo(String driveLetter)
+				: base(YukaListerModel.Instance.EnvModel.LogWriter, null)
 		{
 			Debug.Assert(driveLetter.Length == 2, "AutoTargetInfo() bad driveLetter");
 			_driveLetter = driveLetter;
@@ -41,6 +41,7 @@ namespace YukaLister.Models.SerializableSettings
 		// シリアライズ用
 		// --------------------------------------------------------------------
 		public AutoTargetInfo()
+				: base(YukaListerModel.Instance.EnvModel.LogWriter, null)
 		{
 			_driveLetter = String.Empty;
 		}
@@ -57,23 +58,11 @@ namespace YukaLister.Models.SerializableSettings
 		// ====================================================================
 
 		// --------------------------------------------------------------------
-		// 保存後の調整
-		// --------------------------------------------------------------------
-		protected override void AdjustAfterSave()
-		{
-			//FileAttributes attr = File.GetAttributes(SettingsPath());
-			//File.SetAttributes(SettingsPath(), attr | FileAttributes.Hidden);
-		}
-
-		// --------------------------------------------------------------------
 		// 保存前の調整
 		// --------------------------------------------------------------------
 		protected override void AdjustBeforeSave()
 		{
 			YlCommon.YukaListerStatusFolderPath(_driveLetter, true);
-
-			// 隠しファイルを直接上書きできないので一旦削除する
-			//YlCommon.DeleteFileIfExists(SettingsPath());
 		}
 
 		// --------------------------------------------------------------------

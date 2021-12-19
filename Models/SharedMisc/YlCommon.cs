@@ -161,6 +161,19 @@ namespace YukaLister.Models.SharedMisc
 		}
 
 		// --------------------------------------------------------------------
+		// 最新情報の確認
+		// --------------------------------------------------------------------
+		public static async Task CheckLatestInfoAsync(Boolean forceShow)
+		{
+			LatestInfoManager latestInfoManager = YlCommon.CreateLatestInfoManager(forceShow);
+			if (await latestInfoManager.CheckAsync())
+			{
+				YukaListerModel.Instance.EnvModel.YlSettings.RssCheckDate = DateTime.Now.Date;
+				YukaListerModel.Instance.EnvModel.YlSettings.Save();
+			}
+		}
+
+		// --------------------------------------------------------------------
 		// 設定ファイルのルールを動作時用に変換
 		// --------------------------------------------------------------------
 		public static FolderSettingsInMemory CreateFolderSettingsInMemory(FolderSettingsInDisk folderSettingsInDisk)
@@ -204,6 +217,15 @@ namespace YukaLister.Models.SharedMisc
 			}
 
 			return folderSettingsInMemory;
+		}
+
+		// --------------------------------------------------------------------
+		// 最新情報管理者を作成
+		// --------------------------------------------------------------------
+		public static LatestInfoManager CreateLatestInfoManager(Boolean forceShow)
+		{
+			return new LatestInfoManager("http://shinta.coresv.com/soft/YukaListerNebula_JPN.xml", forceShow, 3,
+					YukaListerModel.Instance.EnvModel.AppCancellationTokenSource.Token, YukaListerModel.Instance.EnvModel.LogWriter);
 		}
 
 		// --------------------------------------------------------------------
@@ -256,35 +278,6 @@ namespace YukaLister.Models.SharedMisc
 			varMap[YlConstants.RULE_VAR_ANY] = "無視する部分";
 
 			return varMap;
-		}
-
-		// --------------------------------------------------------------------
-		// ちょちょいと自動更新起動を作成
-		// --------------------------------------------------------------------
-		public static UpdaterLauncher CreateUpdaterLauncher(Boolean checkLatest, Boolean forceShow, Boolean clearUpdateCache, Boolean forceInstall)
-		{
-			// 固定部分
-			UpdaterLauncher updaterLauncher = new();
-			updaterLauncher.ID = YlConstants.APP_ID;
-			updaterLauncher.Name = YlConstants.APP_NAME_J;
-			updaterLauncher.Wait = 3;
-			updaterLauncher.UpdateRss = "http://shinta.coresv.com/soft/YukaListerNebula_AutoUpdate.xml";
-			updaterLauncher.CurrentVer = YlConstants.APP_VER;
-			updaterLauncher.Relaunch = YukaListerModel.Instance.EnvModel.ExeFullPath;
-
-			// 変動部分
-			if (checkLatest)
-			{
-				updaterLauncher.LatestRss = "http://shinta.coresv.com/soft/YukaListerNebula_JPN.xml";
-			}
-			updaterLauncher.LogWriter = YukaListerModel.Instance.EnvModel.LogWriter;
-			updaterLauncher.ForceShow = forceShow;
-			updaterLauncher.NotifyHWnd = IntPtr.Zero;
-			updaterLauncher.ClearUpdateCache = clearUpdateCache;
-			updaterLauncher.ForceInstall = forceInstall;
-
-			// 起動用
-			return updaterLauncher;
 		}
 
 		// --------------------------------------------------------------------

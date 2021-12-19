@@ -15,10 +15,25 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Xml.Serialization;
 
-namespace YukaLister.Models.SerializableSettings
+using YukaLister.Models.YukaListerModels;
+
+namespace YukaLister.Models.Settings
 {
 	public class TagSettings : SerializableSettings
 	{
+		// ====================================================================
+		// コンストラクター・デストラクター
+		// ====================================================================
+
+		// --------------------------------------------------------------------
+		// コンストラクター
+		// EnvironmentModel 構築時に呼びだされるため、LogWriter は指定できない
+		// --------------------------------------------------------------------
+		public TagSettings()
+				: base(null, Common.UserAppDataFolderPath() + nameof(TagSettings) + Common.FILE_EXT_CONFIG)
+		{
+		}
+
 		// ====================================================================
 		// public プロパティー
 		// ====================================================================
@@ -58,14 +73,6 @@ namespace YukaLister.Models.SerializableSettings
 			{
 				FolderTags[kvp.Key] = kvp.Value;
 			}
-		}
-
-		// --------------------------------------------------------------------
-		// 保存パス
-		// --------------------------------------------------------------------
-		protected override String SettingsPath()
-		{
-			return Common.UserAppDataFolderPath() + nameof(TagSettings) + Common.FILE_EXT_CONFIG;
 		}
 	}
 }

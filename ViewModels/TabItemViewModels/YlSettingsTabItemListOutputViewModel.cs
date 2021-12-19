@@ -24,7 +24,7 @@ using System.Windows;
 
 using YukaLister.Models.DatabaseAssist;
 using YukaLister.Models.OutputWriters;
-using YukaLister.Models.SerializableSettings;
+using YukaLister.Models.Settings;
 using YukaLister.Models.SharedMisc;
 using YukaLister.Models.YukaListerModels;
 using YukaLister.ViewModels.OutputSettingsWindowViewModels;

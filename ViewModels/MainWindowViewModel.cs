@@ -32,7 +32,7 @@ using System.Windows.Threading;
 using YukaLister.Models.Database;
 using YukaLister.Models.DatabaseAssist;
 using YukaLister.Models.DatabaseContexts;
-using YukaLister.Models.SerializableSettings;
+using YukaLister.Models.Settings;
 using YukaLister.Models.SharedMisc;
 using YukaLister.Models.WebServer;
 using YukaLister.Models.YukaListerModels;
@@ -773,14 +773,14 @@ namespace YukaLister.ViewModels
 					_timerUpdateUi.Tick += new EventHandler(TimerUpdateUi_Tick);
 					_timerUpdateUi.Start();
 
-					// ちょちょいと自動更新 2 起動
-					LaunchUpdaterIfNeeded();
-
 					// 接続されているドライブの自動接続
 					await AutoTargetAllDrivesAsync();
 
 					// Web サーバー
 					StartWebServerIfNeeded();
+
+					// 最新情報確認
+					await CheckRssIfNeededAsync();
 
 					// 過去の統計データが更新されるようにする
 					YukaListerModel.Instance.EnvModel.Yurelin.UpdatePastYukariStatisticsKind = UpdatePastYukariStatisticsKind.Fast;
@@ -919,15 +919,24 @@ namespace YukaLister.ViewModels
 		// Web サーバー（null のままのこともあり得る）
 		private WebServer? _webServer;
 
-		// Web サーバー終了用
-		//private CancellationTokenSource? _webServerTokenSource;
-
 		// Dispose フラグ
 		private Boolean _isDisposed;
 
 		// ====================================================================
 		// private static メンバー関数
 		// ====================================================================
+
+		// --------------------------------------------------------------------
+		// 最新情報確認
+		// --------------------------------------------------------------------
+		private static async Task CheckRssIfNeededAsync()
+		{
+			if (!YukaListerModel.Instance.EnvModel.YlSettings.IsCheckRssNeeded())
+			{
+				return;
+			}
+			await YlCommon.CheckLatestInfoAsync(false);
+		}
 
 		// --------------------------------------------------------------------
 		// デバイスが接続された
@@ -981,24 +990,6 @@ namespace YukaLister.ViewModels
 						+ "他のフォルダー（例えば C:\\xampp\\htdocs）配下にインストールしてください。";
 			}
 			return null;
-		}
-
-		// --------------------------------------------------------------------
-		// ちょちょいと自動更新を起動
-		// --------------------------------------------------------------------
-		private static void LaunchUpdaterIfNeeded()
-		{
-			if (!YukaListerModel.Instance.EnvModel.YlSettings.IsCheckRssNeeded())
-			{
-				return;
-			}
-
-			UpdaterLauncher updaterLauncher = YlCommon.CreateUpdaterLauncher(true, false, false, false);
-			if (updaterLauncher.Launch(updaterLauncher.ForceShow))
-			{
-				YukaListerModel.Instance.EnvModel.YlSettings.RssCheckDate = DateTime.Now.Date;
-				YukaListerModel.Instance.EnvModel.YlSettings.Save();
-			}
 		}
 
 		// ====================================================================

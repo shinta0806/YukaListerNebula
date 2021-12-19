@@ -18,7 +18,7 @@ using System.IO;
 using System.IO.Compression;
 using System.Windows;
 
-using YukaLister.Models.SerializableSettings;
+using YukaLister.Models.Settings;
 using YukaLister.Models.SharedMisc;
 using YukaLister.Models.YukaListerModels;
 using YukaLister.ViewModels.MiscWindowViewModels;
@@ -113,18 +113,19 @@ namespace YukaLister.ViewModels.TabItemViewModels
 			return ProgressBarCheckRssVisibility != Visibility.Visible;
 		}
 
-		public void ButtonCheckRssClicked()
+		public async void ButtonCheckRssClicked()
 		{
 			try
 			{
 				ProgressBarCheckRssVisibility = Visibility.Visible;
-				((YlSettingsWindowViewModel)_windowViewModel).UpdaterLauncher = YlCommon.CreateUpdaterLauncher(true, true, true, false);
+				await YlCommon.CheckLatestInfoAsync(true);
 			}
 			catch (Exception excep)
 			{
 				YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(TraceEventType.Error, "最新情報確認時エラー：\n" + excep.Message);
 				YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, "　スタックトレース：\n" + excep.StackTrace);
 			}
+			ProgressBarCheckRssVisibility = Visibility.Hidden;
 		}
 		#endregion
 

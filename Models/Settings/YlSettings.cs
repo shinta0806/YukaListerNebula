@@ -26,10 +26,23 @@ using YukaLister.Models.DatabaseContexts;
 using YukaLister.Models.SharedMisc;
 using YukaLister.Models.YukaListerModels;
 
-namespace YukaLister.Models.SerializableSettings
+namespace YukaLister.Models.Settings
 {
 	public class YlSettings : SerializableSettings
 	{
+		// ====================================================================
+		// コンストラクター・デストラクター
+		// ====================================================================
+
+		// --------------------------------------------------------------------
+		// コンストラクター
+		// EnvironmentModel 構築時に呼びだされるため、LogWriter は指定できない
+		// --------------------------------------------------------------------
+		public YlSettings()
+				: base(null, YlSettingsPath())
+		{
+		}
+
 		// ====================================================================
 		// public プロパティー
 		// ====================================================================
@@ -405,14 +418,6 @@ namespace YukaLister.Models.SerializableSettings
 				}
 			}
 			AnalyzeYukariConfig();
-		}
-
-		// --------------------------------------------------------------------
-		// 保存パス
-		// --------------------------------------------------------------------
-		protected override String SettingsPath()
-		{
-			return YlSettingsPath();
 		}
 
 		// ====================================================================

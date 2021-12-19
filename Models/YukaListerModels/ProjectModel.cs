@@ -27,7 +27,7 @@ using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using YukaLister.Models.SerializableSettings;
+using YukaLister.Models.Settings;
 using YukaLister.Models.SharedMisc;
 
 namespace YukaLister.Models.YukaListerModels

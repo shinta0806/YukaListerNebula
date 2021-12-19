@@ -23,7 +23,7 @@ using System.Threading;
 using System.Threading.Tasks;
 
 using YukaLister.Models.DatabaseContexts;
-using YukaLister.Models.SerializableSettings;
+using YukaLister.Models.Settings;
 using YukaLister.Models.SharedMisc;
 using YukaLister.Models.YukaListerCores;
 

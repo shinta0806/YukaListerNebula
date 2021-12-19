@@ -12,10 +12,14 @@
     <Copyright>Copyright © by SHINTA</Copyright>
   </PropertyGroup>
 
-  <PropertyGroup >
+  <PropertyGroup>
     <DefineConstants>TRACE;DISTRIB_STOREz;TESTz</DefineConstants>
     <NoWarn>1701;1702;1416</NoWarn>
   </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="_Common\LatestInfoManager.cs" />
+  </ItemGroup>
 
   <ItemGroup>
     <None Remove="Icon\YukaListerアイコン.png" />
@@ -31,18 +35,19 @@
     <Compile Include="..\..\_Common\Behaviors\DeviceChangeAttachedBehavior.cs" Link="_Common\Behaviors\DeviceChangeAttachedBehavior.cs" />
     <Compile Include="..\..\_Common\Behaviors\FileDropAttachedBehavior.cs" Link="_Common\Behaviors\FileDropAttachedBehavior.cs" />
     <Compile Include="..\..\_Common\Behaviors\IsFocusedAttachedBehavior.cs" Link="_Common\Behaviors\IsFocusedAttachedBehavior.cs" />
-    <Compile Include="..\..\_Common\Behaviors\LaunchUpdaterAttachedBehavior.cs" Link="_Common\Behaviors\LaunchUpdaterAttachedBehavior.cs" />
     <Compile Include="..\..\_Common\Behaviors\SelectorBindingSupportBehavior.cs" Link="_Common\Behaviors\SelectorBindingSupportBehavior.cs" />
     <Compile Include="..\..\_Common\Behaviors\WindowBindingSupportBehavior.cs" Link="_Common\Behaviors\WindowBindingSupportBehavior.cs" />
     <Compile Include="..\..\_Common\CsvManager.cs" Link="_Common\CsvManager.cs" />
     <Compile Include="..\..\_Common\Downloader.cs" Link="_Common\Downloader.cs" />
     <Compile Include="..\..\_Common\JulianDay.cs" Link="_Common\JulianDay.cs" />
+    <Compile Include="..\..\_Common\LatestInfoManager.cs" Link="_Common\LatestInfoManager.cs" />
     <Compile Include="..\..\_Common\LogWriter.cs" Link="_Common\LogWriter.cs" />
+    <Compile Include="..\..\_Common\RssManager.cs" Link="_Common\RssManager.cs" />
+    <Compile Include="..\..\_Common\SerializableSettings.cs" Link="_Common\SerializableSettings.cs" />
     <Compile Include="..\..\_Common\ShintaCommon.cs" Link="_Common\ShintaCommon.cs" />
     <Compile Include="..\..\_Common\ShintaCommonWindows.cs" Link="_Common\ShintaCommonWindows.cs" />
     <Compile Include="..\..\_Common\SimpleTraceListener.cs" Link="_Common\SimpleTraceListener.cs" />
     <Compile Include="..\..\_Common\SystemEnvironment.cs" Link="_Common\SystemEnvironment.cs" />
-    <Compile Include="..\..\_Common\UpdaterLauncher.cs" Link="_Common\UpdaterLauncher.cs" />
     <Compile Include="..\..\_Common\WindowsApi.cs" Link="_Common\WindowsApi.cs" />
   </ItemGroup>
 
@@ -100,10 +105,10 @@
     <None Update="Documents\HelpParts\*.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Documents\SampleFolderSettings\AAAさんの例\*.config" >
+    <None Update="Documents\SampleFolderSettings\AAAさんの例\*.config">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Documents\SampleFolderSettings\AAAさんの例\*.mp4" >
+    <None Update="Documents\SampleFolderSettings\AAAさんの例\*.mp4">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Update="Documents\SampleFolderSettings\BBBさんの例\*.config">

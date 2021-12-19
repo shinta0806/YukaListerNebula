@@ -153,14 +153,6 @@ namespace YukaLister.ViewModels.MiscWindowViewModels
 			}
 		}
 
-		// UpdaterLauncher（添付ビヘイビアにより起動）
-		private UpdaterLauncher? _updaterLauncher;
-		public UpdaterLauncher? UpdaterLauncher
-		{
-			get => _updaterLauncher;
-			set => RaisePropertyChangedIfSet(ref _updaterLauncher, value);
-		}
-
 		// --------------------------------------------------------------------
 		// 一般のプロパティー
 		// --------------------------------------------------------------------
@@ -207,36 +199,6 @@ namespace YukaLister.ViewModels.MiscWindowViewModels
 			catch (Exception excep)
 			{
 				YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(TraceEventType.Error, "タブコントロールファイルドロップ時エラー：\n" + excep.Message);
-				YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, "　スタックトレース：\n" + excep.StackTrace);
-			}
-		}
-		#endregion
-
-		#region ちょちょいと自動更新の UI が表示された
-		private ViewModelCommand? _updaterUiDisplayedCommand;
-
-		public ViewModelCommand UpdaterUiDisplayedCommand
-		{
-			get
-			{
-				if (_updaterUiDisplayedCommand == null)
-				{
-					_updaterUiDisplayedCommand = new ViewModelCommand(UpdaterUiDisplayed);
-				}
-				return _updaterUiDisplayedCommand;
-			}
-		}
-
-		public void UpdaterUiDisplayed()
-		{
-			try
-			{
-				Debug.WriteLine("UpdaterUiDisplayed()");
-				YlSettingsTabItemMaintenanceViewModel.UpdaterUiDisplayed();
-			}
-			catch (Exception excep)
-			{
-				YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(TraceEventType.Error, "ちょちょいと自動更新 UI 表示時エラー：\n" + excep.Message);
 				YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, "　スタックトレース：\n" + excep.StackTrace);
 			}
 		}

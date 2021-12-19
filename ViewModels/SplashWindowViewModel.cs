@@ -87,7 +87,9 @@ namespace YukaLister.ViewModels
 
 				// 環境
 				YukaListerModel.Instance.EnvModel.YlSettings.Load();
+				YukaListerModel.Instance.EnvModel.YlSettings.SetLogWriter(YukaListerModel.Instance.EnvModel.LogWriter);
 				YukaListerModel.Instance.EnvModel.TagSettings.Load();
+				YukaListerModel.Instance.EnvModel.TagSettings.SetLogWriter(YukaListerModel.Instance.EnvModel.LogWriter);
 				DbCommon.PrepareDatabases();
 				YukaListerModel.Instance.EnvModel.StartAllCores();
 
