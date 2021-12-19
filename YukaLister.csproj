@@ -15,11 +15,8 @@
   <PropertyGroup>
     <DefineConstants>TRACE;DISTRIB_STOREz;TESTz</DefineConstants>
     <NoWarn>1701;1702;1416</NoWarn>
+    <ApplicationManifest>app.manifest</ApplicationManifest>
   </PropertyGroup>
-
-  <ItemGroup>
-    <Compile Remove="_Common\LatestInfoManager.cs" />
-  </ItemGroup>
 
   <ItemGroup>
     <None Remove="Icon\YukaListerアイコン.png" />
