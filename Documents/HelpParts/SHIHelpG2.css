@@ -21,7 +21,7 @@ div#MainCol
 {
 	overflow: hidden;
 	position: relative;
-	z-index: 13;
+	z-index: 11;
 	min-width: 580px;
 	margin: 0 0 0px 200px;
 	background-color: #FFFFFF;
@@ -39,6 +39,8 @@ div#LCol
 	left: 0;
 	top: 0;
 	border-right: dashed 1px #9999CC;
+	resize: horizontal;
+	background-color: #FFFFFF;
 }
 
 div#LCol:hover

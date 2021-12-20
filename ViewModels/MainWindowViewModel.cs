@@ -1267,6 +1267,7 @@ namespace YukaLister.ViewModels
 			YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(type, newVerMsg);
 			SaveExitStatus();
 
+#if !DISTRIB_STORE
 			// Zone ID 削除
 			CommonWindows.DeleteZoneID(YukaListerModel.Instance.EnvModel.ExeFullFolder, SearchOption.AllDirectories);
 
@@ -1276,6 +1277,7 @@ namespace YukaLister.ViewModels
 			{
 				YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(TraceEventType.Warning, installMsg);
 			}
+#endif
 		}
 
 		// --------------------------------------------------------------------
