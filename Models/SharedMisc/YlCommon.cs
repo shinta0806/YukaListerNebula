@@ -488,6 +488,18 @@ namespace YukaLister.Models.SharedMisc
 				return;
 			}
 
+#if DEBUG
+			try
+			{
+				throw new Exception();
+			}
+			catch (Exception excep)
+			{
+				YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, "ID 接頭辞入力");
+				YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, "　スタックトレース：\n" + excep.StackTrace);
+			}
+#endif
+
 			await DispatcherHelper.UIDispatcher.Invoke(new Func<Task>(async () =>
 			{
 				// 現在設定中なら待機

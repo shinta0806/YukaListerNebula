@@ -327,6 +327,9 @@ namespace YukaLister.Models.SharedMisc
 		// サンプルフォルダー内のインポート用
 		public const String FOLDER_NAME_SAMPLE_IMPORT = "インポート用ファイル\\";
 
+		// 閲覧用リスト出力デフォルトフォルダー
+		public const String FOLDER_NAME_LIST_OUTPUT = APP_ID + "List\\";
+
 		// 各ドライブのゆかりすたー用ファイル群を保存するフォルダー名
 		public const String FOLDER_NAME_YUKALISTER_STATUS = APP_ID + "Status\\";
 

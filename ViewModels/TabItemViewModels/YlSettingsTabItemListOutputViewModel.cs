@@ -234,7 +234,7 @@ namespace YukaLister.ViewModels.TabItemViewModels
 				// 確認
 				if (String.IsNullOrEmpty(ListFolder))
 				{
-					throw new Exception("リスト出力先フォルダーを指定してください。");
+					ListFolder = Environment.GetFolderPath(Environment.SpecialFolder.Personal) + "\\" + YlConstants.FOLDER_NAME_LIST_OUTPUT;
 				}
 
 				// 出力クラスに出力先が渡るようにする
