@@ -30,12 +30,14 @@ using System.Windows.Media;
 using System.Windows.Threading;
 
 using YukaLister.Models.Database;
+using YukaLister.Models.Database.Masters;
 using YukaLister.Models.DatabaseAssist;
 using YukaLister.Models.DatabaseContexts;
 using YukaLister.Models.Settings;
 using YukaLister.Models.SharedMisc;
 using YukaLister.Models.WebServer;
 using YukaLister.Models.YukaListerModels;
+using YukaLister.ViewModels.ImportExportWindowViewModels;
 using YukaLister.ViewModels.MiscWindowViewModels;
 using YukaLister.ViewModels.ReportWindowViewModels;
 
@@ -1027,6 +1029,31 @@ namespace YukaLister.ViewModels
 		}
 
 		// --------------------------------------------------------------------
+		// 楽曲情報データベースが未登録ならサンプルをインポート
+		// --------------------------------------------------------------------
+		private static void ImportSampleIfNeeded()
+		{
+			try
+			{
+				using MusicInfoContextDefault musicInfoContextDefault = MusicInfoContextDefault.CreateContext(out DbSet<TTieUp> tieUps);
+				if (tieUps.Any())
+				{
+					return;
+				}
+
+				Importer importer = new(YukaListerModel.Instance.EnvModel.ExeFullFolder
+						+ YlConstants.FOLDER_NAME_DOCUMENTS + YlConstants.FOLDER_NAME_SAMPLE_FOLDER_SETTINGS + YlConstants.FOLDER_NAME_SAMPLE_IMPORT + YlConstants.FILE_NAME_YUKA_LISTER_INFO_SAMPLE,
+						true, true, YukaListerModel.Instance.EnvModel.AppCancellationTokenSource.Token, null);
+				importer.Import();
+			}
+			catch (Exception excep)
+			{
+				YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(TraceEventType.Error, "サンプルインポート時エラー：\n" + excep.Message);
+				YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, "　スタックトレース：\n" + excep.StackTrace);
+			}
+		}
+
+		// --------------------------------------------------------------------
 		// インストールフォルダーについての警告メッセージ
 		// --------------------------------------------------------------------
 		private static String? InstallWarningMessage()
@@ -1278,6 +1305,9 @@ namespace YukaLister.ViewModels
 				YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(TraceEventType.Warning, installMsg);
 			}
 #endif
+
+			// サンプルインポート
+			ImportSampleIfNeeded();
 		}
 
 		// --------------------------------------------------------------------

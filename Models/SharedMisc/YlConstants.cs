@@ -324,6 +324,9 @@ namespace YukaLister.Models.SharedMisc
 		// サンプルフォルダー
 		public const String FOLDER_NAME_SAMPLE_FOLDER_SETTINGS = "SampleFolderSettings\\";
 
+		// サンプルフォルダー内のインポート用
+		public const String FOLDER_NAME_SAMPLE_IMPORT = "インポート用ファイル\\";
+
 		// 各ドライブのゆかりすたー用ファイル群を保存するフォルダー名
 		public const String FOLDER_NAME_YUKALISTER_STATUS = APP_ID + "Status\\";
 
@@ -335,6 +338,7 @@ namespace YukaLister.Models.SharedMisc
 		public const String FILE_NAME_YUKA_LISTER_CONFIG = APP_ID + Common.FILE_EXT_CONFIG;
 		public const String FILE_NAME_YUKA_LISTER_EXCLUDE_CONFIG = APP_ID + "Exclude" + Common.FILE_EXT_CONFIG;
 		public const String FILE_NAME_YUKARI_CONFIG = "config" + Common.FILE_EXT_INI;
+		public const String FILE_NAME_YUKA_LISTER_INFO_SAMPLE = "YukaListerInfo_サンプル" + FILE_EXT_YL_EXPORT_ARCHIVE;
 
 		// --------------------------------------------------------------------
 		// 拡張子
