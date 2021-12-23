@@ -13,7 +13,7 @@
   </PropertyGroup>
 
   <PropertyGroup>
-    <DefineConstants>TRACE;DISTRIB_STOREz;TESTz</DefineConstants>
+    <DefineConstants>TRACE;DISTRIB_STORE;TESTz</DefineConstants>
     <NoWarn>1701;1702;1416</NoWarn>
     <ApplicationManifest>app.manifest</ApplicationManifest>
   </PropertyGroup>
