@@ -64,12 +64,6 @@ namespace YukaLister.Models.YukaListerCores
 				try
 				{
 					YukaListerModel.Instance.EnvModel.AppCancellationTokenSource.Token.ThrowIfCancellationRequested();
-#if false
-					if (YukaListerModel.Instance.EnvModel.YukaListerWholeStatus == YukaListerStatus.Error)
-					{
-						continue;
-					}
-#endif
 					if (YukaListerModel.Instance.ProjModel.UndoneTargetFolderInfo() == null)
 					{
 						continue;
@@ -496,10 +490,13 @@ namespace YukaLister.Models.YukaListerCores
 			Thread.Sleep(3000);
 #endif
 
-			// まずディスク DB から削除
-			using ListContextInDisk listContextInDisk = ListContextInDisk.CreateContext(out DbSet<TFound> diskFounds);
-			diskFounds.RemoveRange(diskFounds.Where(x => x.ParentFolder == targetFolderInfo.ParentPath));
-			listContextInDisk.SaveChanges();
+			// まずディスク DB から削除（全体の動作状況がエラーではない場合のみ）
+			if (YukaListerModel.Instance.EnvModel.YukaListerWholeStatus != YukaListerStatus.Error)
+			{
+				using ListContextInDisk listContextInDisk = ListContextInDisk.CreateContext(out DbSet<TFound> diskFounds);
+				diskFounds.RemoveRange(diskFounds.Where(x => x.ParentFolder == targetFolderInfo.ParentPath));
+				listContextInDisk.SaveChanges();
+			}
 
 			// メモリ DB から削除
 			using ListContextInMemory listContextInMemory = ListContextInMemory.CreateContext(out DbSet<TFound> memoryFounds);
@@ -564,8 +561,8 @@ namespace YukaLister.Models.YukaListerCores
 			using ListContextInMemory listContextInMemory = ListContextInMemory.CreateContext(out DbSet<TFound> founds);
 			Int64 uid = founds.Any() ? founds.Max(x => x.Uid) + 1 : 1;
 
-			// キャッシュが使われていない場合はディスク DB の Uid とも重複しないようにする
-			if (!targetFolderInfo.IsCacheUsed)
+			// キャッシュが使われていない場合はディスク DB の Uid とも重複しないようにする（全体の動作状況がエラーではない場合のみ）
+			if (YukaListerModel.Instance.EnvModel.YukaListerWholeStatus != YukaListerStatus.Error && !targetFolderInfo.IsCacheUsed)
 			{
 				using ListContextInDisk listContextInDisk = ListContextInDisk.CreateContext(out DbSet<TFound> diskFounds);
 				if (diskFounds.Any())

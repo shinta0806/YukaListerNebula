@@ -461,6 +461,18 @@ namespace YukaLister.Models.DatabaseAssist
 		{
 			try
 			{
+				// メモリ DB は常に作成
+				// using しない
+				ListContextInMemory listContextInMemory = ListContextInMemory.CreateContext(out DbSet<TProperty> _);
+				listContextInMemory.CreateDatabase();
+				YukaListerModel.Instance.EnvModel.ListContextInMemory = listContextInMemory;
+
+				// スプラッシュウィンドウからも呼ばれるため YukaListerWholeStatus（その時点では未初期化）は使えない
+				if (!YukaListerModel.Instance.EnvModel.YlSettings.IsYukariConfigPathValid())
+				{
+					return;
+				}
+
 				Directory.CreateDirectory(YukaListerDatabaseFullFolder());
 				Directory.CreateDirectory(YukariDatabaseFullFolder(YukaListerModel.Instance.EnvModel.YlSettings));
 
@@ -480,11 +492,6 @@ namespace YukaLister.Models.DatabaseAssist
 				// 常に作成（クリア）
 				using ListContextInDisk listContextInDisk = ListContextInDisk.CreateContext(out DbSet<TProperty> _);
 				listContextInDisk.CreateDatabase();
-
-				// using しない
-				ListContextInMemory listContextInMemory = ListContextInMemory.CreateContext(out DbSet<TProperty> _);
-				listContextInMemory.CreateDatabase();
-				YukaListerModel.Instance.EnvModel.ListContextInMemory = listContextInMemory;
 			}
 			catch (Exception excep)
 			{

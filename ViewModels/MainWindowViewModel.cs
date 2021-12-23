@@ -387,9 +387,12 @@ namespace YukaLister.ViewModels
 				if (YukaListerModel.Instance.EnvModel.YlSettings.YukariConfigPath() != yukariConfigPathBak)
 				{
 					YukaListerModel.Instance.EnvModel.YlSettings.AnalyzeYukariConfig();
+					UpdateYukaListerEnvironmentStatus();
 					DbCommon.PrepareDatabases();
 					SetFileSystemWatcherYukariConfig();
-					UpdateYukaListerEnvironmentStatus();
+					SetFileSystemWatcherYukariRequestDatabase();
+					SetFileSystemWatcherReportDatabase();
+					UpdateReportsBadge();
 					YukaListerModel.Instance.EnvModel.Sifolin.MainEvent.Set();
 				}
 
@@ -1342,14 +1345,20 @@ namespace YukaLister.ViewModels
 		// --------------------------------------------------------------------
 		private void SetFileSystemWatcherReportDatabase()
 		{
-			String path = DbCommon.ReportDatabasePath(YukaListerModel.Instance.EnvModel.YlSettings);
-			String? folder = Path.GetDirectoryName(path);
-			if (!String.IsNullOrEmpty(folder))
+			if (YukaListerModel.Instance.EnvModel.YlSettings.IsYukariConfigPathValid())
 			{
-				_fileSystemWatcherReportDatabase.Path = folder;
-				_fileSystemWatcherReportDatabase.Filter = Path.GetFileName(path);
-				_fileSystemWatcherReportDatabase.EnableRaisingEvents = true;
+				String path = DbCommon.ReportDatabasePath(YukaListerModel.Instance.EnvModel.YlSettings);
+				String? folder = Path.GetDirectoryName(path);
+				if (!String.IsNullOrEmpty(folder))
+				{
+					_fileSystemWatcherReportDatabase.Path = folder;
+					_fileSystemWatcherReportDatabase.Filter = Path.GetFileName(path);
+					_fileSystemWatcherReportDatabase.EnableRaisingEvents = true;
+					return;
+				}
 			}
+
+			_fileSystemWatcherReportDatabase.EnableRaisingEvents = false;
 		}
 
 		// --------------------------------------------------------------------
@@ -1504,8 +1513,15 @@ namespace YukaLister.ViewModels
 		// --------------------------------------------------------------------
 		private void UpdateNumRecordsLabel()
 		{
-			using ListContextInDisk listContextInDisk = ListContextInDisk.CreateContext(out DbSet<TFound> founds);
-			_numFounds = founds.Count();
+			if (YukaListerModel.Instance.EnvModel.YukaListerWholeStatus == YukaListerStatus.Error)
+			{
+				_numFounds = 0;
+			}
+			else
+			{
+				using ListContextInDisk listContextInDisk = ListContextInDisk.CreateContext(out DbSet<TFound> founds);
+				_numFounds = founds.Count();
+			}
 			NumRecordsLabel = _numFounds.ToString("#,0");
 			ButtonTFoundsClickedCommand.RaiseCanExecuteChanged();
 		}
@@ -1515,9 +1531,16 @@ namespace YukaLister.ViewModels
 		// --------------------------------------------------------------------
 		public void UpdateReportsBadge()
 		{
-			using ReportContext reportContext = ReportContext.CreateContext(out DbSet<TReport> reports);
-			reportContext.ChangeTracker.QueryTrackingBehavior = QueryTrackingBehavior.NoTracking;
-			Int32 numProgress = reports.Where(x => x.Status <= (Int32)ReportStatus.Progress).Count();
+			Int32 numProgress = 0;
+			if (YukaListerModel.Instance.EnvModel.YukaListerWholeStatus == YukaListerStatus.Error)
+			{
+			}
+			else
+			{
+				using ReportContext reportContext = ReportContext.CreateContext(out DbSet<TReport> reports);
+				reportContext.ChangeTracker.QueryTrackingBehavior = QueryTrackingBehavior.NoTracking;
+				numProgress = reports.Where(x => x.Status <= (Int32)ReportStatus.Progress).Count();
+			}
 
 #if DEBUGz
 			numProgress = 999;
@@ -1557,6 +1580,7 @@ namespace YukaLister.ViewModels
 
 		// --------------------------------------------------------------------
 		// 環境系のステータスを更新
+		// ToDo: YlCommon に移動し、スプラッシュウィンドウ等でもステータスを利用できるようにする
 		// --------------------------------------------------------------------
 		private void UpdateYukaListerEnvironmentStatus()
 		{
