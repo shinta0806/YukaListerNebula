@@ -467,24 +467,27 @@ namespace YukaLister.Models.DatabaseAssist
 				listContextInMemory.CreateDatabase();
 				YukaListerModel.Instance.EnvModel.ListContextInMemory = listContextInMemory;
 
+				// 楽曲情報データベース等が存在しない場合は作成
+				Directory.CreateDirectory(YukaListerDatabaseFullFolder());
+
+				using MusicInfoContextDefault musicInfoContextDefault = MusicInfoContextDefault.CreateContext(out DbSet<TProperty> _);
+				musicInfoContextDefault.CreateDatabaseIfNeeded();
+
+				using YukariStatisticsContext yukariStatisticsContext = YukariStatisticsContext.CreateContext(out DbSet<TProperty> _);
+				yukariStatisticsContext.CreateDatabaseIfNeeded();
+
+				// ゆかり用データベース等は、ゆかり設定ファイルが正しく指定されている場合のみ
 				// スプラッシュウィンドウからも呼ばれるため YukaListerWholeStatus（その時点では未初期化）は使えない
 				if (!YukaListerModel.Instance.EnvModel.YlSettings.IsYukariConfigPathValid())
 				{
 					return;
 				}
 
-				Directory.CreateDirectory(YukaListerDatabaseFullFolder());
 				Directory.CreateDirectory(YukariDatabaseFullFolder(YukaListerModel.Instance.EnvModel.YlSettings));
 
 				// 存在しない場合は作成
-				using MusicInfoContextDefault musicInfoContextDefault = MusicInfoContextDefault.CreateContext(out DbSet<TProperty> _);
-				musicInfoContextDefault.CreateDatabaseIfNeeded();
-
 				using ReportContext reportContext = ReportContext.CreateContext(out DbSet<TProperty> _);
 				reportContext.CreateDatabaseIfNeeded();
-
-				using YukariStatisticsContext yukariStatisticsContext = YukariStatisticsContext.CreateContext(out DbSet<TProperty> _);
-				yukariStatisticsContext.CreateDatabaseIfNeeded();
 
 				using ThumbContext thumbContext = ThumbContext.CreateContext(out DbSet<TProperty> _);
 				thumbContext.CreateDatabaseIfNeeded();

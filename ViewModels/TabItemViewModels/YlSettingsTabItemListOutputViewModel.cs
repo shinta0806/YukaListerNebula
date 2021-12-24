@@ -367,7 +367,7 @@ namespace YukaLister.ViewModels.TabItemViewModels
 			{
 				// ゆかり用リスト出力先フォルダーの算出
 				YlSettings tempYlSettings = new();
-				tempYlSettings.YukariConfigPathSeed = newSeed;
+				tempYlSettings.YukariConfigPathSeed2 = newSeed;
 				YukariListFolder = Path.GetDirectoryName(DbCommon.ListDatabasePath(tempYlSettings));
 			}
 			catch (Exception)
