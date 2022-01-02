@@ -23,7 +23,6 @@ using System.Windows;
 using System.Windows.Controls;
 
 using YukaLister.Models.Database.Masters;
-using YukaLister.Models.Database.Sequences;
 using YukaLister.Models.DatabaseAssist;
 using YukaLister.Models.DatabaseContexts;
 using YukaLister.Models.SharedMisc;
@@ -36,7 +35,7 @@ namespace YukaLister.ViewModels.EditMasterWindowViewModels
 	public class EditTieUpWindowViewModel : EditCategorizableWindowViewModel<TTieUp>
 	{
 		// ====================================================================
-		// コンストラクター・デストラクター
+		// コンストラクター
 		// ====================================================================
 
 		// --------------------------------------------------------------------
@@ -316,7 +315,7 @@ namespace YukaLister.ViewModels.EditMasterWindowViewModels
 		#endregion
 
 		// ====================================================================
-		// public メンバー関数
+		// public 関数
 		// ====================================================================
 
 		// --------------------------------------------------------------------
@@ -343,7 +342,7 @@ namespace YukaLister.ViewModels.EditMasterWindowViewModels
 		}
 
 		// ====================================================================
-		// protected メンバー関数
+		// protected 関数
 		// ====================================================================
 
 		// --------------------------------------------------------------------
@@ -450,7 +449,7 @@ namespace YukaLister.ViewModels.EditMasterWindowViewModels
 		}
 
 		// ====================================================================
-		// private メンバー変数
+		// private 変数
 		// ====================================================================
 
 		// 自動的に検索ウィンドウを開いて良いか
@@ -463,7 +462,7 @@ namespace YukaLister.ViewModels.EditMasterWindowViewModels
 		private String? _tieUpGroupIds;
 
 		// ====================================================================
-		// private メンバー関数
+		// private 関数
 		// ====================================================================
 
 		// --------------------------------------------------------------------

@@ -24,11 +24,11 @@ namespace YukaLister.ViewModels.ViewMastersWindowViewModels
 	public class ViewPeopleWindowViewModel : ViewMastersWindowViewModel<TPerson>
 	{
 		// ====================================================================
-		// コンストラクター・デストラクター
+		// コンストラクター
 		// ====================================================================
 
 		// --------------------------------------------------------------------
-		// コンストラクター
+		// メインコンストラクター
 		// --------------------------------------------------------------------
 		public ViewPeopleWindowViewModel(MusicInfoContextDefault musicInfoContext, DbSet<TPerson> records, ObservableCollection<DataGridColumn> columns)
 				: base(musicInfoContext, records, columns)
@@ -36,7 +36,7 @@ namespace YukaLister.ViewModels.ViewMastersWindowViewModels
 		}
 
 		// ====================================================================
-		// protected メンバー関数
+		// protected 関数
 		// ====================================================================
 
 		// --------------------------------------------------------------------

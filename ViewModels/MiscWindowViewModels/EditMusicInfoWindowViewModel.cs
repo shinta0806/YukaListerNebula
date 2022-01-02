@@ -26,7 +26,6 @@ using System.Windows;
 using YukaLister.Models.Database;
 using YukaLister.Models.Database.Aliases;
 using YukaLister.Models.Database.Masters;
-using YukaLister.Models.Database.Sequences;
 using YukaLister.Models.DatabaseAssist;
 using YukaLister.Models.DatabaseContexts;
 using YukaLister.Models.SharedMisc;
@@ -39,7 +38,7 @@ namespace YukaLister.ViewModels.MiscWindowViewModels
 	public class EditMusicInfoWindowViewModel : YlViewModel
 	{
 		// ====================================================================
-		// コンストラクター・デストラクター
+		// コンストラクター
 		// ====================================================================
 
 		// --------------------------------------------------------------------
@@ -665,7 +664,7 @@ namespace YukaLister.ViewModels.MiscWindowViewModels
 		#endregion
 
 		// ====================================================================
-		// public メンバー関数
+		// public 関数
 		// ====================================================================
 
 		// --------------------------------------------------------------------
@@ -710,7 +709,7 @@ namespace YukaLister.ViewModels.MiscWindowViewModels
 		}
 
 		// ====================================================================
-		// private メンバー変数
+		// private 変数
 		// ====================================================================
 
 		// パス
@@ -729,7 +728,7 @@ namespace YukaLister.ViewModels.MiscWindowViewModels
 		private String? _songId;
 
 		// ====================================================================
-		// private メンバー関数
+		// private 関数
 		// ====================================================================
 
 		// --------------------------------------------------------------------

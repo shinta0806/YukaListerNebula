@@ -36,11 +36,11 @@ namespace YukaLister.ViewModels.ViewMastersWindowViewModels
 	public abstract class ViewMastersWindowViewModel<T> : ViewMastersWindowViewModel where T : class, IRcMaster, new()
 	{
 		// ====================================================================
-		// コンストラクター・デストラクター
+		// コンストラクター
 		// ====================================================================
 
 		// --------------------------------------------------------------------
-		// コンストラクター
+		// メインコンストラクター
 		// --------------------------------------------------------------------
 		public ViewMastersWindowViewModel(MusicInfoContextDefault musicInfoContext, DbSet<T> records, ObservableCollection<DataGridColumn> columns)
 		{
@@ -276,7 +276,7 @@ namespace YukaLister.ViewModels.ViewMastersWindowViewModels
 		#endregion
 
 		// ====================================================================
-		// public メンバー関数
+		// public 関数
 		// ====================================================================
 
 		// --------------------------------------------------------------------
@@ -305,7 +305,7 @@ namespace YukaLister.ViewModels.ViewMastersWindowViewModels
 		}
 
 		// ====================================================================
-		// protected メンバー変数
+		// protected 変数
 		// ====================================================================
 
 		// 楽曲情報データベースのコンテキスト（外部から指定されたもの）
@@ -315,7 +315,7 @@ namespace YukaLister.ViewModels.ViewMastersWindowViewModels
 		protected DbSet<T> _records;
 
 		// ====================================================================
-		// protected メンバー関数
+		// protected 関数
 		// ====================================================================
 
 		// --------------------------------------------------------------------
@@ -337,7 +337,7 @@ namespace YukaLister.ViewModels.ViewMastersWindowViewModels
 		}
 
 		// ====================================================================
-		// private メンバー変数
+		// private 変数
 		// ====================================================================
 
 		// マスター名
@@ -350,7 +350,7 @@ namespace YukaLister.ViewModels.ViewMastersWindowViewModels
 		private Boolean _isSearched;
 
 		// ====================================================================
-		// private メンバー関数
+		// private 関数
 		// ====================================================================
 
 		// --------------------------------------------------------------------

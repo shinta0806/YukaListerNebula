@@ -221,7 +221,7 @@ namespace YukaLister.Models.Database
 		}
 
 		// ====================================================================
-		// public メンバー定数
+		// public 定数
 		// ====================================================================
 
 		public const String TABLE_NAME_FOUND = "t_found";

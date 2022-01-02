@@ -16,7 +16,6 @@ using System;
 using System.Diagnostics;
 
 using YukaLister.Models.Database.Masters;
-using YukaLister.Models.Database.Sequences;
 using YukaLister.Models.DatabaseAssist;
 using YukaLister.Models.DatabaseContexts;
 using YukaLister.Models.YukaListerModels;
@@ -26,11 +25,11 @@ namespace YukaLister.ViewModels.EditMasterWindowViewModels
 	public class EditPersonWindowViewModel : EditMasterWindowViewModel<TPerson>
 	{
 		// ====================================================================
-		// コンストラクター・デストラクター
+		// コンストラクター
 		// ====================================================================
 
 		// --------------------------------------------------------------------
-		// コンストラクター
+		// メインコンストラクター
 		// --------------------------------------------------------------------
 		public EditPersonWindowViewModel(MusicInfoContextDefault musicInfoContext, DbSet<TPerson> records)
 				: base(musicInfoContext, records)
@@ -38,7 +37,7 @@ namespace YukaLister.ViewModels.EditMasterWindowViewModels
 		}
 
 		// ====================================================================
-		// public メンバー関数
+		// public 関数
 		// ====================================================================
 
 		// --------------------------------------------------------------------
@@ -61,7 +60,7 @@ namespace YukaLister.ViewModels.EditMasterWindowViewModels
 		}
 
 		// ====================================================================
-		// protected メンバー関数
+		// protected 関数
 		// ====================================================================
 
 		// --------------------------------------------------------------------

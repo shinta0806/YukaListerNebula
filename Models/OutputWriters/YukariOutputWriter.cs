@@ -26,11 +26,11 @@ namespace YukaLister.Models.OutputWriters
 	public class YukariOutputWriter : WebOutputWriter
 	{
 		// ====================================================================
-		// コンストラクター・デストラクター
+		// コンストラクター
 		// ====================================================================
 
 		// --------------------------------------------------------------------
-		// コンストラクター
+		// メインコンストラクター
 		// --------------------------------------------------------------------
 		public YukariOutputWriter()
 				: base(Common.FILE_EXT_PHP)
@@ -59,11 +59,7 @@ namespace YukaLister.Models.OutputWriters
 		}
 
 		// ====================================================================
-		// public メンバー関数
-		// ====================================================================
-
-		// ====================================================================
-		// protected メンバー関数
+		// protected 関数
 		// ====================================================================
 
 		// --------------------------------------------------------------------
@@ -181,21 +177,7 @@ namespace YukaLister.Models.OutputWriters
 		private const String HTML_VAR_ID_PREFIX = "<!-- $IdPrefix$ -->";
 
 		// ====================================================================
-		// private static メンバー関数
-		// ====================================================================
-
-		// --------------------------------------------------------------------
-		// リストのリンクの引数
-		// oAdditionalArgs: "hoge=1&fuga=2" の形式
-		// --------------------------------------------------------------------
-		private static String ListLinkArg(String? additionalArgs = null)
-		{
-			return "<?php empty($yukarisearchlink) ? print \"" + (String.IsNullOrEmpty(additionalArgs) ? null : "?" + additionalArgs)
-					+ "\" : print \"?yukarihost=\".$yukarihost" + (String.IsNullOrEmpty(additionalArgs) ? null : ".\"&" + additionalArgs + "\"") + ";?>";
-		}
-
-		// ====================================================================
-		// private メンバー関数
+		// private 関数
 		// ====================================================================
 
 		// --------------------------------------------------------------------
@@ -205,6 +187,16 @@ namespace YukaLister.Models.OutputWriters
 		{
 			String srcFilder = YukaListerModel.Instance.EnvModel.ExeFullFolder + FOLDER_NAME_SYNC_SERVER + FOLDER_NAME_COMMON_LIB;
 			File.Copy(srcFilder + "JulianDay.php", _folderPath + "Report_JulianDay.php");
+		}
+
+		// --------------------------------------------------------------------
+		// リストのリンクの引数
+		// oAdditionalArgs: "hoge=1&fuga=2" の形式
+		// --------------------------------------------------------------------
+		private static String ListLinkArg(String? additionalArgs = null)
+		{
+			return "<?php empty($yukarisearchlink) ? print \"" + (String.IsNullOrEmpty(additionalArgs) ? null : "?" + additionalArgs)
+					+ "\" : print \"?yukarihost=\".$yukarihost" + (String.IsNullOrEmpty(additionalArgs) ? null : ".\"&" + additionalArgs + "\"") + ";?>";
 		}
 
 		// --------------------------------------------------------------------

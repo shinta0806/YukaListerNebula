@@ -29,7 +29,6 @@ using System.Windows;
 using System.Windows.Controls;
 
 using YukaLister.Models.Database;
-using YukaLister.Models.Database.Masters;
 using YukaLister.Models.DatabaseAssist;
 using YukaLister.Models.DatabaseContexts;
 using YukaLister.Models.YukaListerModels;
@@ -40,7 +39,7 @@ namespace YukaLister.Models.SharedMisc
 	public class YlCommon
 	{
 		// ====================================================================
-		// public static メンバー関数
+		// public 関数
 		// ====================================================================
 
 		// --------------------------------------------------------------------
@@ -745,24 +744,6 @@ namespace YukaLister.Models.SharedMisc
 			return milli * 10000L;
 		}
 
-#if false
-		// --------------------------------------------------------------------
-		// 日付に合わせて年月日文字列を設定
-		// --------------------------------------------------------------------
-		public static (String? year, String? month, String? day) MjdToStrings(Double mjd)
-		{
-			if (mjd <= YlConstants.INVALID_MJD)
-			{
-				return (null, null, null);
-			}
-			else
-			{
-				DateTime aReleaseDate = JulianDay.ModifiedJulianDateToDateTime(mjd);
-				return (aReleaseDate.Year.ToString(), aReleaseDate.Month.ToString(), aReleaseDate.Day.ToString());
-			}
-		}
-#endif
-
 		// --------------------------------------------------------------------
 		// 楽曲情報データベースに登録するフリガナの表記揺れを減らす
 		// 最低限の表記揺れのみ減らす
@@ -910,110 +891,6 @@ namespace YukaLister.Models.SharedMisc
 			return String.IsNullOrEmpty(ids) ? new() : ids.Split(YlConstants.VAR_VALUE_DELIMITER[0], StringSplitOptions.RemoveEmptyEntries).ToList();
 		}
 
-#if false
-		// --------------------------------------------------------------------
-		// 年月日の文字列から日付を生成
-		// ＜例外＞ Exception
-		// --------------------------------------------------------------------
-		public static Double StringsToMjd(String caption, String? yearString, String? monthString, String? dayString)
-		{
-			// 正規化
-			yearString = YlCommon.NormalizeDbString(yearString);
-			monthString = YlCommon.NormalizeDbString(monthString);
-			dayString = YlCommon.NormalizeDbString(dayString);
-
-			if (String.IsNullOrEmpty(yearString))
-			{
-				// 年が入力されていない場合は、月日も空欄でなければならない
-				if (!String.IsNullOrEmpty(monthString) || !String.IsNullOrEmpty(dayString))
-				{
-					throw new Exception(caption + "の年が入力されていません。");
-				}
-
-				return YlConstants.INVALID_MJD;
-			}
-
-			// 年の確認
-			Int32 year = Common.StringToInt32(yearString);
-			Int32 nowYear = DateTime.Now.Year;
-			if (year < 0)
-			{
-				throw new Exception(caption + "の年にマイナスの値を入力することはできません。");
-			}
-			if (year < 100)
-			{
-				// 2 桁の西暦を 4 桁に変換する
-				Int32 nowYear2 = nowYear % 100;
-				if (year <= nowYear2)
-				{
-					// 現在年の 2 桁以下の場合は、現在年と同世紀とする
-					year += (nowYear / 100) * 100;
-				}
-				else if (year <= nowYear2 + YEAR_DISAMBIGUATION_DELTA)
-				{
-					// 現在年の 2 桁に近い場合は、曖昧さ回避のために受け付けないこととする
-					throw new Exception(caption + "の年が今年に近いため、世紀を自動判定できません。年を西暦 4 桁で入力してください。");
-				}
-				else
-				{
-					// 現在年より 1 つ古い世紀とする
-					year += (nowYear / 100 - 1) * 100;
-				}
-			}
-			if (year < 1000)
-			{
-				throw new Exception(caption + "の年に 3 桁の値を入力することはできません。");
-			}
-			if (year < YlConstants.INVALID_YEAR)
-			{
-				throw new Exception(caption + "の年は " + YlConstants.INVALID_YEAR + " 以上を入力して下さい。");
-			}
-			if (year > nowYear)
-			{
-				throw new Exception(caption + "の年は " + nowYear + " 以下を入力して下さい。");
-			}
-
-			// 月の確認
-			if (String.IsNullOrEmpty(monthString) && !String.IsNullOrEmpty(dayString))
-			{
-				// 年と日が入力されている場合は、月も入力されていなければならない
-				throw new Exception(caption + "の月が入力されていません。");
-			}
-			Int32 month;
-			if (String.IsNullOrEmpty(monthString))
-			{
-				// 月が空欄の場合は 1 とする
-				month = 1;
-			}
-			else
-			{
-				month = Common.StringToInt32(monthString);
-				if (month < 1 || month > 12)
-				{
-					throw new Exception(caption + "の月は 1～12 を入力して下さい。");
-				}
-			}
-
-			// 日の確認
-			Int32 day;
-			if (String.IsNullOrEmpty(dayString))
-			{
-				// 日が空欄の場合は 1 とする
-				day = 1;
-			}
-			else
-			{
-				day = Common.StringToInt32(dayString);
-				if (day < 1 || day > 31)
-				{
-					throw new Exception(caption + "の日は 1～31 を入力して下さい。");
-				}
-			}
-
-			return JulianDay.DateTimeToModifiedJulianDate(new DateTime(year, month, day));
-		}
-#endif
-
 		// --------------------------------------------------------------------
 		// テンポラリフォルダーのパス（末尾 '\\'）
 		// --------------------------------------------------------------------
@@ -1067,7 +944,7 @@ namespace YukaLister.Models.SharedMisc
 		}
 
 		// ====================================================================
-		// private メンバー定数
+		// private 定数
 		// ====================================================================
 
 		// --------------------------------------------------------------------
@@ -1131,7 +1008,7 @@ namespace YukaLister.Models.SharedMisc
 		private const Int32 YEAR_DISAMBIGUATION_DELTA = 10;
 
 		// ====================================================================
-		// private static メンバー変数
+		// private 変数
 		// ====================================================================
 
 		// InputIdPrefix
@@ -1141,7 +1018,7 @@ namespace YukaLister.Models.SharedMisc
 		private static Int32 _tempPathCounter;
 
 		// ====================================================================
-		// private static メンバー関数
+		// private 関数
 		// ====================================================================
 
 		// --------------------------------------------------------------------

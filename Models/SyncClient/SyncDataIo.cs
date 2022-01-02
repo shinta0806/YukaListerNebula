@@ -8,16 +8,10 @@
 //
 // ----------------------------------------------------------------------------
 
-using Microsoft.EntityFrameworkCore;
-
 using Shinta;
 
 using System;
 
-using YukaLister.Models.Database;
-using YukaLister.Models.Database.Aliases;
-using YukaLister.Models.Database.Masters;
-using YukaLister.Models.Database.Sequences;
 using YukaLister.Models.DatabaseContexts;
 using YukaLister.Models.SharedMisc;
 
@@ -26,11 +20,11 @@ namespace YukaLister.Models.SyncClient
 	public class SyncDataIo : IDisposable
 	{
 		// ====================================================================
-		// コンストラクター・デストラクター
+		// コンストラクター
 		// ====================================================================
 
 		// --------------------------------------------------------------------
-		// コンストラクター
+		// メインコンストラクター
 		// --------------------------------------------------------------------
 		public SyncDataIo()
 		{
@@ -42,7 +36,7 @@ namespace YukaLister.Models.SyncClient
 		}
 
 		// ====================================================================
-		// public メンバー関数
+		// public 関数
 		// ====================================================================
 
 		// --------------------------------------------------------------------
@@ -55,100 +49,8 @@ namespace YukaLister.Models.SyncClient
 		}
 
 		// ====================================================================
-		// protected メンバー変数
+		// protected 変数
 		// ====================================================================
-
-#if false
-		// --------------------------------------------------------------------
-		// データベースプロパティーテーブル
-		// --------------------------------------------------------------------
-
-		// 楽曲情報データベースプロパティーテーブル
-		protected readonly DbSet<TProperty> _MusicInfoProperties;
-
-		// ゆかり統計データベースプロパティーテーブル
-		protected readonly DbSet<TProperty> _YukariStatisticsProperties;
-
-		// --------------------------------------------------------------------
-		// マスターテーブル
-		// --------------------------------------------------------------------
-
-		// 楽曲マスターテーブル
-		protected readonly DbSet<TSong> _songs;
-
-		// 人物マスターテーブル
-		protected readonly DbSet<TPerson> _people;
-
-		// タイアップマスターテーブル
-		protected readonly DbSet<TTieUp> _tieUps;
-
-		// カテゴリーマスターテーブル
-		protected readonly DbSet<TCategory> _categories;
-
-		// タイアップグループマスターテーブル
-		protected readonly DbSet<TTieUpGroup> _tieUpGroups;
-
-		// 制作会社マスターテーブル
-		protected readonly DbSet<TMaker> _makers;
-
-		// タグマスターテーブル
-		protected readonly DbSet<TTag> _tags;
-
-		// --------------------------------------------------------------------
-		// 別名テーブル
-		// --------------------------------------------------------------------
-
-		// 楽曲別名テーブル
-		protected readonly DbSet<TSongAlias> _songAliases;
-
-		// 人物別名テーブル
-		protected readonly DbSet<TPersonAlias> _personAliases;
-
-		// タイアップ別名テーブル
-		protected readonly DbSet<TTieUpAlias> _tieUpAliases;
-
-		// カテゴリー別名テーブル
-		protected readonly DbSet<TCategoryAlias> _categoryAliases;
-
-		// タイアップグループ別名テーブル
-		protected readonly DbSet<TTieUpGroupAlias> _tieUpGroupAliases;
-
-		// 制作会社別名テーブル
-		protected readonly DbSet<TMakerAlias> _makerAliases;
-
-		// --------------------------------------------------------------------
-		// 紐付テーブル
-		// --------------------------------------------------------------------
-
-		// 歌手紐付テーブル
-		protected readonly DbSet<TArtistSequence> _artistSequences;
-
-		// 作詞者紐付テーブル
-		protected readonly DbSet<TLyristSequence> _lyristSequences;
-
-		// 作曲者紐付テーブル
-		protected readonly DbSet<TComposerSequence> _composerSequences;
-
-		// 編曲者紐付テーブル
-		protected readonly DbSet<TArrangerSequence> _arrangerSequences;
-
-		// タイアップグループ紐付テーブル
-		protected readonly DbSet<TTieUpGroupSequence> _tieUpGroupSequences;
-
-		// タグ紐付テーブル
-		protected readonly DbSet<TTagSequence> _tagSequences;
-
-		// --------------------------------------------------------------------
-		// ゆかり統計テーブル
-		// --------------------------------------------------------------------
-
-		// ゆかり統計テーブル
-		protected readonly DbSet<TYukariStatistics> _yukariStatistics;
-#endif
-
-		// --------------------------------------------------------------------
-		// その他
-		// --------------------------------------------------------------------
 
 		// 楽曲情報データベースのコンテキスト
 		protected readonly MusicInfoContextDefault _musicInfoContext;
@@ -160,7 +62,7 @@ namespace YukaLister.Models.SyncClient
 		protected LogWriter _logWriterSyncDetail = new(YlConstants.APP_ID + YlConstants.SYNC_DETAIL_ID);
 
 		// ====================================================================
-		// protected メンバー関数
+		// protected 関数
 		// ====================================================================
 
 		// --------------------------------------------------------------------
@@ -188,7 +90,7 @@ namespace YukaLister.Models.SyncClient
 		}
 
 		// ====================================================================
-		// private メンバー変数
+		// private 変数
 		// ====================================================================
 
 		// Dispose フラグ

@@ -43,7 +43,7 @@ namespace YukaLister.Models.Database
 		public String ParentFolder { get; set; } = String.Empty;
 
 		// ====================================================================
-		// public メンバー定数
+		// public 定数
 		// ====================================================================
 
 		public const String TABLE_NAME_CACHE_HEADER = "t_cache_header";

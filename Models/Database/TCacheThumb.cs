@@ -50,7 +50,7 @@ namespace YukaLister.Models.Database
 		public Double ThumbLastWriteTime { get; set; }
 
 		// ====================================================================
-		// public メンバー定数
+		// public 定数
 		// ====================================================================
 
 		public const String TABLE_NAME_CACHE_THUMB = "t_cache_thumb";

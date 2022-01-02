@@ -8,16 +8,12 @@
 // 
 // ----------------------------------------------------------------------------
 
-using Microsoft.EntityFrameworkCore;
-
 using Shinta;
 
 using System;
 using System.IO;
-using System.Reflection;
 using System.Threading.Tasks;
 
-using YukaLister.Models.Database;
 using YukaLister.Models.DatabaseAssist;
 using YukaLister.Models.DatabaseContexts;
 using YukaLister.Models.YukaListerModels;
@@ -27,7 +23,7 @@ namespace YukaLister.ViewModels.ImportExportWindowViewModels
 	public class ImportWindowViewModel : ImportExportWindowViewModel
 	{
 		// ====================================================================
-		// コンストラクター・デストラクター
+		// コンストラクター
 		// ====================================================================
 
 		// --------------------------------------------------------------------
@@ -57,7 +53,7 @@ namespace YukaLister.ViewModels.ImportExportWindowViewModels
 		}
 
 		// ====================================================================
-		// protected メンバー関数
+		// protected 関数
 		// ====================================================================
 
 		// --------------------------------------------------------------------
@@ -70,16 +66,6 @@ namespace YukaLister.ViewModels.ImportExportWindowViewModels
 			musicInfoContextDefault.BackupDatabase();
 
 			// インポートタスクを実行
-#if false
-			Action<String>? descriptionSetter = null;
-			MethodInfo? methodInfo = typeof(ImportWindowViewModel).GetProperty(nameof(Description))?.GetSetMethod();
-			if (methodInfo != null)
-			{
-				descriptionSetter = (Action<String>?)Delegate.CreateDelegate(typeof(Action<String>), this, methodInfo, false);
-			}
-			Importer importer = new(_importYukaListerPath, _importTag, _importSameName, _abortCancellationTokenSource.Token, descriptionSetter);
-			importer.Import();
-#endif
 			Importer importer = new(_importYukaListerPath, _importTag, _importSameName, _abortCancellationTokenSource.Token, (x) => Description = x);
 			importer.Import();
 
@@ -87,7 +73,7 @@ namespace YukaLister.ViewModels.ImportExportWindowViewModels
 		}
 
 		// ====================================================================
-		// private メンバー変数
+		// private 変数
 		// ====================================================================
 
 		// インポート元
@@ -98,11 +84,5 @@ namespace YukaLister.ViewModels.ImportExportWindowViewModels
 
 		// 同名の情報も極力インポートする
 		private readonly Boolean _importSameName;
-
-		// ====================================================================
-		// private メンバー関数
-		// ====================================================================
-
-
 	}
 }

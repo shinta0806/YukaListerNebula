@@ -25,11 +25,11 @@ namespace YukaLister.ViewModels.EditSequenceWindowViewModels
 	public class EditPeopleWindowViewModel : EditSequenceWindowViewModel<TPerson>
 	{
 		// ====================================================================
-		// コンストラクター・デストラクター
+		// コンストラクター
 		// ====================================================================
 
 		// --------------------------------------------------------------------
-		// コンストラクター
+		// メインコンストラクター
 		// --------------------------------------------------------------------
 		public EditPeopleWindowViewModel(MusicInfoContextDefault musicInfoContext, DbSet<TPerson> records, Boolean searchOnInitialize, String captionDetail)
 				: base(musicInfoContext, records, searchOnInitialize, captionDetail)
@@ -37,7 +37,7 @@ namespace YukaLister.ViewModels.EditSequenceWindowViewModels
 		}
 
 		// ====================================================================
-		// public メンバー関数
+		// public 関数
 		// ====================================================================
 
 		// --------------------------------------------------------------------
@@ -61,7 +61,7 @@ namespace YukaLister.ViewModels.EditSequenceWindowViewModels
 		}
 
 		// ====================================================================
-		// protected メンバー関数
+		// protected 関数
 		// ====================================================================
 
 		// --------------------------------------------------------------------

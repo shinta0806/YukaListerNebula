@@ -19,10 +19,6 @@ using System.IO.Compression;
 using System.Linq;
 using System.Threading.Tasks;
 
-using YukaLister.Models.Database;
-using YukaLister.Models.Database.Aliases;
-using YukaLister.Models.Database.Masters;
-using YukaLister.Models.Database.Sequences;
 using YukaLister.Models.DatabaseContexts;
 using YukaLister.Models.SharedMisc;
 
@@ -31,7 +27,7 @@ namespace YukaLister.ViewModels.ImportExportWindowViewModels
 	public class ExportWindowViewModel : ImportExportWindowViewModel
 	{
 		// ====================================================================
-		// コンストラクター・デストラクター
+		// コンストラクター
 		// ====================================================================
 
 		// --------------------------------------------------------------------
@@ -52,7 +48,7 @@ namespace YukaLister.ViewModels.ImportExportWindowViewModels
 		}
 
 		// ====================================================================
-		// protected メンバー関数
+		// protected 関数
 		// ====================================================================
 
 		// --------------------------------------------------------------------
@@ -115,7 +111,7 @@ namespace YukaLister.ViewModels.ImportExportWindowViewModels
 		private const String FILE_NAME_EXPORT_MUSIC_INFO = "ExportMusicInfo" + Common.FILE_EXT_SQLITE3;
 
 		// ====================================================================
-		// private メンバー変数
+		// private 変数
 		// ====================================================================
 
 		// エクスポート先

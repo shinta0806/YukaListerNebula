@@ -8,8 +8,6 @@
 //
 // ----------------------------------------------------------------------------
 
-using Microsoft.EntityFrameworkCore;
-
 using Shinta;
 
 using System;
@@ -18,7 +16,6 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
-using YukaLister.Models.Database;
 using YukaLister.Models.DatabaseContexts;
 using YukaLister.Models.OutputWriters;
 using YukaLister.Models.SharedMisc;
@@ -30,11 +27,11 @@ namespace YukaLister.Models.YukaListerCores
 	public class Kamlin : YukaListerCore
 	{
 		// ====================================================================
-		// コンストラクター・デストラクター
+		// コンストラクター
 		// ====================================================================
 
 		// --------------------------------------------------------------------
-		// コンストラクター
+		// メインコンストラクター
 		// --------------------------------------------------------------------
 		public Kamlin()
 		{
@@ -48,7 +45,7 @@ namespace YukaLister.Models.YukaListerCores
 		public MainWindowViewModel? MainWindowViewModel { get; set; }
 
 		// ====================================================================
-		// protected メンバー関数
+		// protected 関数
 		// ====================================================================
 
 		// --------------------------------------------------------------------

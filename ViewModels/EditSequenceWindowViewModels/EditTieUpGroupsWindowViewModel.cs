@@ -25,11 +25,11 @@ namespace YukaLister.ViewModels.EditSequenceWindowViewModels
 	public class EditTieUpGroupsWindowViewModel : EditSequenceWindowViewModel<TTieUpGroup>
 	{
 		// ====================================================================
-		// コンストラクター・デストラクター
+		// コンストラクター
 		// ====================================================================
 
 		// --------------------------------------------------------------------
-		// コンストラクター
+		// メインコンストラクター
 		// --------------------------------------------------------------------
 		public EditTieUpGroupsWindowViewModel(MusicInfoContextDefault musicInfoContext, DbSet<TTieUpGroup> records, Boolean searchOnInitialize)
 				: base(musicInfoContext, records, searchOnInitialize)
@@ -37,7 +37,7 @@ namespace YukaLister.ViewModels.EditSequenceWindowViewModels
 		}
 
 		// ====================================================================
-		// public メンバー関数
+		// public 関数
 		// ====================================================================
 
 		// --------------------------------------------------------------------
@@ -60,7 +60,7 @@ namespace YukaLister.ViewModels.EditSequenceWindowViewModels
 		}
 
 		// ====================================================================
-		// protected メンバー関数
+		// protected 関数
 		// ====================================================================
 
 		// --------------------------------------------------------------------

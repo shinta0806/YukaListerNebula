@@ -17,7 +17,6 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 
-using YukaLister.Models.Database;
 using YukaLister.Models.Database.Aliases;
 using YukaLister.Models.Database.Masters;
 using YukaLister.Models.Database.Sequences;
@@ -31,11 +30,11 @@ namespace YukaLister.Models.OutputWriters
 	public abstract class OutputWriter : IDisposable
 	{
 		// ====================================================================
-		// コンストラクター・デストラクター
+		// コンストラクター
 		// ====================================================================
 
 		// --------------------------------------------------------------------
-		// コンストラクター
+		// メインコンストラクター
 		// --------------------------------------------------------------------
 		protected OutputWriter()
 		{
@@ -79,7 +78,7 @@ namespace YukaLister.Models.OutputWriters
 		public OutputSettings OutputSettings { get; protected set; } = new();
 
 		// ====================================================================
-		// public メンバー関数
+		// public 関数
 		// ====================================================================
 
 		// --------------------------------------------------------------------
@@ -127,11 +126,7 @@ namespace YukaLister.Models.OutputWriters
 		}
 
 		// ====================================================================
-		// protected 定数
-		// ====================================================================
-
-		// ====================================================================
-		// protected メンバー変数
+		// protected 変数
 		// ====================================================================
 
 		// --------------------------------------------------------------------
@@ -224,20 +219,7 @@ namespace YukaLister.Models.OutputWriters
 		protected String? _folderPath;
 
 		// ====================================================================
-		// protected static メンバー関数
-		// ====================================================================
-
-		// --------------------------------------------------------------------
-		// テンプレート読み込み
-		// --------------------------------------------------------------------
-		protected static String LoadTemplate(String fileNameBody)
-		{
-			return File.ReadAllText(YukaListerModel.Instance.EnvModel.ExeFullFolder + YlConstants.FOLDER_NAME_TEMPLATES
-					+ fileNameBody + Common.FILE_EXT_TPL);
-		}
-
-		// ====================================================================
-		// protected メンバー関数
+		// protected 関数
 		// ====================================================================
 
 		// --------------------------------------------------------------------
@@ -271,6 +253,15 @@ namespace YukaLister.Models.OutputWriters
 		protected abstract void GenerateOutputSettingsCore();
 
 		// --------------------------------------------------------------------
+		// テンプレート読み込み
+		// --------------------------------------------------------------------
+		protected static String LoadTemplate(String fileNameBody)
+		{
+			return File.ReadAllText(YukaListerModel.Instance.EnvModel.ExeFullFolder + YlConstants.FOLDER_NAME_TEMPLATES
+					+ fileNameBody + Common.FILE_EXT_TPL);
+		}
+
+		// --------------------------------------------------------------------
 		// コンストラクターでは行えない準備などを実施
 		// --------------------------------------------------------------------
 		protected virtual void PrepareOutput()
@@ -292,7 +283,7 @@ namespace YukaLister.Models.OutputWriters
 		}
 
 		// ====================================================================
-		// private メンバー変数
+		// private 変数
 		// ====================================================================
 
 		// Dispose フラグ

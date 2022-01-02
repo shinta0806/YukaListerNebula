@@ -14,7 +14,9 @@ using Livet.EventListeners;
 using Livet.Messaging;
 using Livet.Messaging.IO;
 using Livet.Messaging.Windows;
+
 using Microsoft.EntityFrameworkCore;
+
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -22,6 +24,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Windows.Controls;
+
 using YukaLister.Models;
 using YukaLister.Models.Database.Masters;
 using YukaLister.Models.DatabaseAssist;
@@ -34,11 +37,11 @@ namespace YukaLister.ViewModels.ViewMastersWindowViewModels
 	public class ViewSongsWindowViewModel : ViewMastersWindowViewModel<TSong>
 	{
 		// ====================================================================
-		// コンストラクター・デストラクター
+		// コンストラクター
 		// ====================================================================
 
 		// --------------------------------------------------------------------
-		// コンストラクター
+		// メインコンストラクター
 		// --------------------------------------------------------------------
 		public ViewSongsWindowViewModel(MusicInfoContextDefault musicInfoContext, DbSet<TSong> records, ObservableCollection<DataGridColumn> columns)
 				: base(musicInfoContext, records, columns)
@@ -46,7 +49,7 @@ namespace YukaLister.ViewModels.ViewMastersWindowViewModels
 		}
 
 		// ====================================================================
-		// protected メンバー関数
+		// protected 関数
 		// ====================================================================
 
 		// --------------------------------------------------------------------

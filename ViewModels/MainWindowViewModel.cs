@@ -5,7 +5,7 @@
 // ============================================================================
 
 // ----------------------------------------------------------------------------
-// ToDo: CreateContext 廃止
+// 
 // ----------------------------------------------------------------------------
 
 using Livet;
@@ -29,15 +29,12 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Threading;
 
-using YukaLister.Models.Database;
-using YukaLister.Models.Database.Masters;
 using YukaLister.Models.DatabaseAssist;
 using YukaLister.Models.DatabaseContexts;
 using YukaLister.Models.Settings;
 using YukaLister.Models.SharedMisc;
 using YukaLister.Models.WebServer;
 using YukaLister.Models.YukaListerModels;
-using YukaLister.ViewModels.ImportExportWindowViewModels;
 using YukaLister.ViewModels.MiscWindowViewModels;
 using YukaLister.ViewModels.ReportWindowViewModels;
 
@@ -46,7 +43,7 @@ namespace YukaLister.ViewModels
 	public class MainWindowViewModel : YlViewModel
 	{
 		// ====================================================================
-		// コンストラクター・デストラクター
+		// コンストラクター
 		// ====================================================================
 
 		// --------------------------------------------------------------------
@@ -722,7 +719,7 @@ namespace YukaLister.ViewModels
 		#endregion
 
 		// ====================================================================
-		// public メンバー関数
+		// public 関数
 		// ====================================================================
 
 		// --------------------------------------------------------------------
@@ -888,7 +885,7 @@ namespace YukaLister.ViewModels
 		}
 
 		// ====================================================================
-		// protected メンバー関数
+		// protected 関数
 		// ====================================================================
 
 		// --------------------------------------------------------------------
@@ -935,7 +932,7 @@ namespace YukaLister.ViewModels
 		}
 
 		// ====================================================================
-		// private メンバー定数
+		// private 定数
 		// ====================================================================
 
 		// 改訂履歴ファイル
@@ -945,7 +942,7 @@ namespace YukaLister.ViewModels
 		private const String URL_BAD_YUKARI_CONFIG = "https://github.com/shinta0806/YukaListerNebula/issues/135";
 
 		// ====================================================================
-		// private メンバー変数
+		// private 変数
 		// ====================================================================
 
 		// スプラッシュウィンドウ
@@ -985,8 +982,47 @@ namespace YukaLister.ViewModels
 		private Boolean _isDisposed;
 
 		// ====================================================================
-		// private static メンバー関数
+		// private 関数
 		// ====================================================================
+
+		// --------------------------------------------------------------------
+		// フォルダーを 1 つ追加
+		// ＜例外＞ Exception
+		// --------------------------------------------------------------------
+		private async ValueTask AddFolderAsync(String folderPath)
+		{
+			if (String.IsNullOrEmpty(folderPath))
+			{
+				return;
+			}
+
+			try
+			{
+				// AddTargetFolderAsync() に時間を要することがあるので表示を更新しておく
+				Cursor = Cursors.Wait;
+				await YukaListerModel.Instance.ProjModel.AddTargetFolderAsync(folderPath);
+				UpdateDataGrid();
+
+				// 次回 UI 更新タイミングまでに追加が完了してしまっていても検索可能ファイル数が更新されるようにする
+				_prevYukaListerWholeStatus = YukaListerStatus.__End__;
+			}
+			finally
+			{
+				Cursor = null;
+			}
+		}
+
+		// --------------------------------------------------------------------
+		// 接続されているすべてのドライブで自動接続
+		// --------------------------------------------------------------------
+		private async Task AutoTargetAllDrivesAsync()
+		{
+			String[] drives = Directory.GetLogicalDrives();
+			foreach (String drive in drives)
+			{
+				await DeviceArrivalAsync(YlCommon.DriveLetter(drive));
+			}
+		}
 
 		// --------------------------------------------------------------------
 		// 最新情報確認
@@ -998,6 +1034,23 @@ namespace YukaLister.ViewModels
 				return;
 			}
 			await YlCommon.CheckLatestInfoAsync(false);
+		}
+
+		// --------------------------------------------------------------------
+		// イベントハンドラー：デバイスが接続された
+		// ＜引数＞ driveLetter: "D:" のようにコロンまで
+		// --------------------------------------------------------------------
+		private async ValueTask DeviceArrivalAsync(String driveLetter)
+		{
+			if (!YukaListerModel.Instance.EnvModel.YlSettings.AddFolderOnDeviceArrived)
+			{
+				return;
+			}
+
+			await DeviceArrivalCoreAsync(driveLetter);
+
+			// 次回 UI 更新タイミングまでに追加が完了してしまっていても検索可能ファイル数が更新されるようにする
+			_prevYukaListerWholeStatus = YukaListerStatus.__End__;
 		}
 
 		// --------------------------------------------------------------------
@@ -1062,81 +1115,6 @@ namespace YukaLister.ViewModels
 				YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(TraceEventType.Error, "サンプルインポート時エラー：\n" + excep.Message);
 				YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, "　スタックトレース：\n" + excep.StackTrace);
 			}
-		}
-
-		// --------------------------------------------------------------------
-		// インストールフォルダーについての警告メッセージ
-		// --------------------------------------------------------------------
-		private static String? InstallWarningMessage()
-		{
-			if (YukaListerModel.Instance.EnvModel.ExeFullPath.StartsWith(Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles))
-					|| YukaListerModel.Instance.EnvModel.ExeFullPath.StartsWith(Environment.GetFolderPath(Environment.SpecialFolder.ProgramFilesX86)))
-			{
-				// 自動更新できない
-				return YlConstants.APP_NAME_J + " が Program Files フォルダー配下にインストールされているため、正常に動作しません。\n"
-						+ "他のフォルダー（例えば C:\\xampp\\htdocs）配下にインストールしてください。";
-			}
-			return null;
-		}
-
-		// ====================================================================
-		// private メンバー関数
-		// ====================================================================
-
-		// --------------------------------------------------------------------
-		// フォルダーを 1 つ追加
-		// ＜例外＞ Exception
-		// --------------------------------------------------------------------
-		private async ValueTask AddFolderAsync(String folderPath)
-		{
-			if (String.IsNullOrEmpty(folderPath))
-			{
-				return;
-			}
-
-			try
-			{
-				// AddTargetFolderAsync() に時間を要することがあるので表示を更新しておく
-				Cursor = Cursors.Wait;
-				await YukaListerModel.Instance.ProjModel.AddTargetFolderAsync(folderPath);
-				UpdateDataGrid();
-
-				// 次回 UI 更新タイミングまでに追加が完了してしまっていても検索可能ファイル数が更新されるようにする
-				_prevYukaListerWholeStatus = YukaListerStatus.__End__;
-			}
-			finally
-			{
-				Cursor = null;
-			}
-		}
-
-		// --------------------------------------------------------------------
-		// 接続されているすべてのドライブで自動接続
-		// --------------------------------------------------------------------
-		private async Task AutoTargetAllDrivesAsync()
-		{
-			String[] drives = Directory.GetLogicalDrives();
-			foreach (String drive in drives)
-			{
-				await DeviceArrivalAsync(YlCommon.DriveLetter(drive));
-			}
-		}
-
-		// --------------------------------------------------------------------
-		// イベントハンドラー：デバイスが接続された
-		// ＜引数＞ driveLetter: "D:" のようにコロンまで
-		// --------------------------------------------------------------------
-		private async ValueTask DeviceArrivalAsync(String driveLetter)
-		{
-			if (!YukaListerModel.Instance.EnvModel.YlSettings.AddFolderOnDeviceArrived)
-			{
-				return;
-			}
-
-			await DeviceArrivalCoreAsync(driveLetter);
-
-			// 次回 UI 更新タイミングまでに追加が完了してしまっていても検索可能ファイル数が更新されるようにする
-			_prevYukaListerWholeStatus = YukaListerStatus.__End__;
 		}
 
 		// --------------------------------------------------------------------
@@ -1263,6 +1241,23 @@ namespace YukaLister.ViewModels
 				YlCommon.ActivateSyclinIfNeeded();
 			}
 		}
+
+#if false
+		// --------------------------------------------------------------------
+		// インストールフォルダーについての警告メッセージ
+		// --------------------------------------------------------------------
+		private static String? InstallWarningMessage()
+		{
+			if (YukaListerModel.Instance.EnvModel.ExeFullPath.StartsWith(Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles))
+					|| YukaListerModel.Instance.EnvModel.ExeFullPath.StartsWith(Environment.GetFolderPath(Environment.SpecialFolder.ProgramFilesX86)))
+			{
+				// 自動更新できない
+				return YlConstants.APP_NAME_J + " が Program Files フォルダー配下にインストールされているため、正常に動作しません。\n"
+						+ "他のフォルダー（例えば C:\\xampp\\htdocs）配下にインストールしてください。";
+			}
+			return null;
+		}
+#endif
 
 		// --------------------------------------------------------------------
 		// 新バージョンで初回起動された時の処理を行う

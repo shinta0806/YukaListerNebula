@@ -36,11 +36,11 @@ namespace YukaLister.ViewModels.EditSequenceWindowViewModels
 	public abstract class EditSequenceWindowViewModel<T> : EditSequenceWindowViewModel where T : class, IRcMaster, new()
 	{
 		// ====================================================================
-		// コンストラクター・デストラクター
+		// コンストラクター
 		// ====================================================================
 
 		// --------------------------------------------------------------------
-		// コンストラクター
+		// メインコンストラクター
 		// --------------------------------------------------------------------
 		public EditSequenceWindowViewModel(MusicInfoContextDefault musicInfoContext, DbSet<T> records, Boolean searchOnInitialize, String? captionDetail = null)
 		{
@@ -435,7 +435,7 @@ namespace YukaLister.ViewModels.EditSequenceWindowViewModels
 		#endregion
 
 		// ====================================================================
-		// public メンバー関数
+		// public 関数
 		// ====================================================================
 
 		// --------------------------------------------------------------------
@@ -481,7 +481,7 @@ namespace YukaLister.ViewModels.EditSequenceWindowViewModels
 			}
 		}
 		// ====================================================================
-		// protected メンバー変数
+		// protected 変数
 		// ====================================================================
 
 		// 楽曲情報データベースのコンテキスト
@@ -491,7 +491,7 @@ namespace YukaLister.ViewModels.EditSequenceWindowViewModels
 		protected DbSet<T> _records;
 
 		// ====================================================================
-		// protected メンバー関数
+		// protected 関数
 		// ====================================================================
 
 		// --------------------------------------------------------------------
@@ -500,7 +500,7 @@ namespace YukaLister.ViewModels.EditSequenceWindowViewModels
 		protected abstract EditMasterWindowViewModel<T> CreateEditMasterWindowViewModel();
 
 		// ====================================================================
-		// private メンバー変数
+		// private 変数
 		// ====================================================================
 
 		// Initialize() で検索して追加を実施するかどうか
@@ -517,7 +517,7 @@ namespace YukaLister.ViewModels.EditSequenceWindowViewModels
 		private Boolean _isMasterSearched;
 
 		// ====================================================================
-		// private メンバー関数
+		// private 関数
 		// ====================================================================
 
 		// --------------------------------------------------------------------

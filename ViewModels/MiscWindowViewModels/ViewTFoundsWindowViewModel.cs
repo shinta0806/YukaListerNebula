@@ -39,11 +39,11 @@ namespace YukaLister.ViewModels.MiscWindowViewModels
 	public class ViewTFoundsWindowViewModel : YlViewModel
 	{
 		// ====================================================================
-		// コンストラクター・デストラクター
+		// コンストラクター
 		// ====================================================================
 
 		// --------------------------------------------------------------------
-		// コンストラクター
+		// メインコンストラクター
 		// --------------------------------------------------------------------
 		public ViewTFoundsWindowViewModel()
 		{
@@ -564,7 +564,7 @@ namespace YukaLister.ViewModels.MiscWindowViewModels
 		#endregion
 
 		// ====================================================================
-		// public メンバー関数
+		// public 関数
 		// ====================================================================
 
 		// --------------------------------------------------------------------
@@ -640,7 +640,7 @@ namespace YukaLister.ViewModels.MiscWindowViewModels
 		}
 
 		// ====================================================================
-		// private メンバー変数
+		// private 変数
 		// ====================================================================
 
 		// 出力項目
@@ -650,19 +650,7 @@ namespace YukaLister.ViewModels.MiscWindowViewModels
 		FindKeywordWindowViewModel? _findKeywordWindowViewModel;
 
 		// ====================================================================
-		// private static メンバー関数
-		// ====================================================================
-
-		// --------------------------------------------------------------------
-		// SmartTrackOnVocal / SmartTrackOffVocal を数値化
-		// --------------------------------------------------------------------
-		private static Int32 SmartTrackToInt32(TFound found)
-		{
-			return (found.SmartTrackOnVocal ? 2 : 0) + (found.SmartTrackOffVocal ? 1 : 0);
-		}
-
-		// ====================================================================
-		// private メンバー関数
+		// private 関数
 		// ====================================================================
 
 		// --------------------------------------------------------------------
@@ -853,6 +841,14 @@ namespace YukaLister.ViewModels.MiscWindowViewModels
 
 			// ウィンドウを前面に出すなど
 			_findKeywordWindowViewModel.Messenger.Raise(new InteractionMessage(YlConstants.MESSAGE_KEY_WINDOW_ACTIVATE));
+		}
+
+		// --------------------------------------------------------------------
+		// SmartTrackOnVocal / SmartTrackOffVocal を数値化
+		// --------------------------------------------------------------------
+		private static Int32 SmartTrackToInt32(TFound found)
+		{
+			return (found.SmartTrackOnVocal ? 2 : 0) + (found.SmartTrackOffVocal ? 1 : 0);
 		}
 	}
 }

@@ -15,18 +15,16 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Xml.Serialization;
 
-using YukaLister.Models.YukaListerModels;
-
 namespace YukaLister.Models.Settings
 {
 	public class TagSettings : SerializableSettings
 	{
 		// ====================================================================
-		// コンストラクター・デストラクター
+		// コンストラクター
 		// ====================================================================
 
 		// --------------------------------------------------------------------
-		// コンストラクター
+		// メインコンストラクター
 		// EnvironmentModel 構築時に呼びだされるため、LogWriter は指定できない
 		// --------------------------------------------------------------------
 		public TagSettings()
@@ -48,7 +46,7 @@ namespace YukaLister.Models.Settings
 
 
 		// ====================================================================
-		// protected メンバー関数
+		// protected 関数
 		// ====================================================================
 
 		// --------------------------------------------------------------------

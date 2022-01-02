@@ -12,8 +12,6 @@ using Livet.Commands;
 using Livet.Messaging;
 using Livet.Messaging.Windows;
 
-using Microsoft.EntityFrameworkCore;
-
 using Shinta;
 
 using System;
@@ -33,7 +31,7 @@ namespace YukaLister.ViewModels.ReportWindowViewModels
 	public class EditReportWindowViewModel : YlViewModel
 	{
 		// ====================================================================
-		// コンストラクター・デストラクター
+		// コンストラクター
 		// ====================================================================
 
 		// --------------------------------------------------------------------
@@ -251,7 +249,7 @@ namespace YukaLister.ViewModels.ReportWindowViewModels
 		#endregion
 
 		// ====================================================================
-		// public メンバー関数
+		// public 関数
 		// ====================================================================
 
 		// --------------------------------------------------------------------
@@ -288,7 +286,7 @@ namespace YukaLister.ViewModels.ReportWindowViewModels
 		}
 
 		// ====================================================================
-		// private メンバー関数
+		// private 関数
 		// ====================================================================
 
 		// --------------------------------------------------------------------

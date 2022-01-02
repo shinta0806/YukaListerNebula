@@ -30,11 +30,11 @@ namespace YukaLister.Models.DatabaseAssist
 	public class TFoundSetter : IDisposable
 	{
 		// ====================================================================
-		// コンストラクター・デストラクター
+		// コンストラクター
 		// ====================================================================
 
 		// --------------------------------------------------------------------
-		// コンストラクター
+		// メインコンストラクター
 		// --------------------------------------------------------------------
 		public TFoundSetter(ListContextInMemory listContextInMemory)
 		{
@@ -65,7 +65,7 @@ namespace YukaLister.Models.DatabaseAssist
 		}
 
 		// ====================================================================
-		// public メンバー関数
+		// public 関数
 		// ====================================================================
 
 		// --------------------------------------------------------------------
@@ -348,7 +348,7 @@ namespace YukaLister.Models.DatabaseAssist
 		}
 
 		// ====================================================================
-		// protected メンバー関数
+		// protected 関数
 		// ====================================================================
 
 		// --------------------------------------------------------------------
@@ -376,7 +376,7 @@ namespace YukaLister.Models.DatabaseAssist
 		}
 
 		// ====================================================================
-		// private メンバー定数
+		// private 定数
 		// ====================================================================
 
 		// スマートトラック判定用の単語（小文字表記、両端を | で括る）
@@ -384,120 +384,8 @@ namespace YukaLister.Models.DatabaseAssist
 		private const String BOTH_VOCAL_WORDS = "|2tr|2ch|onoff|offon|";
 
 		// ====================================================================
-		// private メンバー変数
+		// private 変数
 		// ====================================================================
-
-#if false
-		// --------------------------------------------------------------------
-		// データベースプロパティーテーブル
-		// --------------------------------------------------------------------
-
-		// データベースプロパティーテーブル
-		//private readonly DbSet<TProperty> _properties;
-
-		// --------------------------------------------------------------------
-		// マスターテーブル
-		// --------------------------------------------------------------------
-
-		// 楽曲マスターテーブル
-		private readonly DbSet<TSong> _songs;
-
-		// 人物マスターテーブル
-		private readonly DbSet<TPerson> _people;
-
-		// タイアップマスターテーブル
-		private readonly DbSet<TTieUp> _tieUps;
-
-		// カテゴリーマスターテーブル
-		private readonly DbSet<TCategory> _categories;
-
-		// タイアップグループマスターテーブル
-		private readonly DbSet<TTieUpGroup> _tieUpGroups;
-
-		// 制作会社マスターテーブル
-		private readonly DbSet<TMaker> _makers;
-
-		// タグマスターテーブル
-		private readonly DbSet<TTag> _tags;
-
-		// --------------------------------------------------------------------
-		// 別名テーブル
-		// --------------------------------------------------------------------
-
-		// 楽曲別名テーブル
-		private readonly DbSet<TSongAlias> _songAliases;
-
-		// 人物別名テーブル
-		//private readonly DbSet<TPersonAlias> _personAliases;
-
-		// タイアップ別名テーブル
-		private readonly DbSet<TTieUpAlias> _tieUpAliases;
-
-		// カテゴリー別名テーブル
-		//private readonly DbSet<TCategoryAlias> _categoryAliases;
-
-		// タイアップグループ別名テーブル
-		//private readonly DbSet<TTieUpGroupAlias> _tieUpGroupAliases;
-
-		// 制作会社別名テーブル
-		//private readonly DbSet<TMakerAlias> _makerAliases;
-
-		// --------------------------------------------------------------------
-		// 紐付テーブル
-		// --------------------------------------------------------------------
-
-		// 歌手紐付テーブル
-		private readonly DbSet<TArtistSequence> _artistSequences;
-
-		// 作詞者紐付テーブル
-		private readonly DbSet<TLyristSequence> _lyristSequences;
-
-		// 作曲者紐付テーブル
-		private readonly DbSet<TComposerSequence> _composerSequences;
-
-		// 編曲者紐付テーブル
-		private readonly DbSet<TArrangerSequence> _arrangerSequences;
-
-		// タイアップグループ紐付テーブル
-		private readonly DbSet<TTieUpGroupSequence> _tieUpGroupSequences;
-
-		// タグ紐付テーブル
-		private readonly DbSet<TTagSequence> _tagSequences;
-#endif
-
-#if false
-		// --------------------------------------------------------------------
-		// リストデータベース：検出ファイルリストテーブル
-		// --------------------------------------------------------------------
-
-		// 検出ファイルリストテーブル
-		//private readonly DbSet<TFound> _listFounds;
-
-		// 人物マスターテーブル
-		private readonly DbSet<TPerson> _listPeople;
-
-		// 歌手紐付テーブル
-		private readonly DbSet<TArtistSequence> _listArtistSequences;
-
-		// 作曲者紐付テーブル
-		//private readonly DbSet<TComposerSequence> _listComposerSequences;
-
-		// タイアップグループマスターテーブル
-		//private readonly DbSet<TTieUpGroup> _listTieUpGroups;
-
-		// タイアップグループ紐付テーブル
-		//private readonly DbSet<TTieUpGroupSequence> _listTieUpGroupSequences;
-
-		// タグマスターテーブル
-		//private readonly DbSet<TTag> _listTags;
-
-		// タグ紐付テーブル
-		//private readonly DbSet<TTagSequence> _listTagSequences;
-#endif
-
-		// --------------------------------------------------------------------
-		// その他
-		// --------------------------------------------------------------------
 
 		// 楽曲情報データベースのコンテキスト
 		private readonly MusicInfoContextDefault _musicInfoContext;
@@ -512,7 +400,7 @@ namespace YukaLister.Models.DatabaseAssist
 		private Boolean _isDisposed;
 
 		// ====================================================================
-		// private static メンバー関数
+		// private 関数
 		// ====================================================================
 
 		// --------------------------------------------------------------------
@@ -561,36 +449,6 @@ namespace YukaLister.Models.DatabaseAssist
 			String rubies = String.Join(YlConstants.VAR_VALUE_DELIMITER[0], masters.Select(x => x.RubyForSearch));
 			return (String.IsNullOrEmpty(names) ? null : names, String.IsNullOrEmpty(rubies) ? null : rubies);
 		}
-
-		// --------------------------------------------------------------------
-		// 検索ワードと検索ワードフリガナをコメント用に整形
-		// --------------------------------------------------------------------
-		private static String? KeywordToComment(IRcMaster master)
-		{
-			if (!YukaListerModel.Instance.EnvModel.YlSettings.OutputAdditionalYukariAssist)
-			{
-				return null;
-			}
-
-			String? comment = null;
-			if (!String.IsNullOrEmpty(master.Keyword))
-			{
-				comment += master.Keyword + YlConstants.VAR_VALUE_DELIMITER;
-			}
-			if (!String.IsNullOrEmpty(master.KeywordRubyForSearch))
-			{
-				comment += master.KeywordRubyForSearch + YlConstants.VAR_VALUE_DELIMITER;
-			}
-			if (!String.IsNullOrEmpty(comment))
-			{
-				comment = YlConstants.WEB_LIST_IGNORE_COMMENT_DELIMITER + comment;
-			}
-			return comment;
-		}
-
-		// ====================================================================
-		// private メンバー関数
-		// ====================================================================
 
 		// --------------------------------------------------------------------
 		// dicByFile に合致するタイアップを、楽曲情報データベースから検索
@@ -642,6 +500,32 @@ namespace YukaLister.Models.DatabaseAssist
 			}
 
 			return tieUps.FirstOrDefault();
+		}
+
+		// --------------------------------------------------------------------
+		// 検索ワードと検索ワードフリガナをコメント用に整形
+		// --------------------------------------------------------------------
+		private static String? KeywordToComment(IRcMaster master)
+		{
+			if (!YukaListerModel.Instance.EnvModel.YlSettings.OutputAdditionalYukariAssist)
+			{
+				return null;
+			}
+
+			String? comment = null;
+			if (!String.IsNullOrEmpty(master.Keyword))
+			{
+				comment += master.Keyword + YlConstants.VAR_VALUE_DELIMITER;
+			}
+			if (!String.IsNullOrEmpty(master.KeywordRubyForSearch))
+			{
+				comment += master.KeywordRubyForSearch + YlConstants.VAR_VALUE_DELIMITER;
+			}
+			if (!String.IsNullOrEmpty(comment))
+			{
+				comment = YlConstants.WEB_LIST_IGNORE_COMMENT_DELIMITER + comment;
+			}
+			return comment;
 		}
 
 		// --------------------------------------------------------------------

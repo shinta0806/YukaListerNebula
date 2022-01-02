@@ -24,11 +24,11 @@ namespace YukaLister.ViewModels.EditMasterWindowViewModels
 	public class EditMakerWindowViewModel : EditMasterWindowViewModel<TMaker>
 	{
 		// ====================================================================
-		// コンストラクター・デストラクター
+		// コンストラクター
 		// ====================================================================
 
 		// --------------------------------------------------------------------
-		// コンストラクター
+		// メインコンストラクター
 		// --------------------------------------------------------------------
 		public EditMakerWindowViewModel(MusicInfoContextDefault musicInfoContext, DbSet<TMaker> records)
 				: base(musicInfoContext, records)
@@ -36,7 +36,7 @@ namespace YukaLister.ViewModels.EditMasterWindowViewModels
 		}
 
 		// ====================================================================
-		// public メンバー関数
+		// public 関数
 		// ====================================================================
 
 		// --------------------------------------------------------------------

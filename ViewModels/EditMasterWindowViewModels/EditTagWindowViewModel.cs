@@ -26,11 +26,11 @@ namespace YukaLister.ViewModels.EditMasterWindowViewModels
 	public class EditTagWindowViewModel : EditMasterWindowViewModel<TTag>
 	{
 		// ====================================================================
-		// コンストラクター・デストラクター
+		// コンストラクター
 		// ====================================================================
 
 		// --------------------------------------------------------------------
-		// コンストラクター
+		// メインコンストラクター
 		// --------------------------------------------------------------------
 		public EditTagWindowViewModel(MusicInfoContextDefault musicInfoContext, DbSet<TTag> records)
 				: base(musicInfoContext, records)
@@ -38,7 +38,7 @@ namespace YukaLister.ViewModels.EditMasterWindowViewModels
 		}
 
 		// ====================================================================
-		// public メンバー関数
+		// public 関数
 		// ====================================================================
 
 		// --------------------------------------------------------------------
@@ -61,7 +61,7 @@ namespace YukaLister.ViewModels.EditMasterWindowViewModels
 		}
 
 		// ====================================================================
-		// protected メンバー関数
+		// protected 関数
 		// ====================================================================
 
 		// --------------------------------------------------------------------

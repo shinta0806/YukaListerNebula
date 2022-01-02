@@ -9,7 +9,6 @@
 // ----------------------------------------------------------------------------
 
 using System;
-using System.Diagnostics;
 using System.Globalization;
 using System.Windows.Data;
 
@@ -20,7 +19,7 @@ namespace YukaLister.Models.ValueConverters
 	class FolderSettingsStatusToDescriptionConverter : IValueConverter
 	{
 		// ====================================================================
-		// public メンバー関数
+		// public 関数
 		// ====================================================================
 
 		// --------------------------------------------------------------------

@@ -49,11 +49,11 @@ namespace YukaLister.Models.WebServer
 	public class WebServer : IDisposable
 	{
 		// ====================================================================
-		// コンストラクター・デストラクター
+		// コンストラクター
 		// ====================================================================
 
 		// --------------------------------------------------------------------
-		// コンストラクター
+		// メインコンストラクター
 		// --------------------------------------------------------------------
 		public WebServer()
 		{
@@ -61,7 +61,7 @@ namespace YukaLister.Models.WebServer
 		}
 
 		// ====================================================================
-		// public メンバー関数
+		// public 関数
 		// ====================================================================
 
 		// --------------------------------------------------------------------
@@ -107,7 +107,7 @@ namespace YukaLister.Models.WebServer
 		}
 
 		// ====================================================================
-		// protected メンバー関数
+		// protected 関数
 		// ====================================================================
 
 		// --------------------------------------------------------------------
@@ -162,7 +162,7 @@ namespace YukaLister.Models.WebServer
 		private const Int32 QUIT_TIMEOUT = 30 * 1000;
 
 		// ====================================================================
-		// private メンバー変数
+		// private 変数
 		// ====================================================================
 
 		// タスク上限
@@ -178,7 +178,7 @@ namespace YukaLister.Models.WebServer
 		private Boolean _isDisposed;
 
 		// ====================================================================
-		// private static メンバー関数
+		// private 関数
 		// ====================================================================
 
 		// --------------------------------------------------------------------
@@ -544,43 +544,6 @@ namespace YukaLister.Models.WebServer
 		}
 
 		// --------------------------------------------------------------------
-		// クライアントにサムネイルを返す
-		// ＜例外＞ Exception
-		// --------------------------------------------------------------------
-		private static void SendResponseThumb(HttpListenerResponse response, Dictionary<String, String> options)
-		{
-			// サムネイル対象の確定
-			(String path, Int32 width) = GetThumbOptions(options);
-
-			// キャッシュから探す
-			TCacheThumb? cacheThumb = FindCache(path, width);
-
-			if (cacheThumb == null)
-			{
-				// キャッシュに無い場合は新規作成
-				cacheThumb = CreateThumb(path, width);
-			}
-
-			// 更新日
-			DateTime lastModified = JulianDay.ModifiedJulianDateToDateTime(cacheThumb.ThumbLastWriteTime);
-			String lastModifiedStr = lastModified.ToString("ddd, dd MMM yyyy HH:mm:ss", CultureInfo.CreateSpecificCulture("en-US")) + " GMT";
-			Debug.WriteLine("SendResponseThumb() aLastModifiedStr: " + lastModifiedStr);
-
-			// ヘッダー
-			response.StatusCode = (Int32)HttpStatusCode.OK;
-			response.ContentType = "image/jpeg";
-			response.ContentLength64 = cacheThumb.Image.Length;
-			response.Headers.Add(HttpResponseHeader.LastModified, lastModifiedStr);
-
-			// サムネイルデータ
-			response.OutputStream.Write(cacheThumb.Image, 0, cacheThumb.Image.Length);
-		}
-
-		// ====================================================================
-		// private メンバー関数
-		// ====================================================================
-
-		// --------------------------------------------------------------------
 		// クライアントにファイルの内容を返す
 		// ＜例外＞ Exception, OperationCanceledException
 		// --------------------------------------------------------------------
@@ -756,6 +719,39 @@ namespace YukaLister.Models.WebServer
 				throw new Exception("File not found.");
 			}
 			SendFile(response, path!);
+		}
+
+		// --------------------------------------------------------------------
+		// クライアントにサムネイルを返す
+		// ＜例外＞ Exception
+		// --------------------------------------------------------------------
+		private static void SendResponseThumb(HttpListenerResponse response, Dictionary<String, String> options)
+		{
+			// サムネイル対象の確定
+			(String path, Int32 width) = GetThumbOptions(options);
+
+			// キャッシュから探す
+			TCacheThumb? cacheThumb = FindCache(path, width);
+
+			if (cacheThumb == null)
+			{
+				// キャッシュに無い場合は新規作成
+				cacheThumb = CreateThumb(path, width);
+			}
+
+			// 更新日
+			DateTime lastModified = JulianDay.ModifiedJulianDateToDateTime(cacheThumb.ThumbLastWriteTime);
+			String lastModifiedStr = lastModified.ToString("ddd, dd MMM yyyy HH:mm:ss", CultureInfo.CreateSpecificCulture("en-US")) + " GMT";
+			Debug.WriteLine("SendResponseThumb() aLastModifiedStr: " + lastModifiedStr);
+
+			// ヘッダー
+			response.StatusCode = (Int32)HttpStatusCode.OK;
+			response.ContentType = "image/jpeg";
+			response.ContentLength64 = cacheThumb.Image.Length;
+			response.Headers.Add(HttpResponseHeader.LastModified, lastModifiedStr);
+
+			// サムネイルデータ
+			response.OutputStream.Write(cacheThumb.Image, 0, cacheThumb.Image.Length);
 		}
 
 		// --------------------------------------------------------------------

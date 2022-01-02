@@ -12,7 +12,6 @@ using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-using YukaLister.Models.Database.Masters;
 using YukaLister.Models.SharedMisc;
 
 namespace YukaLister.Models.Database
@@ -68,19 +67,6 @@ namespace YukaLister.Models.Database
 		// ルーム名
 		[Column(FIELD_NAME_YUKARI_STATISTICS_ROOM_NAME)]
 		public String? RoomName { get; set; }
-
-#if false
-		// ID 接頭辞
-		// ゆかり統計 ID から取得することもできるが、別列にしておくほうが既存存在判定が楽 → と思ったが不要そう
-		[Column(FIELD_NAME_YUKARI_STATISTICS_ID_PREFIX)]
-		public String IdPrefix { get; set; } = String.Empty;
-#endif
-
-#if false
-		// 同期アカウント名（サーバー側で書き込む）
-		[Column(FIELD_NAME_YUKARI_STATISTICS_SYNC_ACCOUNT_NAME)]
-		public String? SyncAccountName { get; set; }
-#endif
 
 		// --------------------------------------------------------------------
 		// request.db 由来

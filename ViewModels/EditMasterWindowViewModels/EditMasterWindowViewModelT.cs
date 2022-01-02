@@ -34,11 +34,11 @@ namespace YukaLister.ViewModels.EditMasterWindowViewModels
 	public abstract class EditMasterWindowViewModel<T> : EditMasterWindowViewModel where T : class, IRcMaster, new()
 	{
 		// ====================================================================
-		// コンストラクター・デストラクター
+		// コンストラクター
 		// ====================================================================
 
 		// --------------------------------------------------------------------
-		// コンストラクター
+		// メインコンストラクター
 		// --------------------------------------------------------------------
 		public EditMasterWindowViewModel(MusicInfoContextDefault musicInfoContext, DbSet<T> records)
 		{
@@ -292,7 +292,7 @@ namespace YukaLister.ViewModels.EditMasterWindowViewModels
 		#endregion
 
 		// ====================================================================
-		// public メンバー関数
+		// public 関数
 		// ====================================================================
 
 		// --------------------------------------------------------------------
@@ -371,7 +371,7 @@ namespace YukaLister.ViewModels.EditMasterWindowViewModels
 		}
 
 		// ====================================================================
-		// protected メンバー変数
+		// protected 変数
 		// ====================================================================
 
 		// 編集対象の名称
@@ -384,7 +384,7 @@ namespace YukaLister.ViewModels.EditMasterWindowViewModels
 		protected DbSet<T> _records;
 
 		// ====================================================================
-		// protected メンバー関数
+		// protected 関数
 		// ====================================================================
 
 		// --------------------------------------------------------------------
@@ -604,35 +604,14 @@ namespace YukaLister.ViewModels.EditMasterWindowViewModels
 		}
 
 		// ====================================================================
-		// private static メンバー関数
-		// ====================================================================
-
-		// --------------------------------------------------------------------
-		// ルビの一部が削除されたら警告
-		// ＜例外＞ OperationCanceledException
-		// --------------------------------------------------------------------
-		private static void WarnRubyDeletedIfNeeded(Boolean allRuby, String? originalRuby, String? normalizedRuby)
-		{
-			if (!String.IsNullOrEmpty(originalRuby) && !allRuby)
-			{
-				if (MessageBox.Show("フリガナはカタカナのみ登録可能のため、カタカナ以外は削除されます。\n"
-						+ originalRuby + " →\n" + normalizedRuby + "\nよろしいですか？", "確認",
-						MessageBoxButton.YesNo, MessageBoxImage.Exclamation) == MessageBoxResult.No)
-				{
-					throw new OperationCanceledException();
-				}
-			}
-		}
-
-		// ====================================================================
-		// private メンバー変数
+		// private 変数
 		// ====================================================================
 
 		// 初期化が完了した
 		private Boolean _initialized;
 
 		// ====================================================================
-		// private メンバー関数
+		// private 関数
 		// ====================================================================
 
 		// --------------------------------------------------------------------
@@ -767,6 +746,23 @@ namespace YukaLister.ViewModels.EditMasterWindowViewModels
 			else
 			{
 				IdInfo = "（同名の登録が複数あります）";
+			}
+		}
+
+		// --------------------------------------------------------------------
+		// ルビの一部が削除されたら警告
+		// ＜例外＞ OperationCanceledException
+		// --------------------------------------------------------------------
+		private static void WarnRubyDeletedIfNeeded(Boolean allRuby, String? originalRuby, String? normalizedRuby)
+		{
+			if (!String.IsNullOrEmpty(originalRuby) && !allRuby)
+			{
+				if (MessageBox.Show("フリガナはカタカナのみ登録可能のため、カタカナ以外は削除されます。\n"
+						+ originalRuby + " →\n" + normalizedRuby + "\nよろしいですか？", "確認",
+						MessageBoxButton.YesNo, MessageBoxImage.Exclamation) == MessageBoxResult.No)
+				{
+					throw new OperationCanceledException();
+				}
 			}
 		}
 	}

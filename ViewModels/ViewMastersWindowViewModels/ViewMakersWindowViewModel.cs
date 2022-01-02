@@ -24,11 +24,11 @@ namespace YukaLister.ViewModels.ViewMastersWindowViewModels
 	public class ViewMakersWindowViewModel : ViewMastersWindowViewModel<TMaker>
 	{
 		// ====================================================================
-		// コンストラクター・デストラクター
+		// コンストラクター
 		// ====================================================================
 
 		// --------------------------------------------------------------------
-		// コンストラクター
+		// メインコンストラクター
 		// --------------------------------------------------------------------
 		public ViewMakersWindowViewModel(MusicInfoContextDefault musicInfoContext, DbSet<TMaker> records, ObservableCollection<DataGridColumn> columns)
 				: base(musicInfoContext, records, columns)
@@ -36,7 +36,7 @@ namespace YukaLister.ViewModels.ViewMastersWindowViewModels
 		}
 
 		// ====================================================================
-		// protected メンバー関数
+		// protected 関数
 		// ====================================================================
 
 		// --------------------------------------------------------------------

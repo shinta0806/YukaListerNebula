@@ -26,11 +26,11 @@ namespace YukaLister.ViewModels.ViewMastersWindowViewModels
 	public class ViewTieUpsWindowViewModel : ViewMastersWindowViewModel<TTieUp>
 	{
 		// ====================================================================
-		// コンストラクター・デストラクター
+		// コンストラクター
 		// ====================================================================
 
 		// --------------------------------------------------------------------
-		// コンストラクター
+		// メインコンストラクター
 		// --------------------------------------------------------------------
 		public ViewTieUpsWindowViewModel(MusicInfoContextDefault musicInfoContext, DbSet<TTieUp> records, ObservableCollection<DataGridColumn> columns)
 				: base(musicInfoContext, records, columns)
@@ -38,7 +38,7 @@ namespace YukaLister.ViewModels.ViewMastersWindowViewModels
 		}
 
 		// ====================================================================
-		// protected メンバー関数
+		// protected 関数
 		// ====================================================================
 
 		// --------------------------------------------------------------------

@@ -27,6 +27,7 @@ using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+
 using YukaLister.Models.Settings;
 using YukaLister.Models.SharedMisc;
 
@@ -35,29 +36,18 @@ namespace YukaLister.Models.YukaListerModels
 	public class ProjectModel : NotificationObject
 	{
 		// ====================================================================
-		// コンストラクター・デストラクター
+		// コンストラクター
 		// ====================================================================
 
 		// --------------------------------------------------------------------
-		// コンストラクター
+		// メインコンストラクター
 		// --------------------------------------------------------------------
 		public ProjectModel()
 		{
 		}
 
 		// ====================================================================
-		// public プロパティー
-		// ====================================================================
-
-		// --------------------------------------------------------------------
-		// 一般プロパティー
-		// --------------------------------------------------------------------
-
-		// リスト更新タスク安全中断用 → Env にする？
-		//public CancellationTokenSource? ListCancellationTokenSource { get; set; }
-
-		// ====================================================================
-		// public メンバー関数
+		// public 関数
 		// ====================================================================
 
 		// --------------------------------------------------------------------
@@ -331,7 +321,7 @@ namespace YukaLister.Models.YukaListerModels
 		}
 
 		// ====================================================================
-		// private メンバー変数
+		// private 変数
 		// ====================================================================
 
 		// ゆかり検索対象フォルダー（全部）
@@ -340,36 +330,7 @@ namespace YukaLister.Models.YukaListerModels
 		private readonly List<TargetFolderInfo> _targetFolderInfos = new();
 
 		// ====================================================================
-		// private static メンバー関数
-		// ====================================================================
-
-		// --------------------------------------------------------------------
-		// 自動追加対象のドライブかどうか
-		// --------------------------------------------------------------------
-		private static Boolean IsAutoTargetDrive(String driveLetter)
-		{
-			DriveInfo driveInfo = new(driveLetter);
-			if (!driveInfo.IsReady)
-			{
-				YukaListerModel.Instance.EnvModel.LogWriter.LogMessage(TraceEventType.Verbose, "IsAutoTargetDrive() 準備ができていない：" + driveLetter);
-				return false;
-			}
-
-			// リムーバブルドライブのみを対象としたいが、ポータブル HDD/SSD も Fixed 扱いになるため、Fixed も対象とする
-			switch (driveInfo.DriveType)
-			{
-				case DriveType.Fixed:
-				case DriveType.Removable:
-					YukaListerModel.Instance.EnvModel.LogWriter.LogMessage(TraceEventType.Verbose, "IsAutoTargetDrive() 対象：" + driveLetter);
-					return true;
-				default:
-					YukaListerModel.Instance.EnvModel.LogWriter.LogMessage(TraceEventType.Verbose, "IsAutoTargetDrive() 非対象：" + driveLetter + ", " + driveInfo.DriveType.ToString());
-					return false;
-			}
-		}
-
-		// ====================================================================
-		// private メンバー関数
+		// private 関数
 		// ====================================================================
 
 		// --------------------------------------------------------------------
@@ -424,6 +385,31 @@ namespace YukaLister.Models.YukaListerModels
 				}
 			}
 			return -1;
+		}
+
+		// --------------------------------------------------------------------
+		// 自動追加対象のドライブかどうか
+		// --------------------------------------------------------------------
+		private static Boolean IsAutoTargetDrive(String driveLetter)
+		{
+			DriveInfo driveInfo = new(driveLetter);
+			if (!driveInfo.IsReady)
+			{
+				YukaListerModel.Instance.EnvModel.LogWriter.LogMessage(TraceEventType.Verbose, "IsAutoTargetDrive() 準備ができていない：" + driveLetter);
+				return false;
+			}
+
+			// リムーバブルドライブのみを対象としたいが、ポータブル HDD/SSD も Fixed 扱いになるため、Fixed も対象とする
+			switch (driveInfo.DriveType)
+			{
+				case DriveType.Fixed:
+				case DriveType.Removable:
+					YukaListerModel.Instance.EnvModel.LogWriter.LogMessage(TraceEventType.Verbose, "IsAutoTargetDrive() 対象：" + driveLetter);
+					return true;
+				default:
+					YukaListerModel.Instance.EnvModel.LogWriter.LogMessage(TraceEventType.Verbose, "IsAutoTargetDrive() 非対象：" + driveLetter + ", " + driveInfo.DriveType.ToString());
+					return false;
+			}
 		}
 
 		// --------------------------------------------------------------------

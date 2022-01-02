@@ -11,15 +11,12 @@
 using Livet.Commands;
 using Livet.Messaging;
 
-using Microsoft.EntityFrameworkCore;
-
 using Shinta;
 
 using System;
 using System.Diagnostics;
 using System.Windows;
 
-using YukaLister.Models.Database;
 using YukaLister.Models.DatabaseContexts;
 using YukaLister.Models.SharedMisc;
 using YukaLister.Models.YukaListerModels;
@@ -30,7 +27,7 @@ namespace YukaLister.ViewModels.TabItemViewModels
 	public class YlSettingsTabItemMusicInfoBatchViewModel : TabItemViewModel
 	{
 		// ====================================================================
-		// コンストラクター・デストラクター
+		// コンストラクター
 		// ====================================================================
 
 		// --------------------------------------------------------------------
@@ -276,7 +273,7 @@ namespace YukaLister.ViewModels.TabItemViewModels
 		#endregion
 
 		// ====================================================================
-		// public メンバー関数
+		// public 関数
 		// ====================================================================
 
 		// --------------------------------------------------------------------

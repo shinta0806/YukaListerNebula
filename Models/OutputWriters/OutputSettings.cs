@@ -29,11 +29,11 @@ namespace YukaLister.Models.OutputWriters
 	public class OutputSettings
 	{
 		// ====================================================================
-		// コンストラクター・デストラクター
+		// コンストラクター
 		// ====================================================================
 
 		// --------------------------------------------------------------------
-		// コンストラクター
+		// メインコンストラクター
 		// --------------------------------------------------------------------
 		public OutputSettings()
 		{
@@ -41,7 +41,7 @@ namespace YukaLister.Models.OutputWriters
 		}
 
 		// ====================================================================
-		// public プロパティ
+		// public プロパティー
 		// ====================================================================
 
 		// 全ての項目を出力する
@@ -51,7 +51,7 @@ namespace YukaLister.Models.OutputWriters
 		public List<OutputItems> SelectedOutputItems { get; set; } = new();
 
 		// ====================================================================
-		// public メンバー関数
+		// public 関数
 		// ====================================================================
 
 		// --------------------------------------------------------------------
@@ -145,7 +145,7 @@ namespace YukaLister.Models.OutputWriters
 		}
 
 		// ====================================================================
-		// protected メンバー関数
+		// protected 関数
 		// ====================================================================
 
 		// --------------------------------------------------------------------
@@ -156,16 +156,8 @@ namespace YukaLister.Models.OutputWriters
 		}
 
 		// ====================================================================
-		// private static メンバー関数
+		// private 関数
 		// ====================================================================
-
-		// --------------------------------------------------------------------
-		// 保存パス
-		// --------------------------------------------------------------------
-		private static String SettingsPath()
-		{
-			return Common.UserAppDataFolderPath() + nameof(OutputSettings) + Common.FILE_EXT_CONFIG;
-		}
 
 		// --------------------------------------------------------------------
 		// SelectedOutputItems が空ならデフォルト値を追加
@@ -186,6 +178,14 @@ namespace YukaLister.Models.OutputWriters
 			SelectedOutputItems.Add(OutputItems.Comment);
 			SelectedOutputItems.Add(OutputItems.FileName);
 			SelectedOutputItems.Add(OutputItems.FileSize);
+		}
+
+		// --------------------------------------------------------------------
+		// 保存パス
+		// --------------------------------------------------------------------
+		private static String SettingsPath()
+		{
+			return Common.UserAppDataFolderPath() + nameof(OutputSettings) + Common.FILE_EXT_CONFIG;
 		}
 	}
 }

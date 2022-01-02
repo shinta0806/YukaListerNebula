@@ -9,17 +9,17 @@
 // ----------------------------------------------------------------------------
 
 using Microsoft.EntityFrameworkCore;
+
 using Shinta;
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+
 using YukaLister.Models.Database;
 using YukaLister.Models.Database.Aliases;
 using YukaLister.Models.Database.Masters;
 using YukaLister.Models.Database.Sequences;
-using YukaLister.Models.DatabaseContexts;
 using YukaLister.Models.SharedMisc;
 
 namespace YukaLister.Models.SyncClient
@@ -27,11 +27,11 @@ namespace YukaLister.Models.SyncClient
 	public class SyncDataExporter : SyncDataIo
 	{
 		// ====================================================================
-		// コンストラクター・デストラクター
+		// コンストラクター
 		// ====================================================================
 
 		// --------------------------------------------------------------------
-		// コンストラクター
+		// メインコンストラクター
 		// --------------------------------------------------------------------
 		public SyncDataExporter()
 		{
@@ -40,7 +40,7 @@ namespace YukaLister.Models.SyncClient
 		}
 
 		// ====================================================================
-		// public メンバー関数
+		// public 関数
 		// ====================================================================
 
 		// --------------------------------------------------------------------
@@ -90,7 +90,7 @@ namespace YukaLister.Models.SyncClient
 		}
 
 		// ====================================================================
-		// private static メンバー関数
+		// private 関数
 		// ====================================================================
 
 		// --------------------------------------------------------------------
@@ -175,6 +175,15 @@ namespace YukaLister.Models.SyncClient
 			}
 
 			return (csvHead, csvContents);
+		}
+
+		// --------------------------------------------------------------------
+		// エクスポート対象外
+		// --------------------------------------------------------------------
+		private (List<String> csvHead, List<List<String>> csvContents) NotExport(MusicInfoTables tableIndex)
+		{
+			_logWriterSyncDetail.LogMessage(Common.TRACE_EVENT_TYPE_STATUS, "エクスポート対象外テーブル：" + YlConstants.MUSIC_INFO_TABLE_NAME_LABELS[(Int32)tableIndex]);
+			return (new List<String>(), new List<List<String>>());
 		}
 
 		// --------------------------------------------------------------------
@@ -379,19 +388,6 @@ namespace YukaLister.Models.SyncClient
 			csvRecord.Add(yukariStatistics.LyristName ?? String.Empty);
 			csvRecord.Add(yukariStatistics.ComposerName ?? String.Empty);
 			csvRecord.Add(yukariStatistics.ArrangerName ?? String.Empty);
-		}
-
-		// ====================================================================
-		// private メンバー変数
-		// ====================================================================
-
-		// --------------------------------------------------------------------
-		// エクスポート対象外
-		// --------------------------------------------------------------------
-		private (List<String> csvHead, List<List<String>> csvContents) NotExport(MusicInfoTables tableIndex)
-		{
-			_logWriterSyncDetail.LogMessage(Common.TRACE_EVENT_TYPE_STATUS, "エクスポート対象外テーブル：" + YlConstants.MUSIC_INFO_TABLE_NAME_LABELS[(Int32)tableIndex]);
-			return (new List<String>(), new List<List<String>>());
 		}
 	}
 }

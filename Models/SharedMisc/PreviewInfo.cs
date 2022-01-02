@@ -9,6 +9,7 @@
 // ----------------------------------------------------------------------------
 
 using Shinta;
+
 using System;
 
 namespace YukaLister.Models.SharedMisc

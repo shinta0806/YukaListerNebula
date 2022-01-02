@@ -16,7 +16,6 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 
-using YukaLister.Models.Database.Sequences;
 using YukaLister.Models.DatabaseAssist;
 using YukaLister.Models.DatabaseContexts;
 using YukaLister.Models.SharedMisc;
@@ -244,7 +243,7 @@ namespace YukaLister.Models.Database.Masters
 		public const String FIELD_NAME_SONG_OP_ED = FIELD_PREFIX_SONG + YlConstants.FIELD_SUFFIX_OP_ED;
 
 		// ====================================================================
-		// private メンバー関数
+		// private 関数
 		// ====================================================================
 
 		// --------------------------------------------------------------------

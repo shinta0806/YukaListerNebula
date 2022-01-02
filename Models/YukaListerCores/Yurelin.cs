@@ -20,8 +20,6 @@ using System.Threading;
 using System.Threading.Tasks;
 
 using YukaLister.Models.Database;
-using YukaLister.Models.Database.Masters;
-using YukaLister.Models.Database.Sequences;
 using YukaLister.Models.DatabaseAssist;
 using YukaLister.Models.DatabaseContexts;
 using YukaLister.Models.SharedMisc;
@@ -33,19 +31,15 @@ namespace YukaLister.Models.YukaListerCores
 	public class Yurelin : YukaListerCore
 	{
 		// ====================================================================
-		// コンストラクター・デストラクター
+		// コンストラクター
 		// ====================================================================
 
 		// --------------------------------------------------------------------
-		// コンストラクター
+		// メインコンストラクター
 		// --------------------------------------------------------------------
 		public Yurelin()
 		{
 		}
-
-		// ====================================================================
-		// public プロパティー
-		// ====================================================================
 
 		// ====================================================================
 		// public プロパティー
@@ -58,7 +52,7 @@ namespace YukaLister.Models.YukaListerCores
 		public UpdatePastYukariStatisticsKind UpdatePastYukariStatisticsKind { get; set; }
 
 		// ====================================================================
-		// protected メンバー関数
+		// protected 関数
 		// ====================================================================
 
 		// --------------------------------------------------------------------
@@ -137,8 +131,59 @@ namespace YukaLister.Models.YukaListerCores
 		}
 
 		// ====================================================================
-		// private static メンバー関数
+		// private 関数
 		// ====================================================================
+
+		// --------------------------------------------------------------------
+		// request.db の 1 レコードを統計に追加
+		// --------------------------------------------------------------------
+		private async Task AddYukariRequest(DbSet<TYukariStatistics> yukariStatistics, TYukariRequest yukariRequest, DbSet<TFound> founds)
+		{
+			try
+			{
+				Debug.Assert(MainWindowViewModel != null, "AddYukariRequest() MainWindowViewModel is null");
+				await YlCommon.InputIdPrefixIfNeededWithInvoke(MainWindowViewModel);
+			}
+			catch (Exception)
+			{
+				// OperationCanceledException を通常の例外に変換
+				throw new Exception("ID 接頭辞が設定されていません。");
+			}
+			Debug.Assert(YukaListerModel.Instance.EnvModel.YlSettings.IdPrefix != null, "AddYukariRequest() IdPrefix is null");
+			TYukariStatistics yukariStatisticsRecord = new()
+			{
+				Id = YukaListerModel.Instance.EnvModel.YlSettings.PrepareYukariStatisticsLastId(yukariStatistics),
+				Dirty = true,
+				RequestDatabasePath = YukaListerModel.Instance.EnvModel.YlSettings.YukariRequestDatabasePath(),
+				RequestTime = YukariRequestContext.LastWriteMjd(),
+				RoomName = YukaListerModel.Instance.EnvModel.YlSettings.YukariRoomName,
+				//IdPrefix = YukaListerModel.Instance.EnvModel.YlSettings.IdPrefix,
+			};
+
+			CopyYukariRequestToYukariStatistics(yukariRequest, yukariStatisticsRecord);
+			CopyFoundToYukariStatisticsIfNeeded(founds, yukariStatisticsRecord);
+			yukariStatistics.Add(yukariStatisticsRecord);
+			Debug.WriteLine("AddYukariRequest() 追加: " + yukariStatisticsRecord.RequestMoviePath);
+		}
+
+		// --------------------------------------------------------------------
+		// request.db を解析してゆかり統計に反映
+		// --------------------------------------------------------------------
+		private async Task AnalyzeYukariRequests(DbSet<TYukariStatistics> yukariStatistics, DbSet<TYukariRequest> yukariRequests, DbSet<TFound> founds)
+		{
+			foreach (TYukariRequest yukariRequest in yukariRequests)
+			{
+				TYukariStatistics? existStatisticsRecord = ExistStatisticsRecord(yukariStatistics, yukariRequest);
+				if (existStatisticsRecord == null)
+				{
+					await AddYukariRequest(yukariStatistics, yukariRequest, founds);
+				}
+				else
+				{
+					UpdateExistStatisticsIfNeeded(existStatisticsRecord, yukariRequest, founds);
+				}
+			}
+		}
 
 		// --------------------------------------------------------------------
 		// TFound → TYukariStatistics へコピー（ゆかり統計が属性確認済ではない場合のみ）
@@ -277,61 +322,6 @@ namespace YukaLister.Models.YukaListerCores
 
 			yukariStatisticsContext.SaveChanges();
 			UpdatePastYukariStatisticsKind = UpdatePastYukariStatisticsKind.None;
-		}
-
-		// ====================================================================
-		// private メンバー関数
-		// ====================================================================
-
-		// --------------------------------------------------------------------
-		// request.db の 1 レコードを統計に追加
-		// --------------------------------------------------------------------
-		private async Task AddYukariRequest(DbSet<TYukariStatistics> yukariStatistics, TYukariRequest yukariRequest, DbSet<TFound> founds)
-		{
-			try
-			{
-				Debug.Assert(MainWindowViewModel != null, "AddYukariRequest() MainWindowViewModel is null");
-				await YlCommon.InputIdPrefixIfNeededWithInvoke(MainWindowViewModel);
-			}
-			catch (Exception)
-			{
-				// OperationCanceledException を通常の例外に変換
-				throw new Exception("ID 接頭辞が設定されていません。");
-			}
-			Debug.Assert(YukaListerModel.Instance.EnvModel.YlSettings.IdPrefix != null, "AddYukariRequest() IdPrefix is null");
-			TYukariStatistics yukariStatisticsRecord = new()
-			{
-				Id = YukaListerModel.Instance.EnvModel.YlSettings.PrepareYukariStatisticsLastId(yukariStatistics),
-				Dirty = true,
-				RequestDatabasePath = YukaListerModel.Instance.EnvModel.YlSettings.YukariRequestDatabasePath(),
-				RequestTime = YukariRequestContext.LastWriteMjd(),
-				RoomName = YukaListerModel.Instance.EnvModel.YlSettings.YukariRoomName,
-				//IdPrefix = YukaListerModel.Instance.EnvModel.YlSettings.IdPrefix,
-			};
-
-			CopyYukariRequestToYukariStatistics(yukariRequest, yukariStatisticsRecord);
-			CopyFoundToYukariStatisticsIfNeeded(founds, yukariStatisticsRecord);
-			yukariStatistics.Add(yukariStatisticsRecord);
-			Debug.WriteLine("AddYukariRequest() 追加: " + yukariStatisticsRecord.RequestMoviePath);
-		}
-
-		// --------------------------------------------------------------------
-		// request.db を解析してゆかり統計に反映
-		// --------------------------------------------------------------------
-		private async Task AnalyzeYukariRequests(DbSet<TYukariStatistics> yukariStatistics, DbSet<TYukariRequest> yukariRequests, DbSet<TFound> founds)
-		{
-			foreach (TYukariRequest yukariRequest in yukariRequests)
-			{
-				TYukariStatistics? existStatisticsRecord = ExistStatisticsRecord(yukariStatistics, yukariRequest);
-				if (existStatisticsRecord == null)
-				{
-					await AddYukariRequest(yukariStatistics, yukariRequest, founds);
-				}
-				else
-				{
-					UpdateExistStatisticsIfNeeded(existStatisticsRecord, yukariRequest, founds);
-				}
-			}
 		}
 	}
 }
