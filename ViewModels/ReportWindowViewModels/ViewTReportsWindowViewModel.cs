@@ -38,7 +38,7 @@ namespace YukaLister.ViewModels.ReportWindowViewModels
 		// --------------------------------------------------------------------
 		public ViewTReportsWindowViewModel()
 		{
-			_reportContext = ReportContext.CreateContext(out _reports);
+			_reportContext = new();
 			_reportContext.ChangeTracker.QueryTrackingBehavior = QueryTrackingBehavior.NoTracking;
 		}
 
@@ -214,7 +214,7 @@ namespace YukaLister.ViewModels.ReportWindowViewModels
 		private readonly ReportContext _reportContext;
 
 		// リスト問題テーブル
-		private readonly DbSet<TReport> _reports;
+		//private readonly DbSet<TReport> _reports;
 
 		// ====================================================================
 		// private メンバー関数
@@ -246,7 +246,7 @@ namespace YukaLister.ViewModels.ReportWindowViewModels
 		// --------------------------------------------------------------------
 		private void UpdateTReports()
 		{
-			ReportsVisible = _reports.Where(x => ShowAll || x.Status <= (Int32)ReportStatus.Progress).OrderByDescending(x => x.RegistTime).ToList();
+			ReportsVisible = _reportContext.Reports.Where(x => ShowAll || x.Status <= (Int32)ReportStatus.Progress).OrderByDescending(x => x.RegistTime).ToList();
 		}
 	}
 }

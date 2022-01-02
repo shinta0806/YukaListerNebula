@@ -139,8 +139,8 @@ namespace YukaLister.Models.Database.Masters
 			{
 				if (_displayTieUpName == null && TieUpId != null)
 				{
-					using MusicInfoContextDefault musicInfoContextDefault = MusicInfoContextDefault.CreateContext(out DbSet<TTieUp> tieUps);
-					_displayTieUpName = DbCommon.SelectBaseById(tieUps, TieUpId)?.Name;
+					using MusicInfoContextDefault musicInfoContextDefault = new();
+					_displayTieUpName = DbCommon.SelectBaseById(musicInfoContextDefault.TieUps, TieUpId)?.Name;
 				}
 				return _displayTieUpName;
 			}
@@ -154,9 +154,8 @@ namespace YukaLister.Models.Database.Masters
 			{
 				if (_displayArtistNames == null)
 				{
-					using MusicInfoContextDefault musicInfoContextDefault = MusicInfoContextDefault.CreateContext(out DbSet<TPerson> people);
-					MusicInfoContextDefault.GetDbSet(musicInfoContextDefault, out DbSet<TArtistSequence> artistSequences);
-					_displayArtistNames = DisplayPeopleNames(artistSequences, people);
+					using MusicInfoContextDefault musicInfoContextDefault = new();
+					_displayArtistNames = DisplayPeopleNames(musicInfoContextDefault.ArtistSequences, musicInfoContextDefault.People);
 				}
 				return _displayArtistNames;
 			}
@@ -170,9 +169,8 @@ namespace YukaLister.Models.Database.Masters
 			{
 				if (_displayLyristNames == null)
 				{
-					using MusicInfoContextDefault musicInfoContextDefault = MusicInfoContextDefault.CreateContext(out DbSet<TPerson> people);
-					MusicInfoContextDefault.GetDbSet(musicInfoContextDefault, out DbSet<TLyristSequence> lyristSequences);
-					_displayLyristNames = DisplayPeopleNames(lyristSequences, people);
+					using MusicInfoContextDefault musicInfoContextDefault = new();
+					_displayLyristNames = DisplayPeopleNames(musicInfoContextDefault.LyristSequences, musicInfoContextDefault.People);
 				}
 				return _displayLyristNames;
 			}
@@ -186,9 +184,8 @@ namespace YukaLister.Models.Database.Masters
 			{
 				if (_displayComposerNames == null)
 				{
-					using MusicInfoContextDefault musicInfoContextDefault = MusicInfoContextDefault.CreateContext(out DbSet<TPerson> people);
-					MusicInfoContextDefault.GetDbSet(musicInfoContextDefault, out DbSet<TComposerSequence> composerSequences);
-					_displayComposerNames = DisplayPeopleNames(composerSequences, people);
+					using MusicInfoContextDefault musicInfoContextDefault = new();
+					_displayComposerNames = DisplayPeopleNames(musicInfoContextDefault.ComposerSequences, musicInfoContextDefault.People);
 				}
 				return _displayComposerNames;
 			}
@@ -202,9 +199,8 @@ namespace YukaLister.Models.Database.Masters
 			{
 				if (_displayArrangerNames == null)
 				{
-					using MusicInfoContextDefault musicInfoContextDefault = MusicInfoContextDefault.CreateContext(out DbSet<TPerson> people);
-					MusicInfoContextDefault.GetDbSet(musicInfoContextDefault, out DbSet<TArrangerSequence> arrangerSequences);
-					_displayArrangerNames = DisplayPeopleNames(arrangerSequences, people);
+					using MusicInfoContextDefault musicInfoContextDefault = new();
+					_displayArrangerNames = DisplayPeopleNames(musicInfoContextDefault.ArrangerSequences, musicInfoContextDefault.People);
 				}
 				return _displayArrangerNames;
 			}
@@ -218,9 +214,8 @@ namespace YukaLister.Models.Database.Masters
 			{
 				if (_displayTagNames == null)
 				{
-					using MusicInfoContextDefault musicInfoContextDefault = MusicInfoContextDefault.CreateContext(out DbSet<TTag> tags);
-					MusicInfoContextDefault.GetDbSet(musicInfoContextDefault, out DbSet<TTagSequence> tagSequences);
-					List<TTag> sequencedTags = DbCommon.SelectSequencedTagsBySongId(tagSequences, tags, Id);
+					using MusicInfoContextDefault musicInfoContextDefault = new();
+					List<TTag> sequencedTags = DbCommon.SelectSequencedTagsBySongId(musicInfoContextDefault.TagSequences, musicInfoContextDefault.Tags, Id);
 					_displayTagNames = String.Join(YlConstants.VAR_VALUE_DELIMITER, sequencedTags.Select(x => x.Name));
 				}
 				return _displayTagNames;

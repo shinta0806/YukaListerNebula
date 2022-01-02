@@ -251,8 +251,7 @@ namespace YukaLister.ViewModels.EditMasterWindowViewModels
 			{
 				HasCategory = true;
 
-				MusicInfoContextDefault.GetDbSet(_musicInfoContext, out DbSet<TCategory> categories);
-				TCategory? category = DbCommon.SelectBaseById(categories, master.CategoryId);
+				TCategory? category = DbCommon.SelectBaseById(_musicInfoContext.Categories, master.CategoryId);
 				if (category != null)
 				{
 					_categoryId = category.Id;
@@ -281,8 +280,7 @@ namespace YukaLister.ViewModels.EditMasterWindowViewModels
 			try
 			{
 				MenuItem item = (MenuItem)sender;
-				MusicInfoContextDefault.GetDbSet(_musicInfoContext, out DbSet<TCategory> categories);
-				TCategory? category = DbCommon.SelectMasterByName(categories, (String)item.Header);
+				TCategory? category = DbCommon.SelectMasterByName(_musicInfoContext.Categories, (String)item.Header);
 				if (category != null)
 				{
 					_categoryId = category.Id;

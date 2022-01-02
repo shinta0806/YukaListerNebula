@@ -94,8 +94,7 @@ namespace YukaLister.ViewModels.EditMasterWindowViewModels
 			base.Invalidate(master);
 
 			// タイアップグループ紐付け
-			MusicInfoContextDefault.GetDbSet(_musicInfoContext, out DbSet<TTieUpGroupSequence> tieUpGroupSequences);
-			DbCommon.InvalidateSequenceByLinkId(tieUpGroupSequences, master.Id);
+			DbCommon.InvalidateSequenceByLinkId(_musicInfoContext.TieUpGroupSequences, master.Id);
 			_musicInfoContext.SaveChanges();
 		}
 	}

@@ -100,9 +100,9 @@ namespace YukaLister.Models.YukaListerCores
 					await LoginToSyncServerAsync();
 
 					// データベースをバックアップ
-					using MusicInfoContextDefault musicInfoContextDefault = MusicInfoContextDefault.CreateContext(out DbSet<TProperty> _);
+					using MusicInfoContextDefault musicInfoContextDefault = new();
 					musicInfoContextDefault.BackupDatabase();
-					using YukariStatisticsContext yukariStatisticsContext = YukariStatisticsContext.CreateContext(out DbSet<TProperty> _);
+					using YukariStatisticsContext yukariStatisticsContext = new();
 					yukariStatisticsContext.BackupDatabase();
 
 					// 再取得の場合は楽曲情報データベース初期化

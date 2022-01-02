@@ -1045,9 +1045,9 @@ namespace YukaLister.ViewModels.MiscWindowViewModels
 				}
 
 				// カテゴリー一覧
-				using MusicInfoContextDefault musicInfoContext = MusicInfoContextDefault.CreateContext(out DbSet<TCategory> categories);
+				using MusicInfoContextDefault musicInfoContext = new();
 				musicInfoContext.ChangeTracker.QueryTrackingBehavior = QueryTrackingBehavior.NoTracking;
-				_cachedCategoryNames = DbCommon.SelectCategoryNames(categories);
+				_cachedCategoryNames = DbCommon.SelectCategoryNames(musicInfoContext.Categories);
 
 				// 固定値項目（カテゴリー一覧設定後に行う）
 				foreach (String label in labels)
@@ -1263,11 +1263,8 @@ namespace YukaLister.ViewModels.MiscWindowViewModels
 			// マッチをリストに追加
 			FolderSettingsInDisk folderSettingsInDisk = YlCommon.LoadFolderSettings(folderPath);
 			FolderSettingsInMemory folderSettingsInMemory = YlCommon.CreateFolderSettingsInMemory(folderSettingsInDisk);
-			using ListContextInMemory listContextInMemory = ListContextInMemory.CreateContext(out DbSet<TFound> founds,
-					out DbSet<TPerson> people, out DbSet<TArtistSequence> artistSequences, out DbSet<TComposerSequence> composerSequences,
-					out DbSet<TTieUpGroup> tieUpGroups, out DbSet<TTieUpGroupSequence> tieUpGroupSequences,
-					out DbSet<TTag> tags, out DbSet<TTagSequence> tagSequences);
-			using TFoundSetter foundSetter = new(listContextInMemory, people, artistSequences, composerSequences, tieUpGroups, tieUpGroupSequences, tags, tagSequences);
+			using ListContextInMemory listContextInMemory = new();
+			using TFoundSetter foundSetter = new(listContextInMemory);
 			Dictionary<String, String> ruleMap = YlCommon.CreateRuleDictionaryWithDescription();
 			foreach (String filePath in filePathes)
 			{
@@ -1488,16 +1485,10 @@ namespace YukaLister.ViewModels.MiscWindowViewModels
 			// マッチ準備
 			FolderSettingsInDisk folderSettingsInDisk = YlCommon.LoadFolderSettings(FolderPath);
 			FolderSettingsInMemory folderSettingsInMemory = YlCommon.CreateFolderSettingsInMemory(folderSettingsInDisk);
-			using ListContextInMemory listContextInMemory = ListContextInMemory.CreateContext(out DbSet<TFound> _,
-					out DbSet<TPerson> people, out DbSet<TArtistSequence> artistSequences, out DbSet<TComposerSequence> composerSequences,
-					out DbSet<TTieUpGroup> tieUpGroups, out DbSet<TTieUpGroupSequence> tieUpGroupSequences,
-					out DbSet<TTag> tags, out DbSet<TTagSequence> tagSequences);
-			using TFoundSetter foundSetter = new(listContextInMemory, people, artistSequences, composerSequences, tieUpGroups, tieUpGroupSequences, tags, tagSequences);
-			using MusicInfoContextDefault musicInfoContext = MusicInfoContextDefault.CreateContext(out DbSet<TSong> songs);
+			using ListContextInMemory listContextInMemory = new();
+			using TFoundSetter foundSetter = new(listContextInMemory);
+			using MusicInfoContextDefault musicInfoContext = new();
 			musicInfoContext.ChangeTracker.QueryTrackingBehavior = QueryTrackingBehavior.NoTracking;
-			MusicInfoContextDefault.GetDbSet(musicInfoContext, out DbSet<TSongAlias> songAliases);
-			MusicInfoContextDefault.GetDbSet(musicInfoContext, out DbSet<TTieUp> tieUps);
-			MusicInfoContextDefault.GetDbSet(musicInfoContext, out DbSet<TTieUpAlias> tieUpAliases);
 
 			for (; ; )
 			{
@@ -1521,17 +1512,17 @@ namespace YukaLister.ViewModels.MiscWindowViewModels
 				if (!String.IsNullOrEmpty(dic[YlConstants.RULE_VAR_TITLE]))
 				{
 					String songNameOrigin = dic[YlConstants.RULE_VAR_TITLE]!;
-					TSongAlias? songAlias = DbCommon.SelectAliasByAlias(songAliases, dic[YlConstants.RULE_VAR_TITLE]);
+					TSongAlias? songAlias = DbCommon.SelectAliasByAlias(musicInfoContext.SongAliases, dic[YlConstants.RULE_VAR_TITLE]);
 					if (songAlias != null)
 					{
-						TSong? songOrigin = DbCommon.SelectBaseById(songs, songAlias.OriginalId);
+						TSong? songOrigin = DbCommon.SelectBaseById(musicInfoContext.Songs, songAlias.OriginalId);
 						songNameOrigin = songOrigin?.Name ?? String.Empty;
 						if (String.IsNullOrEmpty(songNameOrigin))
 						{
 							break;
 						}
 					}
-					if (DbCommon.SelectMasterByName(songs, songNameOrigin) == null)
+					if (DbCommon.SelectMasterByName(musicInfoContext.Songs, songNameOrigin) == null)
 					{
 						break;
 					}
@@ -1541,17 +1532,17 @@ namespace YukaLister.ViewModels.MiscWindowViewModels
 				if (!String.IsNullOrEmpty(dic[YlConstants.RULE_VAR_PROGRAM]))
 				{
 					String programNameOrigin = dic[YlConstants.RULE_VAR_PROGRAM]!;
-					TTieUpAlias? tieUpAlias = DbCommon.SelectAliasByAlias(tieUpAliases, dic[YlConstants.RULE_VAR_PROGRAM]);
+					TTieUpAlias? tieUpAlias = DbCommon.SelectAliasByAlias(musicInfoContext.TieUpAliases, dic[YlConstants.RULE_VAR_PROGRAM]);
 					if (tieUpAlias != null)
 					{
-						TTieUp? tieUpOrigin = DbCommon.SelectBaseById(tieUps, tieUpAlias.OriginalId);
+						TTieUp? tieUpOrigin = DbCommon.SelectBaseById(musicInfoContext.TieUps, tieUpAlias.OriginalId);
 						programNameOrigin = tieUpOrigin?.Name ?? String.Empty;
 						if (String.IsNullOrEmpty(programNameOrigin))
 						{
 							break;
 						}
 					}
-					if (DbCommon.SelectMasterByName(tieUps, programNameOrigin) == null)
+					if (DbCommon.SelectMasterByName(musicInfoContext.TieUps, programNameOrigin) == null)
 					{
 						break;
 					}

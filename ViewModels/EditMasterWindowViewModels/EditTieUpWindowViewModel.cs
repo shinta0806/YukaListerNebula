@@ -217,17 +217,16 @@ namespace YukaLister.ViewModels.EditMasterWindowViewModels
 				}
 
 				// 編集対象レコードを用意
-				MusicInfoContextDefault.GetDbSet(_musicInfoContext, out DbSet<TMaker> makers);
-				List<TMaker> sameNameMakers = DbCommon.MastersForEdit(makers, OriginalMakerName());
+				List<TMaker> sameNameMakers = DbCommon.MastersForEdit(_musicInfoContext.Makers, OriginalMakerName());
 
 				// ウィンドウを開く
-				using EditMakerWindowViewModel editMakerWindowViewModel = new(_musicInfoContext, makers);
+				using EditMakerWindowViewModel editMakerWindowViewModel = new(_musicInfoContext, _musicInfoContext.Makers);
 				editMakerWindowViewModel.SetMasters(sameNameMakers);
-				editMakerWindowViewModel.DefaultMasterId = DbCommon.SelectBaseById(makers, _makerId)?.Id;
+				editMakerWindowViewModel.DefaultMasterId = DbCommon.SelectBaseById(_musicInfoContext.Makers, _makerId)?.Id;
 				Messenger.Raise(new TransitionMessage(editMakerWindowViewModel, YlConstants.MESSAGE_KEY_OPEN_EDIT_MASTER_WINDOW));
 
 				// 後処理
-				SetMaker(editMakerWindowViewModel.IsOk, makers, editMakerWindowViewModel.OkSelectedMaster);
+				SetMaker(editMakerWindowViewModel.IsOk, _musicInfoContext.Makers, editMakerWindowViewModel.OkSelectedMaster);
 			}
 			catch (Exception excep)
 			{
@@ -261,9 +260,8 @@ namespace YukaLister.ViewModels.EditMasterWindowViewModels
 		{
 			try
 			{
-				MusicInfoContextDefault.GetDbSet(_musicInfoContext, out DbSet<TTieUpGroup> tieUpGroups);
-				using SearchMasterWindowViewModel<TTieUpGroup> searchMasterWindowViewModel = new(tieUpGroups);
-				searchMasterWindowViewModel.SelectedKeyword = HeadName(tieUpGroups, _tieUpGroupIds);
+				using SearchMasterWindowViewModel<TTieUpGroup> searchMasterWindowViewModel = new(_musicInfoContext.TieUpGroups);
+				searchMasterWindowViewModel.SelectedKeyword = HeadName(_musicInfoContext.TieUpGroups, _tieUpGroupIds);
 				Messenger.Raise(new TransitionMessage(searchMasterWindowViewModel, YlConstants.MESSAGE_KEY_OPEN_SEARCH_MASTER_WINDOW));
 
 				if (searchMasterWindowViewModel.OkSelectedMaster == null)
@@ -272,7 +270,7 @@ namespace YukaLister.ViewModels.EditMasterWindowViewModels
 				}
 
 				_tieUpGroupIds = searchMasterWindowViewModel.OkSelectedMaster.Id;
-				DbCommon.SetAvoidSameName(tieUpGroups, searchMasterWindowViewModel.OkSelectedMaster);
+				DbCommon.SetAvoidSameName(_musicInfoContext.TieUpGroups, searchMasterWindowViewModel.OkSelectedMaster);
 				TieUpGroupDisplayNames = searchMasterWindowViewModel.OkSelectedMaster.DisplayName;
 			}
 			catch (Exception excep)
@@ -376,8 +374,7 @@ namespace YukaLister.ViewModels.EditMasterWindowViewModels
 			base.Invalidate(master);
 
 			// タイアップグループ紐付け
-			MusicInfoContextDefault.GetDbSet(_musicInfoContext, out DbSet<TTieUpGroupSequence> tieUpGroupSequences);
-			DbCommon.RegisterSequence(tieUpGroupSequences, master.Id, new List<String>());
+			DbCommon.RegisterSequence(_musicInfoContext.TieUpGroupSequences, master.Id, new List<String>());
 			_musicInfoContext.SaveChanges();
 		}
 
@@ -406,21 +403,18 @@ namespace YukaLister.ViewModels.EditMasterWindowViewModels
 			AgeLimit = master.DisplayAgeLimit;
 
 			// 制作会社
-			MusicInfoContextDefault.GetDbSet(_musicInfoContext, out DbSet<TMaker> makers);
-			TMaker? maker = DbCommon.SelectBaseById(makers, master.MakerId);
-			SetMaker(true, makers, maker);
+			TMaker? maker = DbCommon.SelectBaseById(_musicInfoContext.Makers, master.MakerId);
+			SetMaker(true, _musicInfoContext.Makers, maker);
 
 			// タイアップグループ
-			MusicInfoContextDefault.GetDbSet(_musicInfoContext, out DbSet<TTieUpGroup> tieUpGroups);
-			MusicInfoContextDefault.GetDbSet(_musicInfoContext, out DbSet<TTieUpGroupSequence> tieUpGroupSequences);
-			List<TTieUpGroup> SequencedTieUpGroups = DbCommon.SelectSequencedTieUpGroupsByTieUpId(tieUpGroupSequences, tieUpGroups, master.Id);
+			List<TTieUpGroup> SequencedTieUpGroups = DbCommon.SelectSequencedTieUpGroupsByTieUpId(_musicInfoContext.TieUpGroupSequences, _musicInfoContext.TieUpGroups, master.Id);
 			if (SequencedTieUpGroups.Count == 0)
 			{
 				HasTieUpGroup = false;
 			}
 			else
 			{
-				(HasTieUpGroup, _tieUpGroupIds, TieUpGroupDisplayNames) = ConcatMasterIdsAndNames(tieUpGroups, SequencedTieUpGroups);
+				(HasTieUpGroup, _tieUpGroupIds, TieUpGroupDisplayNames) = ConcatMasterIdsAndNames(_musicInfoContext.TieUpGroups, SequencedTieUpGroups);
 			}
 
 			_isAutoSearchAllowed = true;
@@ -451,8 +445,7 @@ namespace YukaLister.ViewModels.EditMasterWindowViewModels
 			}
 
 			// タイアップグループ紐付け
-			MusicInfoContextDefault.GetDbSet(_musicInfoContext, out DbSet<TTieUpGroupSequence> tieUpGroupSequences);
-			DbCommon.RegisterSequence(tieUpGroupSequences, master.Id, YlCommon.SplitIds(_tieUpGroupIds));
+			DbCommon.RegisterSequence(_musicInfoContext.TieUpGroupSequences, master.Id, YlCommon.SplitIds(_tieUpGroupIds));
 			_musicInfoContext.SaveChanges();
 		}
 
@@ -511,12 +504,11 @@ namespace YukaLister.ViewModels.EditMasterWindowViewModels
 		// --------------------------------------------------------------------
 		private void EditTieUpGroup(Boolean searchOnInitialize)
 		{
-			MusicInfoContextDefault.GetDbSet(_musicInfoContext, out DbSet<TTieUpGroup> tieUpGroups);
-			using EditTieUpGroupsWindowViewModel editTieUpGroupsWindowViewModel = new(_musicInfoContext, tieUpGroups, searchOnInitialize);
+			using EditTieUpGroupsWindowViewModel editTieUpGroupsWindowViewModel = new(_musicInfoContext, _musicInfoContext.TieUpGroups, searchOnInitialize);
 			List<String> splitIds = YlCommon.SplitIds(_tieUpGroupIds);
 			foreach (String id in splitIds)
 			{
-				TTieUpGroup? tieUpGroup = DbCommon.SelectBaseById(tieUpGroups, id);
+				TTieUpGroup? tieUpGroup = DbCommon.SelectBaseById(_musicInfoContext.TieUpGroups, id);
 				if (tieUpGroup != null)
 				{
 					editTieUpGroupsWindowViewModel.Masters.Add(tieUpGroup);
@@ -527,13 +519,13 @@ namespace YukaLister.ViewModels.EditMasterWindowViewModels
 			if (editTieUpGroupsWindowViewModel.IsOk)
 			{
 				// 指定されたタイアップグループを表示
-				(HasTieUpGroup, _tieUpGroupIds, TieUpGroupDisplayNames) = ConcatMasterIdsAndNames(tieUpGroups, editTieUpGroupsWindowViewModel.OkSelectedMasters);
+				(HasTieUpGroup, _tieUpGroupIds, TieUpGroupDisplayNames) = ConcatMasterIdsAndNames(_musicInfoContext.TieUpGroups, editTieUpGroupsWindowViewModel.OkSelectedMasters);
 			}
 			else
 			{
 				// キャンセルの場合でも、タイアップグループが削除された場合があるので最新化
 				// キャンセルの場合はチェックボックスはいじらない（グループではない検索がキャンセルされた場合にチェックボックスをいじらないのと同じ）
-				(_, _tieUpGroupIds, TieUpGroupDisplayNames) = ConcatMasterIdsAndNames(tieUpGroups, DbCommon.ExceptInvalid(tieUpGroups, YlCommon.SplitIds(_tieUpGroupIds)));
+				(_, _tieUpGroupIds, TieUpGroupDisplayNames) = ConcatMasterIdsAndNames(_musicInfoContext.TieUpGroups, DbCommon.ExceptInvalid(_musicInfoContext.TieUpGroups, YlCommon.SplitIds(_tieUpGroupIds)));
 			}
 		}
 
@@ -542,8 +534,7 @@ namespace YukaLister.ViewModels.EditMasterWindowViewModels
 		// --------------------------------------------------------------------
 		private String? OriginalMakerName()
 		{
-			MusicInfoContextDefault.GetDbSet(_musicInfoContext, out DbSet<TMaker> makers);
-			return DbCommon.SelectBaseById(makers, _makerId)?.Name;
+			return DbCommon.SelectBaseById(_musicInfoContext.Makers, _makerId)?.Name;
 		}
 
 		// --------------------------------------------------------------------
@@ -551,12 +542,11 @@ namespace YukaLister.ViewModels.EditMasterWindowViewModels
 		// --------------------------------------------------------------------
 		private void SearchMaker()
 		{
-			MusicInfoContextDefault.GetDbSet(_musicInfoContext, out DbSet<TMaker> makers);
-			using SearchMasterWindowViewModel<TMaker> searchMasterWindowViewModel = new(makers);
+			using SearchMasterWindowViewModel<TMaker> searchMasterWindowViewModel = new(_musicInfoContext.Makers);
 			searchMasterWindowViewModel.SelectedKeyword = OriginalMakerName();
 			Messenger.Raise(new TransitionMessage(searchMasterWindowViewModel, YlConstants.MESSAGE_KEY_OPEN_SEARCH_MASTER_WINDOW));
 
-			SetMaker(searchMasterWindowViewModel.IsOk, makers, searchMasterWindowViewModel.OkSelectedMaster);
+			SetMaker(searchMasterWindowViewModel.IsOk, _musicInfoContext.Makers, searchMasterWindowViewModel.OkSelectedMaster);
 		}
 
 		// --------------------------------------------------------------------

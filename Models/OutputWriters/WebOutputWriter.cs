@@ -751,7 +751,7 @@ namespace YukaLister.Models.OutputWriters
 			pageInfoTree.Name = YlConstants.GROUP_NAME_CATEGORY;
 			pageInfoTree.FileName = IndexFileName(isAdult, KIND_FILE_NAME_CATEGORY);
 
-			IQueryable<TFound> queryResult = _founds.Where(x => x.TieUpName != null && (isAdult ? x.TieUpAgeLimit >= YlConstants.AGE_LIMIT_CERO_Z : x.TieUpAgeLimit < YlConstants.AGE_LIMIT_CERO_Z))
+			IQueryable<TFound> queryResult = _listContextInMemory.Founds.Where(x => x.TieUpName != null && (isAdult ? x.TieUpAgeLimit >= YlConstants.AGE_LIMIT_CERO_Z : x.TieUpAgeLimit < YlConstants.AGE_LIMIT_CERO_Z))
 					.OrderBy(x => x.Category).ThenBy(x => x.Head).ThenBy(x => x.TieUpRuby).ThenBy(x => x.TieUpName).ThenBy(x => x.SongRuby).ThenBy(x => x.SongName);
 			GenerateCategoryAndHeadsCore(pageInfoTree, queryResult, isAdult, KIND_FILE_NAME_CATEGORY);
 
@@ -1048,7 +1048,7 @@ namespace YukaLister.Models.OutputWriters
 			deltaDate = -((WebOutputSettings)OutputSettings).NewDays;
 			Double newDate = JulianDay.DateTimeToModifiedJulianDate(DateTime.Now.AddDays(deltaDate));
 
-			IQueryable<TFound> queryResult = _founds.Where(x => x.TieUpName != null && x.LastWriteTime >= newDate && (isAdult ? x.TieUpAgeLimit >= YlConstants.AGE_LIMIT_CERO_Z : x.TieUpAgeLimit < YlConstants.AGE_LIMIT_CERO_Z)).
+			IQueryable<TFound> queryResult = _listContextInMemory.Founds.Where(x => x.TieUpName != null && x.LastWriteTime >= newDate && (isAdult ? x.TieUpAgeLimit >= YlConstants.AGE_LIMIT_CERO_Z : x.TieUpAgeLimit < YlConstants.AGE_LIMIT_CERO_Z)).
 					OrderBy(x => x.Category).ThenBy(x => x.Head).ThenBy(x => x.TieUpRuby).ThenBy(x => x.TieUpName).ThenBy(x => x.SongRuby).ThenBy(x => x.SongName);
 			TFound? prevTFound = null;
 			String? prevCategory = null;
@@ -1132,7 +1132,7 @@ namespace YukaLister.Models.OutputWriters
 			}
 			catch (Exception excep)
 			{
-				// ToDo: METEOR チケット #190 暫定対応（エラー発生位置が分かったら正式対応する）
+				// METEOR チケット #190 エラー捕捉用
 				YukaListerModel.Instance.EnvModel.LogWriter.LogMessage(TraceEventType.Error, "GenerateOneList() リスト本体部分 Exception: " + excep.Message);
 				YukaListerModel.Instance.EnvModel.LogWriter.LogMessage(TraceEventType.Information, "GenerateOneList() oIsAdult: " + isAdult.ToString() + ", oKindFileName: " + kindFileName
 						+ ", oGroupName: " + groupName + ", oPageName: " + pageName);
@@ -1168,7 +1168,7 @@ namespace YukaLister.Models.OutputWriters
 			}
 			catch (Exception excep)
 			{
-				// ToDo: METEOR チケット #190 暫定対応（エラー発生位置が分かったら正式対応する）
+				// METEOR チケット #190 エラー捕捉用
 				YukaListerModel.Instance.EnvModel.LogWriter.LogMessage(TraceEventType.Error, "GenerateOneList() テンプレート適用部分 Exception: " + excep.Message);
 				YukaListerModel.Instance.EnvModel.LogWriter.LogMessage(TraceEventType.Information, "GenerateOneList() oIsAdult: " + isAdult.ToString() + ", oKindFileName: " + kindFileName
 						+ ", oGroupName: " + groupName + ", oPageName: " + pageName);
@@ -1231,7 +1231,7 @@ namespace YukaLister.Models.OutputWriters
 			{
 				Int32 untilYear = sinceYear + 10;
 
-				IQueryable<TFound> queryResult = _founds.Where(x => x.TieUpName != null
+				IQueryable<TFound> queryResult = _listContextInMemory.Founds.Where(x => x.TieUpName != null
 						&& JulianDay.DateTimeToModifiedJulianDate(new DateTime(sinceYear, 1, 1)) <= x.SongReleaseDate
 						&& x.SongReleaseDate < JulianDay.DateTimeToModifiedJulianDate(new DateTime(untilYear, 1, 1))
 						&& (isAdult ? x.TieUpAgeLimit >= YlConstants.AGE_LIMIT_CERO_Z : x.TieUpAgeLimit < YlConstants.AGE_LIMIT_CERO_Z)).
@@ -1299,7 +1299,7 @@ namespace YukaLister.Models.OutputWriters
 			// タイアップ名とそれに紐付く楽曲群
 			Dictionary<String, List<TFound>> tieUpNamesAndTFounds = new();
 
-			var joined = _founds.Join(_tagSequencesInMemory, f => f.SongId, s => s.Id, (f, s) => new
+			var joined = _listContextInMemory.Founds.Join(_tagSequencesInMemory, f => f.SongId, s => s.Id, (f, s) => new
 			{
 				found = f,
 				sequence = s,
@@ -1387,7 +1387,7 @@ namespace YukaLister.Models.OutputWriters
 			Dictionary<String, List<TFound>> tieUpNamesAndTFounds = new();
 
 			// シリーズ別リストに限り、成人向けのリストに一般向けも含む（シリーズに含まれる全てをここを起点に一覧できるようにするため）
-			var joined = _founds.Join(_tieUpGroupSequencesInMemory, f => f.TieUpId, s => s.Id, (f, s) => new
+			var joined = _listContextInMemory.Founds.Join(_tieUpGroupSequencesInMemory, f => f.TieUpId, s => s.Id, (f, s) => new
 			{
 				found = f,
 				sequence = s,
@@ -1500,7 +1500,7 @@ namespace YukaLister.Models.OutputWriters
 			// 番組名とそれに紐付く楽曲群
 			Dictionary<String, List<TFound>> tieUpNamesAndTFounds = new();
 
-			IQueryable<TFound> queryResult = _founds.Where(x => x.TieUpName != null
+			IQueryable<TFound> queryResult = _listContextInMemory.Founds.Where(x => x.TieUpName != null
 					&& JulianDay.DateTimeToModifiedJulianDate(new DateTime(sinceYear, sinceMonth, 1)) <= x.SongReleaseDate
 					&& x.SongReleaseDate < JulianDay.DateTimeToModifiedJulianDate(new DateTime(untilYear, untilMonth, 1))
 					&& (isAdult ? x.TieUpAgeLimit >= YlConstants.AGE_LIMIT_CERO_Z : x.TieUpAgeLimit < YlConstants.AGE_LIMIT_CERO_Z)).
@@ -1539,7 +1539,7 @@ namespace YukaLister.Models.OutputWriters
 			// 2 つめの JOIN で new QrFoundAndPerson() すると実行時エラーとなる
 			// https://docs.microsoft.com/ja-jp/ef/core/querying/client-eval
 			// いったん無名を生成してから後で QrFoundAndPerson に格納する
-			var joined = _founds.Join(records, f => f.SongId, r => r.Id, (f, r) => new
+			var joined = _listContextInMemory.Founds.Join(records, f => f.SongId, r => r.Id, (f, r) => new
 			{
 				found = f,
 				sequence = r,

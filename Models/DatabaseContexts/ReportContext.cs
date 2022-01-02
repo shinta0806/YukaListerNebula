@@ -11,6 +11,7 @@
 using Microsoft.EntityFrameworkCore;
 
 using System;
+using System.Diagnostics;
 
 using YukaLister.Models.Database;
 using YukaLister.Models.DatabaseAssist;
@@ -30,6 +31,7 @@ namespace YukaLister.Models.DatabaseContexts
 		public ReportContext()
 				: base("リスト問題報告")
 		{
+			Debug.Assert(Reports != null, "Reports table not init");
 		}
 
 		// ====================================================================
@@ -37,12 +39,13 @@ namespace YukaLister.Models.DatabaseContexts
 		// ====================================================================
 
 		// リスト問題報告テーブル
-		public DbSet<TReport>? Reports { get; set; }
+		public DbSet<TReport> Reports { get; set; }
 
 		// ====================================================================
 		// public static メンバー関数
 		// ====================================================================
 
+#if false
 		// --------------------------------------------------------------------
 		// データベースコンテキスト生成
 		// ＜例外＞ Exception
@@ -77,6 +80,7 @@ namespace YukaLister.Models.DatabaseContexts
 			}
 			reports = reportContext.Reports;
 		}
+#endif
 
 		// ====================================================================
 		// public メンバー関数

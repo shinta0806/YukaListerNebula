@@ -35,6 +35,8 @@ namespace YukaLister.Models.DatabaseContexts
 		public CacheContext(String driveLetter)
 				: base(driveLetter + " キャッシュ")
 		{
+			Debug.Assert(Founds != null, "Founds table not init");
+			Debug.Assert(CacheHeaders != null, "CacheHeaders table not init");
 			Debug.Assert(driveLetter.Length == 2, "CacheContext() bad drive letter");
 			_driveLetter = driveLetter;
 			CreateDatabaseIfNeeded();
@@ -49,14 +51,14 @@ namespace YukaLister.Models.DatabaseContexts
 		// --------------------------------------------------------------------
 
 		// 検出ファイルリストテーブル
-		public DbSet<TFound>? Founds { get; set; }
+		public DbSet<TFound> Founds { get; set; }
 
 		// --------------------------------------------------------------------
 		// キャッシュ管理テーブル
 		// --------------------------------------------------------------------
 
 		// キャッシュ管理テーブル
-		public DbSet<TCacheHeader>? CacheHeaders { get; set; }
+		public DbSet<TCacheHeader> CacheHeaders { get; set; }
 
 		// ====================================================================
 		// public static メンバー関数

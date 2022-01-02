@@ -296,8 +296,8 @@ namespace YukaLister.ViewModels.ReportWindowViewModels
 		// --------------------------------------------------------------------
 		private void CheckAndSave()
 		{
-			using ReportContext reportContext = ReportContext.CreateContext(out DbSet<TReport> reports);
-			TReport? record = DbCommon.SelectBaseById(reports, Report.Id);
+			using ReportContext reportContext = new();
+			TReport? record = DbCommon.SelectBaseById(reportContext.Reports, Report.Id);
 			if (record == null)
 			{
 				throw new Exception("対象の報告が見つかりません：" + Report.Id);

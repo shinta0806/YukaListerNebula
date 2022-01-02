@@ -321,14 +321,11 @@ namespace YukaLister.Models.YukaListerCores
 			FolderSettingsInDisk folderSettingsInDisk = YlCommon.LoadFolderSettings(targetFolderInfo.TargetPath);
 			FolderSettingsInMemory folderSettingsInMemory = YlCommon.CreateFolderSettingsInMemory(folderSettingsInDisk);
 
-			using ListContextInMemory listContextInMemory = ListContextInMemory.CreateContext(out DbSet<TFound> founds,
-					out DbSet<TPerson> people, out DbSet<TArtistSequence> artistSequences, out DbSet<TComposerSequence> composerSequences,
-					out DbSet<TTieUpGroup> tieUpGroups, out DbSet<TTieUpGroupSequence> tieUpGroupSequences,
-					out DbSet<TTag> tags, out DbSet<TTagSequence> tagSequences);
-			using TFoundSetter foundSetter = new(listContextInMemory, people, artistSequences, composerSequences, tieUpGroups, tieUpGroupSequences, tags, tagSequences);
+			using ListContextInMemory listContextInMemory = new();
+			using TFoundSetter foundSetter = new(listContextInMemory);
 
 			// 指定フォルダーの全レコード
-			IQueryable<TFound> targetRecords = founds.Where(x => x.Folder == targetFolderInfo.TargetPath);
+			IQueryable<TFound> targetRecords = listContextInMemory.Founds.Where(x => x.Folder == targetFolderInfo.TargetPath);
 
 			// 情報付与
 			foreach (TFound record in targetRecords)
@@ -340,7 +337,7 @@ namespace YukaLister.Models.YukaListerCores
 
 				YukaListerModel.Instance.EnvModel.AppCancellationTokenSource.Token.ThrowIfCancellationRequested();
 			}
-			AddFolderTagsInfo(targetFolderInfo, targetRecords, tags, tagSequences);
+			AddFolderTagsInfo(targetFolderInfo, targetRecords, listContextInMemory.Tags, listContextInMemory.TagSequences);
 
 			// コミット
 			listContextInMemory.SaveChanges();
@@ -393,8 +390,8 @@ namespace YukaLister.Models.YukaListerCores
 					cacheRecord.Uid = 0;
 				}
 
-				using ListContextInDisk listContextInDisk = ListContextInDisk.CreateContext(out DbSet<TFound> diskFounds);
-				diskFounds.AddRange(cacheRecords);
+				using ListContextInDisk listContextInDisk = new();
+				listContextInDisk.Founds.AddRange(cacheRecords);
 				listContextInDisk.SaveChanges();
 				targetFolderInfo.IsCacheUsed = true;
 				YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, targetFolderInfo.TargetPath
@@ -414,15 +411,15 @@ namespace YukaLister.Models.YukaListerCores
 		// --------------------------------------------------------------------
 		private static void MemoryToCache()
 		{
-			using ListContextInMemory listContextInMemory = ListContextInMemory.CreateContext(out DbSet<TFound> founds);
+			using ListContextInMemory listContextInMemory = new();
 			listContextInMemory.ChangeTracker.QueryTrackingBehavior = QueryTrackingBehavior.NoTracking;
-			IQueryable<String> parentFolders = founds.GroupBy(x => x.ParentFolder).Select(x => x.Key);
+			IQueryable<String> parentFolders = listContextInMemory.Founds.GroupBy(x => x.ParentFolder).Select(x => x.Key);
 			foreach (String parentFolder in parentFolders)
 			{
 				try
 				{
 					using CacheContext cacheContext = new(YlCommon.DriveLetter(parentFolder));
-					List<TFound> records = founds.Where(x => x.ParentFolder == parentFolder).ToList();
+					List<TFound> records = listContextInMemory.Founds.Where(x => x.ParentFolder == parentFolder).ToList();
 					cacheContext.UpdateCache(records);
 				}
 				catch (Exception excep)
@@ -440,38 +437,29 @@ namespace YukaLister.Models.YukaListerCores
 		// --------------------------------------------------------------------
 		private static void MusicInfoDatabaseToMemory()
 		{
-			using MusicInfoContextDefault musicInfoContext = MusicInfoContextDefault.CreateContext(out _,
-					out _, out DbSet<TPerson> peopleInMusicInfo, out _, out _,
-					out DbSet<TTieUpGroup> tieUpGroupsInMusicInfo, out _, out DbSet<TTag> tagsInMusicInfo,
-					out _, out _, out _,
-					out _, out _, out _,
-					out DbSet<TArtistSequence> artistSequencesInMusicInfo, out _, out DbSet<TComposerSequence> composerSequencesInMusicInfo, out _,
-					out DbSet<TTieUpGroupSequence> tieUpGroupSequencesInMusicInfo, out DbSet<TTagSequence> tagSequencesInMusicInfo);
+			using MusicInfoContextDefault musicInfoContext = new();
 			musicInfoContext.ChangeTracker.QueryTrackingBehavior = QueryTrackingBehavior.NoTracking;
-			using ListContextInMemory listContextInMemory = ListContextInMemory.CreateContext(out _, out DbSet<TPerson> peopleInMemory,
-					out DbSet<TArtistSequence> artistSequencesInMemory, out DbSet<TComposerSequence> composerSequencesInMemory,
-					out DbSet<TTieUpGroup> tieUpGroupsInMemory, out DbSet<TTieUpGroupSequence> tieUpGroupSequencesInMemory,
-					out DbSet<TTag> tagsInMemory, out DbSet<TTagSequence> tagSequencesInMemory);
+			using ListContextInMemory listContextInMemory = new();
 
 			// メモリー DB クリア
-			peopleInMemory.RemoveRange(peopleInMemory);
-			artistSequencesInMemory.RemoveRange(artistSequencesInMemory);
-			composerSequencesInMemory.RemoveRange(composerSequencesInMemory);
-			tieUpGroupsInMemory.RemoveRange(tieUpGroupsInMemory);
-			tieUpGroupSequencesInMemory.RemoveRange(tieUpGroupSequencesInMemory);
-			tagsInMemory.RemoveRange(tagsInMemory);
-			tagSequencesInMemory.RemoveRange(tagSequencesInMemory);
+			listContextInMemory.People.RemoveRange(listContextInMemory.People);
+			listContextInMemory.ArtistSequences.RemoveRange(listContextInMemory.ArtistSequences);
+			listContextInMemory.ComposerSequences.RemoveRange(listContextInMemory.ComposerSequences);
+			listContextInMemory.TieUpGroups.RemoveRange(listContextInMemory.TieUpGroups);
+			listContextInMemory.TieUpGroupSequences.RemoveRange(listContextInMemory.TieUpGroupSequences);
+			listContextInMemory.Tags.RemoveRange(listContextInMemory.Tags);
+			listContextInMemory.TagSequences.RemoveRange(listContextInMemory.TagSequences);
 			listContextInMemory.SaveChanges();
 
 			// コピー
 			// peopleInMemory.AddRange(peopleInMusicInfo) のように DbSet 全体を追加すると、アプリ終了時にタスクが終了しないため、Where を挟む
-			peopleInMemory.AddRange(peopleInMusicInfo.Where(x => true));
-			artistSequencesInMemory.AddRange(artistSequencesInMusicInfo.Where(x => true));
-			composerSequencesInMemory.AddRange(composerSequencesInMusicInfo.Where(x => true));
-			tieUpGroupsInMemory.AddRange(tieUpGroupsInMusicInfo.Where(x => true));
-			tieUpGroupSequencesInMemory.AddRange(tieUpGroupSequencesInMusicInfo.Where(x => true));
-			tagsInMemory.AddRange(tagsInMusicInfo.Where(x => true));
-			tagSequencesInMemory.AddRange(tagSequencesInMusicInfo.Where(x => true));
+			listContextInMemory.People.AddRange(musicInfoContext.People.Where(x => true));
+			listContextInMemory.ArtistSequences.AddRange(musicInfoContext.ArtistSequences.Where(x => true));
+			listContextInMemory.ComposerSequences.AddRange(musicInfoContext.ComposerSequences.Where(x => true));
+			listContextInMemory.TieUpGroups.AddRange(musicInfoContext.TieUpGroups.Where(x => true));
+			listContextInMemory.TieUpGroupSequences.AddRange(musicInfoContext.TieUpGroupSequences.Where(x => true));
+			listContextInMemory.Tags.AddRange(musicInfoContext.Tags.Where(x => true));
+			listContextInMemory.TagSequences.AddRange(musicInfoContext.TagSequences.Where(x => true));
 			listContextInMemory.SaveChanges();
 		}
 
@@ -493,14 +481,14 @@ namespace YukaLister.Models.YukaListerCores
 			// まずディスク DB から削除（全体の動作状況がエラーではない場合のみ）
 			if (YukaListerModel.Instance.EnvModel.YukaListerWholeStatus != YukaListerStatus.Error)
 			{
-				using ListContextInDisk listContextInDisk = ListContextInDisk.CreateContext(out DbSet<TFound> diskFounds);
-				diskFounds.RemoveRange(diskFounds.Where(x => x.ParentFolder == targetFolderInfo.ParentPath));
+				using ListContextInDisk listContextInDisk = new();
+				listContextInDisk.Founds.RemoveRange(listContextInDisk.Founds.Where(x => x.ParentFolder == targetFolderInfo.ParentPath));
 				listContextInDisk.SaveChanges();
 			}
 
 			// メモリ DB から削除
-			using ListContextInMemory listContextInMemory = ListContextInMemory.CreateContext(out DbSet<TFound> memoryFounds);
-			memoryFounds.RemoveRange(memoryFounds.Where(x => x.ParentFolder == targetFolderInfo.ParentPath));
+			using ListContextInMemory listContextInMemory = new();
+			listContextInMemory.Founds.RemoveRange(listContextInMemory.Founds.Where(x => x.ParentFolder == targetFolderInfo.ParentPath));
 			listContextInMemory.SaveChanges();
 
 			// TargetFolderInfo 削除
@@ -558,16 +546,16 @@ namespace YukaLister.Models.YukaListerCores
 			}
 
 			// Uid
-			using ListContextInMemory listContextInMemory = ListContextInMemory.CreateContext(out DbSet<TFound> founds);
-			Int64 uid = founds.Any() ? founds.Max(x => x.Uid) + 1 : 1;
+			using ListContextInMemory listContextInMemory = new();
+			Int64 uid = listContextInMemory.Founds.Any() ? listContextInMemory.Founds.Max(x => x.Uid) + 1 : 1;
 
 			// キャッシュが使われていない場合はディスク DB の Uid とも重複しないようにする（全体の動作状況がエラーではない場合のみ）
 			if (YukaListerModel.Instance.EnvModel.YukaListerWholeStatus != YukaListerStatus.Error && !targetFolderInfo.IsCacheUsed)
 			{
-				using ListContextInDisk listContextInDisk = ListContextInDisk.CreateContext(out DbSet<TFound> diskFounds);
-				if (diskFounds.Any())
+				using ListContextInDisk listContextInDisk = new();
+				if (listContextInDisk.Founds.Any())
 				{
-					uid = Math.Max(uid, diskFounds.Max(x => x.Uid) + 1);
+					uid = Math.Max(uid, listContextInDisk.Founds.Max(x => x.Uid) + 1);
 				}
 			}
 
@@ -607,7 +595,7 @@ namespace YukaLister.Models.YukaListerCores
 			}
 
 			// メモリー DB に追加
-			founds.AddRange(addRecords);
+			listContextInMemory.Founds.AddRange(addRecords);
 			listContextInMemory.SaveChanges();
 			_needsMemoryDbToDiskDb = true;
 			_needsMemoryDbToCacheDb = true;
@@ -615,8 +603,8 @@ namespace YukaLister.Models.YukaListerCores
 			// キャッシュが使われていない場合はディスク DB にも追加（全体の動作状況がエラーではない場合のみ）
 			if (YukaListerModel.Instance.EnvModel.YukaListerWholeStatus != YukaListerStatus.Error && !targetFolderInfo.IsCacheUsed)
 			{
-				using ListContextInDisk listContextInDisk = ListContextInDisk.CreateContext(out DbSet<TFound> diskFounds);
-				diskFounds.AddRange(addRecords);
+				using ListContextInDisk listContextInDisk = new();
+				listContextInDisk.Founds.AddRange(addRecords);
 				listContextInDisk.SaveChanges();
 				YukaListerModel.Instance.EnvModel.LogWriter.LogMessage(Common.TRACE_EVENT_TYPE_STATUS, "ゆかり用リストデータベースにファイル名を追加しました。" + targetFolderInfo.TargetPath);
 			}
@@ -764,9 +752,9 @@ namespace YukaLister.Models.YukaListerCores
 		// --------------------------------------------------------------------
 		private void MemoryToDisk()
 		{
-			using ListContextInMemory listContextInMemory = ListContextInMemory.CreateContext(out DbSet<TFound> _);
+			using ListContextInMemory listContextInMemory = new();
 			using SqliteConnection? sqliteConnectionInMemory = listContextInMemory.Database.GetDbConnection() as SqliteConnection;
-			using ListContextInDisk listContextInDisk = ListContextInDisk.CreateContext(out DbSet<TFound> _);
+			using ListContextInDisk listContextInDisk = new();
 			using SqliteConnection? sqliteConnectionInDisk = listContextInDisk.Database.GetDbConnection() as SqliteConnection;
 			if (sqliteConnectionInMemory != null && sqliteConnectionInDisk != null)
 			{

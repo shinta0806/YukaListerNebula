@@ -267,7 +267,7 @@ namespace YukaLister.ViewModels.TabItemViewModels
 					return;
 				}
 
-				using YukariStatisticsContext yukariStatisticsContext = YukariStatisticsContext.CreateContext(out DbSet<TProperty> _);
+				using YukariStatisticsContext yukariStatisticsContext = new();
 				yukariStatisticsContext.CreateDatabase();
 				YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(TraceEventType.Information, "ゆかり統計データベースを削除しました。");
 			}
@@ -373,9 +373,9 @@ namespace YukaLister.ViewModels.TabItemViewModels
 			Double periodTo = JulianDay.DateTimeToModifiedJulianDate((YukariStatisticsPeriodTo == null ? DateTime.Today : YukariStatisticsPeriodTo.Value).AddDays(1).ToUniversalTime());
 
 			// 内容
-			using YukariStatisticsContext yukariStatisticsContext = YukariStatisticsContext.CreateContext(out DbSet<TYukariStatistics> yukariStatistics);
+			using YukariStatisticsContext yukariStatisticsContext = new();
 			yukariStatisticsContext.ChangeTracker.QueryTrackingBehavior = QueryTrackingBehavior.NoTracking;
-			List<TYukariStatistics> targetStatistics = yukariStatistics.
+			List<TYukariStatistics> targetStatistics = yukariStatisticsContext.YukariStatistics.
 					Where(x => periodFrom <= x.RequestTime && x.RequestTime < periodTo && (OutputAttributesNone || x.AttributesDone) && !x.Invalid).ToList();
 
 			if (targetStatistics.Count == 0)

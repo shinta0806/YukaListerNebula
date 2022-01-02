@@ -41,6 +41,7 @@ namespace YukaLister.Models.DatabaseContexts
 		// public static メンバー関数
 		// ====================================================================
 
+#if false
 		// --------------------------------------------------------------------
 		// データベースコンテキスト生成
 		// ＜例外＞ Exception
@@ -173,6 +174,7 @@ namespace YukaLister.Models.DatabaseContexts
 			GetDbSet(musicInfoContext, out properties);
 			return musicInfoContext;
 		}
+#endif
 
 		// ====================================================================
 		// public メンバー関数

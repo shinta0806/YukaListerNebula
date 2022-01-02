@@ -352,40 +352,40 @@ namespace YukaLister.Models.SyncClient
 			switch (tableName)
 			{
 				case TSong.TABLE_NAME_SONG:
-					numTotalImports += ImportMaster(_songs, TSong.FIELD_PREFIX_SONG, syncData);
+					numTotalImports += ImportMaster(_musicInfoContext.Songs, TSong.FIELD_PREFIX_SONG, syncData);
 					break;
 				case TPerson.TABLE_NAME_PERSON:
-					numTotalImports += ImportMaster(_people, TPerson.FIELD_PREFIX_PERSON, syncData);
+					numTotalImports += ImportMaster(_musicInfoContext.People, TPerson.FIELD_PREFIX_PERSON, syncData);
 					break;
 				case TTieUp.TABLE_NAME_TIE_UP:
-					numTotalImports += ImportMaster(_tieUps, TTieUp.FIELD_PREFIX_TIE_UP, syncData);
+					numTotalImports += ImportMaster(_musicInfoContext.TieUps, TTieUp.FIELD_PREFIX_TIE_UP, syncData);
 					break;
 				case TTieUpGroup.TABLE_NAME_TIE_UP_GROUP:
-					numTotalImports += ImportMaster(_tieUpGroups, TTieUpGroup.FIELD_PREFIX_TIE_UP_GROUP, syncData);
+					numTotalImports += ImportMaster(_musicInfoContext.TieUpGroups, TTieUpGroup.FIELD_PREFIX_TIE_UP_GROUP, syncData);
 					break;
 				case TMaker.TABLE_NAME_MAKER:
-					numTotalImports += ImportMaster(_makers, TMaker.FIELD_PREFIX_MAKER, syncData);
+					numTotalImports += ImportMaster(_musicInfoContext.Makers, TMaker.FIELD_PREFIX_MAKER, syncData);
 					break;
 				case TSongAlias.TABLE_NAME_SONG_ALIAS:
-					numTotalImports += ImportAlias(_songAliases, TSongAlias.FIELD_PREFIX_SONG_ALIAS, syncData);
+					numTotalImports += ImportAlias(_musicInfoContext.SongAliases, TSongAlias.FIELD_PREFIX_SONG_ALIAS, syncData);
 					break;
 				case TTieUpAlias.TABLE_NAME_TIE_UP_ALIAS:
-					numTotalImports += ImportAlias(_tieUpAliases, TTieUpAlias.FIELD_PREFIX_TIE_UP_ALIAS, syncData);
+					numTotalImports += ImportAlias(_musicInfoContext.TieUpAliases, TTieUpAlias.FIELD_PREFIX_TIE_UP_ALIAS, syncData);
 					break;
 				case TArtistSequence.TABLE_NAME_ARTIST_SEQUENCE:
-					numTotalImports += ImportSequence(_artistSequences, TArtistSequence.FIELD_PREFIX_ARTIST_SEQUENCE, syncData);
+					numTotalImports += ImportSequence(_musicInfoContext.ArtistSequences, TArtistSequence.FIELD_PREFIX_ARTIST_SEQUENCE, syncData);
 					break;
 				case TLyristSequence.TABLE_NAME_LYRIST_SEQUENCE:
-					numTotalImports += ImportSequence(_lyristSequences, TLyristSequence.FIELD_PREFIX_LYRIST_SEQUENCE, syncData);
+					numTotalImports += ImportSequence(_musicInfoContext.LyristSequences, TLyristSequence.FIELD_PREFIX_LYRIST_SEQUENCE, syncData);
 					break;
 				case TComposerSequence.TABLE_NAME_COMPOSER_SEQUENCE:
-					numTotalImports += ImportSequence(_composerSequences, TComposerSequence.FIELD_PREFIX_COMPOSER_SEQUENCE, syncData);
+					numTotalImports += ImportSequence(_musicInfoContext.ComposerSequences, TComposerSequence.FIELD_PREFIX_COMPOSER_SEQUENCE, syncData);
 					break;
 				case TArrangerSequence.TABLE_NAME_ARRANGER_SEQUENCE:
-					numTotalImports += ImportSequence(_arrangerSequences, TArrangerSequence.FIELD_PREFIX_ARRANGER_SEQUENCE, syncData);
+					numTotalImports += ImportSequence(_musicInfoContext.ArrangerSequences, TArrangerSequence.FIELD_PREFIX_ARRANGER_SEQUENCE, syncData);
 					break;
 				case TTieUpGroupSequence.TABLE_NAME_TIE_UP_GROUP_SEQUENCE:
-					numTotalImports += ImportSequence(_tieUpGroupSequences, TTieUpGroupSequence.FIELD_PREFIX_TIE_UP_GROUP_SEQUENCE, syncData);
+					numTotalImports += ImportSequence(_musicInfoContext.TieUpGroupSequences, TTieUpGroupSequence.FIELD_PREFIX_TIE_UP_GROUP_SEQUENCE, syncData);
 					break;
 				case TYukariStatistics.TABLE_NAME_YUKARI_STATISTICS:
 					numTotalImports += ImportYukariStatistics(syncData);
@@ -522,7 +522,7 @@ namespace YukaLister.Models.SyncClient
 					_logWriterSyncDetail.LogMessage(TraceEventType.Error, "ゆかり統計レコード設定時エラー：" + excep.Message);
 					continue;
 				}
-				UpdateBaseDatabaseIfNeeded(_yukariStatistics, newRecord, ref numImports);
+				UpdateBaseDatabaseIfNeeded(_yukariStatisticsContext.YukariStatistics, newRecord, ref numImports);
 				DisplayYukariStatisticsStatusIfNeeded(ref numChecks);
 
 				YukaListerModel.Instance.EnvModel.AppCancellationTokenSource.Token.ThrowIfCancellationRequested();

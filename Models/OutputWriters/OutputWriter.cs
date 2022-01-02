@@ -39,18 +39,29 @@ namespace YukaLister.Models.OutputWriters
 		// --------------------------------------------------------------------
 		protected OutputWriter()
 		{
-			_listContextInMemory = ListContextInMemory.CreateContext(out _founds,
-					out _peopleInMemory, out _artistSequencesInMemory, out _composerSequencesInMemory,
-					out _tieUpGroupsInMemory, out _tieUpGroupSequencesInMemory,
-					out _tagsInMemory, out _tagSequencesInMemory);
+			_listContextInMemory = new();
+			_peopleInMemory = _listContextInMemory.People;
+			_artistSequencesInMemory = _listContextInMemory.ArtistSequences;
+			_composerSequencesInMemory = _listContextInMemory.ComposerSequences;
+			_tieUpGroupsInMemory = _listContextInMemory.TieUpGroups;
+			_tieUpGroupSequencesInMemory = _listContextInMemory.TieUpGroupSequences;
+			_tagsInMemory = _listContextInMemory.Tags;
+			_tagSequencesInMemory = _listContextInMemory.TagSequences;
 			_listContextInMemory.ChangeTracker.QueryTrackingBehavior = QueryTrackingBehavior.NoTracking;
-			_musicInfoContext = MusicInfoContextDefault.CreateContext(out _,
-					out _songsInMusicInfo, out _, out _tieUpsInMusicInfo, out _categoriesInMusicInfo,
-					out _, out _makersInMusicInfo, out _,
-					out _songAliasesInMusicInfo, out _personAliasesInMusicInfo, out _tieUpAliasesInMusicInfo,
-					out _categoryAliasesInMusicInfo, out _tieUpGroupAliasesInMusicInfo, out _makerAliasesInMusicInfo,
-					out _, out _lyristSequencesInMusicInfo, out _, out _arrangerSequencesInMusicInfo,
-					out _, out _);
+
+			_musicInfoContext = new();
+			_songsInMusicInfo = _musicInfoContext.Songs;
+			_tieUpsInMusicInfo = _musicInfoContext.TieUps;
+			_categoriesInMusicInfo = _musicInfoContext.Categories;
+			_makersInMusicInfo = _musicInfoContext.Makers;
+			_songAliasesInMusicInfo = _musicInfoContext.SongAliases;
+			_personAliasesInMusicInfo = _musicInfoContext.PersonAliases;
+			_tieUpAliasesInMusicInfo = _musicInfoContext.TieUpAliases;
+			_categoryAliasesInMusicInfo = _musicInfoContext.CategoryAliases;
+			_tieUpGroupAliasesInMusicInfo = _musicInfoContext.TieUpGroupAliases;
+			_makerAliasesInMusicInfo = _musicInfoContext.MakerAliases;
+			_lyristSequencesInMusicInfo = _musicInfoContext.LyristSequences;
+			_arrangerSequencesInMusicInfo = _musicInfoContext.ArrangerSequences;
 			_musicInfoContext.ChangeTracker.QueryTrackingBehavior = QueryTrackingBehavior.NoTracking;
 		}
 
@@ -125,6 +136,7 @@ namespace YukaLister.Models.OutputWriters
 
 		// --------------------------------------------------------------------
 		// マスターテーブル
+		// メンバーにしなくても _musicInfoContext, _listContextInMemory から取得できるが、どちらから取得するのかが入り組んでいるため、ミス防止のためにメンバーにしておく
 		// --------------------------------------------------------------------
 
 		// 楽曲マスターテーブル
@@ -203,7 +215,7 @@ namespace YukaLister.Models.OutputWriters
 		protected readonly MusicInfoContextDefault _musicInfoContext;
 
 		// 検出ファイルリストテーブル
-		protected readonly DbSet<TFound> _founds;
+		//protected readonly DbSet<TFound> _founds;
 
 		// 実際の出力項目
 		protected List<OutputItems> _runtimeOutputItems = new();

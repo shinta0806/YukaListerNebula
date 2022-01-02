@@ -13,6 +13,7 @@ using Microsoft.EntityFrameworkCore;
 using Shinta;
 
 using System;
+using System.Diagnostics;
 
 using YukaLister.Models.Database;
 using YukaLister.Models.DatabaseAssist;
@@ -31,6 +32,7 @@ namespace YukaLister.Models.DatabaseContexts
 		public YukariStatisticsContext()
 				: base("ゆかり統計")
 		{
+			Debug.Assert(YukariStatistics != null, "YukariStatistics table not init");
 		}
 
 		// ====================================================================
@@ -38,12 +40,13 @@ namespace YukaLister.Models.DatabaseContexts
 		// ====================================================================
 
 		// ゆかり統計テーブル
-		public DbSet<TYukariStatistics>? YukariStatistics { get; set; }
+		public DbSet<TYukariStatistics> YukariStatistics { get; set; }
 
 		// ====================================================================
 		// public static メンバー関数
 		// ====================================================================
 
+#if false
 		// --------------------------------------------------------------------
 		// データベースコンテキスト生成
 		// ＜例外＞ Exception
@@ -90,6 +93,7 @@ namespace YukaLister.Models.DatabaseContexts
 			}
 			yukariStatistics = yukariStatisticsContext.YukariStatistics;
 		}
+#endif
 
 		// ====================================================================
 		// public メンバー関数

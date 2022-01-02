@@ -50,18 +50,18 @@ namespace YukaLister.Models.SyncClient
 		{
 			return tableIndex switch
 			{
-				MusicInfoTables.TSong => ExportMaster(_songs, TSong.FIELD_PREFIX_SONG),
-				MusicInfoTables.TPerson => ExportMaster(_people, TPerson.FIELD_PREFIX_PERSON),
-				MusicInfoTables.TTieUp => ExportMaster(_tieUps, TTieUp.FIELD_PREFIX_TIE_UP),
-				MusicInfoTables.TTieUpGroup => ExportMaster(_tieUpGroups, TTieUpGroup.FIELD_PREFIX_TIE_UP_GROUP),
-				MusicInfoTables.TMaker => ExportMaster(_makers, TMaker.FIELD_PREFIX_MAKER),
-				MusicInfoTables.TSongAlias => ExportAlias(_songAliases, TSongAlias.FIELD_PREFIX_SONG_ALIAS),
-				MusicInfoTables.TTieUpAlias => ExportAlias(_tieUpAliases, TTieUpAlias.FIELD_PREFIX_TIE_UP_ALIAS),
-				MusicInfoTables.TArtistSequence => ExportSequence(_artistSequences, TArtistSequence.FIELD_PREFIX_ARTIST_SEQUENCE),
-				MusicInfoTables.TLyristSequence => ExportSequence(_lyristSequences, TLyristSequence.FIELD_PREFIX_LYRIST_SEQUENCE),
-				MusicInfoTables.TComposerSequence => ExportSequence(_composerSequences, TComposerSequence.FIELD_PREFIX_COMPOSER_SEQUENCE),
-				MusicInfoTables.TArrangerSequence => ExportSequence(_arrangerSequences, TArrangerSequence.FIELD_PREFIX_ARRANGER_SEQUENCE),
-				MusicInfoTables.TTieUpGroupSequence => ExportSequence(_tieUpGroupSequences, TTieUpGroupSequence.FIELD_PREFIX_TIE_UP_GROUP_SEQUENCE),
+				MusicInfoTables.TSong => ExportMaster(_musicInfoContext.Songs, TSong.FIELD_PREFIX_SONG),
+				MusicInfoTables.TPerson => ExportMaster(_musicInfoContext.People, TPerson.FIELD_PREFIX_PERSON),
+				MusicInfoTables.TTieUp => ExportMaster(_musicInfoContext.TieUps, TTieUp.FIELD_PREFIX_TIE_UP),
+				MusicInfoTables.TTieUpGroup => ExportMaster(_musicInfoContext.TieUpGroups, TTieUpGroup.FIELD_PREFIX_TIE_UP_GROUP),
+				MusicInfoTables.TMaker => ExportMaster(_musicInfoContext.Makers, TMaker.FIELD_PREFIX_MAKER),
+				MusicInfoTables.TSongAlias => ExportAlias(_musicInfoContext.SongAliases, TSongAlias.FIELD_PREFIX_SONG_ALIAS),
+				MusicInfoTables.TTieUpAlias => ExportAlias(_musicInfoContext.TieUpAliases, TTieUpAlias.FIELD_PREFIX_TIE_UP_ALIAS),
+				MusicInfoTables.TArtistSequence => ExportSequence(_musicInfoContext.ArtistSequences, TArtistSequence.FIELD_PREFIX_ARTIST_SEQUENCE),
+				MusicInfoTables.TLyristSequence => ExportSequence(_musicInfoContext.LyristSequences, TLyristSequence.FIELD_PREFIX_LYRIST_SEQUENCE),
+				MusicInfoTables.TComposerSequence => ExportSequence(_musicInfoContext.ComposerSequences, TComposerSequence.FIELD_PREFIX_COMPOSER_SEQUENCE),
+				MusicInfoTables.TArrangerSequence => ExportSequence(_musicInfoContext.ArrangerSequences, TArrangerSequence.FIELD_PREFIX_ARRANGER_SEQUENCE),
+				MusicInfoTables.TTieUpGroupSequence => ExportSequence(_musicInfoContext.TieUpGroupSequences, TTieUpGroupSequence.FIELD_PREFIX_TIE_UP_GROUP_SEQUENCE),
 				_ => NotExport(tableIndex),
 			};
 		}
@@ -78,7 +78,7 @@ namespace YukaLister.Models.SyncClient
 			SetYukariStatisticsCsvHead(csvHead);
 
 			// レコード群
-			IQueryable<TYukariStatistics> dirties = _yukariStatistics.Where(x => x.Dirty);
+			IQueryable<TYukariStatistics> dirties = _yukariStatisticsContext.YukariStatistics.Where(x => x.Dirty);
 			foreach (TYukariStatistics dirtyRecord in dirties)
 			{
 				List<String> csvRecord = new();

@@ -76,8 +76,8 @@ namespace YukaLister.Models.YukaListerCores
 					}
 
 					// リストデータベースのレコード数が 0 ならリスト作成不要
-					using ListContextInDisk listContextInDisk = ListContextInDisk.CreateContext(out DbSet<TFound> founds);
-					if (!founds.Any())
+					using ListContextInDisk listContextInDisk = new();
+					if (!listContextInDisk.Founds.Any())
 					{
 						continue;
 					}

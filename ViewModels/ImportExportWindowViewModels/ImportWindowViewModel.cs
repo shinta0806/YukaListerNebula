@@ -66,7 +66,7 @@ namespace YukaLister.ViewModels.ImportExportWindowViewModels
 		protected override Task ImportExportByWorker(Object? _)
 		{
 			// 楽曲情報データベースバックアップ
-			using MusicInfoContextDefault musicInfoContextDefault = MusicInfoContextDefault.CreateContext(out DbSet<TProperty> _);
+			using MusicInfoContextDefault musicInfoContextDefault = new();
 			musicInfoContextDefault.BackupDatabase();
 
 			// インポートタスクを実行

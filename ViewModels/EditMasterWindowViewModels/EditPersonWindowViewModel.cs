@@ -72,14 +72,10 @@ namespace YukaLister.ViewModels.EditMasterWindowViewModels
 			base.Invalidate(master);
 
 			// タイアップグループ紐付け
-			MusicInfoContextDefault.GetDbSet(_musicInfoContext, out DbSet<TArtistSequence> artistSequences);
-			DbCommon.InvalidateSequenceByLinkId(artistSequences, master.Id);
-			MusicInfoContextDefault.GetDbSet(_musicInfoContext, out DbSet<TLyristSequence> lyristSequences);
-			DbCommon.InvalidateSequenceByLinkId(lyristSequences, master.Id);
-			MusicInfoContextDefault.GetDbSet(_musicInfoContext, out DbSet<TComposerSequence> composerSequences);
-			DbCommon.InvalidateSequenceByLinkId(composerSequences, master.Id);
-			MusicInfoContextDefault.GetDbSet(_musicInfoContext, out DbSet<TArrangerSequence> arrangerSequences);
-			DbCommon.InvalidateSequenceByLinkId(arrangerSequences, master.Id);
+			DbCommon.InvalidateSequenceByLinkId(_musicInfoContext.ArtistSequences, master.Id);
+			DbCommon.InvalidateSequenceByLinkId(_musicInfoContext.LyristSequences, master.Id);
+			DbCommon.InvalidateSequenceByLinkId(_musicInfoContext.ComposerSequences, master.Id);
+			DbCommon.InvalidateSequenceByLinkId(_musicInfoContext.ArrangerSequences, master.Id);
 			_musicInfoContext.SaveChanges();
 		}
 	}

@@ -16,6 +16,7 @@
     <DefineConstants>TRACE;DISTRIB_STORE;TESTz</DefineConstants>
     <NoWarn>1701;1702;1416</NoWarn>
     <ApplicationManifest>app.manifest</ApplicationManifest>
+    <PlatformTarget>AnyCPU</PlatformTarget>
   </PropertyGroup>
 
   <ItemGroup>

@@ -84,10 +84,10 @@ namespace YukaLister.ViewModels.TabItemViewModels
 		{
 			try
 			{
-				using MusicInfoContextDefault musicInfoContextDefault = MusicInfoContextDefault.CreateContext(out DbSet<TTieUp> tieUps);
+				using MusicInfoContextDefault musicInfoContextDefault = new();
 
 				// ViewModel 経由で楽曲情報データベースマスター一覧ウィンドウを開く
-				using ViewTieUpsWindowViewModel viewTieUpsWindowViewModel = new(musicInfoContextDefault, tieUps, CreateTieUpColumns());
+				using ViewTieUpsWindowViewModel viewTieUpsWindowViewModel = new(musicInfoContextDefault, musicInfoContextDefault.TieUps, CreateTieUpColumns());
 				_windowViewModel.Messenger.Raise(new TransitionMessage(viewTieUpsWindowViewModel, YlConstants.MESSAGE_KEY_OPEN_VIEW_MASTERS_WINDOW));
 			}
 			catch (Exception excep)
@@ -117,10 +117,10 @@ namespace YukaLister.ViewModels.TabItemViewModels
 		{
 			try
 			{
-				using MusicInfoContextDefault musicInfoContextDefault = MusicInfoContextDefault.CreateContext(out DbSet<TMaker> makers);
+				using MusicInfoContextDefault musicInfoContextDefault = new();
 
 				// ViewModel 経由で楽曲情報データベースマスター一覧ウィンドウを開く
-				using ViewMakersWindowViewModel viewMastersWindowViewModel = new(musicInfoContextDefault, makers, CreateMasterColumns<TMaker>());
+				using ViewMakersWindowViewModel viewMastersWindowViewModel = new(musicInfoContextDefault, musicInfoContextDefault.Makers, CreateMasterColumns<TMaker>());
 				_windowViewModel.Messenger.Raise(new TransitionMessage(viewMastersWindowViewModel, YlConstants.MESSAGE_KEY_OPEN_VIEW_MASTERS_WINDOW));
 			}
 			catch (Exception excep)
@@ -151,10 +151,10 @@ namespace YukaLister.ViewModels.TabItemViewModels
 		{
 			try
 			{
-				using MusicInfoContextDefault musicInfoContextDefault = MusicInfoContextDefault.CreateContext(out DbSet<TTieUpGroup> tieUpGroups);
+				using MusicInfoContextDefault musicInfoContextDefault = new();
 
 				// ViewModel 経由で楽曲情報データベースマスター一覧ウィンドウを開く
-				using ViewTieUpGroupsWindowViewModel viewTieUpGroupsWindowViewModel = new(musicInfoContextDefault, tieUpGroups, CreateMasterColumns<TTieUpGroup>());
+				using ViewTieUpGroupsWindowViewModel viewTieUpGroupsWindowViewModel = new(musicInfoContextDefault, musicInfoContextDefault.TieUpGroups, CreateMasterColumns<TTieUpGroup>());
 				_windowViewModel.Messenger.Raise(new TransitionMessage(viewTieUpGroupsWindowViewModel, YlConstants.MESSAGE_KEY_OPEN_VIEW_MASTERS_WINDOW));
 			}
 			catch (Exception excep)
@@ -184,10 +184,10 @@ namespace YukaLister.ViewModels.TabItemViewModels
 		{
 			try
 			{
-				using MusicInfoContextDefault musicInfoContextDefault = MusicInfoContextDefault.CreateContext(out DbSet<TSong> songs);
+				using MusicInfoContextDefault musicInfoContextDefault = new();
 
 				// ViewModel 経由で楽曲情報データベースマスター一覧ウィンドウを開く
-				using ViewSongsWindowViewModel viewSongsWindowViewModel = new(musicInfoContextDefault, songs, CreateSongColumns());
+				using ViewSongsWindowViewModel viewSongsWindowViewModel = new(musicInfoContextDefault, musicInfoContextDefault.Songs, CreateSongColumns());
 				_windowViewModel.Messenger.Raise(new TransitionMessage(viewSongsWindowViewModel, YlConstants.MESSAGE_KEY_OPEN_VIEW_MASTERS_WINDOW));
 			}
 			catch (Exception excep)
@@ -217,10 +217,10 @@ namespace YukaLister.ViewModels.TabItemViewModels
 		{
 			try
 			{
-				using MusicInfoContextDefault musicInfoContextDefault = MusicInfoContextDefault.CreateContext(out DbSet<TPerson> people);
+				using MusicInfoContextDefault musicInfoContextDefault = new();
 
 				// ViewModel 経由で楽曲情報データベースマスター一覧ウィンドウを開く
-				using ViewPeopleWindowViewModel viewPeopleWindowViewModel = new(musicInfoContextDefault, people, CreateMasterColumns<TPerson>());
+				using ViewPeopleWindowViewModel viewPeopleWindowViewModel = new(musicInfoContextDefault, musicInfoContextDefault.People, CreateMasterColumns<TPerson>());
 				_windowViewModel.Messenger.Raise(new TransitionMessage(viewPeopleWindowViewModel, YlConstants.MESSAGE_KEY_OPEN_VIEW_MASTERS_WINDOW));
 			}
 			catch (Exception excep)
@@ -250,10 +250,10 @@ namespace YukaLister.ViewModels.TabItemViewModels
 		{
 			try
 			{
-				using MusicInfoContextDefault musicInfoContextDefault = MusicInfoContextDefault.CreateContext(out DbSet<TTag> tags);
+				using MusicInfoContextDefault musicInfoContextDefault = new();
 
 				// ViewModel 経由で楽曲情報データベースマスター一覧ウィンドウを開く
-				using ViewTagsWindowViewModel viewTagsWindowViewModel = new(musicInfoContextDefault, tags, CreateMasterColumns<TTag>());
+				using ViewTagsWindowViewModel viewTagsWindowViewModel = new(musicInfoContextDefault, musicInfoContextDefault.Tags, CreateMasterColumns<TTag>());
 				_windowViewModel.Messenger.Raise(new TransitionMessage(viewTagsWindowViewModel, YlConstants.MESSAGE_KEY_OPEN_VIEW_MASTERS_WINDOW));
 			}
 			catch (Exception excep)

@@ -14,7 +14,6 @@ using Microsoft.EntityFrameworkCore;
 using Shinta;
 
 using System;
-using System.Data.Common;
 using System.Diagnostics;
 using System.IO;
 
@@ -35,6 +34,8 @@ namespace YukaLister.Models.DatabaseContexts
 		// --------------------------------------------------------------------
 		public YukaListerContext(String databaseName)
 		{
+			Debug.Assert(Properties != null, "Properties table not init");
+
 			_databaseName = databaseName;
 		}
 
@@ -47,12 +48,13 @@ namespace YukaLister.Models.DatabaseContexts
 		// --------------------------------------------------------------------
 
 		// データベースプロパティーテーブル
-		public DbSet<TProperty>? Properties { get; set; }
+		public DbSet<TProperty> Properties { get; set; }
 
 		// ====================================================================
 		// public static メンバー関数
 		// ====================================================================
 
+#if false
 		// --------------------------------------------------------------------
 		// データベースセット取得
 		// ＜例外＞ Exception
@@ -65,6 +67,7 @@ namespace YukaLister.Models.DatabaseContexts
 			}
 			properties = yukaListerContext.Properties;
 		}
+#endif
 
 		// ====================================================================
 		// public メンバー関数
@@ -118,18 +121,6 @@ namespace YukaLister.Models.DatabaseContexts
 		// --------------------------------------------------------------------
 		public abstract String DatabasePath();
 
-#if false
-		// --------------------------------------------------------------------
-		// IDisposable.Dispose()
-		// --------------------------------------------------------------------
-		public override void Dispose()
-		{
-			Dispose(true);
-			GC.SuppressFinalize(this);
-			base.Dispose();
-		}
-#endif
-
 		// --------------------------------------------------------------------
 		// ファイルの最終更新日時 UTC
 		// --------------------------------------------------------------------
@@ -168,33 +159,6 @@ namespace YukaLister.Models.DatabaseContexts
 		// protected メンバー関数
 		// ====================================================================
 
-#if false
-		// --------------------------------------------------------------------
-		// リソース解放
-		// --------------------------------------------------------------------
-		protected virtual void Dispose(Boolean isDisposing)
-		{
-			if (_isDisposed)
-			{
-				return;
-			}
-
-			// マネージドリソース解放
-			if (isDisposing)
-			{
-				Debug.WriteLine("Dispose() " + GetType().Name);
-				Database.CloseConnection();
-			}
-
-			// アンマネージドリソース解放
-			// 今のところ無し
-			// アンマネージドリソースを持つことになった場合、ファイナライザの実装が必要
-
-			// 解放完了
-			_isDisposed = true;
-		}
-#endif
-
 		// --------------------------------------------------------------------
 		// データベース設定
 		// --------------------------------------------------------------------
@@ -203,13 +167,6 @@ namespace YukaLister.Models.DatabaseContexts
 			using SqliteConnection sqliteConnection = DbCommon.Connect(DatabasePath());
 			optionsBuilder.UseSqlite(sqliteConnection);
 		}
-
-		// ====================================================================
-		// private メンバー変数
-		// ====================================================================
-
-		// Dispose フラグ
-		//private Boolean _isDisposed;
 
 		// ====================================================================
 		// private メンバー関数

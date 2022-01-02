@@ -79,46 +79,34 @@ namespace YukaLister.Models.DatabaseAssist
 			}
 			String file = files[0];
 
-			using MusicInfoContextExport musicInfoContextExport = MusicInfoContextExport.CreateContext(file, out _,
-					out DbSet<TSong> songsExport, out DbSet<TPerson> peopleExport, out DbSet<TTieUp> tieUpsExport, out _,
-					out DbSet<TTieUpGroup> tieUpGroupsExport, out DbSet<TMaker> makersExport, out DbSet<TTag> tagsExport,
-					out DbSet<TSongAlias> songAliasesExport, out _, out DbSet<TTieUpAlias> tieUpAliasesExport,
-					out _, out _, out _,
-					out DbSet<TArtistSequence> artistSequencesExport, out DbSet<TLyristSequence> lyristSequencesExport, out DbSet<TComposerSequence> composerSequencesExport, out DbSet<TArrangerSequence> arrangerSequencesExport,
-					out DbSet<TTieUpGroupSequence> tieUpGroupSequencesExport, out DbSet<TTagSequence> tagSequencesExport);
+			using MusicInfoContextExport musicInfoContextExport = new(file);
 			musicInfoContextExport.ChangeTracker.QueryTrackingBehavior = QueryTrackingBehavior.NoTracking;
-			using MusicInfoContextDefault musicInfoContextDefault = MusicInfoContextDefault.CreateContext(out _,
-					out DbSet<TSong> songsDefault, out DbSet<TPerson> peopleDefault, out DbSet<TTieUp> tieUpsDefault, out _,
-					out DbSet<TTieUpGroup> tieUpGroupsDefault, out DbSet<TMaker> makersDefault, out DbSet<TTag> tagsDefault,
-					out DbSet<TSongAlias> songAliasesDefault, out _, out DbSet<TTieUpAlias> tieUpAliasesDefault,
-					out _, out _, out _,
-					out DbSet<TArtistSequence> artistSequencesDefault, out DbSet<TLyristSequence> lyristSequencesDefault, out DbSet<TComposerSequence> composerSequencesDefault, out DbSet<TArrangerSequence> arrangerSequencesDefault,
-					out DbSet<TTieUpGroupSequence> tieUpGroupSequencesDefault, out DbSet<TTagSequence> tagSequencesDefault);
+			using MusicInfoContextDefault musicInfoContextDefault = new();
 
 			// 有効なマスターテーブルをインポート（カテゴリー以外）
-			ImportMasterTable(songsExport, songsDefault, musicInfoContextDefault);
-			ImportMasterTable(peopleExport, peopleDefault, musicInfoContextDefault);
-			ImportMasterTable(tieUpsExport, tieUpsDefault, musicInfoContextDefault);
-			ImportMasterTable(tieUpGroupsExport, tieUpGroupsDefault, musicInfoContextDefault);
-			ImportMasterTable(makersExport, makersDefault, musicInfoContextDefault);
+			ImportMasterTable(musicInfoContextExport.Songs, musicInfoContextDefault.Songs, musicInfoContextDefault);
+			ImportMasterTable(musicInfoContextExport.People, musicInfoContextDefault.People, musicInfoContextDefault);
+			ImportMasterTable(musicInfoContextExport.TieUps, musicInfoContextDefault.TieUps, musicInfoContextDefault);
+			ImportMasterTable(musicInfoContextExport.TieUpGroups, musicInfoContextDefault.TieUpGroups, musicInfoContextDefault);
+			ImportMasterTable(musicInfoContextExport.Makers, musicInfoContextDefault.Makers, musicInfoContextDefault);
 			if (_importTag)
 			{
-				ImportMasterTable<TTag>(tagsExport, tagsDefault, musicInfoContextDefault);
+				ImportMasterTable<TTag>(musicInfoContextExport.Tags, musicInfoContextDefault.Tags, musicInfoContextDefault);
 			}
 
 			// 有効な別名テーブルをインポート
-			ImportAliasTable(songAliasesExport, songAliasesDefault, musicInfoContextDefault);
-			ImportAliasTable(tieUpAliasesExport, tieUpAliasesDefault, musicInfoContextDefault);
+			ImportAliasTable(musicInfoContextExport.SongAliases, musicInfoContextDefault.SongAliases, musicInfoContextDefault);
+			ImportAliasTable(musicInfoContextExport.TieUpAliases, musicInfoContextDefault.TieUpAliases, musicInfoContextDefault);
 
 			// 有効な紐付テーブルをインポート
-			ImportSequenceTable(artistSequencesExport, artistSequencesDefault, musicInfoContextDefault);
-			ImportSequenceTable(lyristSequencesExport, lyristSequencesDefault, musicInfoContextDefault);
-			ImportSequenceTable(composerSequencesExport, composerSequencesDefault, musicInfoContextDefault);
-			ImportSequenceTable(arrangerSequencesExport, arrangerSequencesDefault, musicInfoContextDefault);
-			ImportSequenceTable(tieUpGroupSequencesExport, tieUpGroupSequencesDefault, musicInfoContextDefault);
+			ImportSequenceTable(musicInfoContextExport.ArtistSequences, musicInfoContextDefault.ArtistSequences, musicInfoContextDefault);
+			ImportSequenceTable(musicInfoContextExport.LyristSequences, musicInfoContextDefault.LyristSequences, musicInfoContextDefault);
+			ImportSequenceTable(musicInfoContextExport.ComposerSequences, musicInfoContextDefault.ComposerSequences, musicInfoContextDefault);
+			ImportSequenceTable(musicInfoContextExport.ArrangerSequences, musicInfoContextDefault.ArrangerSequences, musicInfoContextDefault);
+			ImportSequenceTable(musicInfoContextExport.TieUpGroupSequences, musicInfoContextDefault.TieUpGroupSequences, musicInfoContextDefault);
 			if (_importTag)
 			{
-				ImportSequenceTable(tagSequencesExport, tagSequencesDefault, musicInfoContextDefault);
+				ImportSequenceTable(musicInfoContextExport.TagSequences, musicInfoContextDefault.TagSequences, musicInfoContextDefault);
 			}
 
 			YukaListerModel.Instance.EnvModel.LogWriter.LogMessage(Common.TRACE_EVENT_TYPE_STATUS, "インポートが完了しました。");

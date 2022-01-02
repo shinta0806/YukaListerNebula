@@ -37,13 +37,11 @@ namespace YukaLister.Models.DatabaseAssist
 		// --------------------------------------------------------------------
 		// コンストラクター
 		// --------------------------------------------------------------------
-		public TFoundSetter(ListContextInMemory listContextInMemory,
-				DbSet<TPerson> listPeople, DbSet<TArtistSequence> listArtistSequences, DbSet<TComposerSequence> listComposerSequences,
-				DbSet<TTieUpGroup> listTieUpGroups, DbSet<TTieUpGroupSequence> listTieUpGroupSequences,
-				DbSet<TTag> listTags, DbSet<TTagSequence> listTagSequences)
+		public TFoundSetter(ListContextInMemory listContextInMemory)
 		{
 			Debug.Assert(listContextInMemory.ChangeTracker.QueryTrackingBehavior == QueryTrackingBehavior.TrackAll, "TFoundSetter() bad QueryTrackingBehavior");
 			_listContextInMemory = listContextInMemory;
+#if false
 			_listPeople = listPeople;
 			_listArtistSequences = listArtistSequences;
 			_ = listComposerSequences;
@@ -51,18 +49,30 @@ namespace YukaLister.Models.DatabaseAssist
 			_ = listTieUpGroupSequences;
 			_ = listTags;
 			_ = listTagSequences;
+#endif
 
 			// MusicInfoContext は検索専用なので NoTracking にする
-			_musicInfoContext = MusicInfoContextDefault.CreateContext(out _,
-					out _songs, out _people, out _tieUps, out _categories,
-					out _tieUpGroups, out _makers, out _tags,
-					out _songAliases, out _, out _tieUpAliases,
-					out _, out _, out _,
-					out _artistSequences, out _lyristSequences, out _composerSequences, out _arrangerSequences,
-					out _tieUpGroupSequences, out _tagSequences);
+			_musicInfoContext = new MusicInfoContextDefault();
 			_musicInfoContext.ChangeTracker.QueryTrackingBehavior = QueryTrackingBehavior.NoTracking;
+#if false
+			_songs = _musicInfoContext.Songs;
+			_people = _musicInfoContext.People;
+			_tieUps = _musicInfoContext.TieUps;
+			_categories = _musicInfoContext.Categories;
+			_tieUpGroups = _musicInfoContext.TieUpGroups;
+			_makers = _musicInfoContext.Makers;
+			_tags = _musicInfoContext.Tags;
+			_songAliases = _musicInfoContext.SongAliases;
+			_tieUpAliases = _musicInfoContext.TieUpAliases;
+			_artistSequences = _musicInfoContext.ArtistSequences;
+			_lyristSequences = _musicInfoContext.LyristSequences;
+			_composerSequences = _musicInfoContext.ComposerSequences;
+			_arrangerSequences = _musicInfoContext.ArrangerSequences;
+			_tieUpGroupSequences = _musicInfoContext.TieUpGroupSequences;
+			_tagSequences = _musicInfoContext.TagSequences;
+#endif
 
-			_categoryNames = DbCommon.SelectCategoryNames(_categories);
+			_categoryNames = DbCommon.SelectCategoryNames(_musicInfoContext.Categories);
 		}
 
 		// ====================================================================
@@ -72,13 +82,13 @@ namespace YukaLister.Models.DatabaseAssist
 		// 楽曲マスターテーブル
 		public DbSet<TSong> Songs
 		{
-			get => _songs;
+			get => _musicInfoContext.Songs;
 		}
 
 		// タイアップマスターテーブル
 		public DbSet<TTieUp> TieUps
 		{
-			get => _tieUps;
+			get => _musicInfoContext.TieUps;
 		}
 
 		// ====================================================================
@@ -106,7 +116,7 @@ namespace YukaLister.Models.DatabaseAssist
 			}
 #endif
 			// 楽曲名で検索
-			List<TSong> songs = DbCommon.SelectMastersByName(_songs, dicByFile[YlConstants.RULE_VAR_TITLE]);
+			List<TSong> songs = DbCommon.SelectMastersByName(_musicInfoContext.Songs, dicByFile[YlConstants.RULE_VAR_TITLE]);
 
 			// タイアップで絞り込み
 			if (songs.Count > 1)
@@ -136,7 +146,7 @@ namespace YukaLister.Models.DatabaseAssist
 					List<TSong> songsWithTieUpCategory = new();
 					foreach (KeyValuePair<TSong, TTieUp> kvp in songsAndTieUps)
 					{
-						TCategory? category = DbCommon.SelectBaseById(_categories, kvp.Value.CategoryId);
+						TCategory? category = DbCommon.SelectBaseById(_musicInfoContext.Categories, kvp.Value.CategoryId);
 						if (category != null && category.Name == dicByFile[YlConstants.RULE_VAR_CATEGORY])
 						{
 							songsWithTieUpCategory.Add(kvp.Key);
@@ -156,7 +166,7 @@ namespace YukaLister.Models.DatabaseAssist
 				List<TSong> songsWithCategory = new();
 				foreach (TSong song in songs)
 				{
-					TCategory? category = DbCommon.SelectBaseById(_categories, song.CategoryId);
+					TCategory? category = DbCommon.SelectBaseById(_musicInfoContext.Categories, song.CategoryId);
 					if (category != null && category.Name == dicByFile[YlConstants.RULE_VAR_CATEGORY])
 					{
 						songsWithCategory.Add(song);
@@ -174,7 +184,7 @@ namespace YukaLister.Models.DatabaseAssist
 				List<TSong> songsWithArtist = new();
 				foreach (TSong song in songs)
 				{
-					(String? artistNames, _) = ConcatMasterNamesAndRubies(DbCommon.SelectSequencedPeopleBySongId(_artistSequences, _people, song.Id).ToList<IRcMaster>());
+					(String? artistNames, _) = ConcatMasterNamesAndRubies(DbCommon.SelectSequencedPeopleBySongId(_musicInfoContext.ArtistSequences, _musicInfoContext.People, song.Id).ToList<IRcMaster>());
 					if (!String.IsNullOrEmpty(artistNames) && artistNames == dicByFile[YlConstants.RULE_VAR_ARTIST])
 					{
 						songsWithArtist.Add(song);
@@ -240,15 +250,15 @@ namespace YukaLister.Models.DatabaseAssist
 			}
 
 			// タイアップマスターテーブルに登録済みの名前の場合は、別名解決しない
-			if (DbCommon.SelectMasterByName(_tieUps, alias) != null)
+			if (DbCommon.SelectMasterByName(_musicInfoContext.TieUps, alias) != null)
 			{
 				return alias;
 			}
 
-			TTieUpAlias? tieUpAlias = DbCommon.SelectAliasByAlias(_tieUpAliases, alias);
+			TTieUpAlias? tieUpAlias = DbCommon.SelectAliasByAlias(_musicInfoContext.TieUpAliases, alias);
 			if (tieUpAlias != null)
 			{
-				TTieUp? tieUp = DbCommon.SelectBaseById(_tieUps, tieUpAlias.OriginalId);
+				TTieUp? tieUp = DbCommon.SelectBaseById(_musicInfoContext.TieUps, tieUpAlias.OriginalId);
 				if (tieUp != null)
 				{
 					// 元のタイアップ名
@@ -344,16 +354,15 @@ namespace YukaLister.Models.DatabaseAssist
 			}
 
 			// 楽曲マスターテーブルに登録済みの名前の場合は、別名解決しない
-			if (DbCommon.SelectMasterByName(_songs, alias) != null)
+			if (DbCommon.SelectMasterByName(_musicInfoContext.Songs, alias) != null)
 			{
 				return alias;
 			}
 
-			// ToDo: METEOR 時代は SQL で高速化していた
-			TSongAlias? songAlias = DbCommon.SelectAliasByAlias(_songAliases, alias);
+			TSongAlias? songAlias = DbCommon.SelectAliasByAlias(_musicInfoContext.SongAliases, alias);
 			if (songAlias != null)
 			{
-				TSong? song = DbCommon.SelectBaseById(_songs, songAlias.OriginalId);
+				TSong? song = DbCommon.SelectBaseById(_musicInfoContext.Songs, songAlias.OriginalId);
 				if (song != null)
 				{
 					// 元の楽曲名
@@ -405,6 +414,7 @@ namespace YukaLister.Models.DatabaseAssist
 		// private メンバー変数
 		// ====================================================================
 
+#if false
 		// --------------------------------------------------------------------
 		// データベースプロパティーテーブル
 		// --------------------------------------------------------------------
@@ -480,7 +490,9 @@ namespace YukaLister.Models.DatabaseAssist
 
 		// タグ紐付テーブル
 		private readonly DbSet<TTagSequence> _tagSequences;
+#endif
 
+#if false
 		// --------------------------------------------------------------------
 		// リストデータベース：検出ファイルリストテーブル
 		// --------------------------------------------------------------------
@@ -508,6 +520,7 @@ namespace YukaLister.Models.DatabaseAssist
 
 		// タグ紐付テーブル
 		//private readonly DbSet<TTagSequence> _listTagSequences;
+#endif
 
 		// --------------------------------------------------------------------
 		// その他
@@ -616,7 +629,7 @@ namespace YukaLister.Models.DatabaseAssist
 				return null;
 			}
 
-			List<TTieUp> tieUps = DbCommon.SelectMastersByName(_tieUps, dicByFile[YlConstants.RULE_VAR_PROGRAM]);
+			List<TTieUp> tieUps = DbCommon.SelectMastersByName(_musicInfoContext.TieUps, dicByFile[YlConstants.RULE_VAR_PROGRAM]);
 
 			// カテゴリーで絞り込み
 			if (tieUps.Count > 1 && dicByFile[YlConstants.RULE_VAR_CATEGORY] != null)
@@ -624,7 +637,7 @@ namespace YukaLister.Models.DatabaseAssist
 				List<TTieUp> tieUpsWithCategory = new();
 				foreach (TTieUp tieUp in tieUps)
 				{
-					TCategory? category = DbCommon.SelectBaseById(_categories, tieUp.CategoryId);
+					TCategory? category = DbCommon.SelectBaseById(_musicInfoContext.Categories, tieUp.CategoryId);
 					if (category != null && category.Name == dicByFile[YlConstants.RULE_VAR_CATEGORY])
 					{
 						tieUpsWithCategory.Add(tieUp);
@@ -678,12 +691,12 @@ namespace YukaLister.Models.DatabaseAssist
 			else
 			{
 				// 人物テーブルにフォルダー設定の人物情報と同名の人物があるか？
-				registeredPerson = DbCommon.SelectMasterByName(_listPeople, person.Name);
+				registeredPerson = DbCommon.SelectMasterByName(_listContextInMemory.People, person.Name);
 				if (registeredPerson == null)
 				{
 					// ID で再検索
 					String personId = YlConstants.TEMP_ID_PREFIX + person.Name;
-					registeredPerson = DbCommon.SelectBaseById(_listPeople, personId);
+					registeredPerson = DbCommon.SelectBaseById(_listContextInMemory.People, personId);
 
 					if (registeredPerson == null)
 					{
@@ -702,7 +715,7 @@ namespace YukaLister.Models.DatabaseAssist
 							Ruby = null,
 							Keyword = null,
 						};
-						_listPeople.Add(registeredPerson);
+						_listContextInMemory.People.Add(registeredPerson);
 					}
 				}
 			}
@@ -745,13 +758,13 @@ namespace YukaLister.Models.DatabaseAssist
 			{
 				// ファイル名から歌手名を取得できている場合は、楽曲情報データベースからフリガナを探す
 				List<TPerson> artists;
-				artists = DbCommon.SelectMastersByName(_people, dicArtist);
+				artists = DbCommon.SelectMastersByName(_musicInfoContext.People, dicArtist);
 				if (artists.Any())
 				{
 					// 歌手名が楽曲情報データベースに登録されていた場合はその情報を使う
 					record.ArtistName = artists[0].Name;
 					record.ArtistRuby = artists[0].Ruby;
-					RegisterPerson(_listArtistSequences, record, artists[0]);
+					RegisterPerson(_listContextInMemory.ArtistSequences, record, artists[0]);
 				}
 				else
 				{
@@ -762,7 +775,7 @@ namespace YukaLister.Models.DatabaseAssist
 						String[] artistNames = dicArtist.Split(YlConstants.VAR_VALUE_DELIMITER[0]);
 						foreach (String artistName in artistNames)
 						{
-							TPerson? artistsTmp = DbCommon.SelectMasterByName(_listPeople, artistName);
+							TPerson? artistsTmp = DbCommon.SelectMasterByName(_listContextInMemory.People, artistName);
 							if (artistsTmp != null)
 							{
 								// 区切られた歌手名が楽曲情報データベースに存在する
@@ -781,7 +794,7 @@ namespace YukaLister.Models.DatabaseAssist
 						(record.ArtistName, record.ArtistRuby) = ConcatMasterNamesAndRubies(artists.ToList<IRcMaster>());
 						for (Int32 i = 0; i < artists.Count; i++)
 						{
-							RegisterPerson(_listArtistSequences, record, artists[i]);
+							RegisterPerson(_listContextInMemory.ArtistSequences, record, artists[i]);
 						}
 					}
 					else
@@ -792,7 +805,7 @@ namespace YukaLister.Models.DatabaseAssist
 						{
 							Name = dicArtist,
 						};
-						RegisterPerson(_listArtistSequences, record, artistTmp);
+						RegisterPerson(_listContextInMemory.ArtistSequences, record, artistTmp);
 					}
 				}
 			}
@@ -820,7 +833,7 @@ namespace YukaLister.Models.DatabaseAssist
 				selectedSong = songs[0];
 
 				// 楽曲情報データベース内に曲情報がある場合は、曲に紐付くタイアップを得る
-				selectedTieUp = DbCommon.SelectBaseById(_tieUps, selectedSong.TieUpId);
+				selectedTieUp = DbCommon.SelectBaseById(_musicInfoContext.TieUps, selectedSong.TieUpId);
 			}
 			if (selectedTieUp == null)
 			{
@@ -835,14 +848,14 @@ namespace YukaLister.Models.DatabaseAssist
 
 			if (selectedTieUp != null)
 			{
-				TCategory? categoryOfTieUp = DbCommon.SelectBaseById(_categories, selectedTieUp.CategoryId);
+				TCategory? categoryOfTieUp = DbCommon.SelectBaseById(_musicInfoContext.Categories, selectedTieUp.CategoryId);
 				if (categoryOfTieUp != null)
 				{
 					// TCategory 由来項目の設定
 					record.Category = categoryOfTieUp.Name;
 				}
 
-				TMaker? makerOfTieUp = DbCommon.SelectBaseById(_makers, selectedTieUp.MakerId);
+				TMaker? makerOfTieUp = DbCommon.SelectBaseById(_musicInfoContext.Makers, selectedTieUp.MakerId);
 				if (makerOfTieUp != null)
 				{
 					// TMaker 由来項目の設定
@@ -850,7 +863,7 @@ namespace YukaLister.Models.DatabaseAssist
 					record.MakerRuby = makerOfTieUp.RubyForSearch;
 				}
 
-				List<TTieUpGroup> tieUpGroups = DbCommon.SelectSequencedTieUpGroupsByTieUpId(_tieUpGroupSequences, _tieUpGroups, selectedTieUp.Id);
+				List<TTieUpGroup> tieUpGroups = DbCommon.SelectSequencedTieUpGroupsByTieUpId(_musicInfoContext.TieUpGroupSequences, _musicInfoContext.TieUpGroups, selectedTieUp.Id);
 				if (tieUpGroups.Any())
 				{
 					// TTieUpGroup 由来項目の設定
@@ -873,10 +886,10 @@ namespace YukaLister.Models.DatabaseAssist
 			}
 
 			// 人物系
-			(record.ArtistName, record.ArtistRuby) = ConcatMasterNamesAndRubies(DbCommon.SelectSequencedPeopleBySongId(_artistSequences, _people, selectedSong.Id).ToList<IRcMaster>());
-			(record.LyristName, record.LyristRuby) = ConcatMasterNamesAndRubies(DbCommon.SelectSequencedPeopleBySongId(_lyristSequences, _people, selectedSong.Id).ToList<IRcMaster>());
-			(record.ComposerName, record.ComposerRuby) = ConcatMasterNamesAndRubies(DbCommon.SelectSequencedPeopleBySongId(_composerSequences, _people, selectedSong.Id).ToList<IRcMaster>());
-			(record.ArrangerName, record.ArrangerRuby) = ConcatMasterNamesAndRubies(DbCommon.SelectSequencedPeopleBySongId(_arrangerSequences, _people, selectedSong.Id).ToList<IRcMaster>());
+			(record.ArtistName, record.ArtistRuby) = ConcatMasterNamesAndRubies(DbCommon.SelectSequencedPeopleBySongId(_musicInfoContext.ArtistSequences, _musicInfoContext.People, selectedSong.Id).ToList<IRcMaster>());
+			(record.LyristName, record.LyristRuby) = ConcatMasterNamesAndRubies(DbCommon.SelectSequencedPeopleBySongId(_musicInfoContext.LyristSequences, _musicInfoContext.People, selectedSong.Id).ToList<IRcMaster>());
+			(record.ComposerName, record.ComposerRuby) = ConcatMasterNamesAndRubies(DbCommon.SelectSequencedPeopleBySongId(_musicInfoContext.ComposerSequences, _musicInfoContext.People, selectedSong.Id).ToList<IRcMaster>());
+			(record.ArrangerName, record.ArrangerRuby) = ConcatMasterNamesAndRubies(DbCommon.SelectSequencedPeopleBySongId(_musicInfoContext.ArrangerSequences, _musicInfoContext.People, selectedSong.Id).ToList<IRcMaster>());
 
 			// TSong 由来項目の設定
 			record.SongId = selectedSong.Id;
@@ -889,7 +902,7 @@ namespace YukaLister.Models.DatabaseAssist
 			}
 			if (String.IsNullOrEmpty(record.Category))
 			{
-				TCategory? categoryOfSong = DbCommon.SelectBaseById(_categories, selectedSong.CategoryId);
+				TCategory? categoryOfSong = DbCommon.SelectBaseById(_musicInfoContext.Categories, selectedSong.CategoryId);
 				if (categoryOfSong != null)
 				{
 					record.Category = categoryOfSong.Name;
@@ -898,7 +911,7 @@ namespace YukaLister.Models.DatabaseAssist
 			record.Comment += KeywordToComment(selectedSong);
 
 			// タグ
-			(record.TagName, record.TagRuby) = ConcatMasterNamesAndRubies(DbCommon.SelectSequencedTagsBySongId(_tagSequences, _tags, selectedSong.Id).ToList<IRcMaster>());
+			(record.TagName, record.TagRuby) = ConcatMasterNamesAndRubies(DbCommon.SelectSequencedTagsBySongId(_musicInfoContext.TagSequences, _musicInfoContext.Tags, selectedSong.Id).ToList<IRcMaster>());
 		}
 
 		// --------------------------------------------------------------------
@@ -909,7 +922,7 @@ namespace YukaLister.Models.DatabaseAssist
 			Dictionary<TSong, TTieUp> songsAndTieUps = new();
 			foreach (TSong song in songs)
 			{
-				TTieUp? tieUpOfSong = DbCommon.SelectBaseById(_tieUps, song.TieUpId);
+				TTieUp? tieUpOfSong = DbCommon.SelectBaseById(_musicInfoContext.TieUps, song.TieUpId);
 				if (tieUpOfSong != null)
 				{
 					songsAndTieUps[song] = tieUpOfSong;

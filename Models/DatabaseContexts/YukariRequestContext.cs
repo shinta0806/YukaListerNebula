@@ -14,6 +14,7 @@ using Microsoft.EntityFrameworkCore;
 using Shinta;
 
 using System;
+using System.Diagnostics;
 using System.IO;
 
 using YukaLister.Models.Database;
@@ -33,6 +34,7 @@ namespace YukaLister.Models.DatabaseContexts
 		// --------------------------------------------------------------------
 		public YukariRequestContext()
 		{
+			Debug.Assert(YukariRequests != null, "YukariRequests table not init");
 		}
 
 		// ====================================================================
@@ -40,12 +42,13 @@ namespace YukaLister.Models.DatabaseContexts
 		// ====================================================================
 
 		// ゆかり予約テーブル
-		public DbSet<TYukariRequest>? YukariRequests { get; set; }
+		public DbSet<TYukariRequest> YukariRequests { get; set; }
 
 		// ====================================================================
 		// public static メンバー関数
 		// ====================================================================
 
+#if false
 		// --------------------------------------------------------------------
 		// データベースコンテキスト生成
 		// ＜例外＞ Exception
@@ -69,6 +72,7 @@ namespace YukaLister.Models.DatabaseContexts
 			}
 			yukariRequests = requestDbContext.YukariRequests;
 		}
+#endif
 
 		// --------------------------------------------------------------------
 		// ファイルの最終更新日時 UTC（修正ユリウス日）

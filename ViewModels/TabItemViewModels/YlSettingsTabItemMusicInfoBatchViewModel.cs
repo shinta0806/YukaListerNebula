@@ -263,7 +263,7 @@ namespace YukaLister.ViewModels.TabItemViewModels
 					return;
 				}
 
-				using MusicInfoContextDefault musicInfoContextDefault = MusicInfoContextDefault.CreateContext(out DbSet<TProperty> _);
+				using MusicInfoContextDefault musicInfoContextDefault = new();
 				musicInfoContextDefault.CreateDatabase();
 				YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(TraceEventType.Information, "楽曲情報データベースを削除しました。");
 			}

@@ -62,40 +62,28 @@ namespace YukaLister.ViewModels.ImportExportWindowViewModels
 		protected override Task ImportExportByWorker(Object? _)
 		{
 			String tempExportPath = YlCommon.TempPath();
-			MusicInfoContextDefault musicInfoContextDefault = MusicInfoContextDefault.CreateContext(out DbSet<TProperty> propertiesDefault,
-					out DbSet<TSong> songsDefault, out DbSet<TPerson> peopleDefault, out DbSet<TTieUp> tieUpsDefault, out DbSet<TCategory> categoriesDefault,
-					out DbSet<TTieUpGroup> tieUpGroupsDefault, out DbSet<TMaker> makersDefault, out DbSet<TTag> tagsDefault,
-					out DbSet<TSongAlias> songAliasesDefault, out DbSet<TPersonAlias> personAliasesDefault, out DbSet<TTieUpAlias> tieUpAliasesDefault,
-					out DbSet<TCategoryAlias> categoryAliasesDefault, out DbSet<TTieUpGroupAlias> tieUpGroupAliasesDefault, out DbSet<TMakerAlias> makerAliasesDefault,
-					out DbSet<TArtistSequence> artistSequencesDefault, out DbSet<TLyristSequence> lyristSequencesDefault, out DbSet<TComposerSequence> composerSequencesDefault, out DbSet<TArrangerSequence> arrangerSequencesDefault,
-					out DbSet<TTieUpGroupSequence> tieUpGroupSequencesDefault, out DbSet<TTagSequence> tagSequencesDefault);
+			MusicInfoContextDefault musicInfoContextDefault = new();
 			musicInfoContextDefault.ChangeTracker.QueryTrackingBehavior = QueryTrackingBehavior.NoTracking;
-			MusicInfoContextExport musicInfoContextExport = MusicInfoContextExport.CreateContext(tempExportPath, out DbSet<TProperty> propertiesExport,
-					out DbSet<TSong> songsExport, out DbSet<TPerson> peopleExport, out DbSet<TTieUp> tieUpsExport, out DbSet<TCategory> categoriesExport,
-					out DbSet<TTieUpGroup> tieUpGroupsExport, out DbSet<TMaker> makersExport, out DbSet<TTag> tagsExport,
-					out DbSet<TSongAlias> songAliasesExport, out DbSet<TPersonAlias> personAliasesExport, out DbSet<TTieUpAlias> tieUpAliasesExport,
-					out DbSet<TCategoryAlias> categoryAliasesExport, out DbSet<TTieUpGroupAlias> tieUpGroupAliasesExport, out DbSet<TMakerAlias> makerAliasesExport,
-					out DbSet<TArtistSequence> artistSequencesExport, out DbSet<TLyristSequence> lyristSequencesExport, out DbSet<TComposerSequence> composerSequencesExport, out DbSet<TArrangerSequence> arrangerSequencesExport,
-					out DbSet<TTieUpGroupSequence> tieUpGroupSequencesExport, out DbSet<TTagSequence> tagSequencesExport);
+			MusicInfoContextExport musicInfoContextExport = new(tempExportPath);
 			musicInfoContextExport.CreateDatabase();
 
 			// コピー
 			// peopleInMemory.AddRange(peopleInMusicInfo) のように DbSet 全体を追加すると、アプリ終了時にタスクが終了しないため、Where を挟む
 			Description = "エクスポートしています...";
-			songsExport.AddRange(songsDefault.Where(x => true));
-			peopleExport.AddRange(peopleDefault.Where(x => true));
-			tieUpsExport.AddRange(tieUpsDefault.Where(x => true));
-			tieUpGroupsExport.AddRange(tieUpGroupsDefault.Where(x => true));
-			makersExport.AddRange(makersDefault.Where(x => true));
-			songAliasesExport.AddRange(songAliasesDefault.Where(x => true));
-			tieUpAliasesExport.AddRange(tieUpAliasesDefault.Where(x => true));
-			artistSequencesExport.AddRange(artistSequencesDefault.Where(x => true));
-			lyristSequencesExport.AddRange(lyristSequencesDefault.Where(x => true));
-			composerSequencesExport.AddRange(composerSequencesDefault.Where(x => true));
-			arrangerSequencesExport.AddRange(arrangerSequencesDefault.Where(x => true));
-			tieUpGroupSequencesExport.AddRange(tieUpGroupSequencesDefault.Where(x => true));
-			tagsExport.AddRange(tagsDefault.Where(x => true));
-			tagSequencesExport.AddRange(tagSequencesDefault.Where(x => true));
+			musicInfoContextExport.Songs.AddRange(musicInfoContextDefault.Songs.Where(x => true));
+			musicInfoContextExport.People.AddRange(musicInfoContextDefault.People.Where(x => true));
+			musicInfoContextExport.TieUps.AddRange(musicInfoContextDefault.TieUps.Where(x => true));
+			musicInfoContextExport.TieUpGroups.AddRange(musicInfoContextDefault.TieUpGroups.Where(x => true));
+			musicInfoContextExport.Makers.AddRange(musicInfoContextDefault.Makers.Where(x => true));
+			musicInfoContextExport.SongAliases.AddRange(musicInfoContextDefault.SongAliases.Where(x => true));
+			musicInfoContextExport.TieUpAliases.AddRange(musicInfoContextDefault.TieUpAliases.Where(x => true));
+			musicInfoContextExport.ArtistSequences.AddRange(musicInfoContextDefault.ArtistSequences.Where(x => true));
+			musicInfoContextExport.LyristSequences.AddRange(musicInfoContextDefault.LyristSequences.Where(x => true));
+			musicInfoContextExport.ComposerSequences.AddRange(musicInfoContextDefault.ComposerSequences.Where(x => true));
+			musicInfoContextExport.ArrangerSequences.AddRange(musicInfoContextDefault.ArrangerSequences.Where(x => true));
+			musicInfoContextExport.TieUpGroupSequences.AddRange(musicInfoContextDefault.TieUpGroupSequences.Where(x => true));
+			musicInfoContextExport.Tags.AddRange(musicInfoContextDefault.Tags.Where(x => true));
+			musicInfoContextExport.TagSequences.AddRange(musicInfoContextDefault.TagSequences.Where(x => true));
 			musicInfoContextExport.SaveChanges();
 
 			// 古いファイルを削除

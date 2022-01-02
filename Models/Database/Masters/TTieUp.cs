@@ -92,9 +92,9 @@ namespace YukaLister.Models.Database.Masters
 				if (AvoidSameName)
 				{
 					TCategory? category;
-					using MusicInfoContextDefault musicInfoContext = MusicInfoContextDefault.CreateContext(out DbSet<TCategory> categories);
-					musicInfoContext.ChangeTracker.QueryTrackingBehavior = QueryTrackingBehavior.NoTracking;
-					category = DbCommon.SelectBaseById(categories, CategoryId);
+					using MusicInfoContextDefault musicInfoContextDefault = new();
+					musicInfoContextDefault.ChangeTracker.QueryTrackingBehavior = QueryTrackingBehavior.NoTracking;
+					category = DbCommon.SelectBaseById(musicInfoContextDefault.Categories, CategoryId);
 					return Name + "（" + (String.IsNullOrEmpty(category?.Name) ? "カテゴリー無し" : category?.Name) + ", "
 							+ (String.IsNullOrEmpty(Keyword) ? "キーワード無し" : Keyword) + "）";
 				}
@@ -154,8 +154,8 @@ namespace YukaLister.Models.Database.Masters
 			{
 				if (_displayMakerName == null && MakerId != null)
 				{
-					using MusicInfoContextDefault musicInfoContextDefault = MusicInfoContextDefault.CreateContext(out DbSet<TMaker> makers);
-					_displayMakerName = DbCommon.SelectBaseById(makers, MakerId)?.Name;
+					using MusicInfoContextDefault musicInfoContextDefault = new();
+					_displayMakerName = DbCommon.SelectBaseById(musicInfoContextDefault.Makers, MakerId)?.Name;
 				}
 				return _displayMakerName;
 			}
@@ -185,9 +185,8 @@ namespace YukaLister.Models.Database.Masters
 			{
 				if (_displayTieUpGroupNames == null)
 				{
-					using MusicInfoContextDefault musicInfoContextDefault = MusicInfoContextDefault.CreateContext(out DbSet<TTieUpGroup> tieUpGroups);
-					MusicInfoContextDefault.GetDbSet(musicInfoContextDefault, out DbSet<TTieUpGroupSequence> tieUpGroupSequences);
-					List<TTieUpGroup> sequencedTieUpGroups = DbCommon.SelectSequencedTieUpGroupsByTieUpId(tieUpGroupSequences, tieUpGroups, Id);
+					using MusicInfoContextDefault musicInfoContextDefault = new();
+					List<TTieUpGroup> sequencedTieUpGroups = DbCommon.SelectSequencedTieUpGroupsByTieUpId(musicInfoContextDefault.TieUpGroupSequences, musicInfoContextDefault.TieUpGroups, Id);
 					_displayTieUpGroupNames = String.Join(YlConstants.VAR_VALUE_DELIMITER, sequencedTieUpGroups.Select(x => x.Name));
 				}
 				return _displayTieUpGroupNames;

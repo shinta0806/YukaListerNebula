@@ -28,12 +28,8 @@ namespace YukaLister.Models.DatabaseAssist
 		// --------------------------------------------------------------------
 		// コンストラクター
 		// --------------------------------------------------------------------
-		public TFoundSetterAliasSpecify(ListContextInMemory listContextInMemory,
-				DbSet<TPerson> listPeople, DbSet<TArtistSequence> listArtistSequences, DbSet<TComposerSequence> listComposerSequences,
-				DbSet<TTieUpGroup> listTieUpGroups, DbSet<TTieUpGroupSequence> listTieUpGroupSequences,
-				DbSet<TTag> listTags, DbSet<TTagSequence> listTagSequences,
-				String? specifiedProgramOrigin, String? specifiedSongOrigin)
-				: base(listContextInMemory, listPeople, listArtistSequences, listComposerSequences, listTieUpGroups, listTieUpGroupSequences, listTags, listTagSequences)
+		public TFoundSetterAliasSpecify(ListContextInMemory listContextInMemory, String? specifiedProgramOrigin, String? specifiedSongOrigin)
+				: base(listContextInMemory)
 		{
 			_specifiedProgramOrigin = specifiedProgramOrigin;
 			_specifiedSongOrigin = specifiedSongOrigin;

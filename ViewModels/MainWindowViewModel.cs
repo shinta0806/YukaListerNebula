@@ -369,7 +369,7 @@ namespace YukaLister.ViewModels
 				String? syncServerBak = YukaListerModel.Instance.EnvModel.YlSettings.SyncServer;
 				String? syncAccountBak = YukaListerModel.Instance.EnvModel.YlSettings.SyncAccount;
 				String? syncPasswordBak = YukaListerModel.Instance.EnvModel.YlSettings.SyncPassword;
-				using MusicInfoContextDefault musicInfoContextDefault = MusicInfoContextDefault.CreateContext(out DbSet<TProperty> _);
+				using MusicInfoContextDefault musicInfoContextDefault = new();
 				DateTime musicInfoDbTimeBak = musicInfoContextDefault.LastWriteDateTime();
 				Boolean regetSyncDataNeeded;
 
@@ -666,7 +666,7 @@ namespace YukaLister.ViewModels
 		{
 			try
 			{
-				using MusicInfoContextDefault musicInfoContextDefault = MusicInfoContextDefault.CreateContext(out DbSet<TProperty> _);
+				using MusicInfoContextDefault musicInfoContextDefault = new();
 				DateTime musicInfoDbTimeBak = musicInfoContextDefault.LastWriteDateTime();
 
 				// ViewModel 経由でウィンドウを開く
@@ -844,6 +844,14 @@ namespace YukaLister.ViewModels
 						YlCommon.ActivateYurelinIfNeeded();
 					}
 				});
+
+#if DEBUG
+				using MusicInfoContextDefault musicInfoContext = new();
+				if (musicInfoContext.TieUps != null)
+				{
+					Debug.WriteLine("Initialize() (musicInfoContext.TieUps != null");
+				}
+#endif
 
 				// スタートアップ終了
 				YukaListerModel.Instance.EnvModel.YukaListerPartsStatus[(Int32)YukaListerPartsStatusIndex.Startup] = YukaListerStatus.Ready;
@@ -1038,8 +1046,8 @@ namespace YukaLister.ViewModels
 		{
 			try
 			{
-				using MusicInfoContextDefault musicInfoContextDefault = MusicInfoContextDefault.CreateContext(out DbSet<TTieUp> tieUps);
-				if (tieUps.Any())
+				using MusicInfoContextDefault musicInfoContextDefault = new();
+				if (musicInfoContextDefault.TieUps.Any())
 				{
 					return;
 				}
@@ -1237,7 +1245,7 @@ namespace YukaLister.ViewModels
 				return;
 			}
 
-			using MusicInfoContextDefault musicInfoContextDefault = MusicInfoContextDefault.CreateContext(out DbSet<TProperty> _);
+			using MusicInfoContextDefault musicInfoContextDefault = new();
 			DateTime musicInfoDbTimeBak = musicInfoContextDefault.LastWriteDateTime();
 
 			// ViewModel 経由でフォルダー設定ウィンドウを開く
@@ -1504,7 +1512,6 @@ namespace YukaLister.ViewModels
 			YukaListerModel.Instance.EnvModel.IsMainWindowDataGridItemUpdated = false;
 
 			// 更新
-			// ToDo: IsMainWindowDataGridItemUpdated のみが立っていた場合は効率よい処理方法があるのではないか
 			TargetFolderInfosVisible = YukaListerModel.Instance.ProjModel.TargetFolderInfosVisible();
 		}
 
@@ -1519,8 +1526,8 @@ namespace YukaLister.ViewModels
 			}
 			else
 			{
-				using ListContextInDisk listContextInDisk = ListContextInDisk.CreateContext(out DbSet<TFound> founds);
-				_numFounds = founds.Count();
+				using ListContextInDisk listContextInDisk = new();
+				_numFounds = listContextInDisk.Founds.Count();
 			}
 			NumRecordsLabel = _numFounds.ToString("#,0");
 			ButtonTFoundsClickedCommand.RaiseCanExecuteChanged();
@@ -1537,9 +1544,9 @@ namespace YukaLister.ViewModels
 			}
 			else
 			{
-				using ReportContext reportContext = ReportContext.CreateContext(out DbSet<TReport> reports);
+				using ReportContext reportContext = new();
 				reportContext.ChangeTracker.QueryTrackingBehavior = QueryTrackingBehavior.NoTracking;
-				numProgress = reports.Where(x => x.Status <= (Int32)ReportStatus.Progress).Count();
+				numProgress = reportContext.Reports.Where(x => x.Status <= (Int32)ReportStatus.Progress).Count();
 			}
 
 #if DEBUGz
@@ -1580,7 +1587,7 @@ namespace YukaLister.ViewModels
 
 		// --------------------------------------------------------------------
 		// 環境系のステータスを更新
-		// ToDo: YlCommon に移動し、スプラッシュウィンドウ等でもステータスを利用できるようにする
+		// ToDo: YlCommon に移動し、スプラッシュウィンドウ等でもステータスを利用できるようにしたいが、YukaListerStatusLabel 等もからむのが厄介
 		// --------------------------------------------------------------------
 		private void UpdateYukaListerEnvironmentStatus()
 		{

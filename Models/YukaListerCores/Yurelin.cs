@@ -89,15 +89,15 @@ namespace YukaLister.Models.YukaListerCores
 					YukaListerModel.Instance.EnvModel.LogWriter.LogMessage(Common.TRACE_EVENT_TYPE_STATUS, GetType().Name + " アクティブ化。");
 
 					// データベースアクセス準備
-					using YukariStatisticsContext yukariStatisticsContext = YukariStatisticsContext.CreateContext(out DbSet<TYukariStatistics> yukariStatistics);
-					using YukariRequestContext yukariRequestContext = YukariRequestContext.CreateContext(out DbSet<TYukariRequest> yukariRequests);
+					using YukariStatisticsContext yukariStatisticsContext = new();
+					using YukariRequestContext yukariRequestContext = new();
 					yukariRequestContext.ChangeTracker.QueryTrackingBehavior = QueryTrackingBehavior.NoTracking;
-					using ListContextInDisk listContextInDisk = ListContextInDisk.CreateContext(out DbSet<TFound> founds);
+					using ListContextInDisk listContextInDisk = new();
 					listContextInDisk.ChangeTracker.QueryTrackingBehavior = QueryTrackingBehavior.NoTracking;
-					UpdateLastYukariRequestClearTimeIfNeeded(yukariRequests);
+					UpdateLastYukariRequestClearTimeIfNeeded(yukariRequestContext.YukariRequests);
 
 					// request.db にある予約の統計更新
-					await AnalyzeYukariRequests(yukariStatistics, yukariRequests, founds);
+					await AnalyzeYukariRequests(yukariStatisticsContext.YukariStatistics, yukariRequestContext.YukariRequests, listContextInDisk.Founds);
 #if DEBUG
 					Boolean hasChangesBak = yukariStatisticsContext.ChangeTracker.HasChanges();
 					Double lastWriteTimeBak = yukariStatisticsContext.LastWriteMjd();
@@ -230,8 +230,8 @@ namespace YukaLister.Models.YukaListerCores
 		private void UpdatePast()
 		{
 			Debug.WriteLine("UpdatePast()");
-			using YukariStatisticsContext yukariStatisticsContext = YukariStatisticsContext.CreateContext(out DbSet<TYukariStatistics> yukariStatistics);
-			IQueryable<TYukariStatistics> targetYukariStatistics = yukariStatistics.Where(x => (UpdatePastYukariStatisticsKind == UpdatePastYukariStatisticsKind.All || !x.AttributesDone) && !x.Invalid);
+			using YukariStatisticsContext yukariStatisticsContext = new();
+			IQueryable<TYukariStatistics> targetYukariStatistics = yukariStatisticsContext.YukariStatistics.Where(x => (UpdatePastYukariStatisticsKind == UpdatePastYukariStatisticsKind.All || !x.AttributesDone) && !x.Invalid);
 			foreach (TYukariStatistics oneStatistics in targetYukariStatistics)
 			{
 #if DEBUGz
@@ -265,11 +265,8 @@ namespace YukaLister.Models.YukaListerCores
 				FolderSettingsInDisk folderSettingsInDisk = YlCommon.LoadFolderSettings(found.Folder);
 				FolderSettingsInMemory folderSettingsInMemory = YlCommon.CreateFolderSettingsInMemory(folderSettingsInDisk);
 
-				using ListContextInMemory listContextInMemory = ListContextInMemory.CreateContext(out DbSet<TFound> founds,
-						out DbSet<TPerson> people, out DbSet<TArtistSequence> artistSequences, out DbSet<TComposerSequence> composerSequences,
-						out DbSet<TTieUpGroup> tieUpGroups, out DbSet<TTieUpGroupSequence> tieUpGroupSequences,
-						out DbSet<TTag> tags, out DbSet<TTagSequence> tagSequences);
-				using TFoundSetter foundSetter = new(listContextInMemory, people, artistSequences, composerSequences, tieUpGroups, tieUpGroupSequences, tags, tagSequences);
+				using ListContextInMemory listContextInMemory = new();
+				using TFoundSetter foundSetter = new(listContextInMemory);
 
 				// TFound 設定
 				foundSetter.SetTFoundValues(found, folderSettingsInMemory);

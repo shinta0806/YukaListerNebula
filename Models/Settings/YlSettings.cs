@@ -284,8 +284,8 @@ namespace YukaLister.Models.Settings
 			// 無効なファイルを YukariRequestContext で開くとクエリ実行時にエラーとなる
 			try
 			{
-				using YukariRequestContext yukariRequestContext = YukariRequestContext.CreateContext(out DbSet<TYukariRequest> yukariRequests);
-				yukariRequests.Any();
+				using YukariRequestContext yukariRequestContext = new();
+				yukariRequestContext.YukariRequests.Any();
 			}
 			catch (Exception)
 			{

@@ -69,7 +69,7 @@ namespace YukaLister.Models.OutputWriters
 			}
 			stringBuilder.Append('\n');
 
-			IQueryable<TFound> queryResult = _founds.OrderBy(x => x.Category).ThenBy(x => x.Head).ThenBy(x => x.TieUpRuby).ThenBy(x => x.TieUpName).ThenBy(x => x.SongRuby).ThenBy(x => x.SongName);
+			IQueryable<TFound> queryResult = _listContextInMemory.Founds.OrderBy(x => x.Category).ThenBy(x => x.Head).ThenBy(x => x.TieUpRuby).ThenBy(x => x.TieUpName).ThenBy(x => x.SongRuby).ThenBy(x => x.SongName);
 
 			// コンテンツ
 			Int32 index = 1;

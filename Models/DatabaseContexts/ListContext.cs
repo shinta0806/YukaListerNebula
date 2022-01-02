@@ -11,6 +11,7 @@
 using Microsoft.EntityFrameworkCore;
 
 using System;
+using System.Diagnostics;
 
 using YukaLister.Models.Database;
 using YukaLister.Models.Database.Masters;
@@ -30,6 +31,14 @@ namespace YukaLister.Models.DatabaseContexts
 		public ListContext(String databaseName)
 				: base(databaseName)
 		{
+			Debug.Assert(Founds != null, "Founds table not init");
+			Debug.Assert(People != null, "People table not init");
+			Debug.Assert(ArtistSequences != null, "ArtistSequences table not init");
+			Debug.Assert(ComposerSequences != null, "ComposerSequences table not init");
+			Debug.Assert(TieUpGroups != null, "TieUpGroups table not init");
+			Debug.Assert(TieUpGroupSequences != null, "TieUpGroupSequences table not init");
+			Debug.Assert(Tags != null, "Tags table not init");
+			Debug.Assert(TagSequences != null, "TagSequences table not init");
 		}
 
 		// ====================================================================
@@ -41,37 +50,38 @@ namespace YukaLister.Models.DatabaseContexts
 		// --------------------------------------------------------------------
 
 		// 検出ファイルリストテーブル
-		public DbSet<TFound>? Founds { get; set; }
+		public DbSet<TFound> Founds { get; set; }
 
 		// --------------------------------------------------------------------
 		// その他（楽曲情報データベース＋楽曲情報データベースにない情報を名寄せするためのレコード）
 		// --------------------------------------------------------------------
 
 		// 人物マスターテーブル
-		public DbSet<TPerson>? People { get; set; }
+		public DbSet<TPerson> People { get; set; }
 
 		// 歌手紐付テーブル
-		public DbSet<TArtistSequence>? ArtistSequences { get; set; }
+		public DbSet<TArtistSequence> ArtistSequences { get; set; }
 
 		// 作曲者紐付テーブル
-		public DbSet<TComposerSequence>? ComposerSequences { get; set; }
+		public DbSet<TComposerSequence> ComposerSequences { get; set; }
 
 		// タイアップグループマスターテーブル
-		public DbSet<TTieUpGroup>? TieUpGroups { get; set; }
+		public DbSet<TTieUpGroup> TieUpGroups { get; set; }
 
 		// タイアップグループ紐付テーブル
-		public DbSet<TTieUpGroupSequence>? TieUpGroupSequences { get; set; }
+		public DbSet<TTieUpGroupSequence> TieUpGroupSequences { get; set; }
 
 		// タグマスターテーブル
-		public DbSet<TTag>? Tags { get; set; }
+		public DbSet<TTag> Tags { get; set; }
 
 		// タグ紐付テーブル
-		public DbSet<TTagSequence>? TagSequences { get; set; }
+		public DbSet<TTagSequence> TagSequences { get; set; }
 
 		// ====================================================================
 		// public static メンバー関数
 		// ====================================================================
 
+#if false
 		// --------------------------------------------------------------------
 		// データベースセット取得
 		// ＜例外＞ Exception
@@ -175,6 +185,7 @@ namespace YukaLister.Models.DatabaseContexts
 			}
 			tagSequences = listContext.TagSequences;
 		}
+#endif
 
 		// ====================================================================
 		// protected メンバー関数

@@ -174,8 +174,8 @@ namespace YukaLister.Models.DatabaseAssist
 		{
 			if (displayCategoryName == null && categoryId != null)
 			{
-				using MusicInfoContextDefault musicInfoContextDefault = MusicInfoContextDefault.CreateContext(out DbSet<TCategory> categories);
-				displayCategoryName = DbCommon.SelectBaseById(categories, categoryId)?.Name;
+				using MusicInfoContextDefault musicInfoContextDefault = new();
+				displayCategoryName = DbCommon.SelectBaseById(musicInfoContextDefault.Categories, categoryId)?.Name;
 			}
 			return displayCategoryName;
 		}
@@ -463,17 +463,17 @@ namespace YukaLister.Models.DatabaseAssist
 			{
 				// メモリ DB は常に作成
 				// using しない
-				ListContextInMemory listContextInMemory = ListContextInMemory.CreateContext(out DbSet<TProperty> _);
+				ListContextInMemory listContextInMemory = new();
 				listContextInMemory.CreateDatabase();
 				YukaListerModel.Instance.EnvModel.ListContextInMemory = listContextInMemory;
 
 				// 楽曲情報データベース等が存在しない場合は作成
 				Directory.CreateDirectory(YukaListerDatabaseFullFolder());
 
-				using MusicInfoContextDefault musicInfoContextDefault = MusicInfoContextDefault.CreateContext(out DbSet<TProperty> _);
+				using MusicInfoContextDefault musicInfoContextDefault = new();
 				musicInfoContextDefault.CreateDatabaseIfNeeded();
 
-				using YukariStatisticsContext yukariStatisticsContext = YukariStatisticsContext.CreateContext(out DbSet<TProperty> _);
+				using YukariStatisticsContext yukariStatisticsContext = new();
 				yukariStatisticsContext.CreateDatabaseIfNeeded();
 
 				// ゆかり用データベース等は、ゆかり設定ファイルが正しく指定されている場合のみ
@@ -486,14 +486,14 @@ namespace YukaLister.Models.DatabaseAssist
 				Directory.CreateDirectory(YukariDatabaseFullFolder(YukaListerModel.Instance.EnvModel.YlSettings));
 
 				// 存在しない場合は作成
-				using ReportContext reportContext = ReportContext.CreateContext(out DbSet<TProperty> _);
+				using ReportContext reportContext = new();
 				reportContext.CreateDatabaseIfNeeded();
 
-				using ThumbContext thumbContext = ThumbContext.CreateContext(out DbSet<TProperty> _);
+				using ThumbContext thumbContext = new();
 				thumbContext.CreateDatabaseIfNeeded();
 
 				// 常に作成（クリア）
-				using ListContextInDisk listContextInDisk = ListContextInDisk.CreateContext(out DbSet<TProperty> _);
+				using ListContextInDisk listContextInDisk = new();
 				listContextInDisk.CreateDatabase();
 			}
 			catch (Exception excep)

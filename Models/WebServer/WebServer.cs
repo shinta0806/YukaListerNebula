@@ -362,8 +362,8 @@ namespace YukaLister.Models.WebServer
 			if (!String.IsNullOrEmpty(path))
 			{
 				String fileName = Path.GetFileName(path);
-				using ThumbContext thumbContext = ThumbContext.CreateContext(out DbSet<TCacheThumb> cacheThumbs);
-				IQueryable<TCacheThumb> queryResult = cacheThumbs.Where(x => x.FileName == fileName && x.Width == width);
+				using ThumbContext thumbContext = new();
+				IQueryable<TCacheThumb> queryResult = thumbContext.CacheThumbs.Where(x => x.FileName == fileName && x.Width == width);
 				foreach (TCacheThumb record in queryResult)
 				{
 					// ファイルのタイムスタンプを比較
@@ -377,7 +377,7 @@ namespace YukaLister.Models.WebServer
 					// 不一致のキャッシュは削除し、後のキャッシュ保存が可能となるようにする
 					try
 					{
-						cacheThumbs.Remove(record);
+						thumbContext.CacheThumbs.Remove(record);
 						thumbContext.SaveChanges();
 					}
 					catch (Exception)
@@ -403,9 +403,9 @@ namespace YukaLister.Models.WebServer
 			Int32 uid = Int32.Parse(options[YlConstants.SERVER_OPTION_NAME_UID]);
 
 			// ゆかり用データベースから UID を検索
-			using ListContextInMemory listContextInMemory = ListContextInMemory.CreateContext(out DbSet<TFound> founds);
+			using ListContextInMemory listContextInMemory = new();
 			listContextInMemory.ChangeTracker.QueryTrackingBehavior = QueryTrackingBehavior.NoTracking;
-			TFound? target = founds.SingleOrDefault(x => x.Uid == uid);
+			TFound? target = listContextInMemory.Founds.SingleOrDefault(x => x.Uid == uid);
 			if (target == null)
 			{
 				throw new Exception("Bad " + YlConstants.SERVER_OPTION_NAME_UID + ".");
@@ -497,10 +497,10 @@ namespace YukaLister.Models.WebServer
 
 			if (isSave)
 			{
-				using ThumbContext thumbContext = ThumbContext.CreateContext(out DbSet<TCacheThumb> cacheThumbs);
+				using ThumbContext thumbContext = new();
 
 				// 保存
-				cacheThumbs.Add(cacheThumb);
+				thumbContext.CacheThumbs.Add(cacheThumb);
 
 				try
 				{

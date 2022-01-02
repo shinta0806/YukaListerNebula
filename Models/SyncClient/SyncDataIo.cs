@@ -37,15 +37,8 @@ namespace YukaLister.Models.SyncClient
 			// 最初にログの設定
 			YlCommon.SetLogWriterSyncDetail(_logWriterSyncDetail);
 
-			_musicInfoContext = MusicInfoContextDefault.CreateContext(out _MusicInfoProperties,
-					out _songs, out _people, out _tieUps, out _categories,
-					out _tieUpGroups, out _makers, out _tags,
-					out _songAliases, out _personAliases, out _tieUpAliases,
-					out _categoryAliases, out _tieUpGroupAliases, out _makerAliases,
-					out _artistSequences, out _lyristSequences, out _composerSequences, out _arrangerSequences,
-					out _tieUpGroupSequences, out _tagSequences);
-
-			_yukariStatisticsContext = YukariStatisticsContext.CreateContext(out _YukariStatisticsProperties, out _yukariStatistics);
+			_musicInfoContext = new();
+			_yukariStatisticsContext = new();
 		}
 
 		// ====================================================================
@@ -65,6 +58,7 @@ namespace YukaLister.Models.SyncClient
 		// protected メンバー変数
 		// ====================================================================
 
+#if false
 		// --------------------------------------------------------------------
 		// データベースプロパティーテーブル
 		// --------------------------------------------------------------------
@@ -150,6 +144,7 @@ namespace YukaLister.Models.SyncClient
 
 		// ゆかり統計テーブル
 		protected readonly DbSet<TYukariStatistics> _yukariStatistics;
+#endif
 
 		// --------------------------------------------------------------------
 		// その他

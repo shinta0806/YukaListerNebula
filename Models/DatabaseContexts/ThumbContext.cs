@@ -11,6 +11,7 @@
 using Microsoft.EntityFrameworkCore;
 
 using System;
+using System.Diagnostics;
 
 using YukaLister.Models.Database;
 using YukaLister.Models.DatabaseAssist;
@@ -30,6 +31,7 @@ namespace YukaLister.Models.DatabaseContexts
 		public ThumbContext()
 				: base("サムネイルキャッシュ")
 		{
+			Debug.Assert(CacheThumbs != null, "CacheThumbs table not init");
 		}
 
 		// ====================================================================
@@ -37,12 +39,13 @@ namespace YukaLister.Models.DatabaseContexts
 		// ====================================================================
 
 		// サムネイルキャッシュテーブル
-		public DbSet<TCacheThumb>? CacheThumbs { get; set; }
+		public DbSet<TCacheThumb> CacheThumbs { get; set; }
 
 		// ====================================================================
 		// public static メンバー関数
 		// ====================================================================
 
+#if false
 		// --------------------------------------------------------------------
 		// データベースコンテキスト生成
 		// ＜例外＞ Exception
@@ -77,6 +80,7 @@ namespace YukaLister.Models.DatabaseContexts
 			}
 			cacheThumbs = thumbContext.CacheThumbs;
 		}
+#endif
 
 		// ====================================================================
 		// public メンバー関数
