@@ -184,7 +184,7 @@ define('SESSION_INFO_REJECT_UPDATE_TIME', 'RejectUpdateTime');
 define('SYSTEM_NAME', 'ゆかりすたー 4 NEBULA 同期');
 define('SYSTEM_APP_GENERATION', 'NEBULA');
 define('SYSTEM_VER', 'Ver 6.02');
-define('SYSTEM_COPYRIGHT', 'Copyright (C) 2021 by SHINTA');
+define('SYSTEM_COPYRIGHT', 'Copyright (C) 2021-2022 by SHINTA');
 define('TABLE_NAME_SONG', 't_song');
 define('TABLE_NAME_PERSON', 't_person');
 define('TABLE_NAME_TIE_UP', 't_tie_up');

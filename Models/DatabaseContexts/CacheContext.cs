@@ -61,50 +61,6 @@ namespace YukaLister.Models.DatabaseContexts
 		public DbSet<TCacheHeader> CacheHeaders { get; set; }
 
 		// ====================================================================
-		// public static メンバー関数
-		// ====================================================================
-
-		// --------------------------------------------------------------------
-		// データベースコンテキスト生成
-		// ＜例外＞ Exception
-		// --------------------------------------------------------------------
-		public static CacheContext CreateContext(String driveLetter, out DbSet<TFound> founds)
-		{
-			CacheContext cacheContext = new(driveLetter);
-
-			// 検出ファイルリストテーブル
-			GetDbSet(cacheContext, out founds);
-
-			return cacheContext;
-		}
-
-		// --------------------------------------------------------------------
-		// データベースセット取得
-		// ＜例外＞ Exception
-		// --------------------------------------------------------------------
-		public static void GetDbSet(CacheContext cacheContext, out DbSet<TFound> founds)
-		{
-			if (cacheContext.Founds == null)
-			{
-				throw new Exception("検出ファイルリストテーブルにアクセスできません。");
-			}
-			founds = cacheContext.Founds;
-		}
-
-		// --------------------------------------------------------------------
-		// データベースセット取得
-		// ＜例外＞ Exception
-		// --------------------------------------------------------------------
-		public static void GetDbSet(CacheContext cacheContext, out DbSet<TCacheHeader> cacheHeaders)
-		{
-			if (cacheContext.CacheHeaders == null)
-			{
-				throw new Exception("キャッシュ管理テーブルにアクセスできません。");
-			}
-			cacheHeaders = cacheContext.CacheHeaders;
-		}
-
-		// ====================================================================
 		// public メンバー関数
 		// ====================================================================
 
@@ -142,13 +98,12 @@ namespace YukaLister.Models.DatabaseContexts
 			String parentFolder = records.First().ParentFolder;
 
 			// 追加しようとしているキャッシュと同じ親フォルダーの旧キャッシュ削除
-			GetDbSet(this, out DbSet<TFound> founds);
-			IQueryable<TFound> removes = founds.Where(x => x.ParentFolder == parentFolder);
-			founds.RemoveRange(removes);
+			IQueryable<TFound> removes = Founds.Where(x => x.ParentFolder == parentFolder);
+			Founds.RemoveRange(removes);
 
 			// 追加しようとしているキャッシュとドライブレターが異なるキャッシュ削除
-			removes = founds.Where(x => !x.ParentFolder.Contains(YlCommon.DriveLetter(parentFolder)));
-			founds.RemoveRange(removes);
+			removes = Founds.Where(x => !x.ParentFolder.Contains(YlCommon.DriveLetter(parentFolder)));
+			Founds.RemoveRange(removes);
 			SaveChanges();
 
 			// 新キャッシュ追加
@@ -157,11 +112,10 @@ namespace YukaLister.Models.DatabaseContexts
 				// Uid を初期化して自動的に Uid を振ってもらうようにする
 				record.Uid = 0;
 			}
-			founds.AddRange(records);
+			Founds.AddRange(records);
 
 			// キャッシュ管理テーブル更新
-			GetDbSet(this, out DbSet<TCacheHeader> cacheHeaders);
-			TCacheHeader? cacheHeader = cacheHeaders.FirstOrDefault(x => x.ParentFolder == parentFolder);
+			TCacheHeader? cacheHeader = CacheHeaders.FirstOrDefault(x => x.ParentFolder == parentFolder);
 			Boolean needAdd = false;
 			if (cacheHeader == null)
 			{
@@ -174,7 +128,7 @@ namespace YukaLister.Models.DatabaseContexts
 			cacheHeader.UpdateTime = YlCommon.UtcNowMjd();
 			if (needAdd)
 			{
-				cacheHeaders.Add(cacheHeader);
+				CacheHeaders.Add(cacheHeader);
 			}
 
 			SaveChanges();

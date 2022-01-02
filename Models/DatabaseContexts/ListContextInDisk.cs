@@ -8,11 +8,8 @@
 //
 // ----------------------------------------------------------------------------
 
-using Microsoft.EntityFrameworkCore;
-
 using System;
 
-using YukaLister.Models.Database;
 using YukaLister.Models.DatabaseAssist;
 using YukaLister.Models.YukaListerModels;
 
@@ -31,34 +28,6 @@ namespace YukaLister.Models.DatabaseContexts
 				: base("ゆかり用リスト")
 		{
 		}
-
-		// ====================================================================
-		// public static メンバー関数
-		// ====================================================================
-
-#if false
-		// --------------------------------------------------------------------
-		// データベースコンテキスト生成
-		// ＜例外＞ Exception
-		// --------------------------------------------------------------------
-		public static ListContextInDisk CreateContext(out DbSet<TFound> founds)
-		{
-			ListContextInDisk listContext = new();
-			GetDbSet(listContext, out founds);
-			return listContext;
-		}
-
-		// --------------------------------------------------------------------
-		// データベースコンテキスト生成
-		// ＜例外＞ Exception
-		// --------------------------------------------------------------------
-		public static ListContextInDisk CreateContext(out DbSet<TProperty> properties)
-		{
-			ListContextInDisk listContext = new();
-			GetDbSet(listContext, out properties);
-			return listContext;
-		}
-#endif
 
 		// ====================================================================
 		// public メンバー関数

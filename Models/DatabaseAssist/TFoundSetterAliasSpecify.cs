@@ -8,13 +8,8 @@
 // 名称の編集ウィンドウで使用するためのクラス
 // ----------------------------------------------------------------------------
 
-using Microsoft.EntityFrameworkCore;
-
 using System;
 
-using YukaLister.Models.Database;
-using YukaLister.Models.Database.Masters;
-using YukaLister.Models.Database.Sequences;
 using YukaLister.Models.DatabaseContexts;
 
 namespace YukaLister.Models.DatabaseAssist

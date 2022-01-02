@@ -42,47 +42,6 @@ namespace YukaLister.Models.DatabaseContexts
 		public DbSet<TCacheThumb> CacheThumbs { get; set; }
 
 		// ====================================================================
-		// public static メンバー関数
-		// ====================================================================
-
-#if false
-		// --------------------------------------------------------------------
-		// データベースコンテキスト生成
-		// ＜例外＞ Exception
-		// --------------------------------------------------------------------
-		public static ThumbContext CreateContext(out DbSet<TCacheThumb> cacheThumbs)
-		{
-			ThumbContext thumbContext = new();
-			GetDbSet(thumbContext, out cacheThumbs);
-			return thumbContext;
-		}
-
-		// --------------------------------------------------------------------
-		// データベースコンテキスト生成
-		// ＜例外＞ Exception
-		// --------------------------------------------------------------------
-		public static ThumbContext CreateContext(out DbSet<TProperty> properties)
-		{
-			ThumbContext thumbContext = new();
-			GetDbSet(thumbContext, out properties);
-			return thumbContext;
-		}
-
-		// --------------------------------------------------------------------
-		// データベースセット取得
-		// ＜例外＞ Exception
-		// --------------------------------------------------------------------
-		public static void GetDbSet(ThumbContext thumbContext, out DbSet<TCacheThumb> cacheThumbs)
-		{
-			if (thumbContext.CacheThumbs == null)
-			{
-				throw new Exception("サムネイルキャッシュテーブルにアクセスできません。");
-			}
-			cacheThumbs = thumbContext.CacheThumbs;
-		}
-#endif
-
-		// ====================================================================
 		// public メンバー関数
 		// ====================================================================
 

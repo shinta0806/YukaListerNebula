@@ -51,25 +51,6 @@ namespace YukaLister.Models.DatabaseContexts
 		public DbSet<TProperty> Properties { get; set; }
 
 		// ====================================================================
-		// public static メンバー関数
-		// ====================================================================
-
-#if false
-		// --------------------------------------------------------------------
-		// データベースセット取得
-		// ＜例外＞ Exception
-		// --------------------------------------------------------------------
-		public static void GetDbSet(YukaListerContext yukaListerContext, out DbSet<TProperty> properties)
-		{
-			if (yukaListerContext.Properties == null)
-			{
-				throw new Exception("データベースプロパティーテーブルにアクセスできません。");
-			}
-			properties = yukaListerContext.Properties;
-		}
-#endif
-
-		// ====================================================================
 		// public メンバー関数
 		// ====================================================================
 

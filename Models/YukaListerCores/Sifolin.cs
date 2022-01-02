@@ -350,19 +350,19 @@ namespace YukaLister.Models.YukaListerCores
 		{
 			try
 			{
-				using CacheContext cacheContext = CacheContext.CreateContext(YlCommon.DriveLetter(targetFolderInfo.TargetPath), out DbSet<TFound> cacheFounds);
+				using CacheContext cacheContext = new(YlCommon.DriveLetter(targetFolderInfo.TargetPath));
 				cacheContext.ChangeTracker.QueryTrackingBehavior = QueryTrackingBehavior.NoTracking;
 
 				// QueryTrackingBehavior.NoTracking（または AsNoTracking()）時、結果の内容を変更して使いたい時は IQueryable<T> で受けてはならない（変更できない）
 				// List<T> 等に変換すれば結果を変更できる
-				List<TFound> cacheRecords = cacheFounds.Where(x => x.ParentFolder == targetFolderInfo.TargetPath).ToList();
+				List<TFound> cacheRecords = cacheContext.Founds.Where(x => x.ParentFolder == targetFolderInfo.TargetPath).ToList();
 
 				if (!cacheRecords.Any())
 				{
 					// キャッシュが見つからない場合、ドライブレター以外の部分で合致するか再度検索
 					// 誤検知しないようコロンも含めて検索するので、YlCommon.WithoutDriveLetter() は使用しない
 					String withoutDriveLetterOne = targetFolderInfo.TargetPath[1..];
-					cacheRecords = cacheFounds.Where(x => x.ParentFolder.Contains(withoutDriveLetterOne)).ToList();
+					cacheRecords = cacheContext.Founds.Where(x => x.ParentFolder.Contains(withoutDriveLetterOne)).ToList();
 					if (!cacheRecords.Any())
 					{
 						YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, targetFolderInfo.TargetPath

@@ -42,47 +42,6 @@ namespace YukaLister.Models.DatabaseContexts
 		public DbSet<TReport> Reports { get; set; }
 
 		// ====================================================================
-		// public static メンバー関数
-		// ====================================================================
-
-#if false
-		// --------------------------------------------------------------------
-		// データベースコンテキスト生成
-		// ＜例外＞ Exception
-		// --------------------------------------------------------------------
-		public static ReportContext CreateContext(out DbSet<TReport> reports)
-		{
-			ReportContext reportContext = new();
-			GetDbSet(reportContext, out reports);
-			return reportContext;
-		}
-
-		// --------------------------------------------------------------------
-		// データベースコンテキスト生成
-		// ＜例外＞ Exception
-		// --------------------------------------------------------------------
-		public static ReportContext CreateContext(out DbSet<TProperty> properties)
-		{
-			ReportContext reportContext = new();
-			GetDbSet(reportContext, out properties);
-			return reportContext;
-		}
-
-		// --------------------------------------------------------------------
-		// データベースセット取得
-		// ＜例外＞ Exception
-		// --------------------------------------------------------------------
-		public static void GetDbSet(ReportContext reportContext, out DbSet<TReport> reports)
-		{
-			if (reportContext.Reports == null)
-			{
-				throw new Exception("リスト問題報告テーブルにアクセスできません。");
-			}
-			reports = reportContext.Reports;
-		}
-#endif
-
-		// ====================================================================
 		// public メンバー関数
 		// ====================================================================
 

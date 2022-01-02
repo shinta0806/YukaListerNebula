@@ -21,7 +21,6 @@ using System.Linq;
 using YukaLister.Models.Database;
 using YukaLister.Models.Database.Aliases;
 using YukaLister.Models.Database.Masters;
-using YukaLister.Models.Database.Sequences;
 using YukaLister.Models.DatabaseContexts;
 using YukaLister.Models.SharedMisc;
 using YukaLister.Models.YukaListerModels;
@@ -41,36 +40,10 @@ namespace YukaLister.Models.DatabaseAssist
 		{
 			Debug.Assert(listContextInMemory.ChangeTracker.QueryTrackingBehavior == QueryTrackingBehavior.TrackAll, "TFoundSetter() bad QueryTrackingBehavior");
 			_listContextInMemory = listContextInMemory;
-#if false
-			_listPeople = listPeople;
-			_listArtistSequences = listArtistSequences;
-			_ = listComposerSequences;
-			_ = listTieUpGroups;
-			_ = listTieUpGroupSequences;
-			_ = listTags;
-			_ = listTagSequences;
-#endif
 
 			// MusicInfoContext は検索専用なので NoTracking にする
 			_musicInfoContext = new MusicInfoContextDefault();
 			_musicInfoContext.ChangeTracker.QueryTrackingBehavior = QueryTrackingBehavior.NoTracking;
-#if false
-			_songs = _musicInfoContext.Songs;
-			_people = _musicInfoContext.People;
-			_tieUps = _musicInfoContext.TieUps;
-			_categories = _musicInfoContext.Categories;
-			_tieUpGroups = _musicInfoContext.TieUpGroups;
-			_makers = _musicInfoContext.Makers;
-			_tags = _musicInfoContext.Tags;
-			_songAliases = _musicInfoContext.SongAliases;
-			_tieUpAliases = _musicInfoContext.TieUpAliases;
-			_artistSequences = _musicInfoContext.ArtistSequences;
-			_lyristSequences = _musicInfoContext.LyristSequences;
-			_composerSequences = _musicInfoContext.ComposerSequences;
-			_arrangerSequences = _musicInfoContext.ArrangerSequences;
-			_tieUpGroupSequences = _musicInfoContext.TieUpGroupSequences;
-			_tagSequences = _musicInfoContext.TagSequences;
-#endif
 
 			_categoryNames = DbCommon.SelectCategoryNames(_musicInfoContext.Categories);
 		}

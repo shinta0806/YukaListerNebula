@@ -43,59 +43,6 @@ namespace YukaLister.Models.DatabaseContexts
 		public DbSet<TYukariStatistics> YukariStatistics { get; set; }
 
 		// ====================================================================
-		// public static メンバー関数
-		// ====================================================================
-
-#if false
-		// --------------------------------------------------------------------
-		// データベースコンテキスト生成
-		// ＜例外＞ Exception
-		// --------------------------------------------------------------------
-		public static YukariStatisticsContext CreateContext(out DbSet<TProperty> properties, out DbSet<TYukariStatistics> yukariStatistics)
-		{
-			YukariStatisticsContext yukariStatisticsContext = new();
-			GetDbSet(yukariStatisticsContext, out properties);
-			GetDbSet(yukariStatisticsContext, out yukariStatistics);
-			return yukariStatisticsContext;
-		}
-
-		// --------------------------------------------------------------------
-		// データベースコンテキスト生成
-		// ＜例外＞ Exception
-		// --------------------------------------------------------------------
-		public static YukariStatisticsContext CreateContext(out DbSet<TYukariStatistics> yukariStatistics)
-		{
-			YukariStatisticsContext yukariStatisticsContext = new();
-			GetDbSet(yukariStatisticsContext, out yukariStatistics);
-			return yukariStatisticsContext;
-		}
-
-		// --------------------------------------------------------------------
-		// データベースコンテキスト生成
-		// ＜例外＞ Exception
-		// --------------------------------------------------------------------
-		public static YukariStatisticsContext CreateContext(out DbSet<TProperty> properties)
-		{
-			YukariStatisticsContext yukariStatisticsContext = new();
-			GetDbSet(yukariStatisticsContext, out properties);
-			return yukariStatisticsContext;
-		}
-
-		// --------------------------------------------------------------------
-		// データベースセット取得
-		// ＜例外＞ Exception
-		// --------------------------------------------------------------------
-		public static void GetDbSet(YukariStatisticsContext yukariStatisticsContext, out DbSet<TYukariStatistics> yukariStatistics)
-		{
-			if (yukariStatisticsContext.YukariStatistics == null)
-			{
-				throw new Exception("ゆかり統計テーブルにアクセスできません。");
-			}
-			yukariStatistics = yukariStatisticsContext.YukariStatistics;
-		}
-#endif
-
-		// ====================================================================
 		// public メンバー関数
 		// ====================================================================
 

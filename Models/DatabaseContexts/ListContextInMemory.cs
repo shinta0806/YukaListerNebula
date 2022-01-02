@@ -13,10 +13,6 @@ using Microsoft.EntityFrameworkCore;
 
 using System;
 
-using YukaLister.Models.Database;
-using YukaLister.Models.Database.Masters;
-using YukaLister.Models.Database.Sequences;
-
 namespace YukaLister.Models.DatabaseContexts
 {
 	public class ListContextInMemory : ListContext
@@ -32,55 +28,6 @@ namespace YukaLister.Models.DatabaseContexts
 				: base("ゆかり用リスト（インメモリ）")
 		{
 		}
-
-		// ====================================================================
-		// public static メンバー関数
-		// ====================================================================
-
-#if false
-		// --------------------------------------------------------------------
-		// データベースコンテキスト生成
-		// ＜例外＞ Exception
-		// --------------------------------------------------------------------
-		public static ListContextInMemory CreateContext(out DbSet<TFound> founds,
-				out DbSet<TPerson> people, out DbSet<TArtistSequence> artistSequences, out DbSet<TComposerSequence> composerSequences,
-				out DbSet<TTieUpGroup> tieUpGroups, out DbSet<TTieUpGroupSequence> tieUpGroupSequences,
-				out DbSet<TTag> tags, out DbSet<TTagSequence> tagSequences)
-		{
-			ListContextInMemory listContext = new();
-			GetDbSet(listContext, out founds);
-			GetDbSet(listContext, out people);
-			GetDbSet(listContext, out artistSequences);
-			GetDbSet(listContext, out composerSequences);
-			GetDbSet(listContext, out tieUpGroups);
-			GetDbSet(listContext, out tieUpGroupSequences);
-			GetDbSet(listContext, out tags);
-			GetDbSet(listContext, out tagSequences);
-			return listContext;
-		}
-
-		// --------------------------------------------------------------------
-		// データベースコンテキスト生成
-		// ＜例外＞ Exception
-		// --------------------------------------------------------------------
-		public static ListContextInMemory CreateContext(out DbSet<TFound> founds)
-		{
-			ListContextInMemory listContext = new();
-			GetDbSet(listContext, out founds);
-			return listContext;
-		}
-
-		// --------------------------------------------------------------------
-		// データベースコンテキスト生成
-		// ＜例外＞ Exception
-		// --------------------------------------------------------------------
-		public static ListContextInMemory CreateContext(out DbSet<TProperty> properties)
-		{
-			ListContextInMemory listContext = new();
-			GetDbSet(listContext, out properties);
-			return listContext;
-		}
-#endif
 
 		// ====================================================================
 		// public メンバー関数

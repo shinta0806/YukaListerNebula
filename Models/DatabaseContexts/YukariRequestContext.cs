@@ -48,32 +48,6 @@ namespace YukaLister.Models.DatabaseContexts
 		// public static メンバー関数
 		// ====================================================================
 
-#if false
-		// --------------------------------------------------------------------
-		// データベースコンテキスト生成
-		// ＜例外＞ Exception
-		// --------------------------------------------------------------------
-		public static YukariRequestContext CreateContext(out DbSet<TYukariRequest> yukariRequests)
-		{
-			YukariRequestContext requestDbContext = new();
-			GetDbSet(requestDbContext, out yukariRequests);
-			return requestDbContext;
-		}
-
-		// --------------------------------------------------------------------
-		// データベースセット取得
-		// ＜例外＞ Exception
-		// --------------------------------------------------------------------
-		public static void GetDbSet(YukariRequestContext requestDbContext, out DbSet<TYukariRequest> yukariRequests)
-		{
-			if (requestDbContext.YukariRequests == null)
-			{
-				throw new Exception("ゆかり予約テーブルにアクセスできません。");
-			}
-			yukariRequests = requestDbContext.YukariRequests;
-		}
-#endif
-
 		// --------------------------------------------------------------------
 		// ファイルの最終更新日時 UTC（修正ユリウス日）
 		// --------------------------------------------------------------------
