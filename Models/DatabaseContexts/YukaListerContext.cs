@@ -146,6 +146,10 @@ namespace YukaLister.Models.DatabaseContexts
 		protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 		{
 			SqliteConnection sqliteConnection = DbCommon.Connect(DatabasePath());
+			sqliteConnection.Open();
+			using SqliteCommand command = sqliteConnection.CreateCommand();
+			command.CommandText = @"PRAGMA journal_mode = 'delete'";
+			command.ExecuteNonQuery();
 			optionsBuilder.UseSqlite(sqliteConnection);
 		}
 
