@@ -56,6 +56,8 @@ namespace YukaLister.Models.DatabaseContexts
 				Mode = SqliteOpenMode.Memory,
 				Cache = SqliteCacheMode.Shared,
 			};
+
+			// sqliteConnection は using にしない（テーブルが見つからなくなりエラーとなる）
 			SqliteConnection sqliteConnection = new(stringBuilder.ToString());
 			sqliteConnection.Open();
 			optionsBuilder.UseSqlite(sqliteConnection);

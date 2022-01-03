@@ -145,7 +145,7 @@ namespace YukaLister.Models.DatabaseContexts
 		// --------------------------------------------------------------------
 		protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 		{
-			using SqliteConnection sqliteConnection = DbCommon.Connect(DatabasePath());
+			SqliteConnection sqliteConnection = DbCommon.Connect(DatabasePath());
 			optionsBuilder.UseSqlite(sqliteConnection);
 		}
 

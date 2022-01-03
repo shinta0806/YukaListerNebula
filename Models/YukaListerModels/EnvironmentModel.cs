@@ -166,7 +166,7 @@ namespace YukaLister.Models.YukaListerModels
 		public CancellationTokenSource AppCancellationTokenSource { get; } = new();
 
 		// インメモリデータベースが生存し続けるようにインスタンスを保持
-		// マルチスレッドで安全に使用できるよう、本プロパティーは使用せず、CreateContext() で新たなコンテキストを作成すること
+		// マルチスレッドで安全に使用できるよう、本プロパティーは使用せず、新たなコンテキストを作成すること
 		private ListContextInMemory? _listContextInMemory;
 		public ListContextInMemory ListContextInMemory
 		{
