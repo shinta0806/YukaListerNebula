@@ -19,6 +19,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Windows;
 
 using YukaLister.Models.Database;
 using YukaLister.Models.DatabaseContexts;
@@ -235,7 +236,7 @@ namespace YukaLister.ViewModels.ReportWindowViewModels
 			Messenger.Raise(new TransitionMessage(editReportWindowViewModel, YlConstants.MESSAGE_KEY_OPEN_EDIT_REPORT_WINDOW));
 
 			// 報告が更新された場合は一覧を更新
-			if (editReportWindowViewModel.IsOk)
+			if (editReportWindowViewModel.Result == MessageBoxResult.OK)
 			{
 				UpdateTReports();
 			}

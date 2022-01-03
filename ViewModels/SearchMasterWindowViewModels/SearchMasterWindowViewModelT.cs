@@ -20,6 +20,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Input;
 
 using YukaLister.Models.Database;
@@ -403,7 +404,7 @@ namespace YukaLister.ViewModels.SearchMasterWindowViewModels
 				return;
 			}
 
-			IsOk = true;
+			Result = MessageBoxResult.OK;
 			OkSelectedMaster = SelectedFound;
 			Messenger.Raise(new WindowActionMessage(YlConstants.MESSAGE_KEY_WINDOW_CLOSE));
 		}

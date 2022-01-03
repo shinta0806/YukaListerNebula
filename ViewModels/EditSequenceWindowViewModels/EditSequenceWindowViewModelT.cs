@@ -422,7 +422,7 @@ namespace YukaLister.ViewModels.EditSequenceWindowViewModels
 		{
 			try
 			{
-				IsOk = true;
+				Result = MessageBoxResult.OK;
 				OkSelectedMasters = Masters.ToList();
 				Messenger.Raise(new WindowActionMessage(YlConstants.MESSAGE_KEY_WINDOW_CLOSE));
 			}
@@ -634,7 +634,7 @@ namespace YukaLister.ViewModels.EditSequenceWindowViewModels
 			editMasterWindowViewModel.SetMasters(masters);
 			editMasterWindowViewModel.DefaultMasterId = DbCommon.SelectBaseById(_records, SelectedMaster?.Id)?.Id;
 			Messenger.Raise(new TransitionMessage(editMasterWindowViewModel, YlConstants.MESSAGE_KEY_OPEN_EDIT_MASTER_WINDOW));
-			return (editMasterWindowViewModel.IsOk, editMasterWindowViewModel.OkSelectedMaster);
+			return (editMasterWindowViewModel.Result == MessageBoxResult.OK, editMasterWindowViewModel.OkSelectedMaster);
 		}
 	}
 }

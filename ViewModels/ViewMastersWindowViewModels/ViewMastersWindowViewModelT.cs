@@ -158,7 +158,7 @@ namespace YukaLister.ViewModels.ViewMastersWindowViewModels
 				Messenger.Raise(new TransitionMessage(searchMasterWindowViewModel, YlConstants.MESSAGE_KEY_OPEN_SEARCH_MASTER_WINDOW));
 
 				_isSearched = true;
-				if (!searchMasterWindowViewModel.IsOk)
+				if (searchMasterWindowViewModel.Result != MessageBoxResult.OK)
 				{
 					return;
 				}
@@ -262,7 +262,7 @@ namespace YukaLister.ViewModels.ViewMastersWindowViewModels
 				editMasterWindowViewModel.SetMasters(masters);
 				Messenger.Raise(new TransitionMessage(editMasterWindowViewModel, MessageKeyOpenEditWindow()));
 
-				if (editMasterWindowViewModel.IsOk)
+				if (editMasterWindowViewModel.Result == MessageBoxResult.OK)
 				{
 					UpdateAll(editMasterWindowViewModel.OkSelectedMaster?.Id);
 				}
@@ -377,7 +377,7 @@ namespace YukaLister.ViewModels.ViewMastersWindowViewModels
 			editMasterWindowViewModel.DefaultMasterId = SelectedMaster.Id;
 			Messenger.Raise(new TransitionMessage(editMasterWindowViewModel, MessageKeyOpenEditWindow()));
 
-			if (editMasterWindowViewModel.IsOk || CountMasters() != _prevNumRecords)
+			if (editMasterWindowViewModel.Result == MessageBoxResult.OK || CountMasters() != _prevNumRecords)
 			{
 				UpdateAll(editMasterWindowViewModel.OkSelectedMaster?.Id);
 			}

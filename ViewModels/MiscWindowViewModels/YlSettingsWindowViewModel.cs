@@ -15,6 +15,7 @@ using Shinta;
 
 using System;
 using System.Diagnostics;
+using System.Windows;
 
 using YukaLister.Models.SharedMisc;
 using YukaLister.Models.YukaListerModels;
@@ -229,7 +230,7 @@ namespace YukaLister.ViewModels.MiscWindowViewModels
 				CheckInput();
 				PropertiesToSettings();
 				YukaListerModel.Instance.EnvModel.YlSettings.Save();
-				IsOk = true;
+				Result = MessageBoxResult.OK;
 				Messenger.Raise(new WindowActionMessage(YlConstants.MESSAGE_KEY_WINDOW_CLOSE));
 			}
 			catch (Exception excep)

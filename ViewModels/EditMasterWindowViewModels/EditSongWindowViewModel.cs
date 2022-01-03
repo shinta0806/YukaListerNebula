@@ -407,7 +407,7 @@ namespace YukaLister.ViewModels.EditMasterWindowViewModels
 				Messenger.Raise(new TransitionMessage(editTieUpWindowViewModel, YlConstants.MESSAGE_KEY_OPEN_EDIT_TIE_UP_WINDOW));
 
 				// 後処理
-				SetTieUp(editTieUpWindowViewModel.IsOk, _musicInfoContext.TieUps, editTieUpWindowViewModel.OkSelectedMaster);
+				SetTieUp(editTieUpWindowViewModel.Result == MessageBoxResult.OK, _musicInfoContext.TieUps, editTieUpWindowViewModel.OkSelectedMaster);
 			}
 			catch (Exception excep)
 			{
@@ -1147,7 +1147,7 @@ namespace YukaLister.ViewModels.EditMasterWindowViewModels
 			}
 			Messenger.Raise(new TransitionMessage(editPeopleWindowViewModel, YlConstants.MESSAGE_KEY_OPEN_EDIT_SEQUENCE_WINDOW));
 
-			if (editPeopleWindowViewModel.IsOk)
+			if (editPeopleWindowViewModel.Result == MessageBoxResult.OK)
 			{
 				// 編集ウィンドウで指定された人物を返す
 				return ConcatMasterIdsAndNames(_musicInfoContext.People, editPeopleWindowViewModel.OkSelectedMasters);
@@ -1176,7 +1176,7 @@ namespace YukaLister.ViewModels.EditMasterWindowViewModels
 			}
 			Messenger.Raise(new TransitionMessage(editTagsWindowViewModel, YlConstants.MESSAGE_KEY_OPEN_EDIT_SEQUENCE_WINDOW));
 
-			if (editTagsWindowViewModel.IsOk)
+			if (editTagsWindowViewModel.Result == MessageBoxResult.OK)
 			{
 				// 指定されたタグを表示
 				(HasTag, _tagIds, TagDisplayNames) = ConcatMasterIdsAndNames(_musicInfoContext.Tags, editTagsWindowViewModel.OkSelectedMasters);
@@ -1237,7 +1237,7 @@ namespace YukaLister.ViewModels.EditMasterWindowViewModels
 			searchMasterWindowViewModel.SelectedKeyword = OriginalTieUpName();
 			Messenger.Raise(new TransitionMessage(searchMasterWindowViewModel, YlConstants.MESSAGE_KEY_OPEN_SEARCH_MASTER_WINDOW));
 
-			SetTieUp(searchMasterWindowViewModel.IsOk, _musicInfoContext.TieUps, searchMasterWindowViewModel.OkSelectedMaster);
+			SetTieUp(searchMasterWindowViewModel.Result == MessageBoxResult.OK, _musicInfoContext.TieUps, searchMasterWindowViewModel.OkSelectedMaster);
 		}
 
 		// --------------------------------------------------------------------

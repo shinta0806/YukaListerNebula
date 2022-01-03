@@ -374,7 +374,7 @@ namespace YukaLister.ViewModels
 				using YlSettingsWindowViewModel ylSettingsWindowViewModel = new();
 				Messenger.Raise(new TransitionMessage(ylSettingsWindowViewModel, YlConstants.MESSAGE_KEY_OPEN_YL_SETTINGS_WINDOW));
 
-				if (ylSettingsWindowViewModel.IsOk)
+				if (ylSettingsWindowViewModel.Result == MessageBoxResult.OK)
 				{
 					SetStatusBarMessageWithInvoke(TraceEventType.Information, "環境設定を変更しました。");
 				}

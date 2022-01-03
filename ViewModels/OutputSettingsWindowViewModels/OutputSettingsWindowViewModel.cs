@@ -235,7 +235,7 @@ namespace YukaLister.ViewModels.OutputSettingsWindowViewModels
 				CheckInput();
 				PropertiesToSettings();
 				_outputWriter.OutputSettings.Save();
-				IsOk = true;
+				Result = MessageBoxResult.OK;
 				Messenger.Raise(new WindowActionMessage(YlConstants.MESSAGE_KEY_WINDOW_CLOSE));
 			}
 			catch (OperationCanceledException)

@@ -225,7 +225,7 @@ namespace YukaLister.ViewModels.EditMasterWindowViewModels
 				Messenger.Raise(new TransitionMessage(editMakerWindowViewModel, YlConstants.MESSAGE_KEY_OPEN_EDIT_MASTER_WINDOW));
 
 				// 後処理
-				SetMaker(editMakerWindowViewModel.IsOk, _musicInfoContext.Makers, editMakerWindowViewModel.OkSelectedMaster);
+				SetMaker(editMakerWindowViewModel.Result == MessageBoxResult.OK, _musicInfoContext.Makers, editMakerWindowViewModel.OkSelectedMaster);
 			}
 			catch (Exception excep)
 			{
@@ -515,7 +515,7 @@ namespace YukaLister.ViewModels.EditMasterWindowViewModels
 			}
 			Messenger.Raise(new TransitionMessage(editTieUpGroupsWindowViewModel, YlConstants.MESSAGE_KEY_OPEN_EDIT_SEQUENCE_WINDOW));
 
-			if (editTieUpGroupsWindowViewModel.IsOk)
+			if (editTieUpGroupsWindowViewModel.Result == MessageBoxResult.OK)
 			{
 				// 指定されたタイアップグループを表示
 				(HasTieUpGroup, _tieUpGroupIds, TieUpGroupDisplayNames) = ConcatMasterIdsAndNames(_musicInfoContext.TieUpGroups, editTieUpGroupsWindowViewModel.OkSelectedMasters);
@@ -545,7 +545,7 @@ namespace YukaLister.ViewModels.EditMasterWindowViewModels
 			searchMasterWindowViewModel.SelectedKeyword = OriginalMakerName();
 			Messenger.Raise(new TransitionMessage(searchMasterWindowViewModel, YlConstants.MESSAGE_KEY_OPEN_SEARCH_MASTER_WINDOW));
 
-			SetMaker(searchMasterWindowViewModel.IsOk, _musicInfoContext.Makers, searchMasterWindowViewModel.OkSelectedMaster);
+			SetMaker(searchMasterWindowViewModel.Result == MessageBoxResult.OK, _musicInfoContext.Makers, searchMasterWindowViewModel.OkSelectedMaster);
 		}
 
 		// --------------------------------------------------------------------

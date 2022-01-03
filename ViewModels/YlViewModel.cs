@@ -14,6 +14,7 @@ using Livet.Messaging.IO;
 using Shinta;
 using System;
 using System.IO;
+using System.Windows;
 using System.Windows.Input;
 
 using YukaLister.Models.SharedMisc;
@@ -62,8 +63,8 @@ namespace YukaLister.ViewModels
 		// 一般のプロパティー
 		// --------------------------------------------------------------------
 
-		// OK ボタン・削除ボタン等、キャンセル以外のボタンが押されて閉じられた
-		public Boolean IsOk { get; protected set; }
+		// OK、Yes、No 等の結果
+		public MessageBoxResult Result { get; protected set; } = MessageBoxResult.None;
 
 		// ====================================================================
 		// public 関数

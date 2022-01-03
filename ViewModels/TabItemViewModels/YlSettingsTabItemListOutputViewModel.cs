@@ -146,7 +146,7 @@ namespace YukaLister.ViewModels.TabItemViewModels
 				using OutputSettingsWindowViewModel outputSettingsWindowViewModel = yukariOutputWriter.CreateOutputSettingsWindowViewModel();
 				_windowViewModel.Messenger.Raise(new TransitionMessage(outputSettingsWindowViewModel, YlConstants.MESSAGE_KEY_OPEN_OUTPUT_SETTINGS_WINDOW));
 
-				if (!outputSettingsWindowViewModel.IsOk)
+				if (outputSettingsWindowViewModel.Result != MessageBoxResult.OK)
 				{
 					return;
 				}
@@ -191,7 +191,7 @@ namespace YukaLister.ViewModels.TabItemViewModels
 				using OutputSettingsWindowViewModel outputSettingsWindowViewModel = SelectedOutputWriter.CreateOutputSettingsWindowViewModel();
 				_windowViewModel.Messenger.Raise(new TransitionMessage(outputSettingsWindowViewModel, YlConstants.MESSAGE_KEY_OPEN_OUTPUT_SETTINGS_WINDOW));
 
-				if (!outputSettingsWindowViewModel.IsOk)
+				if (outputSettingsWindowViewModel.Result != MessageBoxResult.OK)
 				{
 					return;
 				}

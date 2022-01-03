@@ -18,6 +18,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Windows;
 
 using YukaLister.Models.Database;
 using YukaLister.Models.DatabaseAssist;
@@ -236,8 +237,8 @@ namespace YukaLister.ViewModels.ReportWindowViewModels
 				IsButtonOkFocused = true;
 
 				CheckAndSave();
-				IsOk = true;
 
+				Result = MessageBoxResult.OK;
 				Messenger.Raise(new WindowActionMessage(YlConstants.MESSAGE_KEY_WINDOW_CLOSE));
 			}
 			catch (Exception excep)

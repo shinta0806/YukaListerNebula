@@ -230,7 +230,7 @@ namespace YukaLister.ViewModels.EditMasterWindowViewModels
 				T master = new();
 				PropertiesToRecord(master);
 				Invalidate(master);
-				IsOk = true;
+				Result = MessageBoxResult.OK;
 				Messenger.Raise(new WindowActionMessage(YlConstants.MESSAGE_KEY_WINDOW_CLOSE));
 			}
 			catch (Exception excep)
@@ -272,7 +272,7 @@ namespace YukaLister.ViewModels.EditMasterWindowViewModels
 				T master = new();
 				PropertiesToRecord(master);
 				await Save(master);
-				IsOk = true;
+				Result = MessageBoxResult.OK;
 				OkSelectedMaster = master;
 				Messenger.Raise(new WindowActionMessage(YlConstants.MESSAGE_KEY_WINDOW_CLOSE));
 			}
