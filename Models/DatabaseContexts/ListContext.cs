@@ -28,8 +28,8 @@ namespace YukaLister.Models.DatabaseContexts
 		// --------------------------------------------------------------------
 		// メインコンストラクター
 		// --------------------------------------------------------------------
-		public ListContext(String databaseName)
-				: base(databaseName)
+		public ListContext(String databaseName, Boolean useWal = false)
+				: base(databaseName, useWal)
 		{
 			Debug.Assert(Founds != null, "Founds table not init");
 			Debug.Assert(People != null, "People table not init");

@@ -25,7 +25,7 @@ namespace YukaLister.Models.DatabaseContexts
 		// メインコンストラクター
 		// --------------------------------------------------------------------
 		public ListContextInMemory()
-				: base("ゆかり用リスト（インメモリ）")
+				: base("ゆかり用リスト（インメモリ）", true)
 		{
 		}
 

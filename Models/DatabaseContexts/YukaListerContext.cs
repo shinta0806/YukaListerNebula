@@ -32,11 +32,12 @@ namespace YukaLister.Models.DatabaseContexts
 		// --------------------------------------------------------------------
 		// メインコンストラクター
 		// --------------------------------------------------------------------
-		public YukaListerContext(String databaseName)
+		public YukaListerContext(String databaseName, Boolean useWal = false)
 		{
 			Debug.Assert(Properties != null, "Properties table not init");
 
 			_databaseName = databaseName;
+			_useWal = useWal;
 		}
 
 		// ====================================================================
@@ -74,6 +75,26 @@ namespace YukaLister.Models.DatabaseContexts
 
 			// 新規作成
 			Database.EnsureCreated();
+
+			// WAL を使うかどうか（EF Core のデフォルトは WAL なので、使わない場合のみ処理を行う）
+			SqliteConnection? sqliteConnection = null;
+			if (!_useWal)
+			{
+				sqliteConnection = Database.GetDbConnection() as SqliteConnection;
+			}
+			if (sqliteConnection != null)
+			{
+				sqliteConnection.Open();
+				using SqliteCommand command = sqliteConnection.CreateCommand();
+				command.CommandText = @"PRAGMA journal_mode = 'delete'";
+				command.ExecuteNonQuery();
+				YukaListerModel.Instance.EnvModel.LogWriter.LogMessage(Common.TRACE_EVENT_TYPE_STATUS, _databaseName + "データベースのジャーナルモード：DELETE");
+			}
+			else
+			{
+				YukaListerModel.Instance.EnvModel.LogWriter.LogMessage(Common.TRACE_EVENT_TYPE_STATUS, _databaseName + "データベースのジャーナルモード：WAL");
+			}
+
 			if (Properties == null)
 			{
 				YukaListerModel.Instance.EnvModel.LogWriter.LogMessage(Common.TRACE_EVENT_TYPE_STATUS, _databaseName + "データベースを初期化できませんでした。");
@@ -146,12 +167,15 @@ namespace YukaLister.Models.DatabaseContexts
 		protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 		{
 			SqliteConnection sqliteConnection = DbCommon.Connect(DatabasePath());
-			sqliteConnection.Open();
-			using SqliteCommand command = sqliteConnection.CreateCommand();
-			command.CommandText = @"PRAGMA journal_mode = 'delete'";
-			command.ExecuteNonQuery();
 			optionsBuilder.UseSqlite(sqliteConnection);
 		}
+
+		// ====================================================================
+		// private 変数
+		// ====================================================================
+
+		// WAL を使用するかどうか
+		private Boolean _useWal;
 
 		// ====================================================================
 		// private 関数
