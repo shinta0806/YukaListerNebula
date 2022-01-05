@@ -60,22 +60,21 @@ namespace YukaLister.Models.DatabaseAssist
 		// ====================================================================
 
 		// --------------------------------------------------------------------
-		// ゆかりすたー情報ファイルをインポート
+		// 楽曲情報データベースをインポート
 		// --------------------------------------------------------------------
 		public void Import()
 		{
 			YukaListerModel.Instance.EnvModel.LogWriter.LogMessage(Common.TRACE_EVENT_TYPE_STATUS, "インポートしています：" + _importSrcPath);
 
-			// 解凍
-			String tempFolder = YlCommon.TempPath() + "\\";
-			Directory.CreateDirectory(tempFolder);
-			ZipFile.ExtractToDirectory(_importSrcPath, tempFolder);
-			String[] files = Directory.GetFiles(tempFolder, "*", SearchOption.AllDirectories);
-			if (files.Length == 0)
+			String file;
+			if (Path.GetExtension(_importSrcPath).ToLower() == YlConstants.FILE_EXT_YL_EXPORT_ARCHIVE)
 			{
-				throw new Exception("ゆかりすたー情報ファイルにインポートできるデータが存在しません。");
+				file = Extract();
 			}
-			String file = files[0];
+			else
+			{
+				file = _importSrcPath;
+			}
 
 			using MusicInfoContextExport musicInfoContextExport = new(file);
 			musicInfoContextExport.ChangeTracker.QueryTrackingBehavior = QueryTrackingBehavior.NoTracking;
@@ -132,6 +131,22 @@ namespace YukaLister.Models.DatabaseAssist
 		// ====================================================================
 		// private 関数
 		// ====================================================================
+
+		// --------------------------------------------------------------------
+		// インポート元を解凍
+		// --------------------------------------------------------------------
+		private String Extract()
+		{
+			String tempFolder = YlCommon.TempPath() + "\\";
+			Directory.CreateDirectory(tempFolder);
+			ZipFile.ExtractToDirectory(_importSrcPath, tempFolder);
+			String[] files = Directory.GetFiles(tempFolder, "*", SearchOption.AllDirectories);
+			if (files.Length == 0)
+			{
+				throw new Exception("ゆかりすたー情報ファイルにインポートできるデータが存在しません。");
+			}
+			return files[0];
+		}
 
 		// --------------------------------------------------------------------
 		// 別名テーブルをインポート

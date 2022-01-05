@@ -110,7 +110,8 @@ namespace YukaLister.ViewModels.TabItemViewModels
 		{
 			try
 			{
-				String? path = _windowViewModel.PathByOpeningDialog("インポート", YlConstants.DIALOG_FILTER_YL_EXPORT_ARCHIVE, null);
+				String? path = _windowViewModel.PathByOpeningDialog("インポート", "インポート可能ファイル|*" + YlConstants.FILE_EXT_YL_EXPORT_ARCHIVE + ";" + YlConstants.FILE_NAME_MUSIC_INFO_DATABASE 
+						+ "|" + YlConstants.DIALOG_FILTER_YL_EXPORT_ARCHIVE + "|楽曲情報データベース|" + YlConstants.FILE_NAME_MUSIC_INFO_DATABASE, null);
 				if (path != null)
 				{
 					ImportYukaListerPath = path;

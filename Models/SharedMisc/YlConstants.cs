@@ -297,7 +297,7 @@ namespace YukaLister.Models.SharedMisc
 		public const String APP_ID = "YukaLister";
 		public const String APP_GENERATION = "NEBULA";
 		public const String APP_NAME_J = "ゆかりすたー 4 " + APP_GENERATION + " ";
-		public const String APP_VER = "Ver 6.02";
+		public const String APP_VER = "Ver 6.13";
 		public const String COPYRIGHT_J = "Copyright (C) 2021-2022 by SHINTA";
 #if DISTRIB_STORE
 		public const String APP_DISTRIB = "ストア版";
@@ -337,6 +337,7 @@ namespace YukaLister.Models.SharedMisc
 		// ファイル名
 		// --------------------------------------------------------------------
 
+		public const String FILE_NAME_MUSIC_INFO_DATABASE = "NebulaMusicInfo" + Common.FILE_EXT_SQLITE3;
 		public const String FILE_NAME_NICO_KARA_LISTER_CONFIG = "NicoKaraLister" + Common.FILE_EXT_CONFIG;
 		public const String FILE_NAME_YUKA_LISTER_CONFIG = APP_ID + Common.FILE_EXT_CONFIG;
 		public const String FILE_NAME_YUKA_LISTER_EXCLUDE_CONFIG = APP_ID + "Exclude" + Common.FILE_EXT_CONFIG;

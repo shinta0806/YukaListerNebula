@@ -55,7 +55,7 @@ namespace YukaLister.Models.DatabaseContexts
 		// --------------------------------------------------------------------
 		public override String DatabasePath()
 		{
-			return DbCommon.YukaListerDatabaseFullFolder() + FILE_NAME_MUSIC_INFO_DATABASE;
+			return DbCommon.YukaListerDatabaseFullFolder() + YlConstants.FILE_NAME_MUSIC_INFO_DATABASE;
 		}
 
 		// ====================================================================
@@ -111,13 +111,6 @@ namespace YukaLister.Models.DatabaseContexts
 
 			modelBuilder.Entity<TTagSequence>().HasKey(x => new { x.Id, x.Sequence });
 		}
-
-		// ====================================================================
-		// private 定数
-		// ====================================================================
-
-		// データベースファイル名
-		private const String FILE_NAME_MUSIC_INFO_DATABASE = "NebulaMusicInfo" + Common.FILE_EXT_SQLITE3;
 
 		// ====================================================================
 		// private 関数
