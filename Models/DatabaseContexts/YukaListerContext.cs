@@ -175,7 +175,7 @@ namespace YukaLister.Models.DatabaseContexts
 		// ====================================================================
 
 		// WAL を使用するかどうか
-		private Boolean _useWal;
+		private readonly Boolean _useWal;
 
 		// ====================================================================
 		// private 関数

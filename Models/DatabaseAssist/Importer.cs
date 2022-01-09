@@ -36,7 +36,7 @@ namespace YukaLister.Models.DatabaseAssist
 		// --------------------------------------------------------------------
 		// メインコンストラクター
 		// --------------------------------------------------------------------
-		public Importer(String importSrcPath, Boolean importTag, Boolean importSameName, CancellationToken cancellationToken, Action<String>? descriptionSetter)
+		public Importer(String importSrcPath, Boolean importTag, Boolean importSameName, Action<String>? descriptionSetter, CancellationToken cancellationToken)
 		{
 			if (Path.IsPathRooted(importSrcPath))
 			{
@@ -48,11 +48,11 @@ namespace YukaLister.Models.DatabaseAssist
 			}
 			_importTag = importTag;
 			_importSameName = importSameName;
-			_cancellationToken = cancellationToken;
 			if (descriptionSetter != null)
 			{
 				_descriptionSetter = descriptionSetter;
 			}
+			_cancellationToken = cancellationToken;
 		}
 
 		// ====================================================================
@@ -123,10 +123,10 @@ namespace YukaLister.Models.DatabaseAssist
 		private readonly Boolean _importSameName;
 
 		// 中断制御
-		private CancellationToken _cancellationToken;
+		private readonly CancellationToken _cancellationToken;
 
 		// 説明プロパティーのセッター
-		private Action<String> _descriptionSetter = delegate { };
+		private readonly Action<String> _descriptionSetter = delegate { };
 
 		// ====================================================================
 		// private 関数

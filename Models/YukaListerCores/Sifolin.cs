@@ -663,7 +663,7 @@ namespace YukaLister.Models.YukaListerCores
 		// --------------------------------------------------------------------
 		// メモリー DB → ディスク DB
 		// --------------------------------------------------------------------
-		private void MemoryToDisk()
+		private static void MemoryToDisk()
 		{
 			using ListContextInMemory listContextInMemory = new();
 			using SqliteConnection? sqliteConnectionInMemory = listContextInMemory.Database.GetDbConnection() as SqliteConnection;

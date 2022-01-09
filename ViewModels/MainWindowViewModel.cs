@@ -487,7 +487,7 @@ namespace YukaLister.ViewModels
 			}
 		}
 
-		public void MenuItemSampleFolderClicked()
+		public static void MenuItemSampleFolderClicked()
 		{
 			try
 			{
@@ -1107,7 +1107,7 @@ namespace YukaLister.ViewModels
 
 				Importer importer = new(YukaListerModel.Instance.EnvModel.ExeFullFolder
 						+ YlConstants.FOLDER_NAME_DOCUMENTS + YlConstants.FOLDER_NAME_SAMPLE_FOLDER_SETTINGS + YlConstants.FOLDER_NAME_SAMPLE_IMPORT + YlConstants.FILE_NAME_YUKA_LISTER_INFO_SAMPLE,
-						true, true, YukaListerModel.Instance.EnvModel.AppCancellationTokenSource.Token, null);
+						true, true, null, YukaListerModel.Instance.EnvModel.AppCancellationTokenSource.Token);
 				importer.Import();
 			}
 			catch (Exception excep)

@@ -160,7 +160,7 @@ namespace YukaLister.ViewModels.TabItemViewModels
 			}
 		}
 
-		public void ButtonServerClicked()
+		public static void ButtonServerClicked()
 		{
 			try
 			{

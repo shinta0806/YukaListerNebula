@@ -130,7 +130,7 @@ namespace YukaLister.ViewModels.TabItemViewModels
 			}
 		}
 
-		public Boolean CanButtonYukariListSettingsClicked()
+		public static Boolean CanButtonYukariListSettingsClicked()
 		{
 			return YukaListerModel.Instance.EnvModel.YukaListerWholeStatus != YukaListerStatus.Error;
 		}

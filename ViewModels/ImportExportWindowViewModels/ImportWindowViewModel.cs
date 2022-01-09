@@ -66,7 +66,7 @@ namespace YukaLister.ViewModels.ImportExportWindowViewModels
 			musicInfoContextDefault.BackupDatabase();
 
 			// インポートタスクを実行
-			Importer importer = new(_importYukaListerPath, _importTag, _importSameName, _abortCancellationTokenSource.Token, (x) => Description = x);
+			Importer importer = new(_importYukaListerPath, _importTag, _importSameName, (x) => Description = x, _abortCancellationTokenSource.Token);
 			importer.Import();
 
 			return Task.CompletedTask;
