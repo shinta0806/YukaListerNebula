@@ -298,7 +298,7 @@ namespace YukaLister.ViewModels
 				{
 					return;
 				}
-				YlCommon.ShellExecute(_labelYukaListerStatusUrl);
+				Common.ShellExecute(_labelYukaListerStatusUrl);
 			}
 			catch (Exception excep)
 			{
@@ -461,7 +461,7 @@ namespace YukaLister.ViewModels
 		{
 			try
 			{
-				YlCommon.ShellExecute(YlConstants.URL_FAQ);
+				Common.ShellExecute(YlConstants.URL_FAQ);
 			}
 			catch (Exception excep)
 			{
@@ -491,7 +491,7 @@ namespace YukaLister.ViewModels
 		{
 			try
 			{
-				YlCommon.ShellExecute(YukaListerModel.Instance.EnvModel.ExeFullFolder + YlConstants.FOLDER_NAME_DOCUMENTS + YlConstants.FOLDER_NAME_SAMPLE_FOLDER_SETTINGS);
+				Common.ShellExecute(YukaListerModel.Instance.EnvModel.ExeFullFolder + YlConstants.FOLDER_NAME_DOCUMENTS + YlConstants.FOLDER_NAME_SAMPLE_FOLDER_SETTINGS);
 			}
 			catch (Exception excep)
 			{
@@ -520,7 +520,7 @@ namespace YukaLister.ViewModels
 		{
 			try
 			{
-				YlCommon.ShellExecute(YukaListerModel.Instance.EnvModel.ExeFullFolder + YlConstants.FOLDER_NAME_DOCUMENTS + FILE_NAME_HISTORY);
+				Common.ShellExecute(YukaListerModel.Instance.EnvModel.ExeFullFolder + YlConstants.FOLDER_NAME_DOCUMENTS + FILE_NAME_HISTORY);
 			}
 			catch (Exception excep)
 			{

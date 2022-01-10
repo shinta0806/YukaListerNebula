@@ -264,7 +264,7 @@ namespace YukaLister.ViewModels.TabItemViewModels
 				String outputFilePath = YukaListerModel.Instance.EnvModel.YlSettings.ListOutputFolder + SelectedOutputWriter.TopFileName;
 				try
 				{
-					YlCommon.ShellExecute(outputFilePath);
+					Common.ShellExecute(outputFilePath);
 				}
 				catch (Exception)
 				{

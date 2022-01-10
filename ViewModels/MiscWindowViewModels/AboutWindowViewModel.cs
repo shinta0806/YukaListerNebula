@@ -68,7 +68,7 @@ namespace YukaLister.ViewModels.MiscWindowViewModels
 		{
 			try
 			{
-				YlCommon.ShellExecute(parameter);
+				Common.ShellExecute(parameter);
 			}
 			catch (Exception excep)
 			{

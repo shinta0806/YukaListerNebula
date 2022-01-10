@@ -164,7 +164,7 @@ namespace YukaLister.ViewModels.TabItemViewModels
 		{
 			try
 			{
-				YlCommon.ShellExecute(YukaListerModel.Instance.EnvModel.ExeFullFolder + FOLDER_NAME_SYNC_SERVER);
+				Common.ShellExecute(YukaListerModel.Instance.EnvModel.ExeFullFolder + FOLDER_NAME_SYNC_SERVER);
 			}
 			catch (Exception excep)
 			{

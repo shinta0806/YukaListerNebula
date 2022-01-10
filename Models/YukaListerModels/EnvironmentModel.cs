@@ -313,7 +313,7 @@ namespace YukaLister.Models.YukaListerModels
 					helpPath = ExeFullFolder + YlConstants.FOLDER_NAME_DOCUMENTS + FOLDER_NAME_HELP_PARTS + FILE_NAME_HELP_PREFIX + "_" + anchor + Common.FILE_EXT_HTML;
 					try
 					{
-						YlCommon.ShellExecute(helpPath);
+						Common.ShellExecute(helpPath);
 						return;
 					}
 					catch (Exception excep)
@@ -325,7 +325,7 @@ namespace YukaLister.Models.YukaListerModels
 
 				// アンカーが指定されていない場合・状況依存型ヘルプを表示できなかった場合は通常のヘルプを表示
 				helpPath = ExeFullFolder + YlConstants.FOLDER_NAME_DOCUMENTS + FILE_NAME_HELP_PREFIX + Common.FILE_EXT_HTML;
-				YlCommon.ShellExecute(helpPath);
+				Common.ShellExecute(helpPath);
 			}
 			catch (Exception excep)
 			{

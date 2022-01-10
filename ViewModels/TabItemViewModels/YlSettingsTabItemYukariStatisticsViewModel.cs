@@ -223,7 +223,7 @@ namespace YukaLister.ViewModels.TabItemViewModels
 				// 表示
 				try
 				{
-					YlCommon.ShellExecute(YukariStatisticsPath);
+					Common.ShellExecute(YukariStatisticsPath);
 				}
 				catch (Exception)
 				{
