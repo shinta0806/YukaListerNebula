@@ -41,38 +41,6 @@ namespace YukaLister.ViewModels.MiscWindowViewModels
 		// View 通信用のプロパティー
 		// --------------------------------------------------------------------
 
-		// アプリケーション名
-		private String _appName = YlConstants.APP_NAME_J;
-		public String AppName
-		{
-			get => _appName;
-			set => RaisePropertyChangedIfSet(ref _appName, value);
-		}
-
-		// バージョン
-		private String _appVer = YlConstants.APP_VER;
-		public String AppVer
-		{
-			get => _appVer;
-			set => RaisePropertyChangedIfSet(ref _appVer, value);
-		}
-
-		// 配布
-		private String _appDistrib = YlConstants.APP_DISTRIB;
-		public String AppDistrib
-		{
-			get => _appDistrib;
-			set => RaisePropertyChangedIfSet(ref _appDistrib, value);
-		}
-
-		// コピーライト
-		private String _copyright = YlConstants.COPYRIGHT_J;
-		public String Copyright
-		{
-			get => _copyright;
-			set => RaisePropertyChangedIfSet(ref _copyright, value);
-		}
-
 		// --------------------------------------------------------------------
 		// 一般のプロパティー
 		// --------------------------------------------------------------------

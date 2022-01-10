@@ -38,12 +38,12 @@
         <DockPanel Margin="20,20,20,0">
             <Image HorizontalAlignment="Left" Height="120" Margin="0" VerticalAlignment="Top" Width="120" Source="pack://application:,,,/Icon/YukaListerアイコン.png"/>
             <StackPanel VerticalAlignment="Center">
-                <Label Content="{Binding AppName}" FontSize="20" HorizontalContentAlignment="Center"/>
+                <Label Content="{x:Static msm:YlConstants.APP_NAME_J}" FontSize="20" HorizontalContentAlignment="Center"/>
                 <StackPanel Orientation="Horizontal" Margin="0,10,0,0" HorizontalAlignment="Center" >
-                    <Label Content="{Binding AppVer}" FontSize="16" VerticalAlignment="Center" />
-                    <Label Content="{Binding AppDistrib}" Margin="20,0,0,0" VerticalAlignment="Center" />
+                    <Label Content="{x:Static msm:YlConstants.APP_VER}" FontSize="16" VerticalAlignment="Center" />
+                    <Label Content="{x:Static msm:YlConstants.APP_DISTRIB}" Margin="20,0,0,0" VerticalAlignment="Center" />
                 </StackPanel>
-                <Label Content="{Binding Copyright}" Margin="0,10,0,0" HorizontalContentAlignment="Center"/>
+                <Label Content="{x:Static msm:YlConstants.COPYRIGHT_J}" Margin="0,10,0,0" HorizontalContentAlignment="Center"/>
             </StackPanel>
         </DockPanel>
         <GroupBox Header="作者情報" Margin="20,20,20,0" materialDesign:ColorZoneAssist.Mode="SecondaryMid" Width="490">
