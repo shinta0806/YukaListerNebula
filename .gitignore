@@ -341,6 +341,7 @@ healthchecksdb
 
 # Project
 net5.0-windows/*
+AppPackages/
 *.xlsx
 *.tfm
 DatabaseSettings.php

@@ -5,7 +5,7 @@ VisualStudioVersion = 17.0.32014.148
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "YukaLister", "YukaLister.csproj", "{EDF01C58-2C93-4CD4-B36E-42EAC8E7ECD9}"
 EndProject
-Project("{C7167F0D-BC9F-4E6E-AFE1-012C56B48DB5}") = "YukaLister_Package", "..\YukaLister_Package\YukaLister_Package.wapproj", "{4F12BB69-8A27-4585-AC6D-6B43965380C5}"
+Project("{C7167F0D-BC9F-4E6E-AFE1-012C56B48DB5}") = "YukaLister_Package", "Package\YukaLister_Package.wapproj", "{4F12BB69-8A27-4585-AC6D-6B43965380C5}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
