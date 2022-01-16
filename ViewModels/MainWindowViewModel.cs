@@ -1267,7 +1267,7 @@ namespace YukaLister.ViewModels
 			String newVerMsg;
 			TraceEventType type = TraceEventType.Information;
 
-			// α・β警告、ならびに、更新時のメッセージ（2017/01/09）
+			// α・β警告、ならびに、更新時のメッセージ（2022/01/16）
 			// 新規・更新のご挨拶
 			if (String.IsNullOrEmpty(YukaListerModel.Instance.EnvModel.YlSettings.PrevLaunchVer))
 			{
@@ -1277,8 +1277,9 @@ namespace YukaLister.ViewModels
 			}
 			else
 			{
+				// 更新
 				newVerMsg = "【更新起動】\n\n";
-				newVerMsg += YlConstants.APP_NAME_J + "を更新していただき、ありがとうございます。\n";
+				newVerMsg += YlConstants.APP_NAME_J + "が更新されました。\n";
 				newVerMsg += "更新内容については［ヘルプ→改訂履歴］メニューをご参照ください。";
 			}
 
