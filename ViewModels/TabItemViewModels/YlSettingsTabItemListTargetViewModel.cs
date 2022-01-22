@@ -148,8 +148,8 @@ namespace YukaLister.ViewModels.TabItemViewModels
 			}
 			catch (Exception excep)
 			{
-				YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(TraceEventType.Error, "追加ボタンクリック時エラー：\n" + excep.Message);
-				YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, "　スタックトレース：\n" + excep.StackTrace);
+				YlModel.Instance.EnvModel.LogWriter.ShowLogMessage(TraceEventType.Error, "追加ボタンクリック時エラー：\n" + excep.Message);
+				YlModel.Instance.EnvModel.LogWriter.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, "　スタックトレース：\n" + excep.StackTrace);
 			}
 		}
 		#endregion
@@ -189,8 +189,8 @@ namespace YukaLister.ViewModels.TabItemViewModels
 			}
 			catch (Exception excep)
 			{
-				YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(TraceEventType.Error, "削除ボタンクリック時エラー：\n" + excep.Message);
-				YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, "　スタックトレース：\n" + excep.StackTrace);
+				YlModel.Instance.EnvModel.LogWriter.ShowLogMessage(TraceEventType.Error, "削除ボタンクリック時エラー：\n" + excep.Message);
+				YlModel.Instance.EnvModel.LogWriter.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, "　スタックトレース：\n" + excep.StackTrace);
 			}
 		}
 		#endregion
@@ -216,9 +216,9 @@ namespace YukaLister.ViewModels.TabItemViewModels
 		// --------------------------------------------------------------------
 		public override void PropertiesToSettings()
 		{
-			YukaListerModel.Instance.EnvModel.YlSettings.TargetExts.Clear();
-			YukaListerModel.Instance.EnvModel.YlSettings.TargetExts.AddRange(TargetExts);
-			YukaListerModel.Instance.EnvModel.YlSettings.TargetExts.Sort();
+			YlModel.Instance.EnvModel.YlSettings.TargetExts.Clear();
+			YlModel.Instance.EnvModel.YlSettings.TargetExts.AddRange(TargetExts);
+			YlModel.Instance.EnvModel.YlSettings.TargetExts.Sort();
 		}
 
 		// --------------------------------------------------------------------
@@ -227,7 +227,7 @@ namespace YukaLister.ViewModels.TabItemViewModels
 		public override void SettingsToProperties()
 		{
 			TargetExts.Clear();
-			foreach (String ext in YukaListerModel.Instance.EnvModel.YlSettings.TargetExts)
+			foreach (String ext in YlModel.Instance.EnvModel.YlSettings.TargetExts)
 			{
 				TargetExts.Add(ext);
 			}

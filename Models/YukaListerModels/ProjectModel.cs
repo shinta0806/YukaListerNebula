@@ -87,8 +87,8 @@ namespace YukaLister.Models.YukaListerModels
 				}
 
 				// 通知
-				YukaListerModel.Instance.EnvModel.IsMainWindowDataGridCountChanged = true;
-				YukaListerModel.Instance.EnvModel.Sifolin.MainEvent.Set();
+				YlModel.Instance.EnvModel.IsMainWindowDataGridCountChanged = true;
+				YlModel.Instance.EnvModel.Sifolin.MainEvent.Set();
 				SetLomolinTargetDrives();
 
 				// スリープ状態のデバイスだとここで時間がかかる
@@ -112,7 +112,7 @@ namespace YukaLister.Models.YukaListerModels
 			}
 
 			// サブフォルダーは非表示なのでアイテム数は変わらない、親のノブ表示が変わる
-			YukaListerModel.Instance.EnvModel.IsMainWindowDataGridItemUpdated = true;
+			YlModel.Instance.EnvModel.IsMainWindowDataGridItemUpdated = true;
 		}
 
 		// --------------------------------------------------------------------
@@ -160,7 +160,7 @@ namespace YukaLister.Models.YukaListerModels
 				Debug.Assert(_targetFolderInfos[parentIndex].IsParent, "RemoveTargetFolders() not parent");
 				_targetFolderInfos.RemoveRange(parentIndex, _targetFolderInfos[parentIndex].NumTotalFolders);
 			}
-			YukaListerModel.Instance.EnvModel.IsMainWindowDataGridCountChanged = true;
+			YlModel.Instance.EnvModel.IsMainWindowDataGridCountChanged = true;
 			SetLomolinTargetDrives();
 			return true;
 		}
@@ -197,7 +197,7 @@ namespace YukaLister.Models.YukaListerModels
 			}
 
 			// 通知
-			YukaListerModel.Instance.EnvModel.IsMainWindowDataGridItemUpdated = true;
+			YlModel.Instance.EnvModel.IsMainWindowDataGridItemUpdated = true;
 			//ListCancellationTokenSource?.Cancel();
 			return true;
 		}
@@ -243,8 +243,8 @@ namespace YukaLister.Models.YukaListerModels
 			}
 
 			// 通知
-			YukaListerModel.Instance.EnvModel.IsMainWindowDataGridItemUpdated = true;
-			YukaListerModel.Instance.EnvModel.Sifolin.MainEvent.Set();
+			YlModel.Instance.EnvModel.IsMainWindowDataGridItemUpdated = true;
+			YlModel.Instance.EnvModel.Sifolin.MainEvent.Set();
 			AdjustAutoTargetInfoIfNeeded(YlCommon.DriveLetter(parentFolder));
 			//ListCancellationTokenSource?.Cancel();
 			return true;
@@ -266,7 +266,7 @@ namespace YukaLister.Models.YukaListerModels
 					}
 				}
 			}
-			YukaListerModel.Instance.EnvModel.IsMainWindowDataGridItemUpdated = true;
+			YlModel.Instance.EnvModel.IsMainWindowDataGridItemUpdated = true;
 		}
 
 		// --------------------------------------------------------------------
@@ -317,7 +317,7 @@ namespace YukaLister.Models.YukaListerModels
 					}
 				}
 			}
-			YukaListerModel.Instance.EnvModel.IsMainWindowDataGridCountChanged = true;
+			YlModel.Instance.EnvModel.IsMainWindowDataGridCountChanged = true;
 		}
 
 		// ====================================================================
@@ -395,7 +395,7 @@ namespace YukaLister.Models.YukaListerModels
 			DriveInfo driveInfo = new(driveLetter);
 			if (!driveInfo.IsReady)
 			{
-				YukaListerModel.Instance.EnvModel.LogWriter.LogMessage(TraceEventType.Verbose, "IsAutoTargetDrive() 準備ができていない：" + driveLetter);
+				YlModel.Instance.EnvModel.LogWriter.LogMessage(TraceEventType.Verbose, "IsAutoTargetDrive() 準備ができていない：" + driveLetter);
 				return false;
 			}
 
@@ -404,10 +404,10 @@ namespace YukaLister.Models.YukaListerModels
 			{
 				case DriveType.Fixed:
 				case DriveType.Removable:
-					YukaListerModel.Instance.EnvModel.LogWriter.LogMessage(TraceEventType.Verbose, "IsAutoTargetDrive() 対象：" + driveLetter);
+					YlModel.Instance.EnvModel.LogWriter.LogMessage(TraceEventType.Verbose, "IsAutoTargetDrive() 対象：" + driveLetter);
 					return true;
 				default:
-					YukaListerModel.Instance.EnvModel.LogWriter.LogMessage(TraceEventType.Verbose, "IsAutoTargetDrive() 非対象：" + driveLetter + ", " + driveInfo.DriveType.ToString());
+					YlModel.Instance.EnvModel.LogWriter.LogMessage(TraceEventType.Verbose, "IsAutoTargetDrive() 非対象：" + driveLetter + ", " + driveInfo.DriveType.ToString());
 					return false;
 			}
 		}
@@ -435,7 +435,7 @@ namespace YukaLister.Models.YukaListerModels
 				}
 			}
 
-			YukaListerModel.Instance.EnvModel.Lomolin.TargetDrives = String.Join(',', drives);
+			YlModel.Instance.EnvModel.Lomolin.TargetDrives = String.Join(',', drives);
 		}
 
 		// --------------------------------------------------------------------

@@ -38,7 +38,7 @@ namespace YukaLister.ViewModels.ImportExportWindowViewModels
 			}
 			else
 			{
-				_importYukaListerPath = Common.MakeAbsolutePath(YukaListerModel.Instance.EnvModel.ExeFullFolder, importYukaListerPath);
+				_importYukaListerPath = Common.MakeAbsolutePath(YlModel.Instance.EnvModel.ExeFullFolder, importYukaListerPath);
 			}
 			_importTag = importTag;
 			_importSameName = importSameName;

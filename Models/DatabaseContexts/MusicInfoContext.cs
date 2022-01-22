@@ -19,7 +19,7 @@ using YukaLister.Models.Database.Sequences;
 
 namespace YukaLister.Models.DatabaseContexts
 {
-	public abstract class MusicInfoContext : YukaListerContext
+	public abstract class MusicInfoContext : YlContext
 	{
 		// ====================================================================
 		// コンストラクター

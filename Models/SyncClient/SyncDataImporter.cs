@@ -73,7 +73,7 @@ namespace YukaLister.Models.SyncClient
 			foreach (String csv in csvs)
 			{
 				Import(csv, ref numTotalDownloads, ref numTotalImports);
-				YukaListerModel.Instance.EnvModel.AppCancellationTokenSource.Token.ThrowIfCancellationRequested();
+				YlModel.Instance.EnvModel.AppCancellationTokenSource.Token.ThrowIfCancellationRequested();
 			}
 		}
 
@@ -263,7 +263,7 @@ namespace YukaLister.Models.SyncClient
 				UpdateAliasDatabaseIfNeeded(records, newRecord, ref numImports);
 				DisplayMusicInfoStatusIfNeeded(tableIndex, ref numChecks);
 
-				YukaListerModel.Instance.EnvModel.AppCancellationTokenSource.Token.ThrowIfCancellationRequested();
+				YlModel.Instance.EnvModel.AppCancellationTokenSource.Token.ThrowIfCancellationRequested();
 			}
 
 			_musicInfoContext.SaveChanges();
@@ -296,7 +296,7 @@ namespace YukaLister.Models.SyncClient
 				UpdateBaseDatabaseIfNeeded(records, newRecord, ref numImports);
 				DisplayMusicInfoStatusIfNeeded(tableIndex, ref numChecks);
 
-				YukaListerModel.Instance.EnvModel.AppCancellationTokenSource.Token.ThrowIfCancellationRequested();
+				YlModel.Instance.EnvModel.AppCancellationTokenSource.Token.ThrowIfCancellationRequested();
 			}
 
 			_musicInfoContext.SaveChanges();
@@ -329,7 +329,7 @@ namespace YukaLister.Models.SyncClient
 				UpdateSequenceDatabaseIfNeeded(records, newRecord, ref numImports);
 				DisplayMusicInfoStatusIfNeeded(tableIndex, ref numChecks);
 
-				YukaListerModel.Instance.EnvModel.AppCancellationTokenSource.Token.ThrowIfCancellationRequested();
+				YlModel.Instance.EnvModel.AppCancellationTokenSource.Token.ThrowIfCancellationRequested();
 			}
 
 			_musicInfoContext.SaveChanges();
@@ -361,7 +361,7 @@ namespace YukaLister.Models.SyncClient
 				UpdateBaseDatabaseIfNeeded(_yukariStatisticsContext.YukariStatistics, newRecord, ref numImports);
 				DisplayYukariStatisticsStatusIfNeeded(ref numChecks);
 
-				YukaListerModel.Instance.EnvModel.AppCancellationTokenSource.Token.ThrowIfCancellationRequested();
+				YlModel.Instance.EnvModel.AppCancellationTokenSource.Token.ThrowIfCancellationRequested();
 			}
 
 			_yukariStatisticsContext.SaveChanges();

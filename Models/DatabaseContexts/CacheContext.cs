@@ -23,7 +23,7 @@ using YukaLister.Models.SharedMisc;
 
 namespace YukaLister.Models.DatabaseContexts
 {
-	public class CacheContext : YukaListerContext
+	public class CacheContext : YlContext
 	{
 		// ====================================================================
 		// コンストラクター

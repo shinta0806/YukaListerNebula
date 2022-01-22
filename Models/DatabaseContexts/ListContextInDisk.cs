@@ -38,7 +38,7 @@ namespace YukaLister.Models.DatabaseContexts
 		// --------------------------------------------------------------------
 		public override String DatabasePath()
 		{
-			return DbCommon.ListDatabasePath(YukaListerModel.Instance.EnvModel.YlSettings);
+			return DbCommon.ListDatabasePath(YlModel.Instance.EnvModel.YlSettings);
 		}
 	}
 }

@@ -54,8 +54,8 @@ namespace YukaLister.Views.CustomControls
 			}
 			catch (Exception excep)
 			{
-				YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(TraceEventType.Error, "フォルダー階層表示コントロール生成時エラー：\n" + excep.Message);
-				YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, "　スタックトレース：\n" + excep.StackTrace);
+				YlModel.Instance.EnvModel.LogWriter.ShowLogMessage(TraceEventType.Error, "フォルダー階層表示コントロール生成時エラー：\n" + excep.Message);
+				YlModel.Instance.EnvModel.LogWriter.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, "　スタックトレース：\n" + excep.StackTrace);
 			}
 		}
 
@@ -115,8 +115,8 @@ namespace YukaLister.Views.CustomControls
 			}
 			catch (Exception excep)
 			{
-				YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(TraceEventType.Error, "フォルダー階層表示コントロール左ボタン押下時エラー：\n" + excep.Message);
-				YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, "　スタックトレース：\n" + excep.StackTrace);
+				YlModel.Instance.EnvModel.LogWriter.ShowLogMessage(TraceEventType.Error, "フォルダー階層表示コントロール左ボタン押下時エラー：\n" + excep.Message);
+				YlModel.Instance.EnvModel.LogWriter.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, "　スタックトレース：\n" + excep.StackTrace);
 			}
 		}
 
@@ -154,8 +154,8 @@ namespace YukaLister.Views.CustomControls
 			}
 			catch (Exception excep)
 			{
-				YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(TraceEventType.Error, "フォルダー階層表示コントロール描画時エラー：\n" + excep.Message);
-				YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, "　スタックトレース：\n" + excep.StackTrace);
+				YlModel.Instance.EnvModel.LogWriter.ShowLogMessage(TraceEventType.Error, "フォルダー階層表示コントロール描画時エラー：\n" + excep.Message);
+				YlModel.Instance.EnvModel.LogWriter.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, "　スタックトレース：\n" + excep.StackTrace);
 			}
 		}
 

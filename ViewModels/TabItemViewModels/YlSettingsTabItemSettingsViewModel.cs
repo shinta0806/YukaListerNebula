@@ -128,8 +128,8 @@ namespace YukaLister.ViewModels.TabItemViewModels
 			}
 			catch (Exception excep)
 			{
-				YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(TraceEventType.Error, "ゆかり設定ファイル参照ボタンクリック時エラー：\n" + excep.Message);
-				YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, "　スタックトレース：\n" + excep.StackTrace);
+				YlModel.Instance.EnvModel.LogWriter.ShowLogMessage(TraceEventType.Error, "ゆかり設定ファイル参照ボタンクリック時エラー：\n" + excep.Message);
+				YlModel.Instance.EnvModel.LogWriter.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, "　スタックトレース：\n" + excep.StackTrace);
 			}
 		}
 		#endregion
@@ -164,11 +164,11 @@ namespace YukaLister.ViewModels.TabItemViewModels
 		// --------------------------------------------------------------------
 		public override void PropertiesToSettings()
 		{
-			YukaListerModel.Instance.EnvModel.YlSettings.YukariConfigPathSeed2 = YukariConfigPathSeed;
-			YukaListerModel.Instance.EnvModel.YlSettings.AddFolderOnDeviceArrived = AddFolderOnDeviceArrived;
-			YukaListerModel.Instance.EnvModel.YlSettings.ProvideYukariPreview = ProvideYukariPreview;
-			YukaListerModel.Instance.EnvModel.YlSettings.OutputAdditionalYukariAssist = OutputAdditionalYukariAssist;
-			YukaListerModel.Instance.EnvModel.YlSettings.IdPrefix = IdPrefix;
+			YlModel.Instance.EnvModel.YlSettings.YukariConfigPathSeed2 = YukariConfigPathSeed;
+			YlModel.Instance.EnvModel.YlSettings.AddFolderOnDeviceArrived = AddFolderOnDeviceArrived;
+			YlModel.Instance.EnvModel.YlSettings.ProvideYukariPreview = ProvideYukariPreview;
+			YlModel.Instance.EnvModel.YlSettings.OutputAdditionalYukariAssist = OutputAdditionalYukariAssist;
+			YlModel.Instance.EnvModel.YlSettings.IdPrefix = IdPrefix;
 		}
 
 		// --------------------------------------------------------------------
@@ -176,11 +176,11 @@ namespace YukaLister.ViewModels.TabItemViewModels
 		// --------------------------------------------------------------------
 		public override void SettingsToProperties()
 		{
-			YukariConfigPathSeed = YukaListerModel.Instance.EnvModel.YlSettings.YukariConfigPathSeed2;
-			AddFolderOnDeviceArrived = YukaListerModel.Instance.EnvModel.YlSettings.AddFolderOnDeviceArrived;
-			ProvideYukariPreview = YukaListerModel.Instance.EnvModel.YlSettings.ProvideYukariPreview;
-			OutputAdditionalYukariAssist = YukaListerModel.Instance.EnvModel.YlSettings.OutputAdditionalYukariAssist;
-			IdPrefix = YukaListerModel.Instance.EnvModel.YlSettings.IdPrefix;
+			YukariConfigPathSeed = YlModel.Instance.EnvModel.YlSettings.YukariConfigPathSeed2;
+			AddFolderOnDeviceArrived = YlModel.Instance.EnvModel.YlSettings.AddFolderOnDeviceArrived;
+			ProvideYukariPreview = YlModel.Instance.EnvModel.YlSettings.ProvideYukariPreview;
+			OutputAdditionalYukariAssist = YlModel.Instance.EnvModel.YlSettings.OutputAdditionalYukariAssist;
+			IdPrefix = YlModel.Instance.EnvModel.YlSettings.IdPrefix;
 		}
 	}
 }

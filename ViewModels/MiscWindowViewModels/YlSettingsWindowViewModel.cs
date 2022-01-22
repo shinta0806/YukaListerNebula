@@ -168,7 +168,7 @@ namespace YukaLister.ViewModels.MiscWindowViewModels
 		#region ヘルプリンクの制御
 		public static ListenerCommand<String>? HelpClickedCommand
 		{
-			get => YukaListerModel.Instance.EnvModel.HelpClickedCommand;
+			get => YlModel.Instance.EnvModel.HelpClickedCommand;
 		}
 		#endregion
 
@@ -199,8 +199,8 @@ namespace YukaLister.ViewModels.MiscWindowViewModels
 			}
 			catch (Exception excep)
 			{
-				YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(TraceEventType.Error, "タブコントロールファイルドロップ時エラー：\n" + excep.Message);
-				YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, "　スタックトレース：\n" + excep.StackTrace);
+				YlModel.Instance.EnvModel.LogWriter.ShowLogMessage(TraceEventType.Error, "タブコントロールファイルドロップ時エラー：\n" + excep.Message);
+				YlModel.Instance.EnvModel.LogWriter.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, "　スタックトレース：\n" + excep.StackTrace);
 			}
 		}
 		#endregion
@@ -229,14 +229,14 @@ namespace YukaLister.ViewModels.MiscWindowViewModels
 
 				CheckInput();
 				PropertiesToSettings();
-				YukaListerModel.Instance.EnvModel.YlSettings.Save();
+				YlModel.Instance.EnvModel.YlSettings.Save();
 				Result = MessageBoxResult.OK;
 				Messenger.Raise(new WindowActionMessage(YlConstants.MESSAGE_KEY_WINDOW_CLOSE));
 			}
 			catch (Exception excep)
 			{
-				YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(TraceEventType.Error, "OK ボタンクリック時エラー：\n" + excep.Message);
-				YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, "　スタックトレース：\n" + excep.StackTrace);
+				YlModel.Instance.EnvModel.LogWriter.ShowLogMessage(TraceEventType.Error, "OK ボタンクリック時エラー：\n" + excep.Message);
+				YlModel.Instance.EnvModel.LogWriter.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, "　スタックトレース：\n" + excep.StackTrace);
 			}
 		}
 		#endregion
@@ -272,8 +272,8 @@ namespace YukaLister.ViewModels.MiscWindowViewModels
 			}
 			catch (Exception excep)
 			{
-				YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(TraceEventType.Error, "環境設定ウィンドウ初期化時エラー：\n" + excep.Message);
-				YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, "　スタックトレース：\n" + excep.StackTrace);
+				YlModel.Instance.EnvModel.LogWriter.ShowLogMessage(TraceEventType.Error, "環境設定ウィンドウ初期化時エラー：\n" + excep.Message);
+				YlModel.Instance.EnvModel.LogWriter.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, "　スタックトレース：\n" + excep.StackTrace);
 			}
 		}
 

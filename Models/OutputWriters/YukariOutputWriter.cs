@@ -96,7 +96,7 @@ namespace YukaLister.Models.OutputWriters
 				}
 				catch (Exception)
 				{
-					YukaListerModel.Instance.EnvModel.LogWriter.LogMessage(TraceEventType.Error, "古い報告ファイル " + Path.GetFileName(path) + " を削除できませんでした。");
+					YlModel.Instance.EnvModel.LogWriter.LogMessage(TraceEventType.Error, "古い報告ファイル " + Path.GetFileName(path) + " を削除できませんでした。");
 				}
 			}
 		}
@@ -151,7 +151,7 @@ namespace YukaLister.Models.OutputWriters
 			base.PrepareOutput();
 
 			// 出力先フォルダー
-			_folderPath = Path.GetDirectoryName(DbCommon.ListDatabasePath(YukaListerModel.Instance.EnvModel.YlSettings)) + '\\';
+			_folderPath = Path.GetDirectoryName(DbCommon.ListDatabasePath(YlModel.Instance.EnvModel.YlSettings)) + '\\';
 		}
 
 		// ====================================================================
@@ -185,7 +185,7 @@ namespace YukaLister.Models.OutputWriters
 		// --------------------------------------------------------------------
 		private void CopySyncServerPhp()
 		{
-			String srcFilder = YukaListerModel.Instance.EnvModel.ExeFullFolder + FOLDER_NAME_SYNC_SERVER + FOLDER_NAME_COMMON_LIB;
+			String srcFilder = YlModel.Instance.EnvModel.ExeFullFolder + FOLDER_NAME_SYNC_SERVER + FOLDER_NAME_COMMON_LIB;
 			File.Copy(srcFilder + "JulianDay.php", _folderPath + "Report_JulianDay.php");
 		}
 
@@ -204,13 +204,13 @@ namespace YukaLister.Models.OutputWriters
 		// --------------------------------------------------------------------
 		private void OutputReportCommon()
 		{
-			if (String.IsNullOrEmpty(YukaListerModel.Instance.EnvModel.YlSettings.IdPrefix))
+			if (String.IsNullOrEmpty(YlModel.Instance.EnvModel.YlSettings.IdPrefix))
 			{
 				throw new Exception("ID 先頭付与文字列が設定されていません。");
 			}
 
 			String template = LoadTemplate("YukariReportCommon");
-			template = template.Replace(HTML_VAR_ID_PREFIX, YukaListerModel.Instance.EnvModel.YlSettings.IdPrefix);
+			template = template.Replace(HTML_VAR_ID_PREFIX, YlModel.Instance.EnvModel.YlSettings.IdPrefix);
 			File.WriteAllText(_folderPath + FILE_NAME_REPORT_COMMON, template, Encoding.UTF8);
 		}
 

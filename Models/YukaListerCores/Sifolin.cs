@@ -30,7 +30,7 @@ using YukaLister.Models.YukaListerModels;
 
 namespace YukaLister.Models.YukaListerCores
 {
-	public class Sifolin : YukaListerCore
+	public class Sifolin : YlCore
 	{
 		// ====================================================================
 		// コンストラクター
@@ -59,14 +59,14 @@ namespace YukaLister.Models.YukaListerCores
 
 				try
 				{
-					YukaListerModel.Instance.EnvModel.AppCancellationTokenSource.Token.ThrowIfCancellationRequested();
-					if (YukaListerModel.Instance.ProjModel.UndoneTargetFolderInfo() == null)
+					YlModel.Instance.EnvModel.AppCancellationTokenSource.Token.ThrowIfCancellationRequested();
+					if (YlModel.Instance.ProjModel.UndoneTargetFolderInfo() == null)
 					{
 						continue;
 					}
 
-					YukaListerModel.Instance.EnvModel.YukaListerPartsStatus[(Int32)YukaListerPartsStatusIndex.Sifolin] = YukaListerStatus.Running;
-					YukaListerModel.Instance.EnvModel.LogWriter.LogMessage(Common.TRACE_EVENT_TYPE_STATUS, GetType().Name + " アクティブ化。");
+					YlModel.Instance.EnvModel.YukaListerPartsStatus[(Int32)YukaListerPartsStatusIndex.Sifolin] = YukaListerStatus.Running;
+					YlModel.Instance.EnvModel.LogWriter.LogMessage(Common.TRACE_EVENT_TYPE_STATUS, GetType().Name + " アクティブ化。");
 
 					MusicInfoDatabaseToMemory();
 
@@ -76,7 +76,7 @@ namespace YukaLister.Models.YukaListerCores
 						TargetFolderInfo? targetFolderInfo;
 
 						// 削除
-						targetFolderInfo = YukaListerModel.Instance.ProjModel.FindTargetFolderInfo(FolderTaskDetail.Remove);
+						targetFolderInfo = YlModel.Instance.ProjModel.FindTargetFolderInfo(FolderTaskDetail.Remove);
 						if (targetFolderInfo != null)
 						{
 							Remove(targetFolderInfo);
@@ -84,9 +84,9 @@ namespace YukaLister.Models.YukaListerCores
 						}
 
 						// キャッシュ活用（全体の動作状況がエラーではない場合のみ）
-						if (YukaListerModel.Instance.EnvModel.YukaListerWholeStatus != YukaListerStatus.Error)
+						if (YlModel.Instance.EnvModel.YukaListerWholeStatus != YukaListerStatus.Error)
 						{
-							targetFolderInfo = YukaListerModel.Instance.ProjModel.FindTargetFolderInfo(FolderTaskDetail.CacheToDisk);
+							targetFolderInfo = YlModel.Instance.ProjModel.FindTargetFolderInfo(FolderTaskDetail.CacheToDisk);
 							if (targetFolderInfo != null)
 							{
 								CacheToDisk(targetFolderInfo);
@@ -103,7 +103,7 @@ namespace YukaLister.Models.YukaListerCores
 						}
 
 						// サブフォルダー検索
-						targetFolderInfo = YukaListerModel.Instance.ProjModel.FindTargetFolderInfo(FolderTaskDetail.FindSubFolders);
+						targetFolderInfo = YlModel.Instance.ProjModel.FindTargetFolderInfo(FolderTaskDetail.FindSubFolders);
 						if (targetFolderInfo != null)
 						{
 							FindSubFolders(targetFolderInfo);
@@ -111,7 +111,7 @@ namespace YukaLister.Models.YukaListerCores
 						}
 
 						// ファイル名追加
-						targetFolderInfo = YukaListerModel.Instance.ProjModel.FindTargetFolderInfo(FolderTaskDetail.AddFileNames);
+						targetFolderInfo = YlModel.Instance.ProjModel.FindTargetFolderInfo(FolderTaskDetail.AddFileNames);
 						if (targetFolderInfo != null)
 						{
 							AddFileNames(targetFolderInfo);
@@ -119,7 +119,7 @@ namespace YukaLister.Models.YukaListerCores
 						}
 
 						// ファイル情報追加
-						targetFolderInfo = YukaListerModel.Instance.ProjModel.FindTargetFolderInfo(FolderTaskDetail.AddInfos);
+						targetFolderInfo = YlModel.Instance.ProjModel.FindTargetFolderInfo(FolderTaskDetail.AddInfos);
 						if (targetFolderInfo != null)
 						{
 							AddInfos(targetFolderInfo);
@@ -127,7 +127,7 @@ namespace YukaLister.Models.YukaListerCores
 						}
 
 						// メモリー DB → ディスク DB（全体の動作状況がエラーではない場合のみ）
-						if (_needsMemoryDbToDiskDb && YukaListerModel.Instance.EnvModel.YukaListerWholeStatus != YukaListerStatus.Error)
+						if (_needsMemoryDbToDiskDb && YlModel.Instance.EnvModel.YukaListerWholeStatus != YukaListerStatus.Error)
 						{
 							MemoryToDisk();
 							_needsMemoryDbToDiskDb = false;
@@ -158,16 +158,16 @@ namespace YukaLister.Models.YukaListerCores
 				}
 				catch (Exception excep)
 				{
-					YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(TraceEventType.Error, GetType().Name + " ループ稼働時エラー：\n" + excep.Message);
-					YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, "　スタックトレース：\n" + excep.StackTrace);
+					YlModel.Instance.EnvModel.LogWriter.ShowLogMessage(TraceEventType.Error, GetType().Name + " ループ稼働時エラー：\n" + excep.Message);
+					YlModel.Instance.EnvModel.LogWriter.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, "　スタックトレース：\n" + excep.StackTrace);
 				}
 
 				// 念のため最後に表示を更新
-				YukaListerModel.Instance.EnvModel.YukaListerPartsStatus[(Int32)YukaListerPartsStatusIndex.Sifolin] = YukaListerStatus.Ready;
-				YukaListerModel.Instance.EnvModel.IsMainWindowDataGridCountChanged = true;
+				YlModel.Instance.EnvModel.YukaListerPartsStatus[(Int32)YukaListerPartsStatusIndex.Sifolin] = YukaListerStatus.Ready;
+				YlModel.Instance.EnvModel.IsMainWindowDataGridCountChanged = true;
 
 				TimeSpan timeSpan = new(YlCommon.MiliToHNano(Environment.TickCount - startTick));
-				YukaListerModel.Instance.EnvModel.LogWriter.LogMessage(Common.TRACE_EVENT_TYPE_STATUS, GetType().Name + " スリープ化：アクティブ時間：" + timeSpan.ToString(@"hh\:mm\:ss"));
+				YlModel.Instance.EnvModel.LogWriter.LogMessage(Common.TRACE_EVENT_TYPE_STATUS, GetType().Name + " スリープ化：アクティブ時間：" + timeSpan.ToString(@"hh\:mm\:ss"));
 			}
 		}
 
@@ -251,7 +251,7 @@ namespace YukaLister.Models.YukaListerCores
 			Int64 uid = listContextInMemory.Founds.Any() ? listContextInMemory.Founds.Max(x => x.Uid) + 1 : 1;
 
 			// キャッシュが使われていない場合はディスク DB の Uid とも重複しないようにする（全体の動作状況がエラーではない場合のみ）
-			if (YukaListerModel.Instance.EnvModel.YukaListerWholeStatus != YukaListerStatus.Error && !targetFolderInfo.IsCacheUsed)
+			if (YlModel.Instance.EnvModel.YukaListerWholeStatus != YukaListerStatus.Error && !targetFolderInfo.IsCacheUsed)
 			{
 				using ListContextInDisk listContextInDisk = new();
 				if (listContextInDisk.Founds.Any())
@@ -276,7 +276,7 @@ namespace YukaLister.Models.YukaListerCores
 			addRecords.Capacity = allPathes.Length;
 			foreach (String path in allPathes)
 			{
-				if (!YukaListerModel.Instance.EnvModel.YlSettings.TargetExts.Contains(Path.GetExtension(path).ToLower()))
+				if (!YlModel.Instance.EnvModel.YlSettings.TargetExts.Contains(Path.GetExtension(path).ToLower()))
 				{
 					continue;
 				}
@@ -302,12 +302,12 @@ namespace YukaLister.Models.YukaListerCores
 			_needsMemoryDbToCacheDb = true;
 
 			// キャッシュが使われていない場合はディスク DB にも追加（全体の動作状況がエラーではない場合のみ）
-			if (YukaListerModel.Instance.EnvModel.YukaListerWholeStatus != YukaListerStatus.Error && !targetFolderInfo.IsCacheUsed)
+			if (YlModel.Instance.EnvModel.YukaListerWholeStatus != YukaListerStatus.Error && !targetFolderInfo.IsCacheUsed)
 			{
 				using ListContextInDisk listContextInDisk = new();
 				listContextInDisk.Founds.AddRange(addRecords);
 				listContextInDisk.SaveChanges();
-				YukaListerModel.Instance.EnvModel.LogWriter.LogMessage(Common.TRACE_EVENT_TYPE_STATUS, "ゆかり用リストデータベースにファイル名を追加しました。" + targetFolderInfo.TargetPath);
+				YlModel.Instance.EnvModel.LogWriter.LogMessage(Common.TRACE_EVENT_TYPE_STATUS, "ゆかり用リストデータベースにファイル名を追加しました。" + targetFolderInfo.TargetPath);
 			}
 		}
 
@@ -319,13 +319,13 @@ namespace YukaLister.Models.YukaListerCores
 			try
 			{
 				String tagKey = YlCommon.WithoutDriveLetter(targetFolderInfo.TargetPath);
-				if (!YukaListerModel.Instance.EnvModel.TagSettings.FolderTags.ContainsKey(tagKey))
+				if (!YlModel.Instance.EnvModel.TagSettings.FolderTags.ContainsKey(tagKey))
 				{
 					return;
 				}
 
 				// TTag にフォルダー設定のタグ情報と同名のタグがあるか？
-				String tagValue = YukaListerModel.Instance.EnvModel.TagSettings.FolderTags[tagKey];
+				String tagValue = YlModel.Instance.EnvModel.TagSettings.FolderTags[tagKey];
 				TTag? tagRecord = DbCommon.SelectMasterByName(tags, tagValue);
 				if (tagRecord == null)
 				{
@@ -396,8 +396,8 @@ namespace YukaLister.Models.YukaListerCores
 			}
 			catch (Exception excep)
 			{
-				YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(TraceEventType.Error, "フォルダー設定タグ付与時エラー：\n" + excep.Message);
-				YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, "　スタックトレース：\n" + excep.StackTrace);
+				YlModel.Instance.EnvModel.LogWriter.ShowLogMessage(TraceEventType.Error, "フォルダー設定タグ付与時エラー：\n" + excep.Message);
+				YlModel.Instance.EnvModel.LogWriter.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, "　スタックトレース：\n" + excep.StackTrace);
 			}
 		}
 
@@ -408,7 +408,7 @@ namespace YukaLister.Models.YukaListerCores
 		{
 			// 動作状況設定
 			SetFolderTaskStatus(targetFolderInfo, FolderTaskStatus.Running);
-			YukaListerModel.Instance.EnvModel.LogWriter.LogMessage(Common.TRACE_EVENT_TYPE_STATUS, "属性確認中... " + targetFolderInfo.TargetPath);
+			YlModel.Instance.EnvModel.LogWriter.LogMessage(Common.TRACE_EVENT_TYPE_STATUS, "属性確認中... " + targetFolderInfo.TargetPath);
 
 			// 作業
 			AddInfosCore(targetFolderInfo);
@@ -447,7 +447,7 @@ namespace YukaLister.Models.YukaListerCores
 				record.FileSize = fileInfo.Length;
 				foundSetter.SetTFoundValues(record, folderSettingsInMemory);
 
-				YukaListerModel.Instance.EnvModel.AppCancellationTokenSource.Token.ThrowIfCancellationRequested();
+				YlModel.Instance.EnvModel.AppCancellationTokenSource.Token.ThrowIfCancellationRequested();
 			}
 			AddFolderTagsInfo(targetFolderInfo, targetRecords, listContextInMemory.Tags, listContextInMemory.TagSequences);
 
@@ -468,7 +468,7 @@ namespace YukaLister.Models.YukaListerCores
 			// 作業
 			CacheToDiskCore(targetFolderInfo);
 #if TEST
-			YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(TraceEventType.Information, "CacheToDisk() キャッシュ追加：" + targetFolderInfo.TargetPath);
+			YlModel.Instance.EnvModel.LogWriter.ShowLogMessage(TraceEventType.Information, "CacheToDisk() キャッシュ追加：" + targetFolderInfo.TargetPath);
 #endif
 
 			// 動作状況設定
@@ -502,12 +502,12 @@ namespace YukaLister.Models.YukaListerCores
 					cacheRecords = cacheContext.Founds.Where(x => x.ParentFolder.Contains(withoutDriveLetterOne)).ToList();
 					if (!cacheRecords.Any())
 					{
-						YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, targetFolderInfo.TargetPath
+						YlModel.Instance.EnvModel.LogWriter.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, targetFolderInfo.TargetPath
 								+ "\nキャッシュはありませんでした。");
 						return;
 					}
 
-					YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, targetFolderInfo.TargetPath
+					YlModel.Instance.EnvModel.LogWriter.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, targetFolderInfo.TargetPath
 							+ "\nキャッシュのドライブレターを変換しています...");
 					String drive = YlCommon.DriveLetter(targetFolderInfo.TargetPath);
 					foreach (TFound cacheRecord in cacheRecords)
@@ -518,7 +518,7 @@ namespace YukaLister.Models.YukaListerCores
 					}
 				}
 
-				YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, targetFolderInfo.TargetPath
+				YlModel.Instance.EnvModel.LogWriter.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, targetFolderInfo.TargetPath
 						+ "\nキャッシュをゆかり用リストデータベースに反映しています...");
 
 				// キャッシュの Uid 初期化
@@ -531,15 +531,15 @@ namespace YukaLister.Models.YukaListerCores
 				listContextInDisk.Founds.AddRange(cacheRecords);
 				listContextInDisk.SaveChanges();
 				targetFolderInfo.IsCacheUsed = true;
-				YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, targetFolderInfo.TargetPath
+				YlModel.Instance.EnvModel.LogWriter.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, targetFolderInfo.TargetPath
 						+ "\nキャッシュをゆかり用リストデータベースに反映しました。");
 			}
 			catch (Exception excep)
 			{
 				// C ドライブ等、ルートに書き込み権限がなくキャッシュデータベースが作れていない場合も例外が発生する
 				// C ドライブをゆかり検索対象フォルダーに追加する度にメッセージが表示されるのはナンセンスなので、ログのみとする
-				YukaListerModel.Instance.EnvModel.LogWriter.LogMessage(TraceEventType.Error, "キャッシュ DB → ディスク DB 時エラー：\n" + excep.Message);
-				YukaListerModel.Instance.EnvModel.LogWriter.LogMessage(Common.TRACE_EVENT_TYPE_STATUS, "　スタックトレース：\n" + excep.StackTrace);
+				YlModel.Instance.EnvModel.LogWriter.LogMessage(TraceEventType.Error, "キャッシュ DB → ディスク DB 時エラー：\n" + excep.Message);
+				YlModel.Instance.EnvModel.LogWriter.LogMessage(Common.TRACE_EVENT_TYPE_STATUS, "　スタックトレース：\n" + excep.StackTrace);
 			}
 		}
 
@@ -548,7 +548,7 @@ namespace YukaLister.Models.YukaListerCores
 		// --------------------------------------------------------------------
 		private List<TargetFolderInfo> EnumSubFolders(TargetFolderInfo parentFolder)
 		{
-			YukaListerModel.Instance.EnvModel.AppCancellationTokenSource.Token.ThrowIfCancellationRequested();
+			YlModel.Instance.EnvModel.AppCancellationTokenSource.Token.ThrowIfCancellationRequested();
 			List<TargetFolderInfo> folders = new();
 			try
 			{
@@ -612,25 +612,25 @@ namespace YukaLister.Models.YukaListerCores
 		{
 			// 子の検索と重複チェック
 			List<TargetFolderInfo> subFolders = EnumSubFolders(targetFolderInfo);
-			Boolean childAdded = YukaListerModel.Instance.ProjModel.IsTargetFolderAdded(subFolders);
+			Boolean childAdded = YlModel.Instance.ProjModel.IsTargetFolderAdded(subFolders);
 			if (childAdded)
 			{
 				// 追加済みの親を削除
-				YukaListerModel.Instance.ProjModel.SetFolderTaskDetailOfFolderToRemove(targetFolderInfo.ParentPath);
-				YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(TraceEventType.Error, targetFolderInfo.TargetPath
+				YlModel.Instance.ProjModel.SetFolderTaskDetailOfFolderToRemove(targetFolderInfo.ParentPath);
+				YlModel.Instance.EnvModel.LogWriter.ShowLogMessage(TraceEventType.Error, targetFolderInfo.TargetPath
 						+ "\nのサブフォルダーが既に追加されています。\nサブフォルダーを一旦削除してから追加しなおして下さい。");
 				return;
 			}
 
 			// 子の追加
-			YukaListerModel.Instance.ProjModel.AddTargetSubFolders(targetFolderInfo, subFolders);
+			YlModel.Instance.ProjModel.AddTargetSubFolders(targetFolderInfo, subFolders);
 
 			// 親設定
 			targetFolderInfo.HasChildren = subFolders.Any();
 			targetFolderInfo.NumTotalFolders = 1 + subFolders.Count;
 
 			// その他
-			YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, targetFolderInfo.TargetPath
+			YlModel.Instance.EnvModel.LogWriter.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, targetFolderInfo.TargetPath
 					+ "\n" + targetFolderInfo.NumTotalFolders + " 個のフォルダーをキューに追加しました。");
 		}
 
@@ -654,8 +654,8 @@ namespace YukaLister.Models.YukaListerCores
 				{
 					// C ドライブ等、ルートに書き込み権限がなくキャッシュデータベースが作れていない場合も例外が発生する
 					// C ドライブをゆかり検索対象フォルダーに追加する度にメッセージが表示されるのはナンセンスなので、ログのみとする
-					YukaListerModel.Instance.EnvModel.LogWriter.LogMessage(TraceEventType.Error, "メモリー DB → キャッシュ DB 時エラー：\n" + excep.Message);
-					YukaListerModel.Instance.EnvModel.LogWriter.LogMessage(Common.TRACE_EVENT_TYPE_STATUS, "　スタックトレース：\n" + excep.StackTrace);
+					YlModel.Instance.EnvModel.LogWriter.LogMessage(TraceEventType.Error, "メモリー DB → キャッシュ DB 時エラー：\n" + excep.Message);
+					YlModel.Instance.EnvModel.LogWriter.LogMessage(Common.TRACE_EVENT_TYPE_STATUS, "　スタックトレース：\n" + excep.StackTrace);
 				}
 			}
 		}
@@ -672,8 +672,8 @@ namespace YukaLister.Models.YukaListerCores
 			if (sqliteConnectionInMemory != null && sqliteConnectionInDisk != null)
 			{
 				sqliteConnectionInMemory.BackupDatabase(sqliteConnectionInDisk);
-				YukaListerModel.Instance.EnvModel.LogWriter.LogMessage(Common.TRACE_EVENT_TYPE_STATUS, "ゆかり用リストデータベースの作成が完了しました。");
-				YukaListerModel.Instance.ProjModel.SetAllFolderTaskStatusToDoneInDisk();
+				YlModel.Instance.EnvModel.LogWriter.LogMessage(Common.TRACE_EVENT_TYPE_STATUS, "ゆかり用リストデータベースの作成が完了しました。");
+				YlModel.Instance.ProjModel.SetAllFolderTaskStatusToDoneInDisk();
 			}
 		}
 
@@ -739,7 +739,7 @@ namespace YukaLister.Models.YukaListerCores
 #endif
 
 			// まずディスク DB から削除（全体の動作状況がエラーではない場合のみ）
-			if (YukaListerModel.Instance.EnvModel.YukaListerWholeStatus != YukaListerStatus.Error)
+			if (YlModel.Instance.EnvModel.YukaListerWholeStatus != YukaListerStatus.Error)
 			{
 				using ListContextInDisk listContextInDisk = new();
 				listContextInDisk.Founds.RemoveRange(listContextInDisk.Founds.Where(x => x.ParentFolder == targetFolderInfo.ParentPath));
@@ -752,10 +752,10 @@ namespace YukaLister.Models.YukaListerCores
 			listContextInMemory.SaveChanges();
 
 			// TargetFolderInfo 削除
-			YukaListerModel.Instance.ProjModel.RemoveTargetFolders(targetFolderInfo.ParentPath);
+			YlModel.Instance.ProjModel.RemoveTargetFolders(targetFolderInfo.ParentPath);
 
 			// その他
-			YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, targetFolderInfo.ParentPath
+			YlModel.Instance.EnvModel.LogWriter.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, targetFolderInfo.ParentPath
 					+ "\nとその配下のフォルダーをゆかり検索対象から削除しました。");
 		}
 
@@ -767,7 +767,7 @@ namespace YukaLister.Models.YukaListerCores
 			targetFolderInfo.FolderTaskStatus = folderTaskStatus;
 			if (targetFolderInfo.Visible)
 			{
-				YukaListerModel.Instance.EnvModel.IsMainWindowDataGridItemUpdated = true;
+				YlModel.Instance.EnvModel.IsMainWindowDataGridItemUpdated = true;
 			}
 		}
 	}

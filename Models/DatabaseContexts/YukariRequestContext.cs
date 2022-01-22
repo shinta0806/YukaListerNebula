@@ -53,7 +53,7 @@ namespace YukaLister.Models.DatabaseContexts
 		// --------------------------------------------------------------------
 		public static Double LastWriteMjd()
 		{
-			return JulianDay.DateTimeToModifiedJulianDate(new FileInfo(YukaListerModel.Instance.EnvModel.YlSettings.YukariRequestDatabasePath()).LastWriteTimeUtc);
+			return JulianDay.DateTimeToModifiedJulianDate(new FileInfo(YlModel.Instance.EnvModel.YlSettings.YukariRequestDatabasePath()).LastWriteTimeUtc);
 		}
 
 		// ====================================================================
@@ -65,7 +65,7 @@ namespace YukaLister.Models.DatabaseContexts
 		// --------------------------------------------------------------------
 		protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 		{
-			using SqliteConnection sqliteConnection = DbCommon.Connect(YukaListerModel.Instance.EnvModel.YlSettings.YukariRequestDatabasePath());
+			using SqliteConnection sqliteConnection = DbCommon.Connect(YlModel.Instance.EnvModel.YlSettings.YukariRequestDatabasePath());
 			optionsBuilder.UseSqlite(sqliteConnection);
 		}
 

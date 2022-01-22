@@ -37,7 +37,7 @@ namespace YukaLister.Models.SharedMisc
 			TargetPathLabel = ParentPath;
 			Level = 0;
 			FolderTaskKind = FolderTaskKind.Add;
-			_folderTaskDetail = (Int32)(YukaListerModel.Instance.EnvModel.YukaListerWholeStatus != YukaListerStatus.Error ? FolderTaskDetail.CacheToDisk : FolderTaskDetail.FindSubFolders);
+			_folderTaskDetail = (Int32)(YlModel.Instance.EnvModel.YukaListerWholeStatus != YukaListerStatus.Error ? FolderTaskDetail.CacheToDisk : FolderTaskDetail.FindSubFolders);
 			Visible = true;
 		}
 
@@ -220,14 +220,6 @@ namespace YukaLister.Models.SharedMisc
 		// --------------------------------------------------------------------
 		private (String label, Brush brush) FolderTaskStatusLabelAndBrush()
 		{
-#if false
-			// 全体がエラーの場合はフォルダーもエラー
-			if (YukaListerModel.Instance.EnvModel.YukaListerWholeStatus == YukaListerStatus.Error)
-			{
-				return ("エラー解決待ち", YlConstants.BRUSH_STATUS_ERROR);
-			}
-#endif
-
 			// 対象外かどうか
 			if (FolderExcludeSettingsStatus == FolderExcludeSettingsStatus.True)
 			{

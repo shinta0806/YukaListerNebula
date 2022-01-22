@@ -84,16 +84,16 @@ namespace YukaLister.Models.WebServer
 
 				// 終了コマンドを送信してサーバーの待機を終了させる（終了前提なので HttpClient は使い回さない）
 				using HttpClient httpClient = new();
-				HttpResponseMessage response = await httpClient.GetAsync(URL_LOCAL_HOST + YukaListerModel.Instance.EnvModel.YlSettings.WebServerPort.ToString() + '/' + SERVER_COMMAND_QUIT);
+				HttpResponseMessage response = await httpClient.GetAsync(URL_LOCAL_HOST + YlModel.Instance.EnvModel.YlSettings.WebServerPort.ToString() + '/' + SERVER_COMMAND_QUIT);
 #if DEBUGz
 				Thread.Sleep(2000);
 #endif
-				YukaListerModel.Instance.EnvModel.LogWriter.LogMessage(Common.TRACE_EVENT_TYPE_STATUS, "プレビューサーバーから終了応答を受信。");
+				YlModel.Instance.EnvModel.LogWriter.LogMessage(Common.TRACE_EVENT_TYPE_STATUS, "プレビューサーバーから終了応答を受信。");
 			}
 			catch (Exception excep)
 			{
-				YukaListerModel.Instance.EnvModel.LogWriter.LogMessage(TraceEventType.Error, "プレビューサーバー終了時エラー：\n" + excep.Message);
-				YukaListerModel.Instance.EnvModel.LogWriter.LogMessage(Common.TRACE_EVENT_TYPE_STATUS, "　スタックトレース：\n" + excep.StackTrace);
+				YlModel.Instance.EnvModel.LogWriter.LogMessage(TraceEventType.Error, "プレビューサーバー終了時エラー：\n" + excep.Message);
+				YlModel.Instance.EnvModel.LogWriter.LogMessage(Common.TRACE_EVENT_TYPE_STATUS, "　スタックトレース：\n" + excep.StackTrace);
 			}
 		}
 
@@ -211,13 +211,13 @@ namespace YukaLister.Models.WebServer
 		// --------------------------------------------------------------------
 		private static Boolean CheckEasyAuth(Dictionary<String, String> options, HttpListenerRequest request, HttpListenerResponse response)
 		{
-			if (!YukaListerModel.Instance.EnvModel.YlSettings.YukariUseEasyAuth)
+			if (!YlModel.Instance.EnvModel.YlSettings.YukariUseEasyAuth)
 			{
 				// 認証不要
 				return true;
 			}
 
-			if (options.ContainsKey(YlConstants.SERVER_OPTION_NAME_EASY_PASS) && options[YlConstants.SERVER_OPTION_NAME_EASY_PASS] == YukaListerModel.Instance.EnvModel.YlSettings.YukariEasyAuthKeyword)
+			if (options.ContainsKey(YlConstants.SERVER_OPTION_NAME_EASY_PASS) && options[YlConstants.SERVER_OPTION_NAME_EASY_PASS] == YlModel.Instance.EnvModel.YlSettings.YukariEasyAuthKeyword)
 			{
 				// URL 認証成功
 				Cookie newCookie = new(YlConstants.SERVER_OPTION_NAME_EASY_PASS, options[YlConstants.SERVER_OPTION_NAME_EASY_PASS]);
@@ -228,7 +228,7 @@ namespace YukaLister.Models.WebServer
 			}
 
 			Cookie? existCookie = request.Cookies[YlConstants.SERVER_OPTION_NAME_EASY_PASS];
-			if (existCookie != null && existCookie.Value == YukaListerModel.Instance.EnvModel.YlSettings.YukariEasyAuthKeyword)
+			if (existCookie != null && existCookie.Value == YlModel.Instance.EnvModel.YlSettings.YukariEasyAuthKeyword)
 			{
 				// クッキー認証成功
 				return true;
@@ -258,7 +258,7 @@ namespace YukaLister.Models.WebServer
 				player.Pause();
 
 				// 指定位置へシーク
-				player.Position = TimeSpan.FromSeconds(YukaListerModel.Instance.EnvModel.YlSettings.ThumbSeekPos);
+				player.Position = TimeSpan.FromSeconds(YlModel.Instance.EnvModel.YlSettings.ThumbSeekPos);
 
 				// 読み込みが完了するまで待機
 				Int32 tick = Environment.TickCount;
@@ -425,7 +425,7 @@ namespace YukaLister.Models.WebServer
 			// 横幅を解析
 			if (!options.ContainsKey(YlConstants.SERVER_OPTION_NAME_WIDTH))
 			{
-				width = YukaListerModel.Instance.EnvModel.YlSettings.ThumbDefaultWidth;
+				width = YlModel.Instance.EnvModel.YlSettings.ThumbDefaultWidth;
 			}
 			else
 			{
@@ -538,8 +538,8 @@ namespace YukaLister.Models.WebServer
 			}
 			catch (Exception excep)
 			{
-				YukaListerModel.Instance.EnvModel.LogWriter.LogMessage(TraceEventType.Error, "エラー応答送信時エラー：\n" + excep.Message);
-				YukaListerModel.Instance.EnvModel.LogWriter.LogMessage(Common.TRACE_EVENT_TYPE_STATUS, "　スタックトレース：\n" + excep.StackTrace);
+				YlModel.Instance.EnvModel.LogWriter.LogMessage(TraceEventType.Error, "エラー応答送信時エラー：\n" + excep.Message);
+				YlModel.Instance.EnvModel.LogWriter.LogMessage(Common.TRACE_EVENT_TYPE_STATUS, "　スタックトレース：\n" + excep.StackTrace);
 			}
 		}
 
@@ -591,8 +591,8 @@ namespace YukaLister.Models.WebServer
 						}
 						catch (Exception excep)
 						{
-							YukaListerModel.Instance.EnvModel.LogWriter.LogMessage(TraceEventType.Error, "プレビュー内容送信エラー：\n" + excep.Message + "\nリトライ回数：" + numRetries);
-							YukaListerModel.Instance.EnvModel.LogWriter.LogMessage(Common.TRACE_EVENT_TYPE_STATUS, "　スタックトレース：\n" + excep.StackTrace);
+							YlModel.Instance.EnvModel.LogWriter.LogMessage(TraceEventType.Error, "プレビュー内容送信エラー：\n" + excep.Message + "\nリトライ回数：" + numRetries);
+							YlModel.Instance.EnvModel.LogWriter.LogMessage(Common.TRACE_EVENT_TYPE_STATUS, "　スタックトレース：\n" + excep.StackTrace);
 						}
 						numRetries++;
 						_tokenSource.Token.ThrowIfCancellationRequested();
@@ -612,7 +612,7 @@ namespace YukaLister.Models.WebServer
 			}
 
 #if DEBUG
-			YukaListerModel.Instance.EnvModel.LogWriter.LogMessage(TraceEventType.Verbose, "SendFile() sent: " + readSizes.ToString("#,0") + " / " + fileInfo.Length.ToString("#,0"));
+			YlModel.Instance.EnvModel.LogWriter.LogMessage(TraceEventType.Verbose, "SendFile() sent: " + readSizes.ToString("#,0") + " / " + fileInfo.Length.ToString("#,0"));
 #endif
 		}
 
@@ -679,13 +679,13 @@ namespace YukaLister.Models.WebServer
 			}
 			catch (OperationCanceledException)
 			{
-				YukaListerModel.Instance.EnvModel.LogWriter.LogMessage(Common.TRACE_EVENT_TYPE_STATUS, "クライアントへの応答を中止しました。");
+				YlModel.Instance.EnvModel.LogWriter.LogMessage(Common.TRACE_EVENT_TYPE_STATUS, "クライアントへの応答を中止しました。");
 			}
 			catch (Exception excep)
 			{
 				SendErrorResponse(response, excep.Message);
-				YukaListerModel.Instance.EnvModel.LogWriter.LogMessage(TraceEventType.Error, "クライアントへの応答時エラー：\n" + excep.Message);
-				YukaListerModel.Instance.EnvModel.LogWriter.LogMessage(Common.TRACE_EVENT_TYPE_STATUS, "　スタックトレース：\n" + excep.StackTrace);
+				YlModel.Instance.EnvModel.LogWriter.LogMessage(TraceEventType.Error, "クライアントへの応答時エラー：\n" + excep.Message);
+				YlModel.Instance.EnvModel.LogWriter.LogMessage(Common.TRACE_EVENT_TYPE_STATUS, "　スタックトレース：\n" + excep.StackTrace);
 			}
 			finally
 			{
@@ -784,7 +784,7 @@ namespace YukaLister.Models.WebServer
 				listener = new HttpListener();
 
 				// localhost URL を受け付ける
-				listener.Prefixes.Add(URL_LOCAL_HOST + YukaListerModel.Instance.EnvModel.YlSettings.WebServerPort.ToString() + "/");
+				listener.Prefixes.Add(URL_LOCAL_HOST + YlModel.Instance.EnvModel.YlSettings.WebServerPort.ToString() + "/");
 				listener.Start();
 
 				for (; ; )
@@ -811,8 +811,8 @@ namespace YukaLister.Models.WebServer
 					}
 					catch (Exception excep)
 					{
-						YukaListerModel.Instance.EnvModel.LogWriter.LogMessage(TraceEventType.Error, "プレビュー接続ループエラー（リトライします）：\n" + excep.Message);
-						YukaListerModel.Instance.EnvModel.LogWriter.LogMessage(Common.TRACE_EVENT_TYPE_STATUS, "　スタックトレース：\n" + excep.StackTrace);
+						YlModel.Instance.EnvModel.LogWriter.LogMessage(TraceEventType.Error, "プレビュー接続ループエラー（リトライします）：\n" + excep.Message);
+						YlModel.Instance.EnvModel.LogWriter.LogMessage(Common.TRACE_EVENT_TYPE_STATUS, "　スタックトレース：\n" + excep.StackTrace);
 					}
 
 					_tokenSource.Token.ThrowIfCancellationRequested();
@@ -826,18 +826,18 @@ namespace YukaLister.Models.WebServer
 				{
 					if (Environment.TickCount - quitStartTime > QUIT_TIMEOUT)
 					{
-						YukaListerModel.Instance.EnvModel.LogWriter.LogMessage(Common.TRACE_EVENT_TYPE_STATUS, "プレビュー処理時にタイムアウトしました。");
+						YlModel.Instance.EnvModel.LogWriter.LogMessage(Common.TRACE_EVENT_TYPE_STATUS, "プレビュー処理時にタイムアウトしました。");
 						break;
 					}
 					Thread.Sleep(Common.GENERAL_SLEEP_TIME);
 				}
 
-				YukaListerModel.Instance.EnvModel.LogWriter.LogMessage(Common.TRACE_EVENT_TYPE_STATUS, "プレビュー処理を終了しました。");
+				YlModel.Instance.EnvModel.LogWriter.LogMessage(Common.TRACE_EVENT_TYPE_STATUS, "プレビュー処理を終了しました。");
 			}
 			catch (Exception excep)
 			{
-				YukaListerModel.Instance.EnvModel.LogWriter.LogMessage(TraceEventType.Error, "プレビュー処理エラー：\n" + excep.Message);
-				YukaListerModel.Instance.EnvModel.LogWriter.LogMessage(Common.TRACE_EVENT_TYPE_STATUS, "　スタックトレース：\n" + excep.StackTrace);
+				YlModel.Instance.EnvModel.LogWriter.LogMessage(TraceEventType.Error, "プレビュー処理エラー：\n" + excep.Message);
+				YlModel.Instance.EnvModel.LogWriter.LogMessage(Common.TRACE_EVENT_TYPE_STATUS, "　スタックトレース：\n" + excep.StackTrace);
 			}
 			finally
 			{

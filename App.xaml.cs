@@ -68,15 +68,15 @@ namespace YukaLister
 			{
 				if (unhandledExceptionEventArgs.ExceptionObject is Exception excep)
 				{
-					// YukaListerModel 未生成の可能性があるためまずはメッセージ表示のみ
+					// YlModel 未生成の可能性があるためまずはメッセージ表示のみ
 					MessageBox.Show("不明なエラーが発生しました。アプリケーションを終了します。\n" + excep.Message + "\n" + excep.InnerException?.Message + "\n" + excep.StackTrace,
 							"エラー", MessageBoxButton.OK, MessageBoxImage.Error);
 
 					try
 					{
-						// 可能であればログする。YukaListerModel 生成中に例外が発生する可能性がある
-						YukaListerModel.Instance.EnvModel.LogWriter.LogMessage(TraceEventType.Error, "集約エラーハンドラー：\n" + excep.Message + "\n" + excep.InnerException?.Message);
-						YukaListerModel.Instance.EnvModel.LogWriter.LogMessage(Common.TRACE_EVENT_TYPE_STATUS, "　スタックトレース：\n" + excep.StackTrace);
+						// 可能であればログする。YlModel 生成中に例外が発生する可能性がある
+						YlModel.Instance.EnvModel.LogWriter.LogMessage(TraceEventType.Error, "集約エラーハンドラー：\n" + excep.Message + "\n" + excep.InnerException?.Message);
+						YlModel.Instance.EnvModel.LogWriter.LogMessage(Common.TRACE_EVENT_TYPE_STATUS, "　スタックトレース：\n" + excep.StackTrace);
 					}
 					catch (Exception)
 					{

@@ -19,7 +19,7 @@ using YukaLister.Models.YukaListerModels;
 
 namespace YukaLister.Models.DatabaseContexts
 {
-	public class ThumbContext : YukaListerContext
+	public class ThumbContext : YlContext
 	{
 		// ====================================================================
 		// コンストラクター
@@ -50,7 +50,7 @@ namespace YukaLister.Models.DatabaseContexts
 		// --------------------------------------------------------------------
 		public override String DatabasePath()
 		{
-			return DbCommon.ThumbDatabasePath(YukaListerModel.Instance.EnvModel.YlSettings);
+			return DbCommon.ThumbDatabasePath(YlModel.Instance.EnvModel.YlSettings);
 		}
 
 		// ====================================================================

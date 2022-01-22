@@ -225,7 +225,7 @@ namespace YukaLister.Models.Settings
 				// エラーの場合は情報をクリア
 				YukariRequestDatabasePathSeed = FILE_NAME_YUKARI_REQUEST_DB_DEFAULT;
 				YukariUseEasyAuth = false;
-				YukaListerModel.Instance.EnvModel.LogWriter.LogMessage(TraceEventType.Error, excep.Message + "サーバーに簡易認証を適用しません。");
+				YlModel.Instance.EnvModel.LogWriter.LogMessage(TraceEventType.Error, excep.Message + "サーバーに簡易認証を適用しません。");
 			}
 		}
 
@@ -277,7 +277,7 @@ namespace YukaLister.Models.Settings
 			}
 			catch (Exception)
 			{
-				YukaListerModel.Instance.EnvModel.LogWriter.LogMessage(TraceEventType.Error, "ゆかり request.db が無効です：" + YukariRequestDatabasePath());
+				YlModel.Instance.EnvModel.LogWriter.LogMessage(TraceEventType.Error, "ゆかり request.db が無効です：" + YukariRequestDatabasePath());
 				return false;
 			}
 
@@ -354,7 +354,7 @@ namespace YukaLister.Models.Settings
 			}
 			else
 			{
-				return Common.MakeAbsolutePath(YukaListerModel.Instance.EnvModel.ExeFullFolder, YukariConfigPathSeed2);
+				return Common.MakeAbsolutePath(YlModel.Instance.EnvModel.ExeFullFolder, YukariConfigPathSeed2);
 			}
 		}
 

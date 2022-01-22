@@ -65,7 +65,7 @@ namespace YukaLister.ViewModels.MiscWindowViewModels
 		#region ヘルプリンクの制御
 		public static ListenerCommand<String>? HelpClickedCommand
 		{
-			get => YukaListerModel.Instance.EnvModel.HelpClickedCommand;
+			get => YlModel.Instance.EnvModel.HelpClickedCommand;
 		}
 		#endregion
 
@@ -98,15 +98,15 @@ namespace YukaLister.ViewModels.MiscWindowViewModels
 					throw new Exception("ID 接頭辞を入力してください。");
 				}
 
-				YukaListerModel.Instance.EnvModel.YlSettings.IdPrefix = YlCommon.CheckIdPrefix(IdPrefix, false);
-				YukaListerModel.Instance.EnvModel.YlSettings.Save();
+				YlModel.Instance.EnvModel.YlSettings.IdPrefix = YlCommon.CheckIdPrefix(IdPrefix, false);
+				YlModel.Instance.EnvModel.YlSettings.Save();
 
 				Messenger.Raise(new WindowActionMessage(YlConstants.MESSAGE_KEY_WINDOW_CLOSE));
 			}
 			catch (Exception excep)
 			{
-				YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(TraceEventType.Error, "OK ボタンクリック時エラー：\n" + excep.Message);
-				YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, "　スタックトレース：\n" + excep.StackTrace);
+				YlModel.Instance.EnvModel.LogWriter.ShowLogMessage(TraceEventType.Error, "OK ボタンクリック時エラー：\n" + excep.Message);
+				YlModel.Instance.EnvModel.LogWriter.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, "　スタックトレース：\n" + excep.StackTrace);
 			}
 		}
 		#endregion
@@ -138,8 +138,8 @@ namespace YukaLister.ViewModels.MiscWindowViewModels
 			}
 			catch (Exception excep)
 			{
-				YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(TraceEventType.Error, "ID 接頭辞入力ウィンドウビューモデル初期化時エラー：\n" + excep.Message);
-				YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, "　スタックトレース：\n" + excep.StackTrace);
+				YlModel.Instance.EnvModel.LogWriter.ShowLogMessage(TraceEventType.Error, "ID 接頭辞入力ウィンドウビューモデル初期化時エラー：\n" + excep.Message);
+				YlModel.Instance.EnvModel.LogWriter.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, "　スタックトレース：\n" + excep.StackTrace);
 			}
 		}
 	}

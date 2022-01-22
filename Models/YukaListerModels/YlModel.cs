@@ -12,7 +12,7 @@ using Livet;
 
 namespace YukaLister.Models.YukaListerModels
 {
-	public class YukaListerModel : NotificationObject
+	public class YlModel : NotificationObject
 	{
 		// ====================================================================
 		// コンストラクター
@@ -21,7 +21,7 @@ namespace YukaLister.Models.YukaListerModels
 		// --------------------------------------------------------------------
 		// メインコンストラクター
 		// --------------------------------------------------------------------
-		public YukaListerModel()
+		public YlModel()
 		{
 		}
 
@@ -30,7 +30,7 @@ namespace YukaLister.Models.YukaListerModels
 		// ====================================================================
 
 		// 唯一のインスタンス
-		public static YukaListerModel Instance { get; } = new();
+		public static YlModel Instance { get; } = new();
 
 		// ====================================================================
 		// public プロパティー

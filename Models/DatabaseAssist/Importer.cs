@@ -44,7 +44,7 @@ namespace YukaLister.Models.DatabaseAssist
 			}
 			else
 			{
-				_importSrcPath = Common.MakeAbsolutePath(YukaListerModel.Instance.EnvModel.ExeFullFolder, importSrcPath);
+				_importSrcPath = Common.MakeAbsolutePath(YlModel.Instance.EnvModel.ExeFullFolder, importSrcPath);
 			}
 			_importTag = importTag;
 			_importSameName = importSameName;
@@ -64,7 +64,7 @@ namespace YukaLister.Models.DatabaseAssist
 		// --------------------------------------------------------------------
 		public void Import()
 		{
-			YukaListerModel.Instance.EnvModel.LogWriter.LogMessage(Common.TRACE_EVENT_TYPE_STATUS, "インポートしています：" + _importSrcPath);
+			YlModel.Instance.EnvModel.LogWriter.LogMessage(Common.TRACE_EVENT_TYPE_STATUS, "インポートしています：" + _importSrcPath);
 
 			String file;
 			if (Path.GetExtension(_importSrcPath).ToLower() == YlConstants.FILE_EXT_YL_EXPORT_ARCHIVE)
@@ -106,7 +106,7 @@ namespace YukaLister.Models.DatabaseAssist
 				ImportSequenceTable(musicInfoContextExport.TagSequences, musicInfoContextDefault.TagSequences, musicInfoContextDefault);
 			}
 
-			YukaListerModel.Instance.EnvModel.LogWriter.LogMessage(Common.TRACE_EVENT_TYPE_STATUS, "インポートが完了しました。");
+			YlModel.Instance.EnvModel.LogWriter.LogMessage(Common.TRACE_EVENT_TYPE_STATUS, "インポートが完了しました。");
 		}
 
 		// ====================================================================

@@ -30,7 +30,7 @@ using YukaLister.ViewModels;
 
 namespace YukaLister.Models.YukaListerCores
 {
-	public class Syclin : YukaListerCore
+	public class Syclin : YlCore
 	{
 		// ====================================================================
 		// コンストラクター
@@ -80,18 +80,18 @@ namespace YukaLister.Models.YukaListerCores
 
 				try
 				{
-					YukaListerModel.Instance.EnvModel.AppCancellationTokenSource.Token.ThrowIfCancellationRequested();
-					if (YukaListerModel.Instance.EnvModel.YukaListerWholeStatus == YukaListerStatus.Error)
+					YlModel.Instance.EnvModel.AppCancellationTokenSource.Token.ThrowIfCancellationRequested();
+					if (YlModel.Instance.EnvModel.YukaListerWholeStatus == YukaListerStatus.Error)
 					{
 						continue;
 					}
-					if (!YukaListerModel.Instance.EnvModel.YlSettings.SyncMusicInfoDb)
+					if (!YlModel.Instance.EnvModel.YlSettings.SyncMusicInfoDb)
 					{
 						continue;
 					}
 
 					IsActive = true;
-					YukaListerModel.Instance.EnvModel.LogWriter.LogMessage(Common.TRACE_EVENT_TYPE_STATUS, GetType().Name + " アクティブ化。");
+					YlModel.Instance.EnvModel.LogWriter.LogMessage(Common.TRACE_EVENT_TYPE_STATUS, GetType().Name + " アクティブ化。");
 
 					// ログイン
 					MainWindowViewModel.SetStatusBarMessageWithInvoke(Common.TRACE_EVENT_TYPE_STATUS, "同期準備中...");
@@ -136,12 +136,12 @@ namespace YukaLister.Models.YukaListerCores
 
 					// メッセージボックスではなくステータスバーにエラー表示
 					MainWindowViewModel.SetStatusBarMessageWithInvoke(TraceEventType.Error, excep.Message);
-					YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, "　スタックトレース：\n" + excep.StackTrace);
+					YlModel.Instance.EnvModel.LogWriter.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, "　スタックトレース：\n" + excep.StackTrace);
 				}
 
 				IsActive = false;
 				TimeSpan timeSpan = new(YlCommon.MiliToHNano(Environment.TickCount - startTick));
-				YukaListerModel.Instance.EnvModel.LogWriter.LogMessage(Common.TRACE_EVENT_TYPE_STATUS, GetType().Name + " スリープ化：アクティブ時間：" + timeSpan.ToString(@"hh\:mm\:ss"));
+				YlModel.Instance.EnvModel.LogWriter.LogMessage(Common.TRACE_EVENT_TYPE_STATUS, GetType().Name + " スリープ化：アクティブ時間：" + timeSpan.ToString(@"hh\:mm\:ss"));
 			}
 		}
 
@@ -188,10 +188,10 @@ namespace YukaLister.Models.YukaListerCores
 				return;
 			}
 
-			YukaListerModel.Instance.EnvModel.LogWriter.LogMessage(Common.TRACE_EVENT_TYPE_STATUS, "サーバーデータ再取得のため楽曲情報データベースを初期化。");
+			YlModel.Instance.EnvModel.LogWriter.LogMessage(Common.TRACE_EVENT_TYPE_STATUS, "サーバーデータ再取得のため楽曲情報データベースを初期化。");
 			musicInfoContextDefault.CreateDatabase();
 
-			YukaListerModel.Instance.EnvModel.LogWriter.LogMessage(Common.TRACE_EVENT_TYPE_STATUS, "サーバーデータ再取得のためゆかり統計データベースを初期化。");
+			YlModel.Instance.EnvModel.LogWriter.LogMessage(Common.TRACE_EVENT_TYPE_STATUS, "サーバーデータ再取得のためゆかり統計データベースを初期化。");
 			yukariStatisticsContext.CreateDatabase();
 
 			IsReget = false;
@@ -199,7 +199,7 @@ namespace YukaLister.Models.YukaListerCores
 
 		// --------------------------------------------------------------------
 		// アップロードを拒否されたレコードの更新日をサーバーからダウンロード
-		// YukaListerModel.Instance.EnvModel.YlSettings.LastSyncDownloadDate を更新し、次回ダウンロード時に拒否レコードが上書きされるようにする
+		// YlModel.Instance.EnvModel.YlSettings.LastSyncDownloadDate を更新し、次回ダウンロード時に拒否レコードが上書きされるようにする
 		// --------------------------------------------------------------------
 		private async Task DownloadRejectDateAsync()
 		{
@@ -213,9 +213,9 @@ namespace YukaLister.Models.YukaListerCores
 
 				DateTime rejectDate = DateTime.ParseExact(rejectDateString, YlConstants.SYNC_URL_DATE_FORMAT, null);
 				Double rejectMjd = JulianDay.DateTimeToModifiedJulianDate(rejectDate);
-				if (rejectMjd < YukaListerModel.Instance.EnvModel.YlSettings.LastSyncDownloadDate)
+				if (rejectMjd < YlModel.Instance.EnvModel.YlSettings.LastSyncDownloadDate)
 				{
-					YukaListerModel.Instance.EnvModel.YlSettings.LastSyncDownloadDate = rejectMjd;
+					YlModel.Instance.EnvModel.YlSettings.LastSyncDownloadDate = rejectMjd;
 				}
 			}
 			catch (Exception excep)
@@ -237,17 +237,17 @@ namespace YukaLister.Models.YukaListerCores
 			DateTime taskBeginDateTime = DateTime.UtcNow;
 			_logWriterSyncDetail.LogMessage(Common.TRACE_EVENT_TYPE_STATUS, "ダウンロード開始");
 
-			if (YukaListerModel.Instance.EnvModel.YlSettings.LastSyncDownloadDate < YlConstants.INVALID_MJD)
+			if (YlModel.Instance.EnvModel.YlSettings.LastSyncDownloadDate < YlConstants.INVALID_MJD)
 			{
-				YukaListerModel.Instance.EnvModel.YlSettings.LastSyncDownloadDate = YlConstants.INVALID_MJD;
+				YlModel.Instance.EnvModel.YlSettings.LastSyncDownloadDate = YlConstants.INVALID_MJD;
 			}
-			DateTime targetDate = JulianDay.ModifiedJulianDateToDateTime(YukaListerModel.Instance.EnvModel.YlSettings.LastSyncDownloadDate);
+			DateTime targetDate = JulianDay.ModifiedJulianDateToDateTime(YlModel.Instance.EnvModel.YlSettings.LastSyncDownloadDate);
 			Int32 numTotalDownloads = 0;
 			Int32 numTotalImports = 0;
 			for (; ; )
 			{
 				MainWindowViewModel.SetStatusBarMessageWithInvoke(Common.TRACE_EVENT_TYPE_STATUS, "同期データダウンロード中... ");
-				YukaListerModel.Instance.EnvModel.YlSettings.LastSyncDownloadDate = JulianDay.DateTimeToModifiedJulianDate(targetDate);
+				YlModel.Instance.EnvModel.YlSettings.LastSyncDownloadDate = JulianDay.DateTimeToModifiedJulianDate(targetDate);
 
 				// ダウンロード
 				String downloadPath = YlCommon.TempPath();
@@ -282,10 +282,10 @@ namespace YukaLister.Models.YukaListerCores
 				}
 
 				Thread.Sleep(SYNC_INTERVAL);
-				YukaListerModel.Instance.EnvModel.AppCancellationTokenSource.Token.ThrowIfCancellationRequested();
+				YlModel.Instance.EnvModel.AppCancellationTokenSource.Token.ThrowIfCancellationRequested();
 			}
 
-			YukaListerModel.Instance.EnvModel.YlSettings.LastSyncDownloadDate = JulianDay.DateTimeToModifiedJulianDate(taskBeginDateTime.Date);
+			YlModel.Instance.EnvModel.YlSettings.LastSyncDownloadDate = JulianDay.DateTimeToModifiedJulianDate(taskBeginDateTime.Date);
 			_logWriterSyncDetail.LogMessage(Common.TRACE_EVENT_TYPE_STATUS, "ダウンロード完了");
 			return (numTotalDownloads, numTotalImports);
 		}
@@ -325,10 +325,10 @@ namespace YukaLister.Models.YukaListerCores
 			Dictionary<String, String?> postParams = new()
 			{
 				// HTML Name 属性
-				{ "Name", YukaListerModel.Instance.EnvModel.YlSettings.SyncAccount },
-				{ "PW", YlCommon.Decrypt(YukaListerModel.Instance.EnvModel.YlSettings.SyncPassword) },
+				{ "Name", YlModel.Instance.EnvModel.YlSettings.SyncAccount },
+				{ "PW", YlCommon.Decrypt(YlModel.Instance.EnvModel.YlSettings.SyncPassword) },
 				{ "Mode", SYNC_MODE_NAME_LOGIN },
-				{ "IdPrefix", YukaListerModel.Instance.EnvModel.YlSettings.IdPrefix },
+				{ "IdPrefix", YlModel.Instance.EnvModel.YlSettings.IdPrefix },
 				{ "Sid", sid },
 				{ "AppGeneration", YlConstants.APP_GENERATION },
 				{ "AppVer", YlConstants.APP_VER },
@@ -345,7 +345,7 @@ namespace YukaLister.Models.YukaListerCores
 
 			MainWindowViewModel?.SetStatusBarMessageWithInvoke(Common.TRACE_EVENT_TYPE_STATUS, "データベース同期サーバーにログインしました。同期処理中です...");
 			Thread.Sleep(SYNC_INTERVAL);
-			YukaListerModel.Instance.EnvModel.AppCancellationTokenSource.Token.ThrowIfCancellationRequested();
+			YlModel.Instance.EnvModel.AppCancellationTokenSource.Token.ThrowIfCancellationRequested();
 		}
 
 		// --------------------------------------------------------------------
@@ -356,9 +356,9 @@ namespace YukaLister.Models.YukaListerCores
 		{
 			try
 			{
-				await _downloader.PostAndDownloadAsStringAsync(YukaListerModel.Instance.EnvModel.YlSettings.SyncServer + FILE_NAME_CP_MAIN, Encoding.UTF8, postParams, files);
+				await _downloader.PostAndDownloadAsStringAsync(YlModel.Instance.EnvModel.YlSettings.SyncServer + FILE_NAME_CP_MAIN, Encoding.UTF8, postParams, files);
 				Thread.Sleep(SYNC_INTERVAL);
-				YukaListerModel.Instance.EnvModel.AppCancellationTokenSource.Token.ThrowIfCancellationRequested();
+				YlModel.Instance.EnvModel.AppCancellationTokenSource.Token.ThrowIfCancellationRequested();
 			}
 			catch (Exception)
 			{
@@ -410,7 +410,7 @@ namespace YukaLister.Models.YukaListerCores
 		// --------------------------------------------------------------------
 		private static String SyncUrl(String mode)
 		{
-			return YukaListerModel.Instance.EnvModel.YlSettings.SyncServer + FILE_NAME_CP_MAIN + "?Mode=" + mode;
+			return YlModel.Instance.EnvModel.YlSettings.SyncServer + FILE_NAME_CP_MAIN + "?Mode=" + mode;
 		}
 
 		// --------------------------------------------------------------------
@@ -494,7 +494,7 @@ namespace YukaLister.Models.YukaListerCores
 				numTotalUploads += uploadContents.Count - 1;
 				MainWindowViewModel.SetStatusBarMessageWithInvoke(Common.TRACE_EVENT_TYPE_STATUS, "同期データをアップロード中... 合計 " + numTotalUploads.ToString("#,0") + " 件");
 				Thread.Sleep(SYNC_INTERVAL);
-				YukaListerModel.Instance.EnvModel.AppCancellationTokenSource.Token.ThrowIfCancellationRequested();
+				YlModel.Instance.EnvModel.AppCancellationTokenSource.Token.ThrowIfCancellationRequested();
 			}
 
 			return numTotalUploads;

@@ -21,7 +21,7 @@ using YukaLister.Models.YukaListerModels;
 
 namespace YukaLister.Models.YukaListerCores
 {
-	public abstract class YukaListerCore : IDisposable
+	public abstract class YlCore : IDisposable
 	{
 		// ====================================================================
 		// コンストラクター
@@ -30,7 +30,7 @@ namespace YukaLister.Models.YukaListerCores
 		// --------------------------------------------------------------------
 		// メインコンストラクター
 		// --------------------------------------------------------------------
-		public YukaListerCore()
+		public YlCore()
 		{
 		}
 
@@ -127,9 +127,9 @@ namespace YukaLister.Models.YukaListerCores
 			// アプリ終了時に強制終了されないように設定
 			Thread.CurrentThread.IsBackground = false;
 
-			YukaListerModel.Instance.EnvModel.LogWriter.LogMessage(Common.TRACE_EVENT_TYPE_STATUS, GetType().Name + " の稼働を開始します。");
+			YlModel.Instance.EnvModel.LogWriter.LogMessage(Common.TRACE_EVENT_TYPE_STATUS, GetType().Name + " の稼働を開始します。");
 			await CoreMainAsync();
-			YukaListerModel.Instance.EnvModel.LogWriter.LogMessage(Common.TRACE_EVENT_TYPE_STATUS, GetType().Name + " の稼働を終了します。");
+			YlModel.Instance.EnvModel.LogWriter.LogMessage(Common.TRACE_EVENT_TYPE_STATUS, GetType().Name + " の稼働を終了します。");
 		}
 	}
 }

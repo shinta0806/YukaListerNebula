@@ -47,7 +47,7 @@ namespace YukaLister.Models.SharedMisc
 		// --------------------------------------------------------------------
 		public static void ActivateKamlinIfNeeded()
 		{
-			YukaListerModel.Instance.EnvModel.Kamlin.MainEvent.Set();
+			YlModel.Instance.EnvModel.Kamlin.MainEvent.Set();
 		}
 
 		// --------------------------------------------------------------------
@@ -55,9 +55,9 @@ namespace YukaLister.Models.SharedMisc
 		// --------------------------------------------------------------------
 		public static void ActivateSyclinIfNeeded()
 		{
-			if (YukaListerModel.Instance.EnvModel.YlSettings.SyncMusicInfoDb)
+			if (YlModel.Instance.EnvModel.YlSettings.SyncMusicInfoDb)
 			{
-				YukaListerModel.Instance.EnvModel.Syclin.MainEvent.Set();
+				YlModel.Instance.EnvModel.Syclin.MainEvent.Set();
 			}
 		}
 
@@ -67,7 +67,7 @@ namespace YukaLister.Models.SharedMisc
 		public static void ActivateYurelinIfNeeded()
 		{
 			Debug.WriteLine("ActivateYurelinIfNeeded() ACTIVATE " + Environment.TickCount.ToString("#,0"));
-			YukaListerModel.Instance.EnvModel.Yurelin.MainEvent.Set();
+			YlModel.Instance.EnvModel.Yurelin.MainEvent.Set();
 		}
 
 		// --------------------------------------------------------------------
@@ -167,8 +167,8 @@ namespace YukaLister.Models.SharedMisc
 			LatestInfoManager latestInfoManager = YlCommon.CreateLatestInfoManager(forceShow);
 			if (await latestInfoManager.CheckAsync())
 			{
-				YukaListerModel.Instance.EnvModel.YlSettings.RssCheckDate = DateTime.Now.Date;
-				YukaListerModel.Instance.EnvModel.YlSettings.Save();
+				YlModel.Instance.EnvModel.YlSettings.RssCheckDate = DateTime.Now.Date;
+				YlModel.Instance.EnvModel.YlSettings.Save();
 			}
 		}
 
@@ -224,7 +224,7 @@ namespace YukaLister.Models.SharedMisc
 		public static LatestInfoManager CreateLatestInfoManager(Boolean forceShow)
 		{
 			return new LatestInfoManager("http://shinta.coresv.com/soft/YukaListerNebula_JPN.xml", forceShow, 3,
-					YukaListerModel.Instance.EnvModel.AppCancellationTokenSource.Token, YukaListerModel.Instance.EnvModel.LogWriter);
+					YlModel.Instance.EnvModel.AppCancellationTokenSource.Token, YlModel.Instance.EnvModel.LogWriter);
 		}
 
 		// --------------------------------------------------------------------
@@ -325,8 +325,8 @@ namespace YukaLister.Models.SharedMisc
 			}
 			catch (Exception excep)
 			{
-				YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(TraceEventType.Error, "ファイル削除時エラー：\n" + path + "\n" + excep.Message);
-				YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, "　スタックトレース：\n" + excep.StackTrace);
+				YlModel.Instance.EnvModel.LogWriter.ShowLogMessage(TraceEventType.Error, "ファイル削除時エラー：\n" + path + "\n" + excep.Message);
+				YlModel.Instance.EnvModel.LogWriter.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, "　スタックトレース：\n" + excep.StackTrace);
 			}
 			return attrs;
 		}
@@ -482,7 +482,7 @@ namespace YukaLister.Models.SharedMisc
 		public static async Task InputIdPrefixIfNeededWithInvoke(ViewModel viewModel)
 		{
 			// 設定済なら直ちに返る
-			if (!String.IsNullOrEmpty(YukaListerModel.Instance.EnvModel.YlSettings.IdPrefix))
+			if (!String.IsNullOrEmpty(YlModel.Instance.EnvModel.YlSettings.IdPrefix))
 			{
 				return;
 			}
@@ -494,8 +494,8 @@ namespace YukaLister.Models.SharedMisc
 			}
 			catch (Exception excep)
 			{
-				YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, "ID 接頭辞入力");
-				YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, "　スタックトレース：\n" + excep.StackTrace);
+				YlModel.Instance.EnvModel.LogWriter.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, "ID 接頭辞入力");
+				YlModel.Instance.EnvModel.LogWriter.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, "　スタックトレース：\n" + excep.StackTrace);
 			}
 #endif
 
@@ -508,7 +508,7 @@ namespace YukaLister.Models.SharedMisc
 				_isInputtingIdPrefix = true;
 
 				// 待機中に設定済となる場合もあるので再度確認
-				if (String.IsNullOrEmpty(YukaListerModel.Instance.EnvModel.YlSettings.IdPrefix))
+				if (String.IsNullOrEmpty(YlModel.Instance.EnvModel.YlSettings.IdPrefix))
 				{
 					// 設定済でない場合に限り、ユーザーに入力してもらう
 					using InputIdPrefixWindowViewModel inputIdPrefixWindowViewModel = new();
@@ -519,7 +519,7 @@ namespace YukaLister.Models.SharedMisc
 				_isInputtingIdPrefix = false;
 			}));
 
-			if (String.IsNullOrEmpty(YukaListerModel.Instance.EnvModel.YlSettings.IdPrefix))
+			if (String.IsNullOrEmpty(YlModel.Instance.EnvModel.YlSettings.IdPrefix))
 			{
 				throw new OperationCanceledException();
 			}
@@ -612,20 +612,20 @@ namespace YukaLister.Models.SharedMisc
 					// 終了時に強制終了されないように設定
 					Thread.CurrentThread.IsBackground = false;
 
-					YukaListerModel.Instance.EnvModel.LogWriter.LogMessage(Common.TRACE_EVENT_TYPE_STATUS, "バックグラウンド処理開始：" + taskName);
+					YlModel.Instance.EnvModel.LogWriter.LogMessage(Common.TRACE_EVENT_TYPE_STATUS, "バックグラウンド処理開始：" + taskName);
 					await deleg(vari);
-					YukaListerModel.Instance.EnvModel.LogWriter.LogMessage(Common.TRACE_EVENT_TYPE_STATUS, "バックグラウンド処理終了：" + taskName);
+					YlModel.Instance.EnvModel.LogWriter.LogMessage(Common.TRACE_EVENT_TYPE_STATUS, "バックグラウンド処理終了：" + taskName);
 					return true;
 				}
 				catch (OperationCanceledException)
 				{
-					YukaListerModel.Instance.EnvModel.LogWriter.LogMessage(TraceEventType.Error, "バックグラウンド処理中止：" + taskName);
+					YlModel.Instance.EnvModel.LogWriter.LogMessage(TraceEventType.Error, "バックグラウンド処理中止：" + taskName);
 					return false;
 				}
 				catch (Exception excep)
 				{
-					YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(TraceEventType.Error, taskName + " 実行時エラー：\n" + excep.Message);
-					YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, "　スタックトレース：\n" + excep.StackTrace);
+					YlModel.Instance.EnvModel.LogWriter.ShowLogMessage(TraceEventType.Error, taskName + " 実行時エラー：\n" + excep.Message);
+					YlModel.Instance.EnvModel.LogWriter.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, "　スタックトレース：\n" + excep.StackTrace);
 					return false;
 				}
 				finally
@@ -673,7 +673,7 @@ namespace YukaLister.Models.SharedMisc
 		public static void LogEnvironmentInfo()
 		{
 			SystemEnvironment se = new();
-			se.LogEnvironment(YukaListerModel.Instance.EnvModel.LogWriter);
+			se.LogEnvironment(YlModel.Instance.EnvModel.LogWriter);
 		}
 
 		// --------------------------------------------------------------------
@@ -862,7 +862,7 @@ namespace YukaLister.Models.SharedMisc
 		{
 			// 同期詳細ログ初期化
 			// 大量のログが発生するため、世代・サイズともに拡大
-			logWriterSyncDetail.ApplicationQuitToken = YukaListerModel.Instance.EnvModel.AppCancellationTokenSource.Token;
+			logWriterSyncDetail.ApplicationQuitToken = YlModel.Instance.EnvModel.AppCancellationTokenSource.Token;
 			logWriterSyncDetail.SimpleTraceListener.MaxSize = 5 * 1024 * 1024;
 			logWriterSyncDetail.SimpleTraceListener.MaxOldGenerations = 5;
 			logWriterSyncDetail.SimpleTraceListener.LogFileName = Path.GetDirectoryName(logWriterSyncDetail.SimpleTraceListener.LogFileName) + "\\" + FILE_NAME_SYNC_DETAIL_LOG;
@@ -876,16 +876,6 @@ namespace YukaLister.Models.SharedMisc
 		{
 			return String.IsNullOrEmpty(ids) ? new() : ids.Split(YlConstants.VAR_VALUE_DELIMITER[0], StringSplitOptions.RemoveEmptyEntries).ToList();
 		}
-
-#if false
-		// --------------------------------------------------------------------
-		// テンポラリフォルダーのパス（末尾 '\\'）
-		// --------------------------------------------------------------------
-		public static String TempFolderPath()
-		{
-			return Path.GetTempPath() + Path.GetFileNameWithoutExtension(Environment.GetCommandLineArgs()[0]) + '\\' + Environment.ProcessId.ToString() + '\\';
-		}
-#endif
 
 		// --------------------------------------------------------------------
 		// テンポラリフォルダー配下のファイル・フォルダー名として使えるパス（呼びだす度に異なるファイル、拡張子なし）

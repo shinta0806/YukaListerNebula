@@ -224,8 +224,8 @@ namespace YukaLister.ViewModels
 			}
 			catch (Exception excep)
 			{
-				YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(TraceEventType.Error, "ファイルドロップ時エラー：\n" + excep.Message);
-				YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, "　スタックトレース：\n" + excep.StackTrace);
+				YlModel.Instance.EnvModel.LogWriter.ShowLogMessage(TraceEventType.Error, "ファイルドロップ時エラー：\n" + excep.Message);
+				YlModel.Instance.EnvModel.LogWriter.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, "　スタックトレース：\n" + excep.StackTrace);
 			}
 		}
 		#endregion
@@ -268,8 +268,8 @@ namespace YukaLister.ViewModels
 			}
 			catch (Exception excep)
 			{
-				YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(TraceEventType.Error, "デバイス着脱時エラー：\n" + excep.Message);
-				YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, "　スタックトレース：\n" + excep.StackTrace);
+				YlModel.Instance.EnvModel.LogWriter.ShowLogMessage(TraceEventType.Error, "デバイス着脱時エラー：\n" + excep.Message);
+				YlModel.Instance.EnvModel.LogWriter.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, "　スタックトレース：\n" + excep.StackTrace);
 			}
 		}
 		#endregion
@@ -302,8 +302,8 @@ namespace YukaLister.ViewModels
 			}
 			catch (Exception excep)
 			{
-				YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(TraceEventType.Error, "ゆかりすたー NEBULA 全体の動作状況ラベルクリック時エラー：\n" + excep.Message);
-				YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, "　スタックトレース：\n" + excep.StackTrace);
+				YlModel.Instance.EnvModel.LogWriter.ShowLogMessage(TraceEventType.Error, "ゆかりすたー NEBULA 全体の動作状況ラベルクリック時エラー：\n" + excep.Message);
+				YlModel.Instance.EnvModel.LogWriter.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, "　スタックトレース：\n" + excep.StackTrace);
 			}
 		}
 
@@ -335,8 +335,8 @@ namespace YukaLister.ViewModels
 			}
 			catch (Exception excep)
 			{
-				YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(TraceEventType.Error, "リスト問題報告ボタンクリック時エラー：\n" + excep.Message);
-				YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, "　スタックトレース：\n" + excep.StackTrace);
+				YlModel.Instance.EnvModel.LogWriter.ShowLogMessage(TraceEventType.Error, "リスト問題報告ボタンクリック時エラー：\n" + excep.Message);
+				YlModel.Instance.EnvModel.LogWriter.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, "　スタックトレース：\n" + excep.StackTrace);
 			}
 		}
 		#endregion
@@ -360,12 +360,12 @@ namespace YukaLister.ViewModels
 		{
 			try
 			{
-				String yukariConfigPathBak = YukaListerModel.Instance.EnvModel.YlSettings.YukariConfigPath();
-				Boolean provideYukariPreviewBak = YukaListerModel.Instance.EnvModel.YlSettings.ProvideYukariPreview;
-				Boolean syncMusicInfoDbBak = YukaListerModel.Instance.EnvModel.YlSettings.SyncMusicInfoDb;
-				String? syncServerBak = YukaListerModel.Instance.EnvModel.YlSettings.SyncServer;
-				String? syncAccountBak = YukaListerModel.Instance.EnvModel.YlSettings.SyncAccount;
-				String? syncPasswordBak = YukaListerModel.Instance.EnvModel.YlSettings.SyncPassword;
+				String yukariConfigPathBak = YlModel.Instance.EnvModel.YlSettings.YukariConfigPath();
+				Boolean provideYukariPreviewBak = YlModel.Instance.EnvModel.YlSettings.ProvideYukariPreview;
+				Boolean syncMusicInfoDbBak = YlModel.Instance.EnvModel.YlSettings.SyncMusicInfoDb;
+				String? syncServerBak = YlModel.Instance.EnvModel.YlSettings.SyncServer;
+				String? syncAccountBak = YlModel.Instance.EnvModel.YlSettings.SyncAccount;
+				String? syncPasswordBak = YlModel.Instance.EnvModel.YlSettings.SyncPassword;
 				using MusicInfoContextDefault musicInfoContextDefault = new();
 				DateTime musicInfoDbTimeBak = musicInfoContextDefault.LastWriteDateTime();
 				Boolean regetSyncDataNeeded;
@@ -381,22 +381,22 @@ namespace YukaLister.ViewModels
 				regetSyncDataNeeded = ylSettingsWindowViewModel.RegetSyncDataNeeded;
 
 				// ゆかり設定ファイルのフルパスが変更された場合は処理を行う
-				if (YukaListerModel.Instance.EnvModel.YlSettings.YukariConfigPath() != yukariConfigPathBak)
+				if (YlModel.Instance.EnvModel.YlSettings.YukariConfigPath() != yukariConfigPathBak)
 				{
-					YukaListerModel.Instance.EnvModel.YlSettings.AnalyzeYukariConfig();
+					YlModel.Instance.EnvModel.YlSettings.AnalyzeYukariConfig();
 					UpdateYukaListerEnvironmentStatus();
 					DbCommon.PrepareDatabases();
 					SetFileSystemWatcherYukariConfig();
 					SetFileSystemWatcherYukariRequestDatabase();
 					SetFileSystemWatcherReportDatabase();
 					UpdateReportsBadge();
-					YukaListerModel.Instance.EnvModel.Sifolin.MainEvent.Set();
+					YlModel.Instance.EnvModel.Sifolin.MainEvent.Set();
 				}
 
 				// サーバー設定が変更された場合は起動・終了を行う
-				if (YukaListerModel.Instance.EnvModel.YlSettings.ProvideYukariPreview != provideYukariPreviewBak)
+				if (YlModel.Instance.EnvModel.YlSettings.ProvideYukariPreview != provideYukariPreviewBak)
 				{
-					if (YukaListerModel.Instance.EnvModel.YlSettings.ProvideYukariPreview)
+					if (YlModel.Instance.EnvModel.YlSettings.ProvideYukariPreview)
 					{
 						StartWebServerIfNeeded();
 					}
@@ -409,17 +409,17 @@ namespace YukaLister.ViewModels
 				if (regetSyncDataNeeded)
 				{
 					// 再取得が指示された場合は再取得
-					YukaListerModel.Instance.EnvModel.Syclin.IsReget = true;
+					YlModel.Instance.EnvModel.Syclin.IsReget = true;
 					YlCommon.ActivateSyclinIfNeeded();
 				}
 				else
 				{
 					// 同期設定が変更された場合・インポートで楽曲情報データベースが更新された場合は同期を行う
 					DateTime musicInfoDbTime = musicInfoContextDefault.LastWriteDateTime();
-					if (YukaListerModel.Instance.EnvModel.YlSettings.SyncMusicInfoDb != syncMusicInfoDbBak
-							|| YukaListerModel.Instance.EnvModel.YlSettings.SyncServer != syncServerBak
-							|| YukaListerModel.Instance.EnvModel.YlSettings.SyncAccount != syncAccountBak
-							|| YukaListerModel.Instance.EnvModel.YlSettings.SyncPassword != syncPasswordBak
+					if (YlModel.Instance.EnvModel.YlSettings.SyncMusicInfoDb != syncMusicInfoDbBak
+							|| YlModel.Instance.EnvModel.YlSettings.SyncServer != syncServerBak
+							|| YlModel.Instance.EnvModel.YlSettings.SyncAccount != syncAccountBak
+							|| YlModel.Instance.EnvModel.YlSettings.SyncPassword != syncPasswordBak
 							|| musicInfoDbTime != musicInfoDbTimeBak)
 					{
 						YlCommon.ActivateSyclinIfNeeded();
@@ -428,8 +428,8 @@ namespace YukaLister.ViewModels
 			}
 			catch (Exception excep)
 			{
-				YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(TraceEventType.Error, "環境設定ボタンクリック時エラー：\n" + excep.Message);
-				YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, "　スタックトレース：\n" + excep.StackTrace);
+				YlModel.Instance.EnvModel.LogWriter.ShowLogMessage(TraceEventType.Error, "環境設定ボタンクリック時エラー：\n" + excep.Message);
+				YlModel.Instance.EnvModel.LogWriter.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, "　スタックトレース：\n" + excep.StackTrace);
 			}
 		}
 		#endregion
@@ -437,7 +437,7 @@ namespace YukaLister.ViewModels
 		#region ヘルプメニューアイテムの制御
 		public static ListenerCommand<String>? MenuItemHelpClickedCommand
 		{
-			get => YukaListerModel.Instance.EnvModel.HelpClickedCommand;
+			get => YlModel.Instance.EnvModel.HelpClickedCommand;
 		}
 		#endregion
 
@@ -465,8 +465,8 @@ namespace YukaLister.ViewModels
 			}
 			catch (Exception excep)
 			{
-				YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(TraceEventType.Error, "よくある質問メニュークリック時エラー：\n" + excep.Message);
-				YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, "　スタックトレース：\n" + excep.StackTrace);
+				YlModel.Instance.EnvModel.LogWriter.ShowLogMessage(TraceEventType.Error, "よくある質問メニュークリック時エラー：\n" + excep.Message);
+				YlModel.Instance.EnvModel.LogWriter.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, "　スタックトレース：\n" + excep.StackTrace);
 			}
 		}
 		#endregion
@@ -491,12 +491,12 @@ namespace YukaLister.ViewModels
 		{
 			try
 			{
-				Common.ShellExecute(YukaListerModel.Instance.EnvModel.ExeFullFolder + YlConstants.FOLDER_NAME_DOCUMENTS + YlConstants.FOLDER_NAME_SAMPLE_FOLDER_SETTINGS);
+				Common.ShellExecute(YlModel.Instance.EnvModel.ExeFullFolder + YlConstants.FOLDER_NAME_DOCUMENTS + YlConstants.FOLDER_NAME_SAMPLE_FOLDER_SETTINGS);
 			}
 			catch (Exception excep)
 			{
-				YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(TraceEventType.Error, "サンプルフォルダーメニュークリック時エラー：\n" + excep.Message);
-				YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, "　スタックトレース：\n" + excep.StackTrace);
+				YlModel.Instance.EnvModel.LogWriter.ShowLogMessage(TraceEventType.Error, "サンプルフォルダーメニュークリック時エラー：\n" + excep.Message);
+				YlModel.Instance.EnvModel.LogWriter.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, "　スタックトレース：\n" + excep.StackTrace);
 			}
 		}
 		#endregion
@@ -520,12 +520,12 @@ namespace YukaLister.ViewModels
 		{
 			try
 			{
-				Common.ShellExecute(YukaListerModel.Instance.EnvModel.ExeFullFolder + YlConstants.FOLDER_NAME_DOCUMENTS + FILE_NAME_HISTORY);
+				Common.ShellExecute(YlModel.Instance.EnvModel.ExeFullFolder + YlConstants.FOLDER_NAME_DOCUMENTS + FILE_NAME_HISTORY);
 			}
 			catch (Exception excep)
 			{
-				YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(TraceEventType.Error, "改訂履歴メニュークリック時エラー：\n" + excep.Message);
-				YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, "　スタックトレース：\n" + excep.StackTrace);
+				YlModel.Instance.EnvModel.LogWriter.ShowLogMessage(TraceEventType.Error, "改訂履歴メニュークリック時エラー：\n" + excep.Message);
+				YlModel.Instance.EnvModel.LogWriter.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, "　スタックトレース：\n" + excep.StackTrace);
 			}
 		}
 		#endregion
@@ -555,8 +555,8 @@ namespace YukaLister.ViewModels
 			}
 			catch (Exception excep)
 			{
-				YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(TraceEventType.Error, "バージョン情報メニュークリック時エラー：\n" + excep.Message);
-				YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, "　スタックトレース：\n" + excep.StackTrace);
+				YlModel.Instance.EnvModel.LogWriter.ShowLogMessage(TraceEventType.Error, "バージョン情報メニュークリック時エラー：\n" + excep.Message);
+				YlModel.Instance.EnvModel.LogWriter.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, "　スタックトレース：\n" + excep.StackTrace);
 			}
 		}
 		#endregion
@@ -584,8 +584,8 @@ namespace YukaLister.ViewModels
 			}
 			catch (Exception excep)
 			{
-				YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(TraceEventType.Error, "DataGrid ダブルクリック時エラー：\n" + excep.Message);
-				YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, "　スタックトレース：\n" + excep.StackTrace);
+				YlModel.Instance.EnvModel.LogWriter.ShowLogMessage(TraceEventType.Error, "DataGrid ダブルクリック時エラー：\n" + excep.Message);
+				YlModel.Instance.EnvModel.LogWriter.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, "　スタックトレース：\n" + excep.StackTrace);
 			}
 		}
 		#endregion
@@ -625,7 +625,7 @@ namespace YukaLister.ViewModels
 					return;
 				}
 
-				YukaListerModel.Instance.ProjModel.SetFolderTaskDetailOfFolderToRemove(SelectedTargetFolderInfo.ParentPath);
+				YlModel.Instance.ProjModel.SetFolderTaskDetailOfFolderToRemove(SelectedTargetFolderInfo.ParentPath);
 				UpdateDataGrid();
 
 				// 次回 UI 更新タイミングまでに削除が完了してしまっていても検索可能ファイル数が更新されるようにする
@@ -633,8 +633,8 @@ namespace YukaLister.ViewModels
 			}
 			catch (Exception excep)
 			{
-				YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(TraceEventType.Error, "削除ボタンクリック時エラー：\n" + excep.Message);
-				YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, "　スタックトレース：\n" + excep.StackTrace);
+				YlModel.Instance.EnvModel.LogWriter.ShowLogMessage(TraceEventType.Error, "削除ボタンクリック時エラー：\n" + excep.Message);
+				YlModel.Instance.EnvModel.LogWriter.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, "　スタックトレース：\n" + excep.StackTrace);
 			}
 		}
 		#endregion
@@ -678,8 +678,8 @@ namespace YukaLister.ViewModels
 			}
 			catch (Exception excep)
 			{
-				YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(TraceEventType.Error, "ファイル一覧ボタンクリック時エラー：\n" + excep.Message);
-				YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, "　スタックトレース：\n" + excep.StackTrace);
+				YlModel.Instance.EnvModel.LogWriter.ShowLogMessage(TraceEventType.Error, "ファイル一覧ボタンクリック時エラー：\n" + excep.Message);
+				YlModel.Instance.EnvModel.LogWriter.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, "　スタックトレース：\n" + excep.StackTrace);
 			}
 		}
 		#endregion
@@ -712,8 +712,8 @@ namespace YukaLister.ViewModels
 			}
 			catch (Exception excep)
 			{
-				YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(TraceEventType.Error, "フォルダー設定ボタンクリック時エラー：\n" + excep.Message);
-				YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, "　スタックトレース：\n" + excep.StackTrace);
+				YlModel.Instance.EnvModel.LogWriter.ShowLogMessage(TraceEventType.Error, "フォルダー設定ボタンクリック時エラー：\n" + excep.Message);
+				YlModel.Instance.EnvModel.LogWriter.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, "　スタックトレース：\n" + excep.StackTrace);
 			}
 		}
 		#endregion
@@ -737,8 +737,8 @@ namespace YukaLister.ViewModels
 			}
 			catch (Exception excep)
 			{
-				YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(TraceEventType.Error, "追加フォルダー選択時エラー：\n" + excep.Message);
-				YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, "　スタックトレース：\n" + excep.StackTrace);
+				YlModel.Instance.EnvModel.LogWriter.ShowLogMessage(TraceEventType.Error, "追加フォルダー選択時エラー：\n" + excep.Message);
+				YlModel.Instance.EnvModel.LogWriter.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, "　スタックトレース：\n" + excep.StackTrace);
 			}
 		}
 
@@ -776,9 +776,9 @@ namespace YukaLister.ViewModels
 				Debug.Assert(YlConstants.YUKARI_STATISTICS_PERIOD_LABELS.Length == (Int32)YukariStatisticsPeriod.__End__, "MainWindow.Initialize() bad YUKARI_STATISTICS_PERIOD_LABELS");
 
 				// 参照設定
-				YukaListerModel.Instance.EnvModel.Kamlin.MainWindowViewModel = this;
-				YukaListerModel.Instance.EnvModel.Yurelin.MainWindowViewModel = this;
-				YukaListerModel.Instance.EnvModel.Syclin.MainWindowViewModel = this;
+				YlModel.Instance.EnvModel.Kamlin.MainWindowViewModel = this;
+				YlModel.Instance.EnvModel.Yurelin.MainWindowViewModel = this;
+				YlModel.Instance.EnvModel.Syclin.MainWindowViewModel = this;
 
 				// 環境の変化に対応
 				DoVerChangedIfNeeded();
@@ -786,9 +786,9 @@ namespace YukaLister.ViewModels
 				await Task.Run(async () =>
 				{
 					// 動作状況
-					YukaListerModel.Instance.EnvModel.YukaListerPartsStatus[(Int32)YukaListerPartsStatusIndex.Startup] = YukaListerStatus.Running;
-					YukaListerModel.Instance.EnvModel.YukaListerPartsStatusMessage[(Int32)YukaListerPartsStatusIndex.Startup]
-							= YukaListerModel.Instance.EnvModel.YlSettings.AddFolderOnDeviceArrived ? "前回のゆかり検索対象フォルダーを確認中..." : "起動処理中...";
+					YlModel.Instance.EnvModel.YukaListerPartsStatus[(Int32)YukaListerPartsStatusIndex.Startup] = YukaListerStatus.Running;
+					YlModel.Instance.EnvModel.YukaListerPartsStatusMessage[(Int32)YukaListerPartsStatusIndex.Startup]
+							= YlModel.Instance.EnvModel.YlSettings.AddFolderOnDeviceArrived ? "前回のゆかり検索対象フォルダーを確認中..." : "起動処理中...";
 					UpdateYukaListerEnvironmentStatus();
 
 					// ゆかり設定ファイル config.ini 監視
@@ -828,8 +828,8 @@ namespace YukaLister.ViewModels
 					await CheckRssIfNeededAsync();
 
 					// 過去の統計データが更新されるようにする
-					YukaListerModel.Instance.EnvModel.Yurelin.UpdatePastYukariStatisticsKind = UpdatePastYukariStatisticsKind.Fast;
-					if (YukaListerModel.Instance.EnvModel.YlSettings.SyncMusicInfoDb)
+					YlModel.Instance.EnvModel.Yurelin.UpdatePastYukariStatisticsKind = UpdatePastYukariStatisticsKind.Fast;
+					if (YlModel.Instance.EnvModel.YlSettings.SyncMusicInfoDb)
 					{
 						// サーバー同期が有効なら同期する
 						// 統計データ作成は遅くとも Syclin スリープ時には行われるので、明示的には作成しない
@@ -851,12 +851,12 @@ namespace YukaLister.ViewModels
 #endif
 
 				// スタートアップ終了
-				YukaListerModel.Instance.EnvModel.YukaListerPartsStatus[(Int32)YukaListerPartsStatusIndex.Startup] = YukaListerStatus.Ready;
+				YlModel.Instance.EnvModel.YukaListerPartsStatus[(Int32)YukaListerPartsStatusIndex.Startup] = YukaListerStatus.Ready;
 			}
 			catch (Exception excep)
 			{
-				YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(TraceEventType.Error, "メインウィンドウ初期化時エラー：\n" + excep.Message);
-				YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, "　スタックトレース：\n" + excep.StackTrace);
+				YlModel.Instance.EnvModel.LogWriter.ShowLogMessage(TraceEventType.Error, "メインウィンドウ初期化時エラー：\n" + excep.Message);
+				YlModel.Instance.EnvModel.LogWriter.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, "　スタックトレース：\n" + excep.StackTrace);
 			}
 		}
 
@@ -865,7 +865,7 @@ namespace YukaLister.ViewModels
 		// --------------------------------------------------------------------
 		public void SetStatusBarMessageWithInvoke(TraceEventType traceEventType, String msg)
 		{
-			if (YukaListerModel.Instance.EnvModel.AppCancellationTokenSource.IsCancellationRequested)
+			if (YlModel.Instance.EnvModel.AppCancellationTokenSource.IsCancellationRequested)
 			{
 				return;
 			}
@@ -880,7 +880,7 @@ namespace YukaLister.ViewModels
 				{
 					StatusBarForeground = YlConstants.BRUSH_NORMAL_STRING;
 				}
-				YukaListerModel.Instance.EnvModel.LogWriter.LogMessage(traceEventType, msg);
+				YlModel.Instance.EnvModel.LogWriter.LogMessage(traceEventType, msg);
 			}));
 		}
 
@@ -903,25 +903,25 @@ namespace YukaLister.ViewModels
 			try
 			{
 				// アプリケーションの終了を通知
-				YukaListerModel.Instance.EnvModel.AppCancellationTokenSource.Cancel();
-				YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, "終了中...");
+				YlModel.Instance.EnvModel.AppCancellationTokenSource.Cancel();
+				YlModel.Instance.EnvModel.LogWriter.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, "終了中...");
 
 				// 終了処理
 				// await するとその間に強制終了されてしまうようなので、await しない
-				_ = YukaListerModel.Instance.EnvModel.QuitAllCoresAsync();
+				_ = YlModel.Instance.EnvModel.QuitAllCoresAsync();
 				_ = QuitServerIfNeededAsync().AsTask();
 				SaveExitStatus();
 				Common.DeleteTempFolder();
 
-				YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, "終了しました：" + YlConstants.APP_NAME_J + " "
+				YlModel.Instance.EnvModel.LogWriter.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, "終了しました：" + YlConstants.APP_NAME_J + " "
 						+ YlConstants.APP_VER + " --------------------");
 
 				_isDisposed = true;
 			}
 			catch (Exception excep)
 			{
-				YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(TraceEventType.Error, "メインウィンドウ破棄時エラー：\n" + excep.Message);
-				YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, "　スタックトレース：\n" + excep.StackTrace);
+				YlModel.Instance.EnvModel.LogWriter.ShowLogMessage(TraceEventType.Error, "メインウィンドウ破棄時エラー：\n" + excep.Message);
+				YlModel.Instance.EnvModel.LogWriter.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, "　スタックトレース：\n" + excep.StackTrace);
 			}
 		}
 
@@ -994,7 +994,7 @@ namespace YukaLister.ViewModels
 			{
 				// AddTargetFolderAsync() に時間を要することがあるので表示を更新しておく
 				Cursor = Cursors.Wait;
-				await YukaListerModel.Instance.ProjModel.AddTargetFolderAsync(folderPath);
+				await YlModel.Instance.ProjModel.AddTargetFolderAsync(folderPath);
 				UpdateDataGrid();
 
 				// 次回 UI 更新タイミングまでに追加が完了してしまっていても検索可能ファイル数が更新されるようにする
@@ -1023,7 +1023,7 @@ namespace YukaLister.ViewModels
 		// --------------------------------------------------------------------
 		private static async Task CheckRssIfNeededAsync()
 		{
-			if (!YukaListerModel.Instance.EnvModel.YlSettings.IsCheckRssNeeded())
+			if (!YlModel.Instance.EnvModel.YlSettings.IsCheckRssNeeded())
 			{
 				return;
 			}
@@ -1036,7 +1036,7 @@ namespace YukaLister.ViewModels
 		// --------------------------------------------------------------------
 		private async ValueTask DeviceArrivalAsync(String driveLetter)
 		{
-			if (!YukaListerModel.Instance.EnvModel.YlSettings.AddFolderOnDeviceArrived)
+			if (!YlModel.Instance.EnvModel.YlSettings.AddFolderOnDeviceArrived)
 			{
 				return;
 			}
@@ -1060,14 +1060,14 @@ namespace YukaLister.ViewModels
 			{
 				try
 				{
-					await YukaListerModel.Instance.ProjModel.AddTargetFolderAsync(driveLetter + folder);
+					await YlModel.Instance.ProjModel.AddTargetFolderAsync(driveLetter + folder);
 				}
 				catch (Exception excep)
 				{
 					// 前回からフォルダー名が変更されている場合等にエラーとなるが、自動処理なのでエラー表示は抑止する
 					// ここで捕捉しておかないと、Initialize() の後半が実行されない
-					YukaListerModel.Instance.EnvModel.LogWriter.LogMessage(TraceEventType.Error, "デバイス接続時時エラー：\n" + excep.Message);
-					YukaListerModel.Instance.EnvModel.LogWriter.LogMessage(Common.TRACE_EVENT_TYPE_STATUS, "　スタックトレース：\n" + excep.StackTrace);
+					YlModel.Instance.EnvModel.LogWriter.LogMessage(TraceEventType.Error, "デバイス接続時時エラー：\n" + excep.Message);
+					YlModel.Instance.EnvModel.LogWriter.LogMessage(Common.TRACE_EVENT_TYPE_STATUS, "　スタックトレース：\n" + excep.StackTrace);
 				}
 			}
 		}
@@ -1078,12 +1078,12 @@ namespace YukaLister.ViewModels
 		// --------------------------------------------------------------------
 		private static void DisplayNebulaCoreError()
 		{
-			if (!YukaListerModel.Instance.EnvModel.NebulaCoreErrors.TryTake(out String? error))
+			if (!YlModel.Instance.EnvModel.NebulaCoreErrors.TryTake(out String? error))
 			{
 				return;
 			}
 
-			YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(TraceEventType.Error, error);
+			YlModel.Instance.EnvModel.LogWriter.ShowLogMessage(TraceEventType.Error, error);
 		}
 
 		// --------------------------------------------------------------------
@@ -1099,15 +1099,15 @@ namespace YukaLister.ViewModels
 					return;
 				}
 
-				Importer importer = new(YukaListerModel.Instance.EnvModel.ExeFullFolder
+				Importer importer = new(YlModel.Instance.EnvModel.ExeFullFolder
 						+ YlConstants.FOLDER_NAME_DOCUMENTS + YlConstants.FOLDER_NAME_SAMPLE_FOLDER_SETTINGS + YlConstants.FOLDER_NAME_SAMPLE_IMPORT + YlConstants.FILE_NAME_YUKA_LISTER_INFO_SAMPLE,
-						true, true, null, YukaListerModel.Instance.EnvModel.AppCancellationTokenSource.Token);
+						true, true, null, YlModel.Instance.EnvModel.AppCancellationTokenSource.Token);
 				importer.Import();
 			}
 			catch (Exception excep)
 			{
-				YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(TraceEventType.Error, "サンプルインポート時エラー：\n" + excep.Message);
-				YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, "　スタックトレース：\n" + excep.StackTrace);
+				YlModel.Instance.EnvModel.LogWriter.ShowLogMessage(TraceEventType.Error, "サンプルインポート時エラー：\n" + excep.Message);
+				YlModel.Instance.EnvModel.LogWriter.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, "　スタックトレース：\n" + excep.StackTrace);
 			}
 		}
 
@@ -1116,7 +1116,7 @@ namespace YukaLister.ViewModels
 		// --------------------------------------------------------------------
 		private void DeviceRemoveComplete(String driveLetter)
 		{
-			YukaListerModel.Instance.ProjModel.SetFolderTaskDetailOfDriveToRemove(driveLetter);
+			YlModel.Instance.ProjModel.SetFolderTaskDetailOfDriveToRemove(driveLetter);
 
 			// 次回 UI 更新タイミングまでに削除が完了してしまっていても検索可能ファイル数が更新されるようにする
 			_prevYukaListerWholeStatus = YukaListerStatus.__End__;
@@ -1129,25 +1129,25 @@ namespace YukaLister.ViewModels
 		{
 			// 更新起動時とパス変更時の記録
 			// 新規起動時は、両フラグが立つのでダブらないように注意
-			String prevLaunchVer = YukaListerModel.Instance.EnvModel.YlSettings.PrevLaunchVer;
-			Boolean verChanged = prevLaunchVer != YlConstants.APP_VER || YukaListerModel.Instance.EnvModel.YlSettings.PrevLaunchGeneration != YlConstants.APP_GENERATION;
+			String prevLaunchVer = YlModel.Instance.EnvModel.YlSettings.PrevLaunchVer;
+			Boolean verChanged = prevLaunchVer != YlConstants.APP_VER || YlModel.Instance.EnvModel.YlSettings.PrevLaunchGeneration != YlConstants.APP_GENERATION;
 			if (verChanged)
 			{
 				// ユーザーにメッセージ表示する前にログしておく
 				if (String.IsNullOrEmpty(prevLaunchVer))
 				{
-					YukaListerModel.Instance.EnvModel.LogWriter.LogMessage(TraceEventType.Information, "新規起動：" + YlConstants.APP_VER);
+					YlModel.Instance.EnvModel.LogWriter.LogMessage(TraceEventType.Information, "新規起動：" + YlConstants.APP_VER);
 				}
 				else
 				{
-					YukaListerModel.Instance.EnvModel.LogWriter.LogMessage(TraceEventType.Information, "更新起動：" + prevLaunchVer + "→" + YlConstants.APP_VER);
+					YlModel.Instance.EnvModel.LogWriter.LogMessage(TraceEventType.Information, "更新起動：" + prevLaunchVer + "→" + YlConstants.APP_VER);
 				}
 			}
-			String prevLaunchPath = YukaListerModel.Instance.EnvModel.YlSettings.PrevLaunchPath;
-			Boolean pathChanged = (String.Compare(prevLaunchPath, YukaListerModel.Instance.EnvModel.ExeFullPath, true) != 0);
+			String prevLaunchPath = YlModel.Instance.EnvModel.YlSettings.PrevLaunchPath;
+			Boolean pathChanged = (String.Compare(prevLaunchPath, YlModel.Instance.EnvModel.ExeFullPath, true) != 0);
 			if (pathChanged && !String.IsNullOrEmpty(prevLaunchPath))
 			{
-				YukaListerModel.Instance.EnvModel.LogWriter.LogMessage(TraceEventType.Information, "パス変更起動：" + prevLaunchPath + "→" + YukaListerModel.Instance.EnvModel.ExeFullPath);
+				YlModel.Instance.EnvModel.LogWriter.LogMessage(TraceEventType.Information, "パス変更起動：" + prevLaunchPath + "→" + YlModel.Instance.EnvModel.ExeFullPath);
 			}
 
 			// 更新起動時とパス変更時の処理
@@ -1176,7 +1176,7 @@ namespace YukaLister.ViewModels
 		private void FileSystemWatcherYukariConfig_Changed(Object sender, FileSystemEventArgs fileSystemEventArgs)
 		{
 			SetStatusBarMessageWithInvoke(TraceEventType.Information, "ゆかり設定ファイルが更新されました。");
-			YukaListerModel.Instance.EnvModel.YlSettings.AnalyzeYukariConfig();
+			YlModel.Instance.EnvModel.YlSettings.AnalyzeYukariConfig();
 		}
 
 		// --------------------------------------------------------------------
@@ -1226,7 +1226,7 @@ namespace YukaLister.ViewModels
 
 			// フォルダー設定の有無の表示を更新
 			// キャンセルでも実行（設定削除→キャンセルの場合はフォルダー設定の有無が変わる）
-			YukaListerModel.Instance.ProjModel.SetFolderSettingsStatusToUnchecked(SelectedTargetFolderInfo.TargetPath);
+			YlModel.Instance.ProjModel.SetFolderSettingsStatusToUnchecked(SelectedTargetFolderInfo.TargetPath);
 			UpdateDataGrid();
 
 			// 楽曲情報データベースが更新された場合は同期を行う
@@ -1263,7 +1263,7 @@ namespace YukaLister.ViewModels
 
 			// α・β警告、ならびに、更新時のメッセージ（2022/01/16）
 			// 新規・更新のご挨拶
-			if (String.IsNullOrEmpty(YukaListerModel.Instance.EnvModel.YlSettings.PrevLaunchVer))
+			if (String.IsNullOrEmpty(YlModel.Instance.EnvModel.YlSettings.PrevLaunchVer))
 			{
 				// 新規
 				newVerMsg = "【初回起動】\n\n";
@@ -1292,7 +1292,7 @@ namespace YukaLister.ViewModels
 			}
 
 			// 表示
-			YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(type, newVerMsg);
+			YlModel.Instance.EnvModel.LogWriter.ShowLogMessage(type, newVerMsg);
 			SaveExitStatus();
 
 #if !DISTRIB_STORE
@@ -1331,11 +1331,11 @@ namespace YukaLister.ViewModels
 		// --------------------------------------------------------------------
 		private void SaveExitStatus()
 		{
-			YukaListerModel.Instance.EnvModel.YlSettings.PrevLaunchPath = YukaListerModel.Instance.EnvModel.ExeFullPath;
-			YukaListerModel.Instance.EnvModel.YlSettings.PrevLaunchGeneration = YlConstants.APP_GENERATION;
-			YukaListerModel.Instance.EnvModel.YlSettings.PrevLaunchVer = YlConstants.APP_VER;
-			YukaListerModel.Instance.EnvModel.YlSettings.DesktopBounds = new Rect(Left, Top, Width, Height);
-			YukaListerModel.Instance.EnvModel.YlSettings.Save();
+			YlModel.Instance.EnvModel.YlSettings.PrevLaunchPath = YlModel.Instance.EnvModel.ExeFullPath;
+			YlModel.Instance.EnvModel.YlSettings.PrevLaunchGeneration = YlConstants.APP_GENERATION;
+			YlModel.Instance.EnvModel.YlSettings.PrevLaunchVer = YlConstants.APP_VER;
+			YlModel.Instance.EnvModel.YlSettings.DesktopBounds = new Rect(Left, Top, Width, Height);
+			YlModel.Instance.EnvModel.YlSettings.Save();
 		}
 
 		// --------------------------------------------------------------------
@@ -1343,9 +1343,9 @@ namespace YukaLister.ViewModels
 		// --------------------------------------------------------------------
 		private void SetFileSystemWatcherReportDatabase()
 		{
-			if (YukaListerModel.Instance.EnvModel.YlSettings.IsYukariConfigPathValid())
+			if (YlModel.Instance.EnvModel.YlSettings.IsYukariConfigPathValid())
 			{
-				String path = DbCommon.ReportDatabasePath(YukaListerModel.Instance.EnvModel.YlSettings);
+				String path = DbCommon.ReportDatabasePath(YlModel.Instance.EnvModel.YlSettings);
 				String? folder = Path.GetDirectoryName(path);
 				if (!String.IsNullOrEmpty(folder))
 				{
@@ -1364,10 +1364,10 @@ namespace YukaLister.ViewModels
 		// --------------------------------------------------------------------
 		private void SetFileSystemWatcherYukariConfig()
 		{
-			if (YukaListerModel.Instance.EnvModel.YlSettings.IsYukariConfigPathValid())
+			if (YlModel.Instance.EnvModel.YlSettings.IsYukariConfigPathValid())
 			{
-				String? path = Path.GetDirectoryName(YukaListerModel.Instance.EnvModel.YlSettings.YukariConfigPath());
-				String filter = Path.GetFileName(YukaListerModel.Instance.EnvModel.YlSettings.YukariConfigPath());
+				String? path = Path.GetDirectoryName(YlModel.Instance.EnvModel.YlSettings.YukariConfigPath());
+				String filter = Path.GetFileName(YlModel.Instance.EnvModel.YlSettings.YukariConfigPath());
 				if (!String.IsNullOrEmpty(path) && !String.IsNullOrEmpty(filter))
 				{
 					_fileSystemWatcherYukariConfig.Path = path;
@@ -1385,11 +1385,11 @@ namespace YukaLister.ViewModels
 		// --------------------------------------------------------------------
 		private void SetFileSystemWatcherYukariRequestDatabase()
 		{
-			if (YukaListerModel.Instance.EnvModel.YlSettings.IsYukariConfigPathValid()
-					&& YukaListerModel.Instance.EnvModel.YlSettings.IsYukariRequestDatabasePathValid())
+			if (YlModel.Instance.EnvModel.YlSettings.IsYukariConfigPathValid()
+					&& YlModel.Instance.EnvModel.YlSettings.IsYukariRequestDatabasePathValid())
 			{
-				String? path = Path.GetDirectoryName(YukaListerModel.Instance.EnvModel.YlSettings.YukariRequestDatabasePath());
-				String filter = Path.GetFileName(YukaListerModel.Instance.EnvModel.YlSettings.YukariRequestDatabasePath());
+				String? path = Path.GetDirectoryName(YlModel.Instance.EnvModel.YlSettings.YukariRequestDatabasePath());
+				String filter = Path.GetFileName(YlModel.Instance.EnvModel.YlSettings.YukariRequestDatabasePath());
 				if (!String.IsNullOrEmpty(path) && !String.IsNullOrEmpty(filter))
 				{
 					_fileSystemWatcherYukariRequestDatabase.Path = path;
@@ -1435,7 +1435,7 @@ namespace YukaLister.ViewModels
 		// --------------------------------------------------------------------
 		private void StartWebServerIfNeeded()
 		{
-			if (!YukaListerModel.Instance.EnvModel.YlSettings.ProvideYukariPreview)
+			if (!YlModel.Instance.EnvModel.YlSettings.ProvideYukariPreview)
 			{
 				return;
 			}
@@ -1455,13 +1455,13 @@ namespace YukaLister.ViewModels
 		{
 			try
 			{
-				YukaListerModel.Instance.ProjModel.UpdateTargetFolderInfosVisible(targetFolderInfo);
+				YlModel.Instance.ProjModel.UpdateTargetFolderInfosVisible(targetFolderInfo);
 				UpdateDataGrid();
 			}
 			catch (Exception excep)
 			{
-				YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(TraceEventType.Error, "IsOpen 変更時エラー：\n" + excep.Message);
-				YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, "　スタックトレース：\n" + excep.StackTrace);
+				YlModel.Instance.EnvModel.LogWriter.ShowLogMessage(TraceEventType.Error, "IsOpen 変更時エラー：\n" + excep.Message);
+				YlModel.Instance.EnvModel.LogWriter.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, "　スタックトレース：\n" + excep.StackTrace);
 			}
 		}
 
@@ -1476,7 +1476,7 @@ namespace YukaLister.ViewModels
 
 				// 常に EnvModel.YukaListerWholeStatus を参照していると、表示中は Running だったのに _prevYukaListerWholeStatus に代入する頃には Ready になっており、
 				// 次回更新時に Ready 同士と判定されて更新されない、という事態が起こりえるので、一度参照した EnvModel.YukaListerWholeStatus を継承させるようにする
-				YukaListerStatus currentWholeStatus = YukaListerModel.Instance.EnvModel.YukaListerWholeStatus;
+				YukaListerStatus currentWholeStatus = YlModel.Instance.EnvModel.YukaListerWholeStatus;
 				UpdateUi(currentWholeStatus);
 				_prevYukaListerWholeStatus = currentWholeStatus;
 
@@ -1487,8 +1487,8 @@ namespace YukaLister.ViewModels
 			catch (Exception excep)
 			{
 				// 定期的にタイマーエラーが表示されることのないよう、エラー発生時はタイマーを再開しない
-				YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(TraceEventType.Error, "タイマー時エラー：\n" + excep.Message + "\n再起動してください。");
-				YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, "　スタックトレース：\n" + excep.StackTrace);
+				YlModel.Instance.EnvModel.LogWriter.ShowLogMessage(TraceEventType.Error, "タイマー時エラー：\n" + excep.Message + "\n再起動してください。");
+				YlModel.Instance.EnvModel.LogWriter.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, "　スタックトレース：\n" + excep.StackTrace);
 			}
 		}
 
@@ -1498,11 +1498,11 @@ namespace YukaLister.ViewModels
 		private void UpdateDataGrid()
 		{
 			// 先に Dirty フラグをクリア（後にすると、更新中に他のスレッドが立てたフラグもクリアしてしまうため）
-			YukaListerModel.Instance.EnvModel.IsMainWindowDataGridCountChanged = false;
-			YukaListerModel.Instance.EnvModel.IsMainWindowDataGridItemUpdated = false;
+			YlModel.Instance.EnvModel.IsMainWindowDataGridCountChanged = false;
+			YlModel.Instance.EnvModel.IsMainWindowDataGridItemUpdated = false;
 
 			// 更新
-			TargetFolderInfosVisible = YukaListerModel.Instance.ProjModel.TargetFolderInfosVisible();
+			TargetFolderInfosVisible = YlModel.Instance.ProjModel.TargetFolderInfosVisible();
 		}
 
 		// --------------------------------------------------------------------
@@ -1510,7 +1510,7 @@ namespace YukaLister.ViewModels
 		// --------------------------------------------------------------------
 		private void UpdateNumRecordsLabel()
 		{
-			if (YukaListerModel.Instance.EnvModel.YukaListerWholeStatus == YukaListerStatus.Error)
+			if (YlModel.Instance.EnvModel.YukaListerWholeStatus == YukaListerStatus.Error)
 			{
 				_numFounds = 0;
 			}
@@ -1529,7 +1529,7 @@ namespace YukaLister.ViewModels
 		public void UpdateReportsBadge()
 		{
 			Int32 numProgress = 0;
-			if (YukaListerModel.Instance.EnvModel.YukaListerWholeStatus == YukaListerStatus.Error)
+			if (YlModel.Instance.EnvModel.YukaListerWholeStatus == YukaListerStatus.Error)
 			{
 			}
 			else
@@ -1569,7 +1569,7 @@ namespace YukaLister.ViewModels
 			}
 
 			// DataGrid
-			if (YukaListerModel.Instance.EnvModel.IsMainWindowDataGridCountChanged || YukaListerModel.Instance.EnvModel.IsMainWindowDataGridItemUpdated)
+			if (YlModel.Instance.EnvModel.IsMainWindowDataGridCountChanged || YlModel.Instance.EnvModel.IsMainWindowDataGridItemUpdated)
 			{
 				UpdateDataGrid();
 			}
@@ -1581,26 +1581,26 @@ namespace YukaLister.ViewModels
 		// --------------------------------------------------------------------
 		private void UpdateYukaListerEnvironmentStatus()
 		{
-			if (!YukaListerModel.Instance.EnvModel.YlSettings.IsYukariConfigPathValid())
+			if (!YlModel.Instance.EnvModel.YlSettings.IsYukariConfigPathValid())
 			{
 				// ゆかり設定ファイルエラー
-				YukaListerModel.Instance.EnvModel.YukaListerPartsStatus[(Int32)YukaListerPartsStatusIndex.Environment] = YukaListerStatus.Error;
-				YukaListerModel.Instance.EnvModel.YukaListerPartsStatusMessage[(Int32)YukaListerPartsStatusIndex.Environment]
+				YlModel.Instance.EnvModel.YukaListerPartsStatus[(Int32)YukaListerPartsStatusIndex.Environment] = YukaListerStatus.Error;
+				YlModel.Instance.EnvModel.YukaListerPartsStatusMessage[(Int32)YukaListerPartsStatusIndex.Environment]
 						= YukaListerStatusLabel = "ゆかり設定ファイルが正しく指定されていません。";
 				_labelYukaListerStatusUrl = URL_BAD_YUKARI_CONFIG;
 			}
 			else
 			{
 				// 正常
-				YukaListerModel.Instance.EnvModel.YukaListerPartsStatus[(Int32)YukaListerPartsStatusIndex.Environment] = YukaListerStatus.Ready;
-				YukaListerModel.Instance.EnvModel.YukaListerPartsStatusMessage[(Int32)YukaListerPartsStatusIndex.Environment]
+				YlModel.Instance.EnvModel.YukaListerPartsStatus[(Int32)YukaListerPartsStatusIndex.Environment] = YukaListerStatus.Ready;
+				YlModel.Instance.EnvModel.YukaListerPartsStatusMessage[(Int32)YukaListerPartsStatusIndex.Environment]
 						= YlConstants.APP_NAME_J + "は正常に動作しています。";
 				_labelYukaListerStatusUrl = null;
 			}
 
 			// 表示を強制更新
 			_prevYukaListerWholeStatus = YukaListerStatus.__End__;
-			UpdateUi(YukaListerModel.Instance.EnvModel.YukaListerWholeStatus);
+			UpdateUi(YlModel.Instance.EnvModel.YukaListerWholeStatus);
 		}
 
 		// --------------------------------------------------------------------
@@ -1611,18 +1611,18 @@ namespace YukaLister.ViewModels
 			switch (currentWholeStatus)
 			{
 				case YukaListerStatus.Ready:
-					YukaListerStatusLabel = YukaListerModel.Instance.EnvModel.YukaListerPartsStatusMessage[(Int32)YukaListerPartsStatusIndex.Environment];
+					YukaListerStatusLabel = YlModel.Instance.EnvModel.YukaListerPartsStatusMessage[(Int32)YukaListerPartsStatusIndex.Environment];
 					break;
 				case YukaListerStatus.Running:
-					if (YukaListerModel.Instance.EnvModel.YukaListerPartsStatus[(Int32)YukaListerPartsStatusIndex.Startup] == YukaListerStatus.Running)
+					if (YlModel.Instance.EnvModel.YukaListerPartsStatus[(Int32)YukaListerPartsStatusIndex.Startup] == YukaListerStatus.Running)
 					{
 						// 起動時処理
-						YukaListerStatusLabel = YukaListerModel.Instance.EnvModel.YukaListerPartsStatusMessage[(Int32)YukaListerPartsStatusIndex.Startup];
+						YukaListerStatusLabel = YlModel.Instance.EnvModel.YukaListerPartsStatusMessage[(Int32)YukaListerPartsStatusIndex.Startup];
 					}
-					else if (YukaListerModel.Instance.EnvModel.YukaListerPartsStatus[(Int32)YukaListerPartsStatusIndex.Sifolin] == YukaListerStatus.Running)
+					else if (YlModel.Instance.EnvModel.YukaListerPartsStatus[(Int32)YukaListerPartsStatusIndex.Sifolin] == YukaListerStatus.Running)
 					{
 						// Sifolin
-						TargetFolderInfo? targetFolderInfo = YukaListerModel.Instance.ProjModel.RunningTargetFolderInfo();
+						TargetFolderInfo? targetFolderInfo = YlModel.Instance.ProjModel.RunningTargetFolderInfo();
 						if (targetFolderInfo == null)
 						{
 							// タイミングによっては一時的に null になることがありえる
@@ -1641,7 +1641,7 @@ namespace YukaLister.ViewModels
 							} + "...\n" + targetFolderInfo.TargetPath;
 						}
 					}
-					else if (YukaListerModel.Instance.EnvModel.YukaListerPartsStatus[(Int32)YukaListerPartsStatusIndex.Kamlin] == YukaListerStatus.Running)
+					else if (YlModel.Instance.EnvModel.YukaListerPartsStatus[(Int32)YukaListerPartsStatusIndex.Kamlin] == YukaListerStatus.Running)
 					{
 						YukaListerStatusLabel = "リスト更新中...";
 					}
@@ -1652,7 +1652,7 @@ namespace YukaLister.ViewModels
 					}
 					break;
 				case YukaListerStatus.Error:
-					YukaListerStatusLabel = YukaListerModel.Instance.EnvModel.YukaListerPartsStatusMessage[(Int32)YukaListerPartsStatusIndex.Environment];
+					YukaListerStatusLabel = YlModel.Instance.EnvModel.YukaListerPartsStatusMessage[(Int32)YukaListerPartsStatusIndex.Environment];
 					break;
 				default:
 					Debug.Assert(false, "UpdateYukaListerStatusLabel() bad status");

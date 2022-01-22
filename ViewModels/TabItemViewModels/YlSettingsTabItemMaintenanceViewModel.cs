@@ -122,8 +122,8 @@ namespace YukaLister.ViewModels.TabItemViewModels
 			}
 			catch (Exception excep)
 			{
-				YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(TraceEventType.Error, "最新情報確認時エラー：\n" + excep.Message);
-				YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, "　スタックトレース：\n" + excep.StackTrace);
+				YlModel.Instance.EnvModel.LogWriter.ShowLogMessage(TraceEventType.Error, "最新情報確認時エラー：\n" + excep.Message);
+				YlModel.Instance.EnvModel.LogWriter.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, "　スタックトレース：\n" + excep.StackTrace);
 			}
 			ProgressBarCheckRssVisibility = Visibility.Hidden;
 		}
@@ -156,12 +156,12 @@ namespace YukaLister.ViewModels.TabItemViewModels
 
 				YlCommon.LogEnvironmentInfo();
 				ZipFile.CreateFromDirectory(Common.UserAppDataFolderPath(), path, CompressionLevel.Optimal, true);
-				YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(TraceEventType.Information, "設定のバックアップが完了しました。");
+				YlModel.Instance.EnvModel.LogWriter.ShowLogMessage(TraceEventType.Information, "設定のバックアップが完了しました。");
 			}
 			catch (Exception excep)
 			{
-				YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(TraceEventType.Error, "設定のバックアップボタンクリック時エラー：\n" + excep.Message);
-				YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, "　スタックトレース：\n" + excep.StackTrace);
+				YlModel.Instance.EnvModel.LogWriter.ShowLogMessage(TraceEventType.Error, "設定のバックアップボタンクリック時エラー：\n" + excep.Message);
+				YlModel.Instance.EnvModel.LogWriter.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, "　スタックトレース：\n" + excep.StackTrace);
 			}
 		}
 		#endregion
@@ -206,14 +206,14 @@ namespace YukaLister.ViewModels.TabItemViewModels
 				// 設定更新
 				String settingsFilePath = unzipFolder + Path.GetFileName(Path.GetDirectoryName(Common.UserAppDataFolderPath())) + "\\" + Path.GetFileName(YlSettings.YlSettingsPath());
 				File.Copy(settingsFilePath, YlSettings.YlSettingsPath(), true);
-				YukaListerModel.Instance.EnvModel.YlSettings.Load();
+				YlModel.Instance.EnvModel.YlSettings.Load();
 				SettingsToProperties();
-				YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(TraceEventType.Information, "設定を復元しました。");
+				YlModel.Instance.EnvModel.LogWriter.ShowLogMessage(TraceEventType.Information, "設定を復元しました。");
 			}
 			catch (Exception excep)
 			{
-				YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(TraceEventType.Error, "設定の復元ボタンクリック時エラー：\n" + excep.Message);
-				YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, "　スタックトレース：\n" + excep.StackTrace);
+				YlModel.Instance.EnvModel.LogWriter.ShowLogMessage(TraceEventType.Error, "設定の復元ボタンクリック時エラー：\n" + excep.Message);
+				YlModel.Instance.EnvModel.LogWriter.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, "　スタックトレース：\n" + excep.StackTrace);
 			}
 		}
 		#endregion
@@ -236,7 +236,7 @@ namespace YukaLister.ViewModels.TabItemViewModels
 		// --------------------------------------------------------------------
 		public override void PropertiesToSettings()
 		{
-			YukaListerModel.Instance.EnvModel.YlSettings.CheckRss = CheckRss;
+			YlModel.Instance.EnvModel.YlSettings.CheckRss = CheckRss;
 		}
 
 		// --------------------------------------------------------------------
@@ -244,7 +244,7 @@ namespace YukaLister.ViewModels.TabItemViewModels
 		// --------------------------------------------------------------------
 		public override void SettingsToProperties()
 		{
-			CheckRss = YukaListerModel.Instance.EnvModel.YlSettings.CheckRss;
+			CheckRss = YlModel.Instance.EnvModel.YlSettings.CheckRss;
 		}
 
 		// --------------------------------------------------------------------

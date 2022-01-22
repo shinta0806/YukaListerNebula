@@ -24,7 +24,7 @@ using YukaLister.ViewModels;
 
 namespace YukaLister.Models.YukaListerCores
 {
-	public class Kamlin : YukaListerCore
+	public class Kamlin : YlCore
 	{
 		// ====================================================================
 		// コンストラクター
@@ -64,10 +64,10 @@ namespace YukaLister.Models.YukaListerCores
 
 				try
 				{
-					YukaListerModel.Instance.EnvModel.AppCancellationTokenSource.Token.ThrowIfCancellationRequested();
+					YlModel.Instance.EnvModel.AppCancellationTokenSource.Token.ThrowIfCancellationRequested();
 
 					// 全体の動作状況がエラーの場合はリスト作成しない
-					if (YukaListerModel.Instance.EnvModel.YukaListerWholeStatus == YukaListerStatus.Error)
+					if (YlModel.Instance.EnvModel.YukaListerWholeStatus == YukaListerStatus.Error)
 					{
 						continue;
 					}
@@ -79,8 +79,8 @@ namespace YukaLister.Models.YukaListerCores
 						continue;
 					}
 
-					YukaListerModel.Instance.EnvModel.YukaListerPartsStatus[(Int32)YukaListerPartsStatusIndex.Kamlin] = YukaListerStatus.Running;
-					YukaListerModel.Instance.EnvModel.LogWriter.LogMessage(Common.TRACE_EVENT_TYPE_STATUS, GetType().Name + " アクティブ化。");
+					YlModel.Instance.EnvModel.YukaListerPartsStatus[(Int32)YukaListerPartsStatusIndex.Kamlin] = YukaListerStatus.Running;
+					YlModel.Instance.EnvModel.LogWriter.LogMessage(Common.TRACE_EVENT_TYPE_STATUS, GetType().Name + " アクティブ化。");
 
 					// 問題報告用に ID 接頭辞が必要
 					try
@@ -97,7 +97,7 @@ namespace YukaLister.Models.YukaListerCores
 					YukariOutputWriter yukariOutputWriter = new();
 					yukariOutputWriter.Output();
 
-					YukaListerModel.Instance.EnvModel.LogWriter.LogMessage(TraceEventType.Information, "リスト出力が完了しました。");
+					YlModel.Instance.EnvModel.LogWriter.LogMessage(TraceEventType.Information, "リスト出力が完了しました。");
 				}
 				catch (OperationCanceledException)
 				{
@@ -105,14 +105,14 @@ namespace YukaLister.Models.YukaListerCores
 				}
 				catch (Exception excep)
 				{
-					YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(TraceEventType.Error, GetType().Name + " ループ稼働時エラー：\n" + excep.Message);
-					YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, "　スタックトレース：\n" + excep.StackTrace);
+					YlModel.Instance.EnvModel.LogWriter.ShowLogMessage(TraceEventType.Error, GetType().Name + " ループ稼働時エラー：\n" + excep.Message);
+					YlModel.Instance.EnvModel.LogWriter.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, "　スタックトレース：\n" + excep.StackTrace);
 				}
 
-				YukaListerModel.Instance.EnvModel.YukaListerPartsStatus[(Int32)YukaListerPartsStatusIndex.Kamlin] = YukaListerStatus.Ready;
+				YlModel.Instance.EnvModel.YukaListerPartsStatus[(Int32)YukaListerPartsStatusIndex.Kamlin] = YukaListerStatus.Ready;
 
 				TimeSpan timeSpan = new(YlCommon.MiliToHNano(Environment.TickCount - startTick));
-				YukaListerModel.Instance.EnvModel.LogWriter.LogMessage(Common.TRACE_EVENT_TYPE_STATUS, GetType().Name + " スリープ化：アクティブ時間：" + timeSpan.ToString(@"hh\:mm\:ss"));
+				YlModel.Instance.EnvModel.LogWriter.LogMessage(Common.TRACE_EVENT_TYPE_STATUS, GetType().Name + " スリープ化：アクティブ時間：" + timeSpan.ToString(@"hh\:mm\:ss"));
 			}
 		}
 	}

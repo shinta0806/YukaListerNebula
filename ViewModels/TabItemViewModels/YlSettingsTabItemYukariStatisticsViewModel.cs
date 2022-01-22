@@ -80,8 +80,8 @@ namespace YukaLister.ViewModels.TabItemViewModels
 					}
 					catch (Exception excep)
 					{
-						YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(TraceEventType.Error, "ゆかり統計出力対象期間変更時エラー：\n" + excep.Message);
-						YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, "　スタックトレース：\n" + excep.StackTrace);
+						YlModel.Instance.EnvModel.LogWriter.ShowLogMessage(TraceEventType.Error, "ゆかり統計出力対象期間変更時エラー：\n" + excep.Message);
+						YlModel.Instance.EnvModel.LogWriter.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, "　スタックトレース：\n" + excep.StackTrace);
 					}
 				}
 			}
@@ -172,8 +172,8 @@ namespace YukaLister.ViewModels.TabItemViewModels
 			}
 			catch (Exception excep)
 			{
-				YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(TraceEventType.Error, "エクスポート先参照ボタンクリック時エラー：\n" + excep.Message);
-				YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, "　スタックトレース：\n" + excep.StackTrace);
+				YlModel.Instance.EnvModel.LogWriter.ShowLogMessage(TraceEventType.Error, "エクスポート先参照ボタンクリック時エラー：\n" + excep.Message);
+				YlModel.Instance.EnvModel.LogWriter.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, "　スタックトレース：\n" + excep.StackTrace);
 			}
 		}
 		#endregion
@@ -209,7 +209,7 @@ namespace YukaLister.ViewModels.TabItemViewModels
 				}
 
 				// ウィンドウのキャンセルボタンが押された場合でも出力先は確定
-				YukaListerModel.Instance.EnvModel.YlSettings.YukariStatisticsPath = YukariStatisticsPath;
+				YlModel.Instance.EnvModel.YlSettings.YukariStatisticsPath = YukariStatisticsPath;
 
 				// 出力
 				ProgressBarOutputYukariStatisticsVisibility = Visibility.Visible;
@@ -218,7 +218,7 @@ namespace YukaLister.ViewModels.TabItemViewModels
 				{
 					return;
 				}
-				YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(TraceEventType.Information, "ゆかり統計出力が完了しました。");
+				YlModel.Instance.EnvModel.LogWriter.ShowLogMessage(TraceEventType.Information, "ゆかり統計出力が完了しました。");
 
 				// 表示
 				try
@@ -232,8 +232,8 @@ namespace YukaLister.ViewModels.TabItemViewModels
 			}
 			catch (Exception excep)
 			{
-				YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(TraceEventType.Error, "ゆかり統計出力ボタンクリック時エラー：\n" + excep.Message);
-				YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, "　スタックトレース：\n" + excep.StackTrace);
+				YlModel.Instance.EnvModel.LogWriter.ShowLogMessage(TraceEventType.Error, "ゆかり統計出力ボタンクリック時エラー：\n" + excep.Message);
+				YlModel.Instance.EnvModel.LogWriter.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, "　スタックトレース：\n" + excep.StackTrace);
 			}
 			finally
 			{
@@ -269,12 +269,12 @@ namespace YukaLister.ViewModels.TabItemViewModels
 
 				using YukariStatisticsContext yukariStatisticsContext = new();
 				yukariStatisticsContext.CreateDatabase();
-				YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(TraceEventType.Information, "ゆかり統計データベースを削除しました。");
+				YlModel.Instance.EnvModel.LogWriter.ShowLogMessage(TraceEventType.Information, "ゆかり統計データベースを削除しました。");
 			}
 			catch (Exception excep)
 			{
-				YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(TraceEventType.Error, "ゆかり統計すべて削除ボタンクリック時エラー：\n" + excep.Message);
-				YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, "　スタックトレース：\n" + excep.StackTrace);
+				YlModel.Instance.EnvModel.LogWriter.ShowLogMessage(TraceEventType.Error, "ゆかり統計すべて削除ボタンクリック時エラー：\n" + excep.Message);
+				YlModel.Instance.EnvModel.LogWriter.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, "　スタックトレース：\n" + excep.StackTrace);
 			}
 		}
 		#endregion
@@ -312,7 +312,7 @@ namespace YukaLister.ViewModels.TabItemViewModels
 		// --------------------------------------------------------------------
 		public override void PropertiesToSettings()
 		{
-			YukaListerModel.Instance.EnvModel.YlSettings.YukariStatisticsPath = YukariStatisticsPath;
+			YlModel.Instance.EnvModel.YlSettings.YukariStatisticsPath = YukariStatisticsPath;
 		}
 
 		// --------------------------------------------------------------------
@@ -320,7 +320,7 @@ namespace YukaLister.ViewModels.TabItemViewModels
 		// --------------------------------------------------------------------
 		public override void SettingsToProperties()
 		{
-			YukariStatisticsPath = YukaListerModel.Instance.EnvModel.YlSettings.YukariStatisticsPath;
+			YukariStatisticsPath = YlModel.Instance.EnvModel.YlSettings.YukariStatisticsPath;
 		}
 
 		// ====================================================================
@@ -350,7 +350,7 @@ namespace YukaLister.ViewModels.TabItemViewModels
 		{
 			// ゆかり統計の属性情報を最新化
 			UpdateYukariStatistics();
-			YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, "予約当時の動画ファイルが現存しているものについて、可能な限り、ゆかり統計の属性情報を最新化しました。");
+			YlModel.Instance.EnvModel.LogWriter.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, "予約当時の動画ファイルが現存しているものについて、可能な限り、ゆかり統計の属性情報を最新化しました。");
 
 			// タイトル行
 			List<String> titleColumns = new(new String[] { "No", "PC", "予約日", "ルーム名", "カテゴリー", "タイアップ名", "摘要", "年齢制限", "リリース日", "リリース年", "シリーズ", "制作会社名",
@@ -431,11 +431,11 @@ namespace YukaLister.ViewModels.TabItemViewModels
 		private static void UpdateYukariStatistics()
 		{
 			// Yurelin に最新化を依頼
-			YukaListerModel.Instance.EnvModel.Yurelin.UpdatePastYukariStatisticsKind = UpdatePastYukariStatisticsKind.All;
+			YlModel.Instance.EnvModel.Yurelin.UpdatePastYukariStatisticsKind = UpdatePastYukariStatisticsKind.All;
 			YlCommon.ActivateYurelinIfNeeded();
 
 			// 最新化されるまで待機
-			while (YukaListerModel.Instance.EnvModel.Yurelin.UpdatePastYukariStatisticsKind != UpdatePastYukariStatisticsKind.None)
+			while (YlModel.Instance.EnvModel.Yurelin.UpdatePastYukariStatisticsKind != UpdatePastYukariStatisticsKind.None)
 			{
 				Thread.Sleep(Common.GENERAL_SLEEP_TIME);
 			}

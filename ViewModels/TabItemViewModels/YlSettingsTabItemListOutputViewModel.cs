@@ -132,7 +132,7 @@ namespace YukaLister.ViewModels.TabItemViewModels
 
 		public static Boolean CanButtonYukariListSettingsClicked()
 		{
-			return YukaListerModel.Instance.EnvModel.YukaListerWholeStatus != YukaListerStatus.Error;
+			return YlModel.Instance.EnvModel.YukaListerWholeStatus != YukaListerStatus.Error;
 		}
 
 		public void ButtonYukariListSettingsClicked()
@@ -156,8 +156,8 @@ namespace YukaLister.ViewModels.TabItemViewModels
 			}
 			catch (Exception excep)
 			{
-				YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(TraceEventType.Error, "ゆかりリクエスト用リスト出力設定ボタンクリック時エラー：\n" + excep.Message);
-				YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, "　スタックトレース：\n" + excep.StackTrace);
+				YlModel.Instance.EnvModel.LogWriter.ShowLogMessage(TraceEventType.Error, "ゆかりリクエスト用リスト出力設定ボタンクリック時エラー：\n" + excep.Message);
+				YlModel.Instance.EnvModel.LogWriter.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, "　スタックトレース：\n" + excep.StackTrace);
 			}
 		}
 		#endregion
@@ -201,8 +201,8 @@ namespace YukaLister.ViewModels.TabItemViewModels
 			}
 			catch (Exception excep)
 			{
-				YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(TraceEventType.Error, "閲覧用出力設定ボタンクリック時エラー：\n" + excep.Message);
-				YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, "　スタックトレース：\n" + excep.StackTrace);
+				YlModel.Instance.EnvModel.LogWriter.ShowLogMessage(TraceEventType.Error, "閲覧用出力設定ボタンクリック時エラー：\n" + excep.Message);
+				YlModel.Instance.EnvModel.LogWriter.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, "　スタックトレース：\n" + excep.StackTrace);
 			}
 		}
 		#endregion
@@ -239,14 +239,14 @@ namespace YukaLister.ViewModels.TabItemViewModels
 
 				// 出力クラスに出力先が渡るようにする
 				// ウィンドウのキャンセルボタンが押された場合でも確定していることになる
-				YukaListerModel.Instance.EnvModel.YlSettings.ListOutputFolder = ListFolder;
+				YlModel.Instance.EnvModel.YlSettings.ListOutputFolder = ListFolder;
 
 				if (SelectedOutputWriter == null)
 				{
 					throw new Exception("出力形式を選択してください。");
 				}
 
-				if (YukaListerModel.Instance.EnvModel.YukaListerWholeStatus == YukaListerStatus.Running)
+				if (YlModel.Instance.EnvModel.YukaListerWholeStatus == YukaListerStatus.Running)
 				{
 					if (MessageBox.Show("データ更新中のため、今すぐリスト出力しても完全なリストにはなりません。\n今すぐリスト出力しますか？",
 							"確認", MessageBoxButton.YesNo, MessageBoxImage.Exclamation) != MessageBoxResult.Yes)
@@ -258,10 +258,10 @@ namespace YukaLister.ViewModels.TabItemViewModels
 				// 出力
 				ProgressBarOutputListVisibility = Visibility.Visible;
 				await YlCommon.LaunchTaskAsync(_semaphoreSlim, OutputListByWorker, SelectedOutputWriter, "閲覧用リスト出力");
-				YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(TraceEventType.Information, "リスト出力が完了しました。");
+				YlModel.Instance.EnvModel.LogWriter.ShowLogMessage(TraceEventType.Information, "リスト出力が完了しました。");
 
 				// 表示
-				String outputFilePath = YukaListerModel.Instance.EnvModel.YlSettings.ListOutputFolder + SelectedOutputWriter.TopFileName;
+				String outputFilePath = YlModel.Instance.EnvModel.YlSettings.ListOutputFolder + SelectedOutputWriter.TopFileName;
 				try
 				{
 					Common.ShellExecute(outputFilePath);
@@ -273,8 +273,8 @@ namespace YukaLister.ViewModels.TabItemViewModels
 			}
 			catch (Exception excep)
 			{
-				YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(TraceEventType.Error, "リスト出力ボタンクリック時エラー：\n" + excep.Message);
-				YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, "　スタックトレース：\n" + excep.StackTrace);
+				YlModel.Instance.EnvModel.LogWriter.ShowLogMessage(TraceEventType.Error, "リスト出力ボタンクリック時エラー：\n" + excep.Message);
+				YlModel.Instance.EnvModel.LogWriter.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, "　スタックトレース：\n" + excep.StackTrace);
 			}
 			finally
 			{
@@ -293,7 +293,7 @@ namespace YukaLister.ViewModels.TabItemViewModels
 		public override void Initialize()
 		{
 			// 警告表示
-			if (YukaListerModel.Instance.EnvModel.YukaListerWholeStatus == YukaListerStatus.Error)
+			if (YlModel.Instance.EnvModel.YukaListerWholeStatus == YukaListerStatus.Error)
 			{
 				YukariListWarningVisibility = Visibility.Visible;
 			}
@@ -325,8 +325,8 @@ namespace YukaLister.ViewModels.TabItemViewModels
 			}
 			catch (Exception excep)
 			{
-				YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(TraceEventType.Error, "リスト出力先フォルダー選択時エラー：\n" + excep.Message);
-				YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, "　スタックトレース：\n" + excep.StackTrace);
+				YlModel.Instance.EnvModel.LogWriter.ShowLogMessage(TraceEventType.Error, "リスト出力先フォルダー選択時エラー：\n" + excep.Message);
+				YlModel.Instance.EnvModel.LogWriter.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, "　スタックトレース：\n" + excep.StackTrace);
 			}
 		}
 
@@ -343,8 +343,7 @@ namespace YukaLister.ViewModels.TabItemViewModels
 		// --------------------------------------------------------------------
 		public override void PropertiesToSettings()
 		{
-			//YukaListerModel.Instance.EnvModel.YlSettings.ConfirmOutputYukariList = ConfirmOutputYukariList;
-			YukaListerModel.Instance.EnvModel.YlSettings.ListOutputFolder = ListFolder;
+			YlModel.Instance.EnvModel.YlSettings.ListOutputFolder = ListFolder;
 		}
 
 		// --------------------------------------------------------------------
@@ -353,9 +352,8 @@ namespace YukaLister.ViewModels.TabItemViewModels
 		public override void SettingsToProperties()
 		{
 			// リスト出力タブ
-			//ConfirmOutputYukariList = YukaListerModel.Instance.EnvModel.YlSettings.ConfirmOutputYukariList;
 			SelectedOutputWriter = OutputWriters[0];
-			ListFolder = YukaListerModel.Instance.EnvModel.YlSettings.ListOutputFolder;
+			ListFolder = YlModel.Instance.EnvModel.YlSettings.ListOutputFolder;
 		}
 
 		// --------------------------------------------------------------------

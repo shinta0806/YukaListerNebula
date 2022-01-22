@@ -34,7 +34,7 @@ using YukaLister.Models.YukaListerModels;
 
 namespace YukaLister.Models.YukaListerCores
 {
-	public class Lomolin : YukaListerCore
+	public class Lomolin : YlCore
 	{
 		// ====================================================================
 		// コンストラクター
@@ -96,7 +96,7 @@ namespace YukaLister.Models.YukaListerCores
 					_logWriterMonitor.LogMessage(Common.TRACE_EVENT_TYPE_STATUS, "負荷計測所要時間 [ms]：" + (Environment.TickCount - startTime).ToString());
 					while (startTime + INTERVAL > Environment.TickCount)
 					{
-						YukaListerModel.Instance.EnvModel.AppCancellationTokenSource.Token.ThrowIfCancellationRequested();
+						YlModel.Instance.EnvModel.AppCancellationTokenSource.Token.ThrowIfCancellationRequested();
 						Thread.Sleep(1000);
 					}
 				}
@@ -106,8 +106,8 @@ namespace YukaLister.Models.YukaListerCores
 				}
 				catch (Exception excep)
 				{
-					YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(TraceEventType.Error, GetType().Name + " ループ稼働時エラー：\n" + excep.Message);
-					YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, "　スタックトレース：\n" + excep.StackTrace);
+					YlModel.Instance.EnvModel.LogWriter.ShowLogMessage(TraceEventType.Error, GetType().Name + " ループ稼働時エラー：\n" + excep.Message);
+					YlModel.Instance.EnvModel.LogWriter.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, "　スタックトレース：\n" + excep.StackTrace);
 				}
 			}
 		}
@@ -374,7 +374,7 @@ namespace YukaLister.Models.YukaListerCores
 		private void SetLogWriterMonitor()
 		{
 			// 大量のログが発生するため、サイズを拡大
-			_logWriterMonitor.ApplicationQuitToken = YukaListerModel.Instance.EnvModel.AppCancellationTokenSource.Token;
+			_logWriterMonitor.ApplicationQuitToken = YlModel.Instance.EnvModel.AppCancellationTokenSource.Token;
 			_logWriterMonitor.SimpleTraceListener.MaxSize = 5 * 1024 * 1024;
 			_logWriterMonitor.SimpleTraceListener.LogFileName = Path.GetDirectoryName(_logWriterMonitor.SimpleTraceListener.LogFileName) + "\\" + FILE_NAME_MONITOR_LOG;
 			_logWriterMonitor.SimpleTraceListener.Quote = false;
@@ -391,19 +391,19 @@ namespace YukaLister.Models.YukaListerCores
 			// 存在を検知したら出す警告
 			if (!_ownCloudWarned && instanceName.Contains(INSTANCE_NAME_OWNCLOUD, StringComparison.OrdinalIgnoreCase))
 			{
-				_ownCloudWarned = YukaListerModel.Instance.EnvModel.NebulaCoreErrors.TryAdd("ownCloud が動作しています。\n\n"
+				_ownCloudWarned = YlModel.Instance.EnvModel.NebulaCoreErrors.TryAdd("ownCloud が動作しています。\n\n"
 						+ "ゆかり・" + YlConstants.APP_NAME_J + "動作中は ownCloud を終了することを推奨します。");
 			}
 			if (!_everythingWarned && instanceName.Contains(INSTANCE_NAME_EVERYTHING, StringComparison.OrdinalIgnoreCase))
 			{
-				_everythingWarned = YukaListerModel.Instance.EnvModel.NebulaCoreErrors.TryAdd("Everything が動作しています。\n\n"
+				_everythingWarned = YlModel.Instance.EnvModel.NebulaCoreErrors.TryAdd("Everything が動作しています。\n\n"
 						+ "ゆかりの動作に Everything は不要となりましたので、Everything をアンインストールすることを推奨します。");
 			}
 
 			// 高負荷を検知したら出す警告
 			if (!_defenderWarned && loadAsOneCpu >= HIGH_LOAD_THRESHOLD && instanceName.Contains(INSTANCE_NAME_WINDOWS_DEFENDER, StringComparison.OrdinalIgnoreCase))
 			{
-				_defenderWarned = YukaListerModel.Instance.EnvModel.NebulaCoreErrors.TryAdd("Windows Defender が高負荷になっています。\n\n"
+				_defenderWarned = YlModel.Instance.EnvModel.NebulaCoreErrors.TryAdd("Windows Defender が高負荷になっています。\n\n"
 						+ "ゆかり・" + YlConstants.APP_NAME_J + "動作中は Windows Defender を無効化することを推奨します。\n"
 						+ "（Windows Defender 以外のセキュリティーソフトを使用することを推奨します）\n\n"
 						+ "やり方については「よくある質問」を参照してください。");

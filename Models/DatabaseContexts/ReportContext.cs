@@ -19,7 +19,7 @@ using YukaLister.Models.YukaListerModels;
 
 namespace YukaLister.Models.DatabaseContexts
 {
-	public class ReportContext : YukaListerContext
+	public class ReportContext : YlContext
 	{
 		// ====================================================================
 		// コンストラクター
@@ -50,7 +50,7 @@ namespace YukaLister.Models.DatabaseContexts
 		// --------------------------------------------------------------------
 		public override String DatabasePath()
 		{
-			return DbCommon.ReportDatabasePath(YukaListerModel.Instance.EnvModel.YlSettings);
+			return DbCommon.ReportDatabasePath(YlModel.Instance.EnvModel.YlSettings);
 		}
 
 		// ====================================================================

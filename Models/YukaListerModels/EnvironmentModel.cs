@@ -43,7 +43,7 @@ namespace YukaLister.Models.YukaListerModels
 			// 最初にログの設定をする
 			SetLogWriter();
 
-			// 環境設定の Load() はしない（YukaListerModel.Instance 生成途中で EnvironmentModel が生成され、エラー発生時に YukaListerModel.Instance 経由でのログ記録ができないため）
+			// 環境設定の Load() はしない（YlModel.Instance 生成途中で EnvironmentModel が生成され、エラー発生時に YukaListerModel.Instance 経由でのログ記録ができないため）
 		}
 
 		// ====================================================================

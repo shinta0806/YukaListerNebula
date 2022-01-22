@@ -507,7 +507,7 @@ namespace YukaLister.Models.DatabaseAssist
 		// --------------------------------------------------------------------
 		private static String? KeywordToComment(IRcMaster master)
 		{
-			if (!YukaListerModel.Instance.EnvModel.YlSettings.OutputAdditionalYukariAssist)
+			if (!YlModel.Instance.EnvModel.YlSettings.OutputAdditionalYukariAssist)
 			{
 				return null;
 			}

@@ -653,7 +653,7 @@ namespace YukaLister.Models.OutputWriters
 				}
 				catch (Exception)
 				{
-					YukaListerModel.Instance.EnvModel.LogWriter.LogMessage(TraceEventType.Error, "古いリストファイル " + Path.GetFileName(path) + " を削除できませんでした。");
+					YlModel.Instance.EnvModel.LogWriter.LogMessage(TraceEventType.Error, "古いリストファイル " + Path.GetFileName(path) + " を削除できませんでした。");
 				}
 			}
 		}
@@ -1133,8 +1133,8 @@ namespace YukaLister.Models.OutputWriters
 			catch (Exception excep)
 			{
 				// METEOR チケット #190 エラー捕捉用
-				YukaListerModel.Instance.EnvModel.LogWriter.LogMessage(TraceEventType.Error, "GenerateOneList() リスト本体部分 Exception: " + excep.Message);
-				YukaListerModel.Instance.EnvModel.LogWriter.LogMessage(TraceEventType.Information, "GenerateOneList() oIsAdult: " + isAdult.ToString() + ", oKindFileName: " + kindFileName
+				YlModel.Instance.EnvModel.LogWriter.LogMessage(TraceEventType.Error, "GenerateOneList() リスト本体部分 Exception: " + excep.Message);
+				YlModel.Instance.EnvModel.LogWriter.LogMessage(TraceEventType.Information, "GenerateOneList() oIsAdult: " + isAdult.ToString() + ", oKindFileName: " + kindFileName
 						+ ", oGroupName: " + groupName + ", oPageName: " + pageName);
 			}
 
@@ -1169,8 +1169,8 @@ namespace YukaLister.Models.OutputWriters
 			catch (Exception excep)
 			{
 				// METEOR チケット #190 エラー捕捉用
-				YukaListerModel.Instance.EnvModel.LogWriter.LogMessage(TraceEventType.Error, "GenerateOneList() テンプレート適用部分 Exception: " + excep.Message);
-				YukaListerModel.Instance.EnvModel.LogWriter.LogMessage(TraceEventType.Information, "GenerateOneList() oIsAdult: " + isAdult.ToString() + ", oKindFileName: " + kindFileName
+				YlModel.Instance.EnvModel.LogWriter.LogMessage(TraceEventType.Error, "GenerateOneList() テンプレート適用部分 Exception: " + excep.Message);
+				YlModel.Instance.EnvModel.LogWriter.LogMessage(TraceEventType.Information, "GenerateOneList() oIsAdult: " + isAdult.ToString() + ", oKindFileName: " + kindFileName
 						+ ", oGroupName: " + groupName + ", oPageName: " + pageName);
 			}
 
@@ -1561,10 +1561,6 @@ namespace YukaLister.Models.OutputWriters
 				queryResult.Add(new QrFoundAndPerson(join.Found, join.Person));
 			}
 
-#if false
-			YukaListerModel.Instance.EnvModel.LogWriter.LogMessage(TraceEventType.Information, "GetQrFoundAndPersons() num: " + queryResult.Count);
-			return new List<QrFoundAndPerson>();
-#endif
 			return queryResult;
 		}
 
@@ -1655,16 +1651,16 @@ namespace YukaLister.Models.OutputWriters
 				return;
 			}
 
-			if (!YukaListerModel.Instance.EnvModel.YlSettings.IsYukariConfigPathValid())
+			if (!YlModel.Instance.EnvModel.YlSettings.IsYukariConfigPathValid())
 			{
 				return;
 			}
-			if (!File.Exists(YukaListerModel.Instance.EnvModel.YlSettings.YukariListerDbConfigPath()))
+			if (!File.Exists(YlModel.Instance.EnvModel.YlSettings.YukariListerDbConfigPath()))
 			{
 				return;
 			}
 
-			String[] config = File.ReadAllLines(YukaListerModel.Instance.EnvModel.YlSettings.YukariListerDbConfigPath(), Encoding.UTF8);
+			String[] config = File.ReadAllLines(YlModel.Instance.EnvModel.YlSettings.YukariListerDbConfigPath(), Encoding.UTF8);
 			for (Int32 line = 0; line < config.Length; line++)
 			{
 				Int32 eqPos = config[line].IndexOf('=');
@@ -1731,7 +1727,7 @@ namespace YukaLister.Models.OutputWriters
 				}
 				catch (Exception)
 				{
-					YukaListerModel.Instance.EnvModel.LogWriter.LogMessage(TraceEventType.Error, "リストファイル " + Path.GetFileName(path) + " を移動できませんでした。");
+					YlModel.Instance.EnvModel.LogWriter.LogMessage(TraceEventType.Error, "リストファイル " + Path.GetFileName(path) + " を移動できませんでした。");
 				}
 			}
 		}
@@ -1750,7 +1746,7 @@ namespace YukaLister.Models.OutputWriters
 			}
 			catch (Exception)
 			{
-				YukaListerModel.Instance.EnvModel.LogWriter.LogMessage(TraceEventType.Error, "リストファイル " + Path.GetFileName(indexFileName) + " を移動できませんでした。");
+				YlModel.Instance.EnvModel.LogWriter.LogMessage(TraceEventType.Error, "リストファイル " + Path.GetFileName(indexFileName) + " を移動できませんでした。");
 			}
 		}
 
@@ -1778,7 +1774,7 @@ namespace YukaLister.Models.OutputWriters
 		// --------------------------------------------------------------------
 		private void OutputImage()
 		{
-			File.Copy(YukaListerModel.Instance.EnvModel.ExeFullFolder + YlConstants.FOLDER_NAME_TEMPLATES + FILE_NAME_BODY_FANTIA_LOGO + Common.FILE_EXT_TPL,
+			File.Copy(YlModel.Instance.EnvModel.ExeFullFolder + YlConstants.FOLDER_NAME_TEMPLATES + FILE_NAME_BODY_FANTIA_LOGO + Common.FILE_EXT_TPL,
 					_folderPath + FILE_NAME_BODY_FANTIA_LOGO + Common.FILE_EXT_PNG, true);
 		}
 
@@ -1888,8 +1884,8 @@ namespace YukaLister.Models.OutputWriters
 			}
 			catch (Exception excep)
 			{
-				YukaListerModel.Instance.EnvModel.LogWriter.LogMessage(TraceEventType.Error, "カテゴリーソートエラー：\n" + excep.Message);
-				YukaListerModel.Instance.EnvModel.LogWriter.LogMessage(Common.TRACE_EVENT_TYPE_STATUS, "　スタックトレース：\n" + excep.StackTrace);
+				YlModel.Instance.EnvModel.LogWriter.LogMessage(TraceEventType.Error, "カテゴリーソートエラー：\n" + excep.Message);
+				YlModel.Instance.EnvModel.LogWriter.LogMessage(Common.TRACE_EVENT_TYPE_STATUS, "　スタックトレース：\n" + excep.StackTrace);
 			}
 		}
 

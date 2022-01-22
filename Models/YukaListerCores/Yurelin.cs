@@ -28,7 +28,7 @@ using YukaLister.ViewModels;
 
 namespace YukaLister.Models.YukaListerCores
 {
-	public class Yurelin : YukaListerCore
+	public class Yurelin : YlCore
 	{
 		// ====================================================================
 		// コンストラクター
@@ -70,17 +70,17 @@ namespace YukaLister.Models.YukaListerCores
 
 				try
 				{
-					YukaListerModel.Instance.EnvModel.AppCancellationTokenSource.Token.ThrowIfCancellationRequested();
-					if (YukaListerModel.Instance.EnvModel.YukaListerWholeStatus == YukaListerStatus.Error)
+					YlModel.Instance.EnvModel.AppCancellationTokenSource.Token.ThrowIfCancellationRequested();
+					if (YlModel.Instance.EnvModel.YukaListerWholeStatus == YukaListerStatus.Error)
 					{
 						continue;
 					}
-					if (!YukaListerModel.Instance.EnvModel.YlSettings.IsYukariRequestDatabaseValid())
+					if (!YlModel.Instance.EnvModel.YlSettings.IsYukariRequestDatabaseValid())
 					{
 						continue;
 					}
 
-					YukaListerModel.Instance.EnvModel.LogWriter.LogMessage(Common.TRACE_EVENT_TYPE_STATUS, GetType().Name + " アクティブ化。");
+					YlModel.Instance.EnvModel.LogWriter.LogMessage(Common.TRACE_EVENT_TYPE_STATUS, GetType().Name + " アクティブ化。");
 
 					// データベースアクセス準備
 					using YukariStatisticsContext yukariStatisticsContext = new();
@@ -121,12 +121,12 @@ namespace YukaLister.Models.YukaListerCores
 				}
 				catch (Exception excep)
 				{
-					YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(TraceEventType.Error, GetType().Name + " ループ稼働時エラー：\n" + excep.Message);
-					YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, "　スタックトレース：\n" + excep.StackTrace);
+					YlModel.Instance.EnvModel.LogWriter.ShowLogMessage(TraceEventType.Error, GetType().Name + " ループ稼働時エラー：\n" + excep.Message);
+					YlModel.Instance.EnvModel.LogWriter.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, "　スタックトレース：\n" + excep.StackTrace);
 				}
 
 				TimeSpan timeSpan = new(YlCommon.MiliToHNano(Environment.TickCount - startTick));
-				YukaListerModel.Instance.EnvModel.LogWriter.LogMessage(Common.TRACE_EVENT_TYPE_STATUS, GetType().Name + " スリープ化：アクティブ時間：" + timeSpan.ToString(@"hh\:mm\:ss"));
+				YlModel.Instance.EnvModel.LogWriter.LogMessage(Common.TRACE_EVENT_TYPE_STATUS, GetType().Name + " スリープ化：アクティブ時間：" + timeSpan.ToString(@"hh\:mm\:ss"));
 			}
 		}
 
@@ -149,14 +149,14 @@ namespace YukaLister.Models.YukaListerCores
 				// OperationCanceledException を通常の例外に変換
 				throw new Exception("ID 接頭辞が設定されていません。");
 			}
-			Debug.Assert(YukaListerModel.Instance.EnvModel.YlSettings.IdPrefix != null, "AddYukariRequest() IdPrefix is null");
+			Debug.Assert(YlModel.Instance.EnvModel.YlSettings.IdPrefix != null, "AddYukariRequest() IdPrefix is null");
 			TYukariStatistics yukariStatisticsRecord = new()
 			{
-				Id = YukaListerModel.Instance.EnvModel.YlSettings.PrepareYukariStatisticsLastId(yukariStatistics),
+				Id = YlModel.Instance.EnvModel.YlSettings.PrepareYukariStatisticsLastId(yukariStatistics),
 				Dirty = true,
-				RequestDatabasePath = YukaListerModel.Instance.EnvModel.YlSettings.YukariRequestDatabasePath(),
+				RequestDatabasePath = YlModel.Instance.EnvModel.YlSettings.YukariRequestDatabasePath(),
 				RequestTime = YukariRequestContext.LastWriteMjd(),
-				RoomName = YukaListerModel.Instance.EnvModel.YlSettings.YukariRoomName,
+				RoomName = YlModel.Instance.EnvModel.YlSettings.YukariRoomName,
 				//IdPrefix = YukaListerModel.Instance.EnvModel.YlSettings.IdPrefix,
 			};
 
@@ -234,10 +234,10 @@ namespace YukaLister.Models.YukaListerCores
 			// かつ、この PC で追加したレコード（ID 接頭辞の先頭が一致するレコード）を既存レコードとする
 			// かつ、推定予約日時が全消去検知日時以降のものを既存レコードとする
 			// ルーム名は途中で変更されることがあるので判定に使用しない
-			return yukariStatistics.Where(x => x.RequestTime >= YukaListerModel.Instance.EnvModel.YlSettings.LastYukariRequestClearTime
-					&& x.RequestId == yukariRequest.Id && x.RequestDatabasePath == YukaListerModel.Instance.EnvModel.YlSettings.YukariRequestDatabasePath()
+			return yukariStatistics.Where(x => x.RequestTime >= YlModel.Instance.EnvModel.YlSettings.LastYukariRequestClearTime
+					&& x.RequestId == yukariRequest.Id && x.RequestDatabasePath == YlModel.Instance.EnvModel.YlSettings.YukariRequestDatabasePath()
 					&& x.RequestMoviePath == yukariRequest.Path && x.RequestSinger == yukariRequest.Singer
-					&& EF.Functions.Like(x.Id, $"{YukaListerModel.Instance.EnvModel.YlSettings.IdPrefix}%")).OrderByDescending(x => x.RequestTime).FirstOrDefault();
+					&& EF.Functions.Like(x.Id, $"{YlModel.Instance.EnvModel.YlSettings.IdPrefix}%")).OrderByDescending(x => x.RequestTime).FirstOrDefault();
 		}
 
 		// --------------------------------------------------------------------
@@ -256,8 +256,8 @@ namespace YukaLister.Models.YukaListerCores
 			utc = utc.AddMilliseconds(-YlConstants.UPDATE_YUKARI_STATISTICS_DELAY_TIME);
 
 			Debug.WriteLine("UpdateLastYukariRequestClearTimeIfNeeded() 全消去を検知 " + utc.ToString(YlConstants.DATE_FORMAT + " " + YlConstants.TIME_FORMAT));
-			YukaListerModel.Instance.EnvModel.YlSettings.LastYukariRequestClearTime = JulianDay.DateTimeToModifiedJulianDate(utc);
-			YukaListerModel.Instance.EnvModel.YlSettings.Save();
+			YlModel.Instance.EnvModel.YlSettings.LastYukariRequestClearTime = JulianDay.DateTimeToModifiedJulianDate(utc);
+			YlModel.Instance.EnvModel.YlSettings.Save();
 		}
 
 		// --------------------------------------------------------------------

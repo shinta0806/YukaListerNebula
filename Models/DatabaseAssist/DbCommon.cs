@@ -67,7 +67,7 @@ namespace YukaLister.Models.DatabaseAssist
 
 				// バックアップ
 				File.Copy(srcPath, backupPath);
-				YukaListerModel.Instance.EnvModel.LogWriter.LogMessage(Common.TRACE_EVENT_TYPE_STATUS, "データベース " + fileNameForLog + " のバックアップ作成：" + backupPath);
+				YlModel.Instance.EnvModel.LogWriter.LogMessage(Common.TRACE_EVENT_TYPE_STATUS, "データベース " + fileNameForLog + " のバックアップ作成：" + backupPath);
 
 				// 溢れたバックアップを削除
 				List<FileInfo> backupFileInfos = new();
@@ -80,14 +80,14 @@ namespace YukaLister.Models.DatabaseAssist
 				for (Int32 i = backupFileInfos.Count - 1; i >= NUM_DB_BACKUP_GENERATIONS; i--)
 				{
 					File.Delete(backupFileInfos[i].FullName);
-					YukaListerModel.Instance.EnvModel.LogWriter.LogMessage(Common.TRACE_EVENT_TYPE_STATUS, "データベース " + fileNameForLog + " のバックアップ削除：" + backupFileInfos[i].FullName);
+					YlModel.Instance.EnvModel.LogWriter.LogMessage(Common.TRACE_EVENT_TYPE_STATUS, "データベース " + fileNameForLog + " のバックアップ削除：" + backupFileInfos[i].FullName);
 				}
 			}
 			catch (Exception excep)
 			{
 				// スプラッシュウィンドウに隠れる恐れがあるため表示はしない
-				YukaListerModel.Instance.EnvModel.LogWriter.LogMessage(TraceEventType.Error, "データベース " + fileNameForLog + " バックアップ時エラー：\n" + excep.Message);
-				YukaListerModel.Instance.EnvModel.LogWriter.LogMessage(Common.TRACE_EVENT_TYPE_STATUS, "　スタックトレース：\n" + excep.StackTrace);
+				YlModel.Instance.EnvModel.LogWriter.LogMessage(TraceEventType.Error, "データベース " + fileNameForLog + " バックアップ時エラー：\n" + excep.Message);
+				YlModel.Instance.EnvModel.LogWriter.LogMessage(Common.TRACE_EVENT_TYPE_STATUS, "　スタックトレース：\n" + excep.StackTrace);
 			}
 		}
 
@@ -235,7 +235,7 @@ namespace YukaLister.Models.DatabaseAssist
 			{
 				validSequences[i].Invalid = true;
 				validSequences[i].Dirty = true;
-				YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, typeof(T).Name + " 紐付テーブル無効化：" + validSequences[i].Id + " / " + i.ToString());
+				YlModel.Instance.EnvModel.LogWriter.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, typeof(T).Name + " 紐付テーブル無効化：" + validSequences[i].Id + " / " + i.ToString());
 			}
 		}
 
@@ -333,7 +333,7 @@ namespace YukaLister.Models.DatabaseAssist
 					stringBuilder.Append('\n');
 				}
 				stringBuilder.Append("Inner Message: " + dbUpdateExcep.InnerException?.Message);
-				YukaListerModel.Instance.EnvModel.LogWriter.LogMessage(TraceEventType.Error, stringBuilder.ToString());
+				YlModel.Instance.EnvModel.LogWriter.LogMessage(TraceEventType.Error, stringBuilder.ToString());
 			}
 		}
 
@@ -465,7 +465,7 @@ namespace YukaLister.Models.DatabaseAssist
 				// using しない
 				ListContextInMemory listContextInMemory = new();
 				listContextInMemory.CreateDatabase();
-				YukaListerModel.Instance.EnvModel.ListContextInMemory = listContextInMemory;
+				YlModel.Instance.EnvModel.ListContextInMemory = listContextInMemory;
 
 				// 楽曲情報データベース等が存在しない場合は作成
 				Directory.CreateDirectory(YukaListerDatabaseFullFolder());
@@ -478,12 +478,12 @@ namespace YukaLister.Models.DatabaseAssist
 
 				// ゆかり用データベース等は、ゆかり設定ファイルが正しく指定されている場合のみ
 				// スプラッシュウィンドウからも呼ばれるため YukaListerWholeStatus（その時点では未初期化）は使えない
-				if (!YukaListerModel.Instance.EnvModel.YlSettings.IsYukariConfigPathValid())
+				if (!YlModel.Instance.EnvModel.YlSettings.IsYukariConfigPathValid())
 				{
 					return;
 				}
 
-				Directory.CreateDirectory(YukariDatabaseFullFolder(YukaListerModel.Instance.EnvModel.YlSettings));
+				Directory.CreateDirectory(YukariDatabaseFullFolder(YlModel.Instance.EnvModel.YlSettings));
 
 				// 存在しない場合は作成
 				using ReportContext reportContext = new();
@@ -499,8 +499,8 @@ namespace YukaLister.Models.DatabaseAssist
 			catch (Exception excep)
 			{
 				// スプラッシュウィンドウに隠れる恐れがあるため表示はしない
-				YukaListerModel.Instance.EnvModel.LogWriter.LogMessage(TraceEventType.Error, "データベース準備時エラー：\n" + excep.Message);
-				YukaListerModel.Instance.EnvModel.LogWriter.LogMessage(Common.TRACE_EVENT_TYPE_STATUS, "　スタックトレース：\n" + excep.StackTrace);
+				YlModel.Instance.EnvModel.LogWriter.LogMessage(TraceEventType.Error, "データベース準備時エラー：\n" + excep.Message);
+				YlModel.Instance.EnvModel.LogWriter.LogMessage(Common.TRACE_EVENT_TYPE_STATUS, "　スタックトレース：\n" + excep.StackTrace);
 			}
 		}
 
@@ -552,7 +552,7 @@ namespace YukaLister.Models.DatabaseAssist
 					Common.ShallowCopyFields(newSequences[i], existSequences[i]);
 					if (!isImport)
 					{
-						YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, typeof(T).Name + " 紐付テーブル更新：" + id + " / " + i.ToString());
+						YlModel.Instance.EnvModel.LogWriter.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, typeof(T).Name + " 紐付テーブル更新：" + id + " / " + i.ToString());
 					}
 				}
 			}
@@ -563,7 +563,7 @@ namespace YukaLister.Models.DatabaseAssist
 				records.Add(newSequences[i]);
 				if (!isImport)
 				{
-					YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, typeof(T).Name + " 紐付テーブル新規登録：" + id + " / " + i.ToString());
+					YlModel.Instance.EnvModel.LogWriter.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, typeof(T).Name + " 紐付テーブル新規登録：" + id + " / " + i.ToString());
 				}
 			}
 
@@ -576,7 +576,7 @@ namespace YukaLister.Models.DatabaseAssist
 					existSequences[i].Dirty = true;
 					if (!isImport)
 					{
-						YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, typeof(T).Name + " 紐付テーブル無効化：" + id + " / " + i.ToString());
+						YlModel.Instance.EnvModel.LogWriter.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, typeof(T).Name + " 紐付テーブル無効化：" + id + " / " + i.ToString());
 					}
 				}
 			}

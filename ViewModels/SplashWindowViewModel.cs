@@ -5,7 +5,7 @@
 // ============================================================================
 
 // ----------------------------------------------------------------------------
-// 本クラスは YukaListerModel 未生成時に生成されるため、YlViewModel を継承しない
+// 本クラスは YlModel 未生成時に生成されるため、YlViewModel を継承しない
 // ----------------------------------------------------------------------------
 
 using Livet;
@@ -20,7 +20,6 @@ using Shinta;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.IO;
 using System.Linq;
 using System.Windows;
 
@@ -71,23 +70,23 @@ namespace YukaLister.ViewModels
 				Common.InitializeTempFolder();
 
 				// 環境
-				YukaListerModel.Instance.EnvModel.YlSettings.Load();
-				YukaListerModel.Instance.EnvModel.YlSettings.SetLogWriter(YukaListerModel.Instance.EnvModel.LogWriter);
-				YukaListerModel.Instance.EnvModel.TagSettings.Load();
-				YukaListerModel.Instance.EnvModel.TagSettings.SetLogWriter(YukaListerModel.Instance.EnvModel.LogWriter);
+				YlModel.Instance.EnvModel.YlSettings.Load();
+				YlModel.Instance.EnvModel.YlSettings.SetLogWriter(YlModel.Instance.EnvModel.LogWriter);
+				YlModel.Instance.EnvModel.TagSettings.Load();
+				YlModel.Instance.EnvModel.TagSettings.SetLogWriter(YlModel.Instance.EnvModel.LogWriter);
 				DbCommon.PrepareDatabases();
-				YukaListerModel.Instance.EnvModel.StartAllCores();
+				YlModel.Instance.EnvModel.StartAllCores();
 
 				// メインウィンドウ表示
 				_mainWindowViewModel = new MainWindowViewModel(this);
-				if (YukaListerModel.Instance.EnvModel.YlSettings.DesktopBounds.Width == 0.0 || YukaListerModel.Instance.EnvModel.YlSettings.DesktopBounds.Height == 0.0)
+				if (YlModel.Instance.EnvModel.YlSettings.DesktopBounds.Width == 0.0 || YlModel.Instance.EnvModel.YlSettings.DesktopBounds.Height == 0.0)
 				{
 					// デフォルトウィンドウサイズ
 				}
 				else
 				{
 					// 前回のウィンドウサイズ
-					Rect adjustedRect = CommonWindows.AdjustWindowRect(YukaListerModel.Instance.EnvModel.YlSettings.DesktopBounds);
+					Rect adjustedRect = CommonWindows.AdjustWindowRect(YlModel.Instance.EnvModel.YlSettings.DesktopBounds);
 					_mainWindowViewModel.Left = adjustedRect.Left;
 					_mainWindowViewModel.Top = adjustedRect.Top;
 					_mainWindowViewModel.Width = adjustedRect.Width;
@@ -97,12 +96,12 @@ namespace YukaLister.ViewModels
 			}
 			catch (Exception excep)
 			{
-				// YukaListerModel 未生成の可能性があるためまずはメッセージ表示のみ
+				// YlModel 未生成の可能性があるためまずはメッセージ表示のみ
 				MessageBox.Show("スプラッシュウィンドウ初期化時エラー：\n" + excep.Message + "\n" + excep.StackTrace, "エラー", MessageBoxButton.OK, MessageBoxImage.Error);
 
-				// 可能であればログする。YukaListerModel 生成中に例外が発生する可能性があるが、それについては集約エラーハンドラーに任せる
-				YukaListerModel.Instance.EnvModel.LogWriter.LogMessage(TraceEventType.Error, "スプラッシュウィンドウ初期化時エラー：\n" + excep.Message);
-				YukaListerModel.Instance.EnvModel.LogWriter.LogMessage(Common.TRACE_EVENT_TYPE_STATUS, "　スタックトレース：\n" + excep.StackTrace);
+				// 可能であればログする。YlModel 生成中に例外が発生する可能性があるが、それについては集約エラーハンドラーに任せる
+				YlModel.Instance.EnvModel.LogWriter.LogMessage(TraceEventType.Error, "スプラッシュウィンドウ初期化時エラー：\n" + excep.Message);
+				YlModel.Instance.EnvModel.LogWriter.LogMessage(Common.TRACE_EVENT_TYPE_STATUS, "　スタックトレース：\n" + excep.StackTrace);
 
 				// 継続できないのでアプリを終了する
 				Environment.Exit(1);

@@ -118,7 +118,7 @@ namespace YukaLister.ViewModels.TabItemViewModels
 		{
 			try
 			{
-				if (YukaListerModel.Instance.EnvModel.Syclin.IsActive)
+				if (YlModel.Instance.EnvModel.Syclin.IsActive)
 				{
 					throw new Exception("現在、同期処理を実行中のため、合わせられません。\n同期処理が終了してから合わせてください。");
 				}
@@ -133,14 +133,14 @@ namespace YukaLister.ViewModels.TabItemViewModels
 					return;
 				}
 
-				YukaListerModel.Instance.EnvModel.YlSettings.LastSyncDownloadDate = 0.0;
+				YlModel.Instance.EnvModel.YlSettings.LastSyncDownloadDate = 0.0;
 				((YlSettingsWindowViewModel)_windowViewModel).RegetSyncDataNeeded = true;
-				YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(TraceEventType.Information, "環境設定ウィンドウを閉じると処理を開始します。");
+				YlModel.Instance.EnvModel.LogWriter.ShowLogMessage(TraceEventType.Information, "環境設定ウィンドウを閉じると処理を開始します。");
 			}
 			catch (Exception excep)
 			{
-				YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(TraceEventType.Error, "強制的に合わせるボタンクリック時エラー：\n" + excep.Message);
-				YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, "　スタックトレース：\n" + excep.StackTrace);
+				YlModel.Instance.EnvModel.LogWriter.ShowLogMessage(TraceEventType.Error, "強制的に合わせるボタンクリック時エラー：\n" + excep.Message);
+				YlModel.Instance.EnvModel.LogWriter.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, "　スタックトレース：\n" + excep.StackTrace);
 			}
 		}
 		#endregion
@@ -164,12 +164,12 @@ namespace YukaLister.ViewModels.TabItemViewModels
 		{
 			try
 			{
-				Common.ShellExecute(YukaListerModel.Instance.EnvModel.ExeFullFolder + FOLDER_NAME_SYNC_SERVER);
+				Common.ShellExecute(YlModel.Instance.EnvModel.ExeFullFolder + FOLDER_NAME_SYNC_SERVER);
 			}
 			catch (Exception excep)
 			{
-				YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(TraceEventType.Error, "サーバープログラムボタンクリック時エラー：\n" + excep.Message);
-				YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, "　スタックトレース：\n" + excep.StackTrace);
+				YlModel.Instance.EnvModel.LogWriter.ShowLogMessage(TraceEventType.Error, "サーバープログラムボタンクリック時エラー：\n" + excep.Message);
+				YlModel.Instance.EnvModel.LogWriter.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, "　スタックトレース：\n" + excep.StackTrace);
 			}
 		}
 		#endregion
@@ -216,10 +216,10 @@ namespace YukaLister.ViewModels.TabItemViewModels
 		// --------------------------------------------------------------------
 		public override void PropertiesToSettings()
 		{
-			YukaListerModel.Instance.EnvModel.YlSettings.SyncMusicInfoDb = SyncMusicInfoDb;
-			YukaListerModel.Instance.EnvModel.YlSettings.SyncServer = SyncServer;
-			YukaListerModel.Instance.EnvModel.YlSettings.SyncAccount = SyncAccount;
-			YukaListerModel.Instance.EnvModel.YlSettings.SyncPassword = YlCommon.Encrypt(SyncPassword);
+			YlModel.Instance.EnvModel.YlSettings.SyncMusicInfoDb = SyncMusicInfoDb;
+			YlModel.Instance.EnvModel.YlSettings.SyncServer = SyncServer;
+			YlModel.Instance.EnvModel.YlSettings.SyncAccount = SyncAccount;
+			YlModel.Instance.EnvModel.YlSettings.SyncPassword = YlCommon.Encrypt(SyncPassword);
 		}
 
 		// --------------------------------------------------------------------
@@ -227,10 +227,10 @@ namespace YukaLister.ViewModels.TabItemViewModels
 		// --------------------------------------------------------------------
 		public override void SettingsToProperties()
 		{
-			SyncMusicInfoDb = YukaListerModel.Instance.EnvModel.YlSettings.SyncMusicInfoDb;
-			SyncServer = YukaListerModel.Instance.EnvModel.YlSettings.SyncServer;
-			SyncAccount = YukaListerModel.Instance.EnvModel.YlSettings.SyncAccount;
-			SyncPassword = YlCommon.Decrypt(YukaListerModel.Instance.EnvModel.YlSettings.SyncPassword);
+			SyncMusicInfoDb = YlModel.Instance.EnvModel.YlSettings.SyncMusicInfoDb;
+			SyncServer = YlModel.Instance.EnvModel.YlSettings.SyncServer;
+			SyncAccount = YlModel.Instance.EnvModel.YlSettings.SyncAccount;
+			SyncPassword = YlCommon.Decrypt(YlModel.Instance.EnvModel.YlSettings.SyncPassword);
 		}
 
 		// ====================================================================

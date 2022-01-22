@@ -257,7 +257,7 @@ namespace YukaLister.Models.OutputWriters
 		// --------------------------------------------------------------------
 		protected static String LoadTemplate(String fileNameBody)
 		{
-			return File.ReadAllText(YukaListerModel.Instance.EnvModel.ExeFullFolder + YlConstants.FOLDER_NAME_TEMPLATES
+			return File.ReadAllText(YlModel.Instance.EnvModel.ExeFullFolder + YlConstants.FOLDER_NAME_TEMPLATES
 					+ fileNameBody + Common.FILE_EXT_TPL);
 		}
 
@@ -274,12 +274,12 @@ namespace YukaLister.Models.OutputWriters
 		// --------------------------------------------------------------------
 		protected void SetFolderPathByYlSettings()
 		{
-			Debug.Assert(!String.IsNullOrEmpty(YukaListerModel.Instance.EnvModel.YlSettings.ListOutputFolder), "SetFolderPathByYlSettings() bad output folder");
-			if (!Directory.Exists(YukaListerModel.Instance.EnvModel.YlSettings.ListOutputFolder))
+			Debug.Assert(!String.IsNullOrEmpty(YlModel.Instance.EnvModel.YlSettings.ListOutputFolder), "SetFolderPathByYlSettings() bad output folder");
+			if (!Directory.Exists(YlModel.Instance.EnvModel.YlSettings.ListOutputFolder))
 			{
-				Directory.CreateDirectory(YukaListerModel.Instance.EnvModel.YlSettings.ListOutputFolder);
+				Directory.CreateDirectory(YlModel.Instance.EnvModel.YlSettings.ListOutputFolder);
 			}
-			_folderPath = YukaListerModel.Instance.EnvModel.YlSettings.ListOutputFolder;
+			_folderPath = YlModel.Instance.EnvModel.YlSettings.ListOutputFolder;
 		}
 
 		// ====================================================================

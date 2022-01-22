@@ -30,7 +30,7 @@ namespace YukaLister.Models.Settings
 		// driveLetter: "D:" のようにコロンまで
 		// --------------------------------------------------------------------
 		public AutoTargetInfo(String driveLetter)
-				: base(YukaListerModel.Instance.EnvModel.LogWriter, null)
+				: base(YlModel.Instance.EnvModel.LogWriter, null)
 		{
 			Debug.Assert(driveLetter.Length == 2, "AutoTargetInfo() bad driveLetter");
 			_driveLetter = driveLetter;
@@ -40,7 +40,7 @@ namespace YukaLister.Models.Settings
 		// シリアライズ用コンストラクター
 		// --------------------------------------------------------------------
 		public AutoTargetInfo()
-				: base(YukaListerModel.Instance.EnvModel.LogWriter, null)
+				: base(YlModel.Instance.EnvModel.LogWriter, null)
 		{
 			_driveLetter = String.Empty;
 		}

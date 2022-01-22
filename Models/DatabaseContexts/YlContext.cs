@@ -23,7 +23,7 @@ using YukaLister.Models.YukaListerModels;
 
 namespace YukaLister.Models.DatabaseContexts
 {
-	public abstract class YukaListerContext : DbContext
+	public abstract class YlContext : DbContext
 	{
 		// ====================================================================
 		// コンストラクター
@@ -32,7 +32,7 @@ namespace YukaLister.Models.DatabaseContexts
 		// --------------------------------------------------------------------
 		// メインコンストラクター
 		// --------------------------------------------------------------------
-		public YukaListerContext(String databaseName, Boolean useWal = false)
+		public YlContext(String databaseName, Boolean useWal = false)
 		{
 			Debug.Assert(Properties != null, "Properties table not init");
 
@@ -68,7 +68,7 @@ namespace YukaLister.Models.DatabaseContexts
 		// --------------------------------------------------------------------
 		public virtual void CreateDatabase()
 		{
-			YukaListerModel.Instance.EnvModel.LogWriter.LogMessage(Common.TRACE_EVENT_TYPE_STATUS, _databaseName + "データベース初期化中...");
+			YlModel.Instance.EnvModel.LogWriter.LogMessage(Common.TRACE_EVENT_TYPE_STATUS, _databaseName + "データベース初期化中...");
 
 			// クリア
 			Database.EnsureDeleted();
@@ -88,21 +88,21 @@ namespace YukaLister.Models.DatabaseContexts
 				using SqliteCommand command = sqliteConnection.CreateCommand();
 				command.CommandText = @"PRAGMA journal_mode = 'delete'";
 				command.ExecuteNonQuery();
-				YukaListerModel.Instance.EnvModel.LogWriter.LogMessage(Common.TRACE_EVENT_TYPE_STATUS, _databaseName + "データベースのジャーナルモード：DELETE");
+				YlModel.Instance.EnvModel.LogWriter.LogMessage(Common.TRACE_EVENT_TYPE_STATUS, _databaseName + "データベースのジャーナルモード：DELETE");
 			}
 			else
 			{
-				YukaListerModel.Instance.EnvModel.LogWriter.LogMessage(Common.TRACE_EVENT_TYPE_STATUS, _databaseName + "データベースのジャーナルモード：WAL");
+				YlModel.Instance.EnvModel.LogWriter.LogMessage(Common.TRACE_EVENT_TYPE_STATUS, _databaseName + "データベースのジャーナルモード：WAL");
 			}
 
 			if (Properties == null)
 			{
-				YukaListerModel.Instance.EnvModel.LogWriter.LogMessage(Common.TRACE_EVENT_TYPE_STATUS, _databaseName + "データベースを初期化できませんでした。");
+				YlModel.Instance.EnvModel.LogWriter.LogMessage(Common.TRACE_EVENT_TYPE_STATUS, _databaseName + "データベースを初期化できませんでした。");
 				return;
 			}
 			DbCommon.UpdateProperty(this, Properties);
 
-			YukaListerModel.Instance.EnvModel.LogWriter.LogMessage(Common.TRACE_EVENT_TYPE_STATUS, _databaseName + "データベースを初期化しました。");
+			YlModel.Instance.EnvModel.LogWriter.LogMessage(Common.TRACE_EVENT_TYPE_STATUS, _databaseName + "データベースを初期化しました。");
 		}
 
 		// --------------------------------------------------------------------
