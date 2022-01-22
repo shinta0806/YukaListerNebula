@@ -877,6 +877,7 @@ namespace YukaLister.Models.SharedMisc
 			return String.IsNullOrEmpty(ids) ? new() : ids.Split(YlConstants.VAR_VALUE_DELIMITER[0], StringSplitOptions.RemoveEmptyEntries).ToList();
 		}
 
+#if false
 		// --------------------------------------------------------------------
 		// テンポラリフォルダーのパス（末尾 '\\'）
 		// --------------------------------------------------------------------
@@ -884,6 +885,7 @@ namespace YukaLister.Models.SharedMisc
 		{
 			return Path.GetTempPath() + Path.GetFileNameWithoutExtension(Environment.GetCommandLineArgs()[0]) + '\\' + Environment.ProcessId.ToString() + '\\';
 		}
+#endif
 
 		// --------------------------------------------------------------------
 		// テンポラリフォルダー配下のファイル・フォルダー名として使えるパス（呼びだす度に異なるファイル、拡張子なし）
@@ -892,7 +894,7 @@ namespace YukaLister.Models.SharedMisc
 		{
 			// マルチスレッドでも安全にインクリメント
 			Int32 counter = Interlocked.Increment(ref _tempPathCounter);
-			return TempFolderPath() + counter.ToString() + "_" + Environment.CurrentManagedThreadId.ToString();
+			return Common.TempFolderPath() + counter.ToString() + "_" + Environment.CurrentManagedThreadId.ToString();
 		}
 
 		// --------------------------------------------------------------------

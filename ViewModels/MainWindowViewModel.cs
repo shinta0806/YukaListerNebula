@@ -911,13 +911,7 @@ namespace YukaLister.ViewModels
 				_ = YukaListerModel.Instance.EnvModel.QuitAllCoresAsync();
 				_ = QuitServerIfNeededAsync().AsTask();
 				SaveExitStatus();
-				try
-				{
-					Directory.Delete(YlCommon.TempFolderPath(), true);
-				}
-				catch
-				{
-				}
+				Common.DeleteTempFolder();
 
 				YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, "終了しました：" + YlConstants.APP_NAME_J + " "
 						+ YlConstants.APP_VER + " --------------------");

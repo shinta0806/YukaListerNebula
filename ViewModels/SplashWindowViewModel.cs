@@ -68,22 +68,7 @@ namespace YukaLister.ViewModels
 				paletteHelper.SetTheme(theme);
 
 				// テンポラリフォルダー準備
-				String tempFolderPath = YlCommon.TempFolderPath();
-				try
-				{
-					// 偶然以前と同じ PID となり、かつ、以前異常終了してテンポラリフォルダーが削除されていない場合に対応
-					Directory.Delete(tempFolderPath, true);
-				}
-				catch
-				{
-				}
-				try
-				{
-					Directory.CreateDirectory(tempFolderPath);
-				}
-				catch
-				{
-				}
+				Common.InitializeTempFolder();
 
 				// 環境
 				YukaListerModel.Instance.EnvModel.YlSettings.Load();
