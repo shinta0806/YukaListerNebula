@@ -21,7 +21,7 @@ using YukaLister.ViewModels.EditMasterWindowViewModels;
 
 namespace YukaLister.ViewModels.ViewMastersWindowViewModels
 {
-	public class ViewMakersWindowViewModel : ViewMastersWindowViewModel<TMaker>
+	internal class ViewMakersWindowViewModel : ViewMastersWindowViewModel<TMaker>
 	{
 		// ====================================================================
 		// コンストラクター

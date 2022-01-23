@@ -21,7 +21,7 @@ using YukaLister.ViewModels.EditMasterWindowViewModels;
 
 namespace YukaLister.ViewModels.ViewMastersWindowViewModels
 {
-	public class ViewTieUpGroupsWindowViewModel : ViewMastersWindowViewModel<TTieUpGroup>
+	internal class ViewTieUpGroupsWindowViewModel : ViewMastersWindowViewModel<TTieUpGroup>
 	{
 		// ====================================================================
 		// コンストラクター

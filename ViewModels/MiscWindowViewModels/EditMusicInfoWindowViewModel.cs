@@ -35,7 +35,7 @@ using YukaLister.ViewModels.SearchMasterWindowViewModels;
 
 namespace YukaLister.ViewModels.MiscWindowViewModels
 {
-	public class EditMusicInfoWindowViewModel : YlViewModel
+	internal class EditMusicInfoWindowViewModel : YlViewModel
 	{
 		// ====================================================================
 		// コンストラクター

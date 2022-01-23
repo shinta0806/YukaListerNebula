@@ -27,7 +27,7 @@ using YukaLister.ViewModels.OutputSettingsWindowViewModels;
 
 namespace YukaLister.Models.OutputWriters
 {
-	public abstract class OutputWriter : IDisposable
+	internal abstract class OutputWriter : IDisposable
 	{
 		// ====================================================================
 		// コンストラクター

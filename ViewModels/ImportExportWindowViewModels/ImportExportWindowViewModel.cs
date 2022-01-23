@@ -28,7 +28,7 @@ using YukaLister.Models.YukaListerModels;
 
 namespace YukaLister.ViewModels.ImportExportWindowViewModels
 {
-	public class ImportExportWindowViewModel : YlViewModel
+	internal class ImportExportWindowViewModel : YlViewModel
 	{
 		// ====================================================================
 		// コンストラクター

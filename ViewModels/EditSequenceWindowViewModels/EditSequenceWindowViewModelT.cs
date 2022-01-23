@@ -33,7 +33,7 @@ using YukaLister.ViewModels.SearchMasterWindowViewModels;
 
 namespace YukaLister.ViewModels.EditSequenceWindowViewModels
 {
-	public abstract class EditSequenceWindowViewModel<T> : EditSequenceWindowViewModel where T : class, IRcMaster, new()
+	internal abstract class EditSequenceWindowViewModel<T> : EditSequenceWindowViewModel where T : class, IRcMaster, new()
 	{
 		// ====================================================================
 		// コンストラクター
@@ -138,7 +138,7 @@ namespace YukaLister.ViewModels.EditSequenceWindowViewModels
 		// --------------------------------------------------------------------
 
 		#region ヘルプリンクの制御
-		public ListenerCommand<String>? HelpClickedCommand
+		public static ListenerCommand<String>? HelpClickedCommand
 		{
 			get => YlModel.Instance.EnvModel.HelpClickedCommand;
 		}

@@ -20,7 +20,7 @@ using YukaLister.Models.YukaListerModels;
 
 namespace YukaLister.ViewModels.OutputSettingsWindowViewModels
 {
-	public class WebOutputSettingsWindowViewModel : OutputSettingsWindowViewModel
+	internal class WebOutputSettingsWindowViewModel : OutputSettingsWindowViewModel
 	{
 		// ====================================================================
 		// コンストラクター

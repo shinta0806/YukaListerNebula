@@ -32,7 +32,7 @@ using YukaLister.ViewModels.SearchMasterWindowViewModels;
 
 namespace YukaLister.ViewModels.EditMasterWindowViewModels
 {
-	public class EditSongWindowViewModel : EditCategorizableWindowViewModel<TSong>
+	internal class EditSongWindowViewModel : EditCategorizableWindowViewModel<TSong>
 	{
 		// ====================================================================
 		// コンストラクター

@@ -22,7 +22,7 @@ using YukaLister.ViewModels.EditMasterWindowViewModels;
 
 namespace YukaLister.ViewModels.EditSequenceWindowViewModels
 {
-	public class EditTieUpGroupsWindowViewModel : EditSequenceWindowViewModel<TTieUpGroup>
+	internal class EditTieUpGroupsWindowViewModel : EditSequenceWindowViewModel<TTieUpGroup>
 	{
 		// ====================================================================
 		// コンストラクター

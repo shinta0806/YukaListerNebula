@@ -8,24 +8,13 @@
 // ビューは ViewMastersWindow を使う。
 // ----------------------------------------------------------------------------
 
-using Livet;
-using Livet.Commands;
-using Livet.EventListeners;
-using Livet.Messaging;
-using Livet.Messaging.IO;
-using Livet.Messaging.Windows;
-
 using Microsoft.EntityFrameworkCore;
 
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.ComponentModel;
-using System.Linq;
-using System.Text;
 using System.Windows.Controls;
 
-using YukaLister.Models;
 using YukaLister.Models.Database.Masters;
 using YukaLister.Models.DatabaseAssist;
 using YukaLister.Models.DatabaseContexts;
@@ -34,7 +23,7 @@ using YukaLister.ViewModels.EditMasterWindowViewModels;
 
 namespace YukaLister.ViewModels.ViewMastersWindowViewModels
 {
-	public class ViewSongsWindowViewModel : ViewMastersWindowViewModel<TSong>
+	internal class ViewSongsWindowViewModel : ViewMastersWindowViewModel<TSong>
 	{
 		// ====================================================================
 		// コンストラクター

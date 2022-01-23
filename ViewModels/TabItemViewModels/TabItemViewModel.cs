@@ -15,7 +15,7 @@ using System.IO;
 
 namespace YukaLister.ViewModels.TabItemViewModels
 {
-	public class TabItemViewModel : ViewModel
+	internal class TabItemViewModel : ViewModel
 	{
 		// ====================================================================
 		// コンストラクター

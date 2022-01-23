@@ -33,7 +33,7 @@ using YukaLister.ViewModels.SearchMasterWindowViewModels;
 
 namespace YukaLister.ViewModels.ViewMastersWindowViewModels
 {
-	public abstract class ViewMastersWindowViewModel<T> : ViewMastersWindowViewModel where T : class, IRcMaster, new()
+	internal abstract class ViewMastersWindowViewModel<T> : ViewMastersWindowViewModel where T : class, IRcMaster, new()
 	{
 		// ====================================================================
 		// コンストラクター

@@ -14,7 +14,7 @@ using System;
 
 namespace YukaLister.Models.OutputWriters
 {
-	public class HtmlOutputWriter : WebOutputWriter
+	internal class HtmlOutputWriter : WebOutputWriter
 	{
 		// ====================================================================
 		// コンストラクター

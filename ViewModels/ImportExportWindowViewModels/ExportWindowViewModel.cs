@@ -24,7 +24,7 @@ using YukaLister.Models.SharedMisc;
 
 namespace YukaLister.ViewModels.ImportExportWindowViewModels
 {
-	public class ExportWindowViewModel : ImportExportWindowViewModel
+	internal class ExportWindowViewModel : ImportExportWindowViewModel
 	{
 		// ====================================================================
 		// コンストラクター

@@ -21,7 +21,7 @@ using YukaLister.ViewModels.MiscWindowViewModels;
 
 namespace YukaLister.ViewModels.TabItemViewModels
 {
-	public class YlSettingsTabItemSettingsViewModel : TabItemViewModel
+	internal class YlSettingsTabItemSettingsViewModel : TabItemViewModel
 	{
 		// ====================================================================
 		// コンストラクター

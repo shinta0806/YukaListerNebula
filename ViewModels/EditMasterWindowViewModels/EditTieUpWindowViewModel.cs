@@ -32,7 +32,7 @@ using YukaLister.ViewModels.SearchMasterWindowViewModels;
 
 namespace YukaLister.ViewModels.EditMasterWindowViewModels
 {
-	public class EditTieUpWindowViewModel : EditCategorizableWindowViewModel<TTieUp>
+	internal class EditTieUpWindowViewModel : EditCategorizableWindowViewModel<TTieUp>
 	{
 		// ====================================================================
 		// コンストラクター

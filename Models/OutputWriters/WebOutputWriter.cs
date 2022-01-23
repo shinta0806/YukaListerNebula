@@ -34,7 +34,7 @@ using YukaLister.ViewModels.OutputSettingsWindowViewModels;
 
 namespace YukaLister.Models.OutputWriters
 {
-	public abstract class WebOutputWriter : OutputWriter
+	internal abstract class WebOutputWriter : OutputWriter
 	{
 		// ====================================================================
 		// コンストラクター

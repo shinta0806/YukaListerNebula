@@ -12,7 +12,7 @@
 
 namespace YukaLister.ViewModels.SearchMasterWindowViewModels
 {
-	public class SearchMasterWindowViewModel : YlViewModel
+	internal class SearchMasterWindowViewModel : YlViewModel
 	{
 	}
 }

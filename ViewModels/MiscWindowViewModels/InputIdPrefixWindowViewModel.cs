@@ -21,7 +21,7 @@ using YukaLister.Models.YukaListerModels;
 
 namespace YukaLister.ViewModels.MiscWindowViewModels
 {
-	public class InputIdPrefixWindowViewModel : YlViewModel
+	internal class InputIdPrefixWindowViewModel : YlViewModel
 	{
 		// ====================================================================
 		// public プロパティー

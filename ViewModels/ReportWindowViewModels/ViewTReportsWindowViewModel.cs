@@ -28,7 +28,7 @@ using YukaLister.Models.YukaListerModels;
 
 namespace YukaLister.ViewModels.ReportWindowViewModels
 {
-	public class ViewTReportsWindowViewModel : YlViewModel
+	internal class ViewTReportsWindowViewModel : YlViewModel
 	{
 		// ====================================================================
 		// コンストラクター

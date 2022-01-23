@@ -21,7 +21,7 @@ using YukaLister.ViewModels.EditMasterWindowViewModels;
 
 namespace YukaLister.ViewModels.ViewMastersWindowViewModels
 {
-	public class ViewTagsWindowViewModel : ViewMastersWindowViewModel<TTag>
+	internal class ViewTagsWindowViewModel : ViewMastersWindowViewModel<TTag>
 	{
 		// ====================================================================
 		// コンストラクター

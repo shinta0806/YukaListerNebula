@@ -30,7 +30,7 @@ using YukaLister.Models.YukaListerModels;
 
 namespace YukaLister.ViewModels.SearchMasterWindowViewModels
 {
-	public class SearchMasterWindowViewModel<T> : SearchMasterWindowViewModel where T : class, IRcMaster
+	internal class SearchMasterWindowViewModel<T> : SearchMasterWindowViewModel where T : class, IRcMaster
 	{
 		// ====================================================================
 		// コンストラクター

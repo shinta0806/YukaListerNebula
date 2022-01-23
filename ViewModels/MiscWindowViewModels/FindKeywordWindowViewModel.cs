@@ -23,7 +23,7 @@ using YukaLister.Models.YukaListerModels;
 
 namespace YukaLister.ViewModels.MiscWindowViewModels
 {
-	public class FindKeywordWindowViewModel : YlViewModel
+	internal class FindKeywordWindowViewModel : YlViewModel
 	{
 		// ====================================================================
 		// コンストラクター

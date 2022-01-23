@@ -22,7 +22,7 @@ using YukaLister.ViewModels.EditMasterWindowViewModels;
 
 namespace YukaLister.ViewModels.EditSequenceWindowViewModels
 {
-	public class EditPeopleWindowViewModel : EditSequenceWindowViewModel<TPerson>
+	internal class EditPeopleWindowViewModel : EditSequenceWindowViewModel<TPerson>
 	{
 		// ====================================================================
 		// コンストラクター

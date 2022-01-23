@@ -29,7 +29,7 @@ using YukaLister.ViewModels.MiscWindowViewModels;
 
 namespace YukaLister.ViewModels.ReportWindowViewModels
 {
-	public class EditReportWindowViewModel : YlViewModel
+	internal class EditReportWindowViewModel : YlViewModel
 	{
 		// ====================================================================
 		// コンストラクター

@@ -21,7 +21,7 @@ using YukaLister.Models.SharedMisc;
 
 namespace YukaLister.Models.OutputWriters
 {
-	public class CsvOutputWriter : OutputWriter
+	internal class CsvOutputWriter : OutputWriter
 	{
 		// ====================================================================
 		// コンストラクター

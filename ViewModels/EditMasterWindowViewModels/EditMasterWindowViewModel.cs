@@ -12,7 +12,7 @@
 
 namespace YukaLister.ViewModels.EditMasterWindowViewModels
 {
-	public class EditMasterWindowViewModel : YlViewModel
+	internal class EditMasterWindowViewModel : YlViewModel
 	{
 	}
 }

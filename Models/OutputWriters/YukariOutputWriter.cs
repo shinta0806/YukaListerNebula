@@ -23,7 +23,7 @@ using YukaLister.Models.YukaListerModels;
 
 namespace YukaLister.Models.OutputWriters
 {
-	public class YukariOutputWriter : WebOutputWriter
+	internal class YukariOutputWriter : WebOutputWriter
 	{
 		// ====================================================================
 		// コンストラクター

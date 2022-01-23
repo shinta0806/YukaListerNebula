@@ -41,7 +41,7 @@ using YukaLister.Models.YukaListerModels;
 
 namespace YukaLister.ViewModels.MiscWindowViewModels
 {
-	public class FolderSettingsWindowViewModel : YlViewModel
+	internal class FolderSettingsWindowViewModel : YlViewModel
 	{
 		// ====================================================================
 		// コンストラクター

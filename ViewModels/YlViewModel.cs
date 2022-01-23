@@ -22,7 +22,7 @@ using YukaLister.Models.YukaListerModels;
 
 namespace YukaLister.ViewModels
 {
-	public class YlViewModel : ViewModel
+	internal class YlViewModel : ViewModel
 	{
 		// ====================================================================
 		// コンストラクター

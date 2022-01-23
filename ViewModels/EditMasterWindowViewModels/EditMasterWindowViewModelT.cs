@@ -31,7 +31,7 @@ using YukaLister.Models.YukaListerModels;
 
 namespace YukaLister.ViewModels.EditMasterWindowViewModels
 {
-	public abstract class EditMasterWindowViewModel<T> : EditMasterWindowViewModel where T : class, IRcMaster, new()
+	internal abstract class EditMasterWindowViewModel<T> : EditMasterWindowViewModel where T : class, IRcMaster, new()
 	{
 		// ====================================================================
 		// コンストラクター
@@ -593,7 +593,7 @@ namespace YukaLister.ViewModels.EditMasterWindowViewModels
 		// --------------------------------------------------------------------
 		// レコードを更新（既存のレコードが無効化されている場合は有効化も行う前提）
 		// --------------------------------------------------------------------
-		protected void UpdateExistRecord(T existRecord, T newRecord)
+		protected static void UpdateExistRecord(T existRecord, T newRecord)
 		{
 			Debug.Assert(!newRecord.Invalid, "UpdateExistRecord() invalid");
 

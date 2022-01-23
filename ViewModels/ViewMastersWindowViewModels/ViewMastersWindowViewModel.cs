@@ -12,7 +12,7 @@
 
 namespace YukaLister.ViewModels.ViewMastersWindowViewModels
 {
-	public class ViewMastersWindowViewModel : YlViewModel
+	internal class ViewMastersWindowViewModel : YlViewModel
 	{
 	}
 }

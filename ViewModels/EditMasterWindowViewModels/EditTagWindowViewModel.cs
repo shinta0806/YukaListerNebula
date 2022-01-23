@@ -23,7 +23,7 @@ using YukaLister.Models.YukaListerModels;
 
 namespace YukaLister.ViewModels.EditMasterWindowViewModels
 {
-	public class EditTagWindowViewModel : EditMasterWindowViewModel<TTag>
+	internal class EditTagWindowViewModel : EditMasterWindowViewModel<TTag>
 	{
 		// ====================================================================
 		// コンストラクター

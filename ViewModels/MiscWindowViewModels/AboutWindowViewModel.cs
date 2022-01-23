@@ -20,7 +20,7 @@ using YukaLister.Models.YukaListerModels;
 
 namespace YukaLister.ViewModels.MiscWindowViewModels
 {
-	public class AboutWindowViewModel : YlViewModel
+	internal class AboutWindowViewModel : YlViewModel
 	{
 		// ====================================================================
 		// コンストラクター

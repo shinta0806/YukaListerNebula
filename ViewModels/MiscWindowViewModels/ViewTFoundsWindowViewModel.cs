@@ -36,7 +36,7 @@ using YukaLister.Models.YukaListerModels;
 
 namespace YukaLister.ViewModels.MiscWindowViewModels
 {
-	public class ViewTFoundsWindowViewModel : YlViewModel
+	internal class ViewTFoundsWindowViewModel : YlViewModel
 	{
 		// ====================================================================
 		// コンストラクター

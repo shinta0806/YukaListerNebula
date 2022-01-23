@@ -30,7 +30,7 @@ using YukaLister.Models.YukaListerModels;
 
 namespace YukaLister.ViewModels.EditMasterWindowViewModels
 {
-	public class EditCategorizableWindowViewModel<T> : EditMasterWindowViewModel<T> where T : class, IRcCategorizable, new()
+	internal class EditCategorizableWindowViewModel<T> : EditMasterWindowViewModel<T> where T : class, IRcCategorizable, new()
 	{
 		// ====================================================================
 		// コンストラクター
@@ -193,7 +193,7 @@ namespace YukaLister.ViewModels.EditMasterWindowViewModels
 		// --------------------------------------------------------------------
 		// 複数の IRcMaster の ID と名前をカンマで結合
 		// --------------------------------------------------------------------
-		protected (Boolean has, String? ids, String? displayNames) ConcatMasterIdsAndNames<U>(DbSet<U> records, List<U> targetMasters) where U : class, IRcMaster
+		protected static (Boolean has, String? ids, String? displayNames) ConcatMasterIdsAndNames<U>(DbSet<U> records, List<U> targetMasters) where U : class, IRcMaster
 		{
 			String ids = String.Join(YlConstants.VAR_VALUE_DELIMITER[0], targetMasters.Select(x => x.Id));
 			foreach (U master in targetMasters)
@@ -214,7 +214,7 @@ namespace YukaLister.ViewModels.EditMasterWindowViewModels
 		// --------------------------------------------------------------------
 		// カンマ区切りで連結されている ids のうち先頭の id から名前を取得
 		// --------------------------------------------------------------------
-		protected String? HeadName<U>(DbSet<U> records, String? ids) where U : class, IRcMaster
+		protected static String? HeadName<U>(DbSet<U> records, String? ids) where U : class, IRcMaster
 		{
 			if (String.IsNullOrEmpty(ids))
 			{

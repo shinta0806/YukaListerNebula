@@ -12,7 +12,7 @@
 
 namespace YukaLister.ViewModels.EditSequenceWindowViewModels
 {
-	public class EditSequenceWindowViewModel : YlViewModel
+	internal class EditSequenceWindowViewModel : YlViewModel
 	{
 	}
 }
