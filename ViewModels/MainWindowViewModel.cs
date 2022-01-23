@@ -1236,14 +1236,14 @@ namespace YukaLister.ViewModels
 			}
 		}
 
-#if false
+#if !DISTRIB_STORE
 		// --------------------------------------------------------------------
 		// インストールフォルダーについての警告メッセージ
 		// --------------------------------------------------------------------
 		private static String? InstallWarningMessage()
 		{
-			if (YukaListerModel.Instance.EnvModel.ExeFullPath.StartsWith(Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles))
-					|| YukaListerModel.Instance.EnvModel.ExeFullPath.StartsWith(Environment.GetFolderPath(Environment.SpecialFolder.ProgramFilesX86)))
+			if (YlModel.Instance.EnvModel.ExeFullPath.StartsWith(Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles))
+					|| YlModel.Instance.EnvModel.ExeFullPath.StartsWith(Environment.GetFolderPath(Environment.SpecialFolder.ProgramFilesX86)))
 			{
 				// 自動更新できない
 				return YlConstants.APP_NAME_J + " が Program Files フォルダー配下にインストールされているため、正常に動作しません。\n"
@@ -1261,7 +1261,7 @@ namespace YukaLister.ViewModels
 			String newVerMsg;
 			TraceEventType type = TraceEventType.Information;
 
-			// α・β警告、ならびに、更新時のメッセージ（2022/01/16）
+			// α・β警告、ならびに、更新時のメッセージ（2022/01/23）
 			// 新規・更新のご挨拶
 			if (String.IsNullOrEmpty(YlModel.Instance.EnvModel.YlSettings.PrevLaunchVer))
 			{
@@ -1297,18 +1297,32 @@ namespace YukaLister.ViewModels
 
 #if !DISTRIB_STORE
 			// Zone ID 削除
-			CommonWindows.DeleteZoneID(YukaListerModel.Instance.EnvModel.ExeFullFolder, SearchOption.AllDirectories);
+			CommonWindows.DeleteZoneID(YlModel.Instance.EnvModel.ExeFullFolder, SearchOption.AllDirectories);
 
 			// パスの注意
 			String? installMsg = InstallWarningMessage();
 			if (!String.IsNullOrEmpty(installMsg))
 			{
-				YukaListerModel.Instance.EnvModel.LogWriter.ShowLogMessage(TraceEventType.Warning, installMsg);
+				YlModel.Instance.EnvModel.LogWriter.ShowLogMessage(TraceEventType.Warning, installMsg);
 			}
 #endif
 
 			// サンプルインポート
 			ImportSampleIfNeeded();
+
+#if DISTRIB_STORE
+			// zip 版からストア版への移行チェック
+			ExecutableHistory executableHistory = new();
+			List<String> histories = executableHistory.GetHistories(false, false, true);
+			if (histories.Count > 0)
+			{
+				// フォルダー数が多すぎるとメッセージボックスが巨大になるため表示数は制限する
+				YlModel.Instance.EnvModel.LogWriter.ShowLogMessage(TraceEventType.Warning, "旧バージョンの" + YlConstants.APP_NAME_J + "が残存しています。\n"
+						+ "移行を完了することをお薦めします。\n"
+						+ "詳しくは、ヘルプの「旧バージョンからの移行」節をご覧ください。\n\n"
+						+ "［残存している旧バージョンのフォルダー］\n" + String.Join('\n', histories.Take(5)));
+			}
+#endif
 		}
 
 		// --------------------------------------------------------------------

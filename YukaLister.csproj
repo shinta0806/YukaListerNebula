@@ -38,6 +38,7 @@
     <Compile Include="..\..\_Common\Behaviors\WindowBindingSupportBehavior.cs" Link="_Common\Behaviors\WindowBindingSupportBehavior.cs" />
     <Compile Include="..\..\_Common\CsvManager.cs" Link="_Common\CsvManager.cs" />
     <Compile Include="..\..\_Common\Downloader.cs" Link="_Common\Downloader.cs" />
+    <Compile Include="..\..\_Common\ExecutableHistory.cs" Link="_Common\ExecutableHistory.cs" />
     <Compile Include="..\..\_Common\JulianDay.cs" Link="_Common\JulianDay.cs" />
     <Compile Include="..\..\_Common\LatestInfoManager.cs" Link="_Common\LatestInfoManager.cs" />
     <Compile Include="..\..\_Common\LogWriter.cs" Link="_Common\LogWriter.cs" />
