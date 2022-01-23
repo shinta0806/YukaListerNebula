@@ -30,7 +30,7 @@ using YukaLister.Models.YukaListerModels;
 
 namespace YukaLister.Models.YukaListerCores
 {
-	public class Sifolin : YlCore
+	internal class Sifolin : YlCore
 	{
 		// ====================================================================
 		// コンストラクター

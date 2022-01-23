@@ -14,7 +14,7 @@ using System;
 
 namespace YukaLister.Models.SharedMisc
 {
-	public class PreviewInfo
+	internal class PreviewInfo
 	{
 		// ====================================================================
 		// public プロパティー

@@ -18,7 +18,7 @@ using YukaLister.Models.SharedMisc;
 namespace YukaLister.Models.Database
 {
 	[Table(TABLE_NAME_REPORT)]
-	public class TReport : IRcBase
+	internal class TReport : IRcBase
 	{
 		// ====================================================================
 		// public プロパティー

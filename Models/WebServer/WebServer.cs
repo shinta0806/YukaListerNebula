@@ -46,7 +46,7 @@ using YukaLister.Models.YukaListerModels;
 
 namespace YukaLister.Models.WebServer
 {
-	public class WebServer : IDisposable
+	internal class WebServer : IDisposable
 	{
 		// ====================================================================
 		// コンストラクター

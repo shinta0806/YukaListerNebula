@@ -17,7 +17,7 @@ using YukaLister.Models.SharedMisc;
 
 namespace YukaLister.Models.SyncClient
 {
-	public class SyncDataIo : IDisposable
+	internal class SyncDataIo : IDisposable
 	{
 		// ====================================================================
 		// コンストラクター

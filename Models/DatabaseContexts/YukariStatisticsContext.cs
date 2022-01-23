@@ -20,7 +20,7 @@ using YukaLister.Models.DatabaseAssist;
 
 namespace YukaLister.Models.DatabaseContexts
 {
-	public class YukariStatisticsContext : YlContext
+	internal class YukariStatisticsContext : YlContext
 	{
 		// ====================================================================
 		// コンストラクター

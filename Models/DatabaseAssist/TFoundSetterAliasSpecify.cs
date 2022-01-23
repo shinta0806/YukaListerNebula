@@ -14,7 +14,7 @@ using YukaLister.Models.DatabaseContexts;
 
 namespace YukaLister.Models.DatabaseAssist
 {
-	public class TFoundSetterAliasSpecify : TFoundSetter
+	internal class TFoundSetterAliasSpecify : TFoundSetter
 	{
 		// ====================================================================
 		// コンストラクター

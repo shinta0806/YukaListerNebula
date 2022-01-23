@@ -16,7 +16,7 @@ using YukaLister.Models.SharedMisc;
 namespace YukaLister.Models.Database.Sequences
 {
 	[Table(TABLE_NAME_TAG_SEQUENCE)]
-	public class TTagSequence : IRcSequence
+	internal class TTagSequence : IRcSequence
 	{
 		// ====================================================================
 		// public プロパティー

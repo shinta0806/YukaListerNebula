@@ -15,7 +15,7 @@ using System.Runtime.InteropServices;
 
 namespace YukaLister.Models.SharedMisc
 {
-	public class RubyReconverter : IDisposable
+	internal class RubyReconverter : IDisposable
 	{
 		// ====================================================================
 		// コンストラクター

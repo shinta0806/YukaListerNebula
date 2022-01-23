@@ -14,7 +14,7 @@ using System.Windows.Data;
 
 namespace YukaLister.Models.ValueConverters
 {
-	class BooleanInvertConverter : IValueConverter
+	internal class BooleanInvertConverter : IValueConverter
 	{
 		// ====================================================================
 		// public 関数

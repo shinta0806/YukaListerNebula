@@ -36,7 +36,7 @@ using YukaLister.ViewModels.MiscWindowViewModels;
 
 namespace YukaLister.Models.SharedMisc
 {
-	public class YlCommon
+	internal class YlCommon
 	{
 		// ====================================================================
 		// public 関数

@@ -16,7 +16,7 @@ using YukaLister.Models.SharedMisc;
 namespace YukaLister.Models.Database.Sequences
 {
 	[Table(TABLE_NAME_TIE_UP_GROUP_SEQUENCE)]
-	public class TTieUpGroupSequence : IRcSequence
+	internal class TTieUpGroupSequence : IRcSequence
 	{
 		// ====================================================================
 		// public プロパティー

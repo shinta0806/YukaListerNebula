@@ -14,7 +14,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace YukaLister.Models.Database
 {
 	[Table(TABLE_NAME_YUKARI_REQUEST)]
-	public class TYukariRequest
+	internal class TYukariRequest
 	{
 		// ====================================================================
 		// public プロパティー

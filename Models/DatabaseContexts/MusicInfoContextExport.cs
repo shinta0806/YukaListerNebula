@@ -16,7 +16,7 @@ using YukaLister.Models.Database.Sequences;
 
 namespace YukaLister.Models.DatabaseContexts
 {
-	public class MusicInfoContextExport : MusicInfoContext
+	internal class MusicInfoContextExport : MusicInfoContext
 	{
 		// ====================================================================
 		// コンストラクター

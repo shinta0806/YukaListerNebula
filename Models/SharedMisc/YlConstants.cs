@@ -280,12 +280,12 @@ namespace YukaLister.Models.SharedMisc
 	// ====================================================================
 
 	// TargetFolderInfo.IsOpen が変更された
-	public delegate void IsOpenChanged(TargetFolderInfo targetFolderInfo);
+	internal delegate void IsOpenChanged(TargetFolderInfo targetFolderInfo);
 
 	// タスク非同期実行
 	public delegate Task TaskAsyncDelegate<T>(T var) where T : class?;
 
-	public class YlConstants
+	internal class YlConstants
 	{
 		// ====================================================================
 		// public 定数
@@ -297,7 +297,7 @@ namespace YukaLister.Models.SharedMisc
 		public const String APP_ID = "YukaLister";
 		public const String APP_GENERATION = "NEBULA";
 		public const String APP_NAME_J = "ゆかりすたー 4 " + APP_GENERATION + " ";
-		public const String APP_VER = "Ver 6.25";
+		public const String APP_VER = "Ver 6.28";
 		public const String COPYRIGHT_J = "Copyright (C) 2021-2022 by SHINTA";
 #if DISTRIB_STORE
 		public const String APP_DISTRIB = "ストア版";

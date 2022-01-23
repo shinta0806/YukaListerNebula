@@ -19,7 +19,7 @@ using YukaLister.Models.YukaListerModels;
 
 namespace YukaLister.Models.DatabaseContexts
 {
-	public class ReportContext : YlContext
+	internal class ReportContext : YlContext
 	{
 		// ====================================================================
 		// コンストラクター

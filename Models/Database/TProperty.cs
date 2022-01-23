@@ -15,7 +15,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace YukaLister.Models.Database
 {
 	[Table(TABLE_NAME_PROPERTY)]
-	public class TProperty
+	internal class TProperty
 	{
 		// ====================================================================
 		// public プロパティー

@@ -17,7 +17,7 @@ using YukaLister.Models.SharedMisc;
 namespace YukaLister.Models.Database
 {
 	[Table(TABLE_NAME_YUKARI_STATISTICS)]
-	public class TYukariStatistics : IRcBase
+	internal class TYukariStatistics : IRcBase
 	{
 		// ====================================================================
 		// public プロパティー

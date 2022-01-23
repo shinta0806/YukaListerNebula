@@ -24,7 +24,7 @@ using YukaLister.Models.SharedMisc;
 
 namespace YukaLister.Models.SyncClient
 {
-	public class SyncDataExporter : SyncDataIo
+	internal class SyncDataExporter : SyncDataIo
 	{
 		// ====================================================================
 		// コンストラクター

@@ -34,7 +34,7 @@ using YukaLister.Models.YukaListerModels;
 
 namespace YukaLister.Models.YukaListerCores
 {
-	public class Lomolin : YlCore
+	internal class Lomolin : YlCore
 	{
 		// ====================================================================
 		// コンストラクター

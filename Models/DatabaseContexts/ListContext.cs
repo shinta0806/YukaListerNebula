@@ -19,7 +19,7 @@ using YukaLister.Models.Database.Sequences;
 
 namespace YukaLister.Models.DatabaseContexts
 {
-	public abstract class ListContext : YlContext
+	internal abstract class ListContext : YlContext
 	{
 		// ====================================================================
 		// コンストラクター

@@ -14,7 +14,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace YukaLister.Models.Database
 {
-	public class TCacheThumb
+	internal class TCacheThumb
 	{
 		// ====================================================================
 		// public プロパティー

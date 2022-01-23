@@ -15,7 +15,7 @@ using YukaLister.Models.YukaListerModels;
 
 namespace YukaLister.Models.DatabaseContexts
 {
-	public class ListContextInDisk : ListContext
+	internal class ListContextInDisk : ListContext
 	{
 		// ====================================================================
 		// コンストラクター

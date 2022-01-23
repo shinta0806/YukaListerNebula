@@ -27,7 +27,7 @@ using YukaLister.Models.YukaListerModels;
 
 namespace YukaLister.Models.DatabaseAssist
 {
-	public class Importer
+	internal class Importer
 	{
 		// ====================================================================
 		// コンストラクター

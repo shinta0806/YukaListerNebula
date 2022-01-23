@@ -13,7 +13,7 @@ using System.Collections.Generic;
 
 namespace YukaLister.Models.SharedMisc
 {
-	public class FolderSettingsInMemory
+	internal class FolderSettingsInMemory
 	{
 		// ====================================================================
 		// コンストラクター

@@ -23,7 +23,7 @@ using YukaLister.Models.YukaListerModels;
 
 namespace YukaLister.Models.DatabaseContexts
 {
-	public abstract class YlContext : DbContext
+	internal abstract class YlContext : DbContext
 	{
 		// ====================================================================
 		// コンストラクター

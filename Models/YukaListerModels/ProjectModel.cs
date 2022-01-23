@@ -33,7 +33,7 @@ using YukaLister.Models.SharedMisc;
 
 namespace YukaLister.Models.YukaListerModels
 {
-	public class ProjectModel : NotificationObject
+	internal class ProjectModel : NotificationObject
 	{
 		// ====================================================================
 		// コンストラクター

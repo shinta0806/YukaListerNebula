@@ -18,7 +18,7 @@ using YukaLister.Models.SharedMisc;
 namespace YukaLister.Models.Database
 {
 	[Table(TABLE_NAME_FOUND)]
-	public class TFound
+	internal class TFound
 	{
 		// ====================================================================
 		// public プロパティー

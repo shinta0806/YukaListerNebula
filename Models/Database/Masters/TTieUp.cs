@@ -23,7 +23,7 @@ using YukaLister.Models.SharedMisc;
 namespace YukaLister.Models.Database.Masters
 {
 	[Table(TABLE_NAME_TIE_UP)]
-	public class TTieUp : IRcCategorizable
+	internal class TTieUp : IRcCategorizable
 	{
 		// ====================================================================
 		// public プロパティー

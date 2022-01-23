@@ -18,7 +18,7 @@ using YukaLister.Models.SharedMisc;
 namespace YukaLister.Models.Database.Masters
 {
 	[Table(TABLE_NAME_TIE_UP_GROUP)]
-	public class TTieUpGroup : IRcMaster
+	internal class TTieUpGroup : IRcMaster
 	{
 		// ====================================================================
 		// public プロパティー

@@ -22,7 +22,7 @@ using YukaLister.Models.SharedMisc;
 
 namespace YukaLister.Models.DatabaseContexts
 {
-	public class MusicInfoContextDefault : MusicInfoContext
+	internal class MusicInfoContextDefault : MusicInfoContext
 	{
 		// ====================================================================
 		// コンストラクター

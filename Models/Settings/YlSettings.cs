@@ -5,7 +5,7 @@
 // ============================================================================
 
 // ----------------------------------------------------------------------------
-// 
+// シリアライズされるため public class である必要がある
 // ----------------------------------------------------------------------------
 
 using Microsoft.EntityFrameworkCore;
@@ -306,7 +306,7 @@ namespace YukaLister.Models.Settings
 		// LastIdNumbers をこれから使う ID 番号に設定
 		// ＜返値＞ これから使う ID 文字列
 		// --------------------------------------------------------------------
-		public String PrepareLastId<T>(DbSet<T> records) where T : class, IRcBase
+		internal String PrepareLastId<T>(DbSet<T> records) where T : class, IRcBase
 		{
 			Int32 tableIndex = DbCommon.MusicInfoTableIndex<T>();
 			for (; ; )
@@ -323,7 +323,7 @@ namespace YukaLister.Models.Settings
 		// LastIdNumbers をこれから使う ID 番号に設定
 		// ＜返値＞ これから使う ID 文字列
 		// --------------------------------------------------------------------
-		public String PrepareYukariStatisticsLastId(DbSet<TYukariStatistics> records)
+		internal String PrepareYukariStatisticsLastId(DbSet<TYukariStatistics> records)
 		{
 			for (; ; )
 			{

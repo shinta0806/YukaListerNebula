@@ -15,7 +15,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace YukaLister.Models.Database
 {
 	[Table(TABLE_NAME_CACHE_HEADER)]
-	public class TCacheHeader
+	internal class TCacheHeader
 	{
 		// ====================================================================
 		// public プロパティー

@@ -21,7 +21,7 @@ using YukaLister.Models.YukaListerModels;
 
 namespace YukaLister.Models.YukaListerCores
 {
-	public abstract class YlCore : IDisposable
+	internal abstract class YlCore : IDisposable
 	{
 		// ====================================================================
 		// コンストラクター

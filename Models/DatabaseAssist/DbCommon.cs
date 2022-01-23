@@ -33,7 +33,7 @@ using YukaLister.Models.YukaListerModels;
 
 namespace YukaLister.Models.DatabaseAssist
 {
-	public class DbCommon
+	internal class DbCommon
 	{
 		// ====================================================================
 		// public 関数

@@ -18,7 +18,7 @@ using YukaLister.Models.YukaListerModels;
 
 namespace YukaLister.Models.SharedMisc
 {
-	public class TargetFolderInfo
+	internal class TargetFolderInfo
 	{
 		// ====================================================================
 		// コンストラクター

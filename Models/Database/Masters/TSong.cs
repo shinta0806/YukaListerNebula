@@ -23,7 +23,7 @@ using YukaLister.Models.SharedMisc;
 namespace YukaLister.Models.Database.Masters
 {
 	[Table(TABLE_NAME_SONG)]
-	public class TSong : IRcCategorizable
+	internal class TSong : IRcCategorizable
 	{
 		// ====================================================================
 		// public プロパティー

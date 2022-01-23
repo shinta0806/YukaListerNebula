@@ -14,11 +14,11 @@ using YukaLister.Models.Database.Masters;
 namespace YukaLister.Models.OutputWriters
 {
 	// 検出ファイルとそれに紐付けられた人物
-	public record QrFoundAndPerson(TFound Found, TPerson Person);
+	internal record QrFoundAndPerson(TFound Found, TPerson Person);
 
 	// 検出ファイルとそれに紐付けられたタイアップグループ
-	public record QrFoundAndTieUpGroup(TFound Found, TTieUpGroup TieUpGroup);
+	internal record QrFoundAndTieUpGroup(TFound Found, TTieUpGroup TieUpGroup);
 
 	// 検出ファイルとそれに紐付けられたタグ
-	public record QrFoundAndTag(TFound Found, TTag Tag);
+	internal record QrFoundAndTag(TFound Found, TTag Tag);
 }

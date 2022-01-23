@@ -18,7 +18,7 @@ using YukaLister.Models.SharedMisc;
 namespace YukaLister.Models.Database.Masters
 {
 	[Table(TABLE_NAME_PERSON)]
-	public class TPerson : IRcMaster
+	internal class TPerson : IRcMaster
 	{
 		// ====================================================================
 		// public プロパティー

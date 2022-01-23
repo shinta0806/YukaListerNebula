@@ -13,7 +13,7 @@ using System.Collections.Generic;
 
 namespace YukaLister.Models.OutputWriters
 {
-	public class WebPageInfoTree
+	internal class WebPageInfoTree
 	{
 		// ====================================================================
 		// コンストラクター

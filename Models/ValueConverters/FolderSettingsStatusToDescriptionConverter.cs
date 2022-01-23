@@ -16,7 +16,7 @@ using YukaLister.Models.SharedMisc;
 
 namespace YukaLister.Models.ValueConverters
 {
-	class FolderSettingsStatusToDescriptionConverter : IValueConverter
+	internal class FolderSettingsStatusToDescriptionConverter : IValueConverter
 	{
 		// ====================================================================
 		// public 関数

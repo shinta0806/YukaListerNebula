@@ -16,7 +16,7 @@ namespace YukaLister.Models.Database
 	// 基礎テーブルのレコードインターフェース
 	// ====================================================================
 
-	public interface IRcBase
+	internal interface IRcBase
 	{
 		// ID
 		String Id { get; set; }
@@ -38,7 +38,7 @@ namespace YukaLister.Models.Database
 	// マスターテーブルのレコードインターフェース
 	// ====================================================================
 
-	public interface IRcMaster : IRcBase
+	internal interface IRcMaster : IRcBase
 	{
 		// 名
 		String? Name { get; set; }
@@ -71,7 +71,7 @@ namespace YukaLister.Models.Database
 	// カテゴリー持ちテーブルのレコードインターフェース
 	// ====================================================================
 
-	public interface IRcCategorizable : IRcMaster
+	internal interface IRcCategorizable : IRcMaster
 	{
 		// カテゴリー ID ＜参照項目＞
 		String? CategoryId { get; set; }
@@ -94,7 +94,7 @@ namespace YukaLister.Models.Database
 	// 別名テーブルのレコードインターフェース
 	// ====================================================================
 
-	public interface IRcAlias : IRcBase
+	internal interface IRcAlias : IRcBase
 	{
 		// 別名
 		String Alias { get; set; }
@@ -107,7 +107,7 @@ namespace YukaLister.Models.Database
 	// 紐付テーブルのレコードインターフェース
 	// ====================================================================
 
-	public interface IRcSequence : IRcBase
+	internal interface IRcSequence : IRcBase
 	{
 		// 連番
 		Int32 Sequence { get; set; }

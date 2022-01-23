@@ -24,7 +24,7 @@ using YukaLister.Models.YukaListerModels;
 
 namespace YukaLister.Views.CustomControls
 {
-	public class FolderTreeControl : Control
+	internal class FolderTreeControl : Control
 	{
 		// ====================================================================
 		// static コンストラクター・デストラクター

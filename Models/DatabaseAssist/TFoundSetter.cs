@@ -27,7 +27,7 @@ using YukaLister.Models.YukaListerModels;
 
 namespace YukaLister.Models.DatabaseAssist
 {
-	public class TFoundSetter : IDisposable
+	internal class TFoundSetter : IDisposable
 	{
 		// ====================================================================
 		// コンストラクター

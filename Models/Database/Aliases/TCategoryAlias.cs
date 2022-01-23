@@ -17,7 +17,7 @@ using YukaLister.Models.SharedMisc;
 namespace YukaLister.Models.Database.Aliases
 {
 	[Table(TABLE_NAME_CATEGORY_ALIAS)]
-	public class TCategoryAlias : IRcAlias
+	internal class TCategoryAlias : IRcAlias
 	{
 		// ====================================================================
 		// public プロパティー

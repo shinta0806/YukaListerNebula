@@ -17,7 +17,7 @@ using YukaLister.Models.SharedMisc;
 namespace YukaLister.Models.Database.Aliases
 {
 	[Table(TABLE_NAME_TIE_UP_GROUP_ALIAS)]
-	public class TTieUpGroupAlias : IRcAlias
+	internal class TTieUpGroupAlias : IRcAlias
 	{
 		// ====================================================================
 		// public プロパティー

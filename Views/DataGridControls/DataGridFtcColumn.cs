@@ -17,7 +17,7 @@ using YukaLister.Views.CustomControls;
 
 namespace YukaLister.Views.DataGridControls
 {
-	public class DataGridFtcColumn : DataGridBoundColumn
+	internal class DataGridFtcColumn : DataGridBoundColumn
 	{
 		// ====================================================================
 		// static コンストラクター・デストラクター

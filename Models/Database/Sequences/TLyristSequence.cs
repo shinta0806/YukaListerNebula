@@ -16,7 +16,7 @@ using YukaLister.Models.SharedMisc;
 namespace YukaLister.Models.Database.Sequences
 {
 	[Table(TABLE_NAME_LYRIST_SEQUENCE)]
-	public class TLyristSequence : IRcSequence
+	internal class TLyristSequence : IRcSequence
 	{
 		// ====================================================================
 		// public プロパティー
