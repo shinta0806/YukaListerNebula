@@ -12,7 +12,7 @@ using Livet;
 
 namespace YukaLister.Models.YukaListerModels
 {
-	public class YlModel : NotificationObject
+	internal class YlModel : NotificationObject
 	{
 		// ====================================================================
 		// コンストラクター

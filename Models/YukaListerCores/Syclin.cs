@@ -30,7 +30,7 @@ using YukaLister.ViewModels;
 
 namespace YukaLister.Models.YukaListerCores
 {
-	public class Syclin : YlCore
+	internal class Syclin : YlCore
 	{
 		// ====================================================================
 		// コンストラクター

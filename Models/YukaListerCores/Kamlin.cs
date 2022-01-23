@@ -24,7 +24,7 @@ using YukaLister.ViewModels;
 
 namespace YukaLister.Models.YukaListerCores
 {
-	public class Kamlin : YlCore
+	internal class Kamlin : YlCore
 	{
 		// ====================================================================
 		// コンストラクター

@@ -40,7 +40,7 @@ using YukaLister.ViewModels.ReportWindowViewModels;
 
 namespace YukaLister.ViewModels
 {
-	public class MainWindowViewModel : YlViewModel
+	internal class MainWindowViewModel : YlViewModel
 	{
 		// ====================================================================
 		// コンストラクター

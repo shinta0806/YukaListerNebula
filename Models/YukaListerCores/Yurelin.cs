@@ -28,7 +28,7 @@ using YukaLister.ViewModels;
 
 namespace YukaLister.Models.YukaListerCores
 {
-	public class Yurelin : YlCore
+	internal class Yurelin : YlCore
 	{
 		// ====================================================================
 		// コンストラクター

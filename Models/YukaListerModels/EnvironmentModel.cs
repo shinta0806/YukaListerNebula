@@ -29,7 +29,7 @@ using YukaLister.Models.YukaListerCores;
 
 namespace YukaLister.Models.YukaListerModels
 {
-	public class EnvironmentModel : NotificationObject
+	internal class EnvironmentModel : NotificationObject
 	{
 		// ====================================================================
 		// コンストラクター

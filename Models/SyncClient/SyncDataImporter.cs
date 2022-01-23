@@ -30,7 +30,7 @@ using YukaLister.ViewModels;
 
 namespace YukaLister.Models.SyncClient
 {
-	public class SyncDataImporter : SyncDataIo
+	internal class SyncDataImporter : SyncDataIo
 	{
 		// ====================================================================
 		// コンストラクター

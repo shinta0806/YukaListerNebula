@@ -29,7 +29,7 @@ using YukaLister.Models.YukaListerModels;
 
 namespace YukaLister.ViewModels
 {
-	public class SplashWindowViewModel : ViewModel
+	internal class SplashWindowViewModel : ViewModel
 	{
 		// ====================================================================
 		// public 関数
