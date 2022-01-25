@@ -48,7 +48,17 @@ namespace YukaLister.ViewModels
 		public String Title
 		{
 			get => _title;
-			set => RaisePropertyChangedIfSet(ref _title, value);
+			set
+			{
+				String title = value;
+#if DEBUG
+				title = "［デバッグ］" + title;
+#endif
+#if TEST
+				title = "［テスト］" + title;
+#endif
+				RaisePropertyChangedIfSet(ref _title, title);
+			}
 		}
 
 		// カーソル

@@ -76,24 +76,8 @@ namespace YukaLister.Models.DatabaseContexts
 			// 新規作成
 			Database.EnsureCreated();
 
-			// WAL を使うかどうか（EF Core のデフォルトは WAL なので、使わない場合のみ処理を行う）
-			SqliteConnection? sqliteConnection = null;
-			if (!_useWal)
-			{
-				sqliteConnection = Database.GetDbConnection() as SqliteConnection;
-			}
-			if (sqliteConnection != null)
-			{
-				sqliteConnection.Open();
-				using SqliteCommand command = sqliteConnection.CreateCommand();
-				command.CommandText = @"PRAGMA journal_mode = 'delete'";
-				command.ExecuteNonQuery();
-				YlModel.Instance.EnvModel.LogWriter.LogMessage(Common.TRACE_EVENT_TYPE_STATUS, _databaseName + "データベースのジャーナルモード：DELETE");
-			}
-			else
-			{
-				YlModel.Instance.EnvModel.LogWriter.LogMessage(Common.TRACE_EVENT_TYPE_STATUS, _databaseName + "データベースのジャーナルモード：WAL");
-			}
+			// ジャーナルモード設定
+			SetJournalModeIfNeeded();
 
 			if (Properties == null)
 			{
@@ -148,6 +132,42 @@ namespace YukaLister.Models.DatabaseContexts
 		public Double LastWriteMjd()
 		{
 			return JulianDay.DateTimeToModifiedJulianDate(LastWriteDateTime());
+		}
+
+		// --------------------------------------------------------------------
+		// ジャーナルモードを設定する
+		// --------------------------------------------------------------------
+		public void SetJournalModeIfNeeded()
+		{
+			// EF Core のデフォルトは WAL なので、WAL を使いたい場合は設定不要
+			if (_useWal)
+			{
+				return;
+			}
+
+			// DB ファイルが存在しない場合は設定しない
+			if (!File.Exists(DatabasePath()))
+			{
+				return;
+			}
+
+			Database.EnsureCreated();
+
+			SqliteConnection? sqliteConnection = Database.GetDbConnection() as SqliteConnection;
+			if (sqliteConnection == null)
+			{
+				YlModel.Instance.EnvModel.LogWriter.LogMessage(TraceEventType.Error, _databaseName + "データベースの接続を取得できませんでした。");
+				return;
+			}
+
+			// ToDo: 既存の DB に対して Open() すると、アプリ終了時にエラーが発生する（新規作成時は問題ない）
+			// Collection was modified; enumeration operation may not execute.
+			// at Microsoft.Data.Sqlite.SqliteConnectionPool.ReclaimLeakedConnections()
+			sqliteConnection.Open();
+			using SqliteCommand command = sqliteConnection.CreateCommand();
+			command.CommandText = @"PRAGMA journal_mode = 'delete'";
+			command.ExecuteNonQuery();
+			YlModel.Instance.EnvModel.LogWriter.LogMessage(Common.TRACE_EVENT_TYPE_STATUS, _databaseName + "データベースのジャーナルモードを DELETE にしました。");
 		}
 
 		// ====================================================================

@@ -1166,6 +1166,7 @@ namespace YukaLister.ViewModels
 		// --------------------------------------------------------------------
 		private void FileSystemWatcherReportDatabase_Changed(Object sender, FileSystemEventArgs fileSystemEventArgs)
 		{
+			YlModel.Instance.EnvModel.LogWriter.LogMessage(TraceEventType.Verbose, "FileSystemWatcherReportDatabase_Changed()");
 			SetStatusBarMessageWithInvoke(TraceEventType.Information, "リスト問題報告データベースが更新されました。");
 			UpdateReportsBadge();
 		}
@@ -1307,6 +1308,9 @@ namespace YukaLister.ViewModels
 			}
 #endif
 
+			// ジャーナルモード設定
+			SetJournalModeIfNeeded();
+
 			// サンプルインポート
 			ImportSampleIfNeeded();
 
@@ -1357,20 +1361,25 @@ namespace YukaLister.ViewModels
 		// --------------------------------------------------------------------
 		private void SetFileSystemWatcherReportDatabase()
 		{
+			YlModel.Instance.EnvModel.LogWriter.LogMessage(TraceEventType.Verbose, "SetFileSystemWatcherReportDatabase() begin");
 			if (YlModel.Instance.EnvModel.YlSettings.IsYukariConfigPathValid())
 			{
 				String path = DbCommon.ReportDatabasePath(YlModel.Instance.EnvModel.YlSettings);
+				YlModel.Instance.EnvModel.LogWriter.LogMessage(TraceEventType.Verbose, "SetFileSystemWatcherReportDatabase() path: " + path);
 				String? folder = Path.GetDirectoryName(path);
+				YlModel.Instance.EnvModel.LogWriter.LogMessage(TraceEventType.Verbose, "SetFileSystemWatcherReportDatabase() folder: " + folder);
 				if (!String.IsNullOrEmpty(folder))
 				{
 					_fileSystemWatcherReportDatabase.Path = folder;
 					_fileSystemWatcherReportDatabase.Filter = Path.GetFileName(path);
 					_fileSystemWatcherReportDatabase.EnableRaisingEvents = true;
+					YlModel.Instance.EnvModel.LogWriter.LogMessage(TraceEventType.Verbose, "SetFileSystemWatcherReportDatabase() set");
 					return;
 				}
 			}
 
 			_fileSystemWatcherReportDatabase.EnableRaisingEvents = false;
+			YlModel.Instance.EnvModel.LogWriter.LogMessage(TraceEventType.Verbose, "SetFileSystemWatcherReportDatabase() unset");
 		}
 
 		// --------------------------------------------------------------------
@@ -1414,6 +1423,24 @@ namespace YukaLister.ViewModels
 			}
 
 			_fileSystemWatcherYukariRequestDatabase.EnableRaisingEvents = false;
+		}
+
+		// --------------------------------------------------------------------
+		// 既存 DB のジャーナルモード設定（旧バージョンで作成された DB 対策）
+		// --------------------------------------------------------------------
+		private void SetJournalModeIfNeeded()
+		{
+			try
+			{
+				using ReportContext reportContext = new();
+				reportContext.SetJournalModeIfNeeded();
+			}
+			catch (Exception excep)
+			{
+				// アプリ終了時にエラーとなるため、念のためここでも例外を捕捉する。ユーザーには表示しない
+				YlModel.Instance.EnvModel.LogWriter.LogMessage(TraceEventType.Error, "ジャーナル設定時エラー：\n" + excep.Message);
+				YlModel.Instance.EnvModel.LogWriter.LogMessage(Common.TRACE_EVENT_TYPE_STATUS, "　スタックトレース：\n" + excep.StackTrace);
+			}
 		}
 
 		// --------------------------------------------------------------------

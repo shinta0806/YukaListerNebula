@@ -60,6 +60,8 @@ namespace YukaLister
 		// --------------------------------------------------------------------
 		private void CurrentDomain_UnhandledException(Object sender, UnhandledExceptionEventArgs unhandledExceptionEventArgs)
 		{
+			Boolean onProcessExit = false;
+
 			if (unhandledExceptionEventArgs.ExceptionObject is MultiInstanceException)
 			{
 				// 多重起動の場合は何もしない
@@ -68,9 +70,14 @@ namespace YukaLister
 			{
 				if (unhandledExceptionEventArgs.ExceptionObject is Exception excep)
 				{
-					// YlModel 未生成の可能性があるためまずはメッセージ表示のみ
-					MessageBox.Show("不明なエラーが発生しました。アプリケーションを終了します。\n" + excep.Message + "\n" + excep.InnerException?.Message + "\n" + excep.StackTrace,
-							"エラー", MessageBoxButton.OK, MessageBoxImage.Error);
+					onProcessExit = excep.StackTrace?.Contains("OnProcessExit") ?? false;
+
+					// YlModel 未生成の可能性があるためまずはメッセージ表示のみ、ただし onProcessExit の場合は表示しない
+					if (!onProcessExit)
+					{
+						MessageBox.Show("不明なエラーが発生しました。アプリケーションを終了します。\n" + excep.Message + "\n" + excep.InnerException?.Message + "\n" + excep.StackTrace,
+								"エラー", MessageBoxButton.OK, MessageBoxImage.Error);
+					}
 
 					try
 					{
@@ -83,6 +90,13 @@ namespace YukaLister
 						MessageBox.Show("エラーの記録ができませんでした。", "エラー", MessageBoxButton.OK, MessageBoxImage.Error);
 					}
 				}
+			}
+
+			if (onProcessExit)
+			{
+				// アプリが終了シーケンスに入っている場合、Exit() するとゾンビプロセスになるようなので、Exit() しない
+				// 更新起動時にジャーナルモードを設定した場合が該当する
+				return;
 			}
 
 			Environment.Exit(1);
