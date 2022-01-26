@@ -265,12 +265,6 @@ namespace YukaLister.ViewModels.OutputSettingsWindowViewModels
 			{
 				// タイトルバー
 				Title = "出力設定：" + _outputWriter.FormatName;
-#if DEBUG
-				Title = "［デバッグ］" + Title;
-#endif
-#if TEST
-				Title = "［テスト］" + Title;
-#endif
 
 				AddTabItems();
 				_outputWriter.PrepareOutputSettings();

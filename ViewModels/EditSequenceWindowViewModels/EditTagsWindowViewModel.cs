@@ -51,7 +51,6 @@ namespace YukaLister.ViewModels.EditSequenceWindowViewModels
 			{
 				// ヘルプ
 				HelpCommandParameter = "TagnoSentaku";
-
 			}
 			catch (Exception excep)
 			{

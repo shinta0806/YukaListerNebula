@@ -753,12 +753,6 @@ namespace YukaLister.ViewModels
 			{
 				// タイトルバー
 				Title = YlConstants.APP_NAME_J;
-#if DEBUG
-				Title = "［デバッグ］" + Title;
-#endif
-#if TEST
-				Title = "［テスト］" + Title;
-#endif
 
 				// イベントハンドラー
 				TargetFolderInfo.IsOpenChanged = TargetFolderInfoIsOpenChanged;

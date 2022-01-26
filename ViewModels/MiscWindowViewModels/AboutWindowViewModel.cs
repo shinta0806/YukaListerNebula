@@ -95,12 +95,6 @@ namespace YukaLister.ViewModels.MiscWindowViewModels
 
 				// 表示
 				Title = YlConstants.APP_NAME_J + " のバージョン情報";
-#if DEBUG
-				Title = "［デバッグ］" + Title;
-#endif
-#if TEST
-				Title = "［テスト］" + Title;
-#endif
 			}
 			catch (Exception excep)
 			{

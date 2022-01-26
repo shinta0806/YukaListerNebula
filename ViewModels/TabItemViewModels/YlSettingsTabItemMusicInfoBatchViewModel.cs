@@ -91,6 +91,27 @@ namespace YukaLister.ViewModels.TabItemViewModels
 		// コマンド
 		// --------------------------------------------------------------------
 
+		#region プレビュードラッグの制御（インポート元ファイル）
+		private ListenerCommand<String[]>? _textBoxImportYukaListerPathPreviewDragCommand;
+
+		public ListenerCommand<String[]> TextBoxImportYukaListerPathPreviewDragCommand
+		{
+			get
+			{
+				if (_textBoxImportYukaListerPathPreviewDragCommand == null)
+				{
+					_textBoxImportYukaListerPathPreviewDragCommand = new ListenerCommand<String[]>(TextBoxImportYukaListerPathPreviewDrag);
+				}
+				return _textBoxImportYukaListerPathPreviewDragCommand;
+			}
+		}
+
+		public static void TextBoxImportYukaListerPathPreviewDrag(String[] files)
+		{
+			// FileDropAttachedBehavior がドラッグを許可するよう、本コマンドが存在するが、処理は行わない
+		}
+		#endregion
+
 		#region インポート参照ボタンの制御
 		private ViewModelCommand? _buttonBrowseImportYukaListerClickedCommand;
 
@@ -110,7 +131,7 @@ namespace YukaLister.ViewModels.TabItemViewModels
 		{
 			try
 			{
-				String? path = _windowViewModel.PathByOpeningDialog("インポート", "インポート可能ファイル|*" + YlConstants.FILE_EXT_YL_EXPORT_ARCHIVE + ";" + YlConstants.FILE_NAME_MUSIC_INFO_DATABASE 
+				String? path = _windowViewModel.PathByOpeningDialog("インポート", "インポート可能ファイル|*" + YlConstants.FILE_EXT_YL_EXPORT_ARCHIVE + ";" + YlConstants.FILE_NAME_MUSIC_INFO_DATABASE
 						+ "|" + YlConstants.DIALOG_FILTER_YL_EXPORT_ARCHIVE + "|楽曲情報データベース|" + YlConstants.FILE_NAME_MUSIC_INFO_DATABASE, null);
 				if (path != null)
 				{

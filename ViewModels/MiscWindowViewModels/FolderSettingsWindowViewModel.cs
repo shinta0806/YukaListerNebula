@@ -1022,12 +1022,6 @@ namespace YukaLister.ViewModels.MiscWindowViewModels
 
 				// タイトルバー
 				Title = "フォルダー設定";
-#if DEBUG
-				Title = "［デバッグ］" + Title;
-#endif
-#if TEST
-				Title = "［テスト］" + Title;
-#endif
 
 				// タグボタンのコンテキストメニュー
 				List<String> labels = CreateRuleVarLabels();

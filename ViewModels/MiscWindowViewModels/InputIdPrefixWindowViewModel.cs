@@ -126,12 +126,6 @@ namespace YukaLister.ViewModels.MiscWindowViewModels
 			{
 				// タイトルバー
 				Title = "ID 接頭辞の設定";
-#if DEBUG
-				Title = "［デバッグ］" + Title;
-#endif
-#if TEST
-				Title = "［テスト］" + Title;
-#endif
 
 				// フォーカス
 				IsIdPrefixFocused = true;

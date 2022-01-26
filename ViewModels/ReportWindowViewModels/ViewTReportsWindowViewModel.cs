@@ -190,12 +190,6 @@ namespace YukaLister.ViewModels.ReportWindowViewModels
 			{
 				// タイトルバー
 				Title = "リスト問題報告一覧";
-#if DEBUG
-				Title = "［デバッグ］" + Title;
-#endif
-#if TEST
-				Title = "［テスト］" + Title;
-#endif
 
 				// 絞り込み
 				ShowOnlyOpened = true;

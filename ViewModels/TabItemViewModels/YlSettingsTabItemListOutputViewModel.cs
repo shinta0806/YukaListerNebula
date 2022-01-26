@@ -207,6 +207,27 @@ namespace YukaLister.ViewModels.TabItemViewModels
 		}
 		#endregion
 
+		#region プレビュードラッグの制御（リスト出力先フォルダー）
+		private ListenerCommand<String[]>? _textBoxListFolderPreviewDragCommand;
+
+		public ListenerCommand<String[]> TextBoxListFolderPreviewDragCommand
+		{
+			get
+			{
+				if (_textBoxListFolderPreviewDragCommand == null)
+				{
+					_textBoxListFolderPreviewDragCommand = new ListenerCommand<String[]>(TextBoxListFolderPreviewDrag);
+				}
+				return _textBoxListFolderPreviewDragCommand;
+			}
+		}
+
+		public static void TextBoxListFolderPreviewDrag(String[] files)
+		{
+			// FileDropAttachedBehavior がドラッグを許可するよう、本コマンドが存在するが、処理は行わない
+		}
+		#endregion
+
 		#region 閲覧用リスト出力ボタンの制御
 		private ViewModelCommand? _buttonOutputListClickedCommand;
 

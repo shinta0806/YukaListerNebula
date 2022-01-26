@@ -239,12 +239,6 @@ namespace YukaLister.ViewModels.MiscWindowViewModels
 			{
 				// タイトルバー
 				Title = "キーワード検索";
-#if DEBUG
-				Title = "［デバッグ］" + Title;
-#endif
-#if TEST
-				Title = "［テスト］" + Title;
-#endif
 			}
 			catch (Exception excep)
 			{

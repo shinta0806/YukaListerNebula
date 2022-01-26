@@ -594,12 +594,6 @@ namespace YukaLister.ViewModels.MiscWindowViewModels
 			{
 				// タイトルバー
 				Title = "ゆかり検索対象ファイル一覧";
-#if DEBUG
-				Title = "［デバッグ］" + Title;
-#endif
-#if TEST
-				Title = "［テスト］" + Title;
-#endif
 
 				// 出力項目
 				OutputSettings outputSettings = new();

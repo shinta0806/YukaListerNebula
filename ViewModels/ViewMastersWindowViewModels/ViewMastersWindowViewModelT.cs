@@ -290,12 +290,6 @@ namespace YukaLister.ViewModels.ViewMastersWindowViewModels
 			{
 				// タイトルバー
 				Title = _caption + "一覧";
-#if DEBUG
-				Title = "［デバッグ］" + Title;
-#endif
-#if TEST
-				Title = "［テスト］" + Title;
-#endif
 			}
 			catch (Exception excep)
 			{

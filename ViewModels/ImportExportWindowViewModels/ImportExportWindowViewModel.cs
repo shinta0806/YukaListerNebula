@@ -184,12 +184,6 @@ namespace YukaLister.ViewModels.ImportExportWindowViewModels
 			try
 			{
 				Title = "ゆかりすたー情報ファイルの" + _kind;
-#if DEBUG
-				Title = "［デバッグ］" + Title;
-#endif
-#if TEST
-				Title = "［テスト］" + Title;
-#endif
 
 				YlModel.Instance.EnvModel.LogWriter.AppendDisplayText = AppendDisplayText;
 

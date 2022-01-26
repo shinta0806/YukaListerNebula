@@ -101,6 +101,27 @@ namespace YukaLister.ViewModels.TabItemViewModels
 		// コマンド
 		// --------------------------------------------------------------------
 
+		#region プレビュードラッグの制御（ゆかり設定ファイル）
+		private ListenerCommand<String[]>? _textBoxYukariConfigPathSeedPreviewDragCommand;
+
+		public ListenerCommand<String[]> TextBoxYukariConfigPathSeedPreviewDragCommand
+		{
+			get
+			{
+				if (_textBoxYukariConfigPathSeedPreviewDragCommand == null)
+				{
+					_textBoxYukariConfigPathSeedPreviewDragCommand = new ListenerCommand<String[]>(TextBoxYukariConfigPathSeedPreviewDrag);
+				}
+				return _textBoxYukariConfigPathSeedPreviewDragCommand;
+			}
+		}
+
+		public static void TextBoxYukariConfigPathSeedPreviewDrag(String[] files)
+		{
+			// FileDropAttachedBehavior がドラッグを許可するよう、本コマンドが存在するが、処理は行わない
+		}
+		#endregion
+
 		#region ゆかり設定ファイル参照ボタンの制御
 		private ViewModelCommand? _buttonBrowseYukariConfigPathSeedClickedCommand;
 

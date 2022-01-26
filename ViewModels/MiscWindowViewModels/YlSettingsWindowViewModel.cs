@@ -256,12 +256,6 @@ namespace YukaLister.ViewModels.MiscWindowViewModels
 			{
 				// タイトルバー
 				Title = "環境設定";
-#if DEBUG
-				Title = "［デバッグ］" + Title;
-#endif
-#if TEST
-				Title = "［テスト］" + Title;
-#endif
 
 				for (Int32 i = 0; i < _ylSettingsTabItemViewModels.Length; i++)
 				{
