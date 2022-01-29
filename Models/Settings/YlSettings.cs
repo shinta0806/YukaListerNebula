@@ -83,6 +83,12 @@ namespace YukaLister.Models.Settings
 		// リスト化対象ファイルの拡張子
 		public List<String> TargetExts { get; set; } = new();
 
+		// オフボーカルと見なす単語（英数は半角小文字表記）
+		public List<String> OffVocalWords { get; set; } = new();
+
+		// オンボーカル・オフボーカル両方と見なす単語（英数は半角小文字表記）
+		public List<String> BothVocalWords { get; set; } = new();
+
 		// --------------------------------------------------------------------
 		// リスト出力
 		// --------------------------------------------------------------------
@@ -405,6 +411,14 @@ namespace YukaLister.Models.Settings
 				TargetExts.Add(Common.FILE_EXT_MPG);
 				TargetExts.Add(Common.FILE_EXT_WMV);
 			}
+			if (OffVocalWords.Count == 0)
+			{
+				OffVocalWords.AddRange(OFF_VOCAL_WORDS.Split(YlConstants.SMART_TRACK_SEPARATOR));
+			}
+			if (BothVocalWords.Count == 0)
+			{
+				BothVocalWords.AddRange(BOTH_VOCAL_WORDS.Split(YlConstants.SMART_TRACK_SEPARATOR));
+			}
 			if (LastIdNumbers.Count < (Int32)MusicInfoTables.__End__)
 			{
 				LastIdNumbers.Clear();
@@ -419,6 +433,10 @@ namespace YukaLister.Models.Settings
 		// ====================================================================
 		// private 定数
 		// ====================================================================
+
+		// スマートトラック判定用の単語（英数は半角小文字表記）
+		private const String OFF_VOCAL_WORDS = "cho|cut|dam|guide|guidevocal|inst|joy|off|offcho|offvocal|offのみ|spleeter|vc|オフ|オフボ|オフボーカル|ボイキャン|ボーカルキャンセル|配信";
+		private const String BOTH_VOCAL_WORDS = "2tr|2ch|onoff|offon";
 
 		// ゆかり用のサーバーポート
 		private const Int32 DEFAULT_WEB_SERVER_PORT = 13582;

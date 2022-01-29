@@ -62,7 +62,7 @@
     </behaviors:Interaction.Triggers>
 
     <StackPanel>
-        <TabControl Height="500" Width="600" Margin="10,10,10,0" SelectedIndex="{Binding SelectedTabIndex}" sb:FileDropAttachedBehavior.DropCommand="{Binding TabControlFileDropCommand}">
+        <TabControl Height="500" Width="700" Margin="10,10,10,0" SelectedIndex="{Binding SelectedTabIndex}" sb:FileDropAttachedBehavior.DropCommand="{Binding TabControlFileDropCommand}">
             <TabItem Header="設定" >
                 <TabItem.DataContext>
                     <Binding Path="YlSettingsTabItemSettingsViewModel" />
@@ -87,18 +87,50 @@
                     <Binding Path="YlSettingsTabItemListTargetViewModel" />
                 </TabItem.DataContext>
                 <StackPanel>
+                    <DockPanel Margin="0,10,0,0">
+                        <Border BorderBrush="{DynamicResource {x:Static SystemColors.ControlLightBrushKey}}" BorderThickness="1" Height="3" VerticalAlignment="Center" Margin="0" Width="20"/>
+                        <Label Content="リスト化対象ファイル" Margin="10,0"/>
+                        <Border BorderBrush="{DynamicResource {x:Static SystemColors.ControlLightBrushKey}}" BorderThickness="1" Height="3" VerticalAlignment="Center" Margin="0"/>
+                    </DockPanel>
                     <StackPanel Orientation="Horizontal" Margin="0,20,0,0">
-                        <Label Content="リスト化対象ファイルの拡張子 (_E)：" Target="{Binding ElementName=ListBoxTargetExts}" Width="220" HorizontalContentAlignment="Right"/>
-                        <ListBox Name="ListBoxTargetExts" ItemsSource="{Binding TargetExts}" SelectedItem="{Binding SelectedTargetExt}" Width="220" Height="200" />
+                        <Label Content="リスト化対象ファイルの拡張子 (_E)：" Target="{Binding ElementName=ListBoxTargetExts}" Width="200" HorizontalContentAlignment="Right"/>
+                        <ListBox Name="ListBoxTargetExts" ItemsSource="{Binding TargetExts}" SelectedItem="{Binding SelectedTargetExt}" Width="180" Height="100" />
+                        <StackPanel Margin="20,0,0,0" >
+                            <StackPanel Orientation="Horizontal" >
+                                <Button Height="Auto" Content="← 追加 (_P)" Style="{StaticResource MaterialDesignRaisedLightButton}" Margin="0" Width="100" Padding="4" Command="{Binding ButtonAddExtClickedCommand}"/>
+                                <TextBox Text="{Binding AddingTargetExt, UpdateSourceTrigger=PropertyChanged}" Width="150" VerticalAlignment="Center" Margin="10,0,0,0" />
+                            </StackPanel>
+                            <Button Height="Auto" Content="× 削除 (_Q)" Style="{StaticResource MaterialDesignRaisedLightButton}" Width="100" Padding="4" Command="{Binding ButtonRemoveExtClickedCommand}" HorizontalAlignment="Left" Margin="0,10,0,0"/>
+                        </StackPanel>
                     </StackPanel>
-                    <StackPanel Orientation="Horizontal" Margin="220,10,0,0">
-                        <Button Height="Auto" Content="↑ 追加 (_A)" Style="{StaticResource MaterialDesignRaisedLightButton}" Margin="0" DockPanel.Dock="Right" Width="100" Padding="4" Command="{Binding ButtonAddExtClickedCommand}"/>
-                        <Button Height="Auto" Content="× 削除 (_R)" Style="{StaticResource MaterialDesignRaisedLightButton}" Margin="20,0,0,0" DockPanel.Dock="Right" Width="100" Padding="4" Command="{Binding ButtonRemoveExtClickedCommand}"/>
+                    <DockPanel Margin="0,10,0,0">
+                        <Border BorderBrush="{DynamicResource {x:Static SystemColors.ControlLightBrushKey}}" BorderThickness="1" Height="3" VerticalAlignment="Center" Margin="0" Width="20"/>
+                        <Label Content="スマートトラック判定用単語" Margin="10,0"/>
+                        <Border BorderBrush="{DynamicResource {x:Static SystemColors.ControlLightBrushKey}}" BorderThickness="1" Height="3" VerticalAlignment="Center" Margin="0"/>
+                    </DockPanel>
+                    <StackPanel Orientation="Horizontal" Margin="0,20,0,0">
+                        <Label Content="オフボーカルと見なす単語 (_F)：" Target="{Binding ElementName=ListBoxOffVocalWords}" Width="200" HorizontalContentAlignment="Right"/>
+                        <ListBox Name="ListBoxOffVocalWords" ItemsSource="{Binding OffVocalWords}" SelectedItem="{Binding SelectedOffVocalWord}" Width="180" Height="100" />
+                        <StackPanel Margin="20,0,0,0" >
+                            <StackPanel Orientation="Horizontal" >
+                                <Button Height="Auto" Content="← 追加 (_R)" Style="{StaticResource MaterialDesignRaisedLightButton}" Margin="0" Width="100" Padding="4" Command="{Binding ButtonAddOffVocalWordClickedCommand}"/>
+                                <TextBox Text="{Binding AddingOffVocalWord, UpdateSourceTrigger=PropertyChanged}" Width="150" VerticalAlignment="Center" Margin="10,0,0,0" />
+                            </StackPanel>
+                            <Button Height="Auto" Content="× 削除 (_S)" Style="{StaticResource MaterialDesignRaisedLightButton}" Width="100" Padding="4" Command="{Binding ButtonRemoveOffVocalWordClickedCommand}" HorizontalAlignment="Left" Margin="0,10,0,0"/>
+                        </StackPanel>
                     </StackPanel>
-                    <StackPanel Orientation="Horizontal" Margin="0,10,0,0">
-                        <Label Content="追加したい拡張子 (_X)：" Target="{Binding ElementName=TextBoxAddingTargetExt}" Width="220" HorizontalContentAlignment="Right"/>
-                        <TextBox Name="TextBoxAddingTargetExt" Text="{Binding AddingTargetExt, UpdateSourceTrigger=PropertyChanged}" Width="220" VerticalAlignment="Center" />
+                    <StackPanel Orientation="Horizontal" Margin="0,20,0,0">
+                        <Label Content="オン・オフ両方と見なす単語 (_B)：" Target="{Binding ElementName=ListBoxBothVocalWords}" Width="200" HorizontalContentAlignment="Right"/>
+                        <ListBox Name="ListBoxBothVocalWords" ItemsSource="{Binding BothVocalWords}" SelectedItem="{Binding SelectedBothVocalWord}" Width="180" Height="100" />
+                        <StackPanel Margin="20,0,0,0" >
+                            <StackPanel Orientation="Horizontal" >
+                                <Button Height="Auto" Content="← 追加 (_T)" Style="{StaticResource MaterialDesignRaisedLightButton}" Margin="0" Width="100" Padding="4" Command="{Binding ButtonAddBothVocalWordClickedCommand}"/>
+                                <TextBox Text="{Binding AddingBothVocalWord, UpdateSourceTrigger=PropertyChanged}" Width="150" VerticalAlignment="Center" Margin="10,0,0,0" />
+                            </StackPanel>
+                            <Button Height="Auto" Content="× 削除 (_U)" Style="{StaticResource MaterialDesignRaisedLightButton}" Width="100" Padding="4" Command="{Binding ButtonRemoveBothVocalWordClickedCommand}" HorizontalAlignment="Left" Margin="0,10,0,0"/>
+                        </StackPanel>
                     </StackPanel>
+                    <Label Content="※上記以外の単語はオンボーカルと見なされます。" Foreground="Gray" Margin="20,0,0,0" />
                 </StackPanel>
             </TabItem>
             <TabItem Header="リスト出力">

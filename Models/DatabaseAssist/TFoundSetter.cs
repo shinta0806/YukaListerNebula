@@ -46,6 +46,10 @@ namespace YukaLister.Models.DatabaseAssist
 			_musicInfoContext.ChangeTracker.QueryTrackingBehavior = QueryTrackingBehavior.NoTracking;
 
 			_categoryNames = DbCommon.SelectCategoryNames(_musicInfoContext.Categories);
+
+			// スマートトラック判定用単語
+			_offVocalWords = YlConstants.SMART_TRACK_SEPARATOR + String.Join(YlConstants.SMART_TRACK_SEPARATOR, YlModel.Instance.EnvModel.YlSettings.OffVocalWords) + YlConstants.SMART_TRACK_SEPARATOR;
+			_bothVocalWords = YlConstants.SMART_TRACK_SEPARATOR + String.Join(YlConstants.SMART_TRACK_SEPARATOR, YlModel.Instance.EnvModel.YlSettings.BothVocalWords) + YlConstants.SMART_TRACK_SEPARATOR;
 		}
 
 		// ====================================================================
@@ -376,14 +380,6 @@ namespace YukaLister.Models.DatabaseAssist
 		}
 
 		// ====================================================================
-		// private 定数
-		// ====================================================================
-
-		// スマートトラック判定用の単語（小文字表記、両端を | で括る）
-		private const String OFF_VOCAL_WORDS = "|cho|cut|dam|guide|guidevocal|inst|joy|off|offcho|offvocal|offのみ|spleeter|vc|オフ|オフボ|オフボーカル|ボイキャン|ボーカルキャンセル|配信|";
-		private const String BOTH_VOCAL_WORDS = "|2tr|2ch|onoff|offon|";
-
-		// ====================================================================
 		// private 変数
 		// ====================================================================
 
@@ -396,6 +392,12 @@ namespace YukaLister.Models.DatabaseAssist
 		// カテゴリー名正規化用
 		private readonly List<String> _categoryNames;
 
+		// オフボーカルと見なす単語
+		private String _offVocalWords;
+
+		// オンボーカル・オフボーカル両方と見なす単語
+		private String _bothVocalWords;
+
 		// Dispose フラグ
 		private Boolean _isDisposed;
 
@@ -406,7 +408,7 @@ namespace YukaLister.Models.DatabaseAssist
 		// --------------------------------------------------------------------
 		// トラック情報からオンボーカル・オフボーカルがあるか解析する
 		// --------------------------------------------------------------------
-		private static (Boolean hasOn, Boolean hasOff) AnalyzeSmartTrack(String? trackString)
+		private (Boolean hasOn, Boolean hasOff) AnalyzeSmartTrack(String? trackString)
 		{
 			Boolean hasOn = false;
 			Boolean hasOff = false;
@@ -416,7 +418,7 @@ namespace YukaLister.Models.DatabaseAssist
 				String[] tracks = trackString.Split(new Char[] { '-', '_', '+', ',', '.', ' ', (Char)0x2010 }, StringSplitOptions.RemoveEmptyEntries);
 				for (Int32 i = 0; i < tracks.Length; i++)
 				{
-					if (BOTH_VOCAL_WORDS.Contains("|" + tracks[i] + "|", StringComparison.OrdinalIgnoreCase))
+					if (_bothVocalWords.Contains("|" + tracks[i] + "|", StringComparison.OrdinalIgnoreCase))
 					{
 						// オンオフ両方を意味する単語の場合
 						hasOn = true;
@@ -424,7 +426,7 @@ namespace YukaLister.Models.DatabaseAssist
 					}
 					else
 					{
-						if (OFF_VOCAL_WORDS.Contains("|" + tracks[i] + "|", StringComparison.OrdinalIgnoreCase))
+						if (_offVocalWords.Contains("|" + tracks[i] + "|", StringComparison.OrdinalIgnoreCase))
 						{
 							// オフを意味する単語の場合
 							hasOff = true;

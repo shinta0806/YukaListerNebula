@@ -753,6 +753,9 @@ namespace YukaLister.Models.SharedMisc
 		// RULE_VAR_ON_VOCAL / RULE_VAR_OFF_VOCAL のデフォルト値
 		public const Int32 RULE_VALUE_VOCAL_DEFAULT = 1;
 
+		// スマートトラック判定用単語の区切り文字
+		public const String SMART_TRACK_SEPARATOR = "|";
+
 		// スマートトラックでトラック有りの場合の印
 		public const String SMART_TRACK_VALID_MARK = "○";
 
