@@ -557,7 +557,7 @@ namespace YukaLister.ViewModels.MiscWindowViewModels
 				sameNameSongs.Insert(0, newSong);
 
 				// ウィンドウの準備
-				using EditSongWindowViewModel editSongWindowViewModel = new(musicInfoContext, musicInfoContext.Songs);
+				using EditSongWindowViewModel editSongWindowViewModel = new(musicInfoContext, musicInfoContext.Songs, ListArtistName);
 				editSongWindowViewModel.SetMasters(sameNameSongs);
 
 				// デフォルト ID の指定

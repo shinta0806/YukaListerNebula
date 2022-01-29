@@ -41,9 +41,22 @@ namespace YukaLister.ViewModels.EditMasterWindowViewModels
 		// --------------------------------------------------------------------
 		// プログラム中で使うべき引数付きコンストラクター
 		// --------------------------------------------------------------------
-		public EditSongWindowViewModel(MusicInfoContextDefault musicInfoContext, DbSet<TSong> records)
+		public EditSongWindowViewModel(MusicInfoContextDefault musicInfoContext, DbSet<TSong> records, String? newSongArtistNames = null)
 				: base(musicInfoContext, records)
 		{
+			if (!String.IsNullOrEmpty(newSongArtistNames))
+			{
+				String[] newSongArtistNameArray = newSongArtistNames.Split(',');
+				foreach (String artistName in newSongArtistNameArray)
+				{
+					TPerson? person = DbCommon.SelectMasterByName(_musicInfoContext.People, artistName);
+					if (person == null)
+					{
+						continue;
+					}
+					_newSongArtists.Add(person);
+				}
+			}
 		}
 
 		// --------------------------------------------------------------------
@@ -1018,7 +1031,15 @@ namespace YukaLister.ViewModels.EditMasterWindowViewModels
 			(HasTag, _tagIds, TagDisplayNames) = ConcatMasterIdsAndNames(_musicInfoContext.Tags, DbCommon.SelectSequencedTagsBySongId(_musicInfoContext.TagSequences, _musicInfoContext.Tags, master.Id));
 
 			// 人物関係
-			(HasArtist, _artistIds, ArtistDisplayNames) = ConcatMasterIdsAndNames(_musicInfoContext.People, DbCommon.SelectSequencedPeopleBySongId(_musicInfoContext.ArtistSequences, _musicInfoContext.People, master.Id));
+			if (master.Id == NewIdForDisplay())
+			{
+				// 新規登録の場合は指定された歌手を使う
+				(HasArtist, _artistIds, ArtistDisplayNames) = ConcatMasterIdsAndNames(_musicInfoContext.People, _newSongArtists);
+			}
+			else
+			{
+				(HasArtist, _artistIds, ArtistDisplayNames) = ConcatMasterIdsAndNames(_musicInfoContext.People, DbCommon.SelectSequencedPeopleBySongId(_musicInfoContext.ArtistSequences, _musicInfoContext.People, master.Id));
+			}
 
 			(HasLyrist, _lyristIds, LyristDisplayNames) = ConcatMasterIdsAndNames(_musicInfoContext.People, DbCommon.SelectSequencedPeopleBySongId(_musicInfoContext.LyristSequences, _musicInfoContext.People, master.Id));
 
@@ -1095,6 +1116,9 @@ namespace YukaLister.ViewModels.EditMasterWindowViewModels
 
 		// 編曲者 ID（カンマ区切りで複数）
 		private String? _arrangerIds;
+
+		// 新規楽曲の場合の歌手群
+		private List<TPerson> _newSongArtists = new();
 
 		// ====================================================================
 		// private 関数
