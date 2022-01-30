@@ -193,6 +193,24 @@ namespace YukaLister.Models.DatabaseAssist
 				}
 			}
 
+			// 作曲者名で絞り込み
+			if (songs.Count > 1 && dicByFile[YlConstants.RULE_VAR_COMMENT] != null)
+			{
+				List<TSong> songsWithComposer = new();
+				foreach (TSong song in songs)
+				{
+					(String? composerNames, _) = ConcatMasterNamesAndRubies(DbCommon.SelectSequencedPeopleBySongId(_musicInfoContext.ComposerSequences, _musicInfoContext.People, song.Id).ToList<IRcMaster>());
+					if (!String.IsNullOrEmpty(composerNames) && dicByFile[YlConstants.RULE_VAR_COMMENT]!.Contains(composerNames))
+					{
+						songsWithComposer.Add(song);
+					}
+				}
+				if (songsWithComposer.Any())
+				{
+					songs = songsWithComposer;
+				}
+			}
+
 			return songs;
 		}
 
