@@ -275,7 +275,6 @@ namespace YukaLister.ViewModels
 		#endregion
 
 		#region ゆかりすたー NEBULA 全体の動作状況ラベルの制御
-
 		private ViewModelCommand? _labelYukaListerStatusClickedCommand;
 
 		public ViewModelCommand LabelYukaListerStatusClickedCommand
@@ -442,7 +441,6 @@ namespace YukaLister.ViewModels
 		#endregion
 
 		#region よくある質問メニューアイテムの制御
-
 		private ViewModelCommand? _menuItemFaqClickedCommand;
 
 		public ViewModelCommand MenuItemFaqClickedCommand
@@ -1422,7 +1420,7 @@ namespace YukaLister.ViewModels
 		// --------------------------------------------------------------------
 		// 既存 DB のジャーナルモード設定（旧バージョンで作成された DB 対策）
 		// --------------------------------------------------------------------
-		private void SetJournalModeIfNeeded()
+		private static void SetJournalModeIfNeeded()
 		{
 			try
 			{

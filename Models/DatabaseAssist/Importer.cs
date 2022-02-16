@@ -44,7 +44,7 @@ namespace YukaLister.Models.DatabaseAssist
 			}
 			else
 			{
-				_importSrcPath = Common.MakeAbsolutePath(YlModel.Instance.EnvModel.ExeFullFolder, importSrcPath);
+				_importSrcPath = Path.GetFullPath(importSrcPath, YlModel.Instance.EnvModel.ExeFullFolder);
 			}
 			_importTag = importTag;
 			_importSameName = importSameName;

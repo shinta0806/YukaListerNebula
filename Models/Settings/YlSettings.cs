@@ -360,7 +360,7 @@ namespace YukaLister.Models.Settings
 			}
 			else
 			{
-				return Common.MakeAbsolutePath(YlModel.Instance.EnvModel.ExeFullFolder, YukariConfigPathSeed2);
+				return Path.GetFullPath(YukariConfigPathSeed2, YlModel.Instance.EnvModel.ExeFullFolder);
 			}
 		}
 
@@ -379,7 +379,7 @@ namespace YukaLister.Models.Settings
 		{
 			if (String.IsNullOrEmpty(YukariRequestDatabasePathSeed))
 			{
-				return Common.MakeAbsolutePath(Path.GetDirectoryName(YukariConfigPath()), FILE_NAME_YUKARI_REQUEST_DB_DEFAULT);
+				return Path.GetFullPath(FILE_NAME_YUKARI_REQUEST_DB_DEFAULT, Path.GetDirectoryName(YukariConfigPath()) ?? String.Empty);
 			}
 			else if (Path.IsPathRooted(YukariRequestDatabasePathSeed))
 			{
@@ -387,7 +387,7 @@ namespace YukaLister.Models.Settings
 			}
 			else
 			{
-				return Common.MakeAbsolutePath(Path.GetDirectoryName(YukariConfigPath()), YukariRequestDatabasePathSeed);
+				return Path.GetFullPath(YukariRequestDatabasePathSeed, Path.GetDirectoryName(YukariConfigPath()) ?? String.Empty);
 			}
 		}
 
