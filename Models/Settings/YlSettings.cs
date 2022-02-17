@@ -67,6 +67,12 @@ namespace YukaLister.Models.Settings
 		// ゆかり側が対応するまでの暫定オプション
 		public Boolean OutputAdditionalYukariAssist { get; set; } = true;
 
+		// 楽曲情報データベースが不十分な場合の誤適用を軽減
+		public Boolean ApplyMusicInfoIntelligently { get; set; }
+
+		// 楽曲情報データベースが不十分な場合の誤適用を軽減する場合の必要適合割合
+		public Int32 IntelligentThreshold { get; set; } = 7;
+
 		// サムネイルを作成する動画の位置 [S]
 		public Int32 ThumbSeekPos { get; set; } = DEFAULT_THUMB_SEEK_POS;
 

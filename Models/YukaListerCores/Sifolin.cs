@@ -67,6 +67,10 @@ namespace YukaLister.Models.YukaListerCores
 
 					YlModel.Instance.EnvModel.YukaListerPartsStatus[(Int32)YukaListerPartsStatusIndex.Sifolin] = YukaListerStatus.Running;
 					YlModel.Instance.EnvModel.LogWriter.LogMessage(Common.TRACE_EVENT_TYPE_STATUS, GetType().Name + " アクティブ化。");
+					if (YlModel.Instance.EnvModel.YlSettings.ApplyMusicInfoIntelligently)
+					{
+						YlModel.Instance.EnvModel.LogWriter.LogMessage(Common.TRACE_EVENT_TYPE_STATUS, "楽曲情報データベースが不十分な場合の誤適用を軽減する設定。");
+					}
 
 					MusicInfoDatabaseToMemory();
 

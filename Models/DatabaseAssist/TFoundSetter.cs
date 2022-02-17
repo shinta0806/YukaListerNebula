@@ -94,6 +94,10 @@ namespace YukaLister.Models.DatabaseAssist
 #endif
 			// 楽曲名で検索
 			List<TSong> songs = DbCommon.SelectMastersByName(_musicInfoContext.Songs, dicByFile[YlConstants.RULE_VAR_TITLE]);
+			if (YlModel.Instance.EnvModel.YlSettings.ApplyMusicInfoIntelligently)
+			{
+				songs = RefineSongIntelligently(songs, dicByFile);
+			}
 
 			// タイアップで絞り込み
 			if (songs.Count > 1)
@@ -546,6 +550,71 @@ namespace YukaLister.Models.DatabaseAssist
 				comment = YlConstants.WEB_LIST_IGNORE_COMMENT_DELIMITER + comment;
 			}
 			return comment;
+		}
+
+		// --------------------------------------------------------------------
+		// 適合割合が高いかどうか
+		// --------------------------------------------------------------------
+		private Boolean MatchIntelligently(String dicByFileName, String musicInfoName)
+		{
+			// 適合割合チェック
+			Int32 numIncludes = 0;
+			foreach (Char chr in dicByFileName)
+			{
+				if (musicInfoName.Contains(chr))
+				{
+					numIncludes++;
+				}
+			}
+
+			return (Double)numIncludes / dicByFileName.Length >= YlModel.Instance.EnvModel.YlSettings.IntelligentThreshold / 10.0;
+		}
+
+		// --------------------------------------------------------------------
+		// 楽曲名だけではなく、タイアップ名と歌手名もある程度合致したもののみを候補とする
+		// --------------------------------------------------------------------
+		private List<TSong> RefineSongIntelligently(List<TSong> songs, Dictionary<String, String?> dicByFile)
+		{
+			List<TSong> refineSongs = new();
+			foreach (TSong song in songs)
+			{
+				// タイアップ名の適合割合をチェック
+				if (dicByFile[YlConstants.RULE_VAR_PROGRAM] != null)
+				{
+					TTieUp? tieUpOfSong = DbCommon.SelectBaseById(_musicInfoContext.TieUps, song.TieUpId);
+					if (tieUpOfSong == null || tieUpOfSong.Name == null)
+					{
+						// タイアップを持たない楽曲は除外
+						continue;
+					}
+					if (!MatchIntelligently(dicByFile[YlConstants.RULE_VAR_PROGRAM]!, tieUpOfSong.Name))
+					{
+						// タイアップ名の適合割合が低い楽曲は除外
+						continue;
+					}
+				}
+
+				// 歌手名の適合割合をチェック
+				if (dicByFile[YlConstants.RULE_VAR_ARTIST] != null)
+				{
+					(String? artistNames, _) = ConcatMasterNamesAndRubies(DbCommon.SelectSequencedPeopleBySongId(_musicInfoContext.ArtistSequences, _musicInfoContext.People, song.Id)
+							.ToList<IRcMaster>());
+					if (String.IsNullOrEmpty(artistNames))
+					{
+						// 歌手を持たない楽曲は除外
+						continue;
+					}
+					if (!MatchIntelligently(dicByFile[YlConstants.RULE_VAR_ARTIST]!, artistNames))
+					{
+						// 歌手名の適合割合が低い楽曲は除外
+						continue;
+					}
+				}
+
+				// 候補とする
+				refineSongs.Add(song);
+			}
+			return refineSongs;
 		}
 
 		// --------------------------------------------------------------------

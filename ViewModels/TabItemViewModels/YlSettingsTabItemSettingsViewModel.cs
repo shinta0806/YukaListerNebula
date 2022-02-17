@@ -89,6 +89,14 @@ namespace YukaLister.ViewModels.TabItemViewModels
 			set => RaisePropertyChangedIfSet(ref _outputAdditionalYukariAssist, value);
 		}
 
+		// 楽曲情報データベースが不十分な場合の誤適用を軽減
+		private Boolean _applyMusicInfoIntelligently;
+		public Boolean ApplyMusicInfoIntelligently
+		{
+			get => _applyMusicInfoIntelligently;
+			set => RaisePropertyChangedIfSet(ref _applyMusicInfoIntelligently, value);
+		}
+
 		// ID 接頭辞
 		private String? _idPrefix;
 		public String? IdPrefix
@@ -189,6 +197,7 @@ namespace YukaLister.ViewModels.TabItemViewModels
 			YlModel.Instance.EnvModel.YlSettings.AddFolderOnDeviceArrived = AddFolderOnDeviceArrived;
 			YlModel.Instance.EnvModel.YlSettings.ProvideYukariPreview = ProvideYukariPreview;
 			YlModel.Instance.EnvModel.YlSettings.OutputAdditionalYukariAssist = OutputAdditionalYukariAssist;
+			YlModel.Instance.EnvModel.YlSettings.ApplyMusicInfoIntelligently = ApplyMusicInfoIntelligently;
 			YlModel.Instance.EnvModel.YlSettings.IdPrefix = IdPrefix;
 		}
 
@@ -201,6 +210,7 @@ namespace YukaLister.ViewModels.TabItemViewModels
 			AddFolderOnDeviceArrived = YlModel.Instance.EnvModel.YlSettings.AddFolderOnDeviceArrived;
 			ProvideYukariPreview = YlModel.Instance.EnvModel.YlSettings.ProvideYukariPreview;
 			OutputAdditionalYukariAssist = YlModel.Instance.EnvModel.YlSettings.OutputAdditionalYukariAssist;
+			ApplyMusicInfoIntelligently = YlModel.Instance.EnvModel.YlSettings.ApplyMusicInfoIntelligently;
 			IdPrefix = YlModel.Instance.EnvModel.YlSettings.IdPrefix;
 		}
 	}
