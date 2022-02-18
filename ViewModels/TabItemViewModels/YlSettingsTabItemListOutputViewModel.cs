@@ -338,7 +338,7 @@ namespace YukaLister.ViewModels.TabItemViewModels
 		{
 			try
 			{
-				if (String.IsNullOrEmpty(folderSelectionMessage.Response[0]))
+				if (folderSelectionMessage.Response == null)
 				{
 					return;
 				}
