@@ -14,6 +14,7 @@ using Shinta;
 
 using System;
 using System.Diagnostics;
+using System.Windows;
 
 using YukaLister.Models.SharedMisc;
 using YukaLister.Models.YukaListerModels;
@@ -94,7 +95,19 @@ namespace YukaLister.ViewModels.TabItemViewModels
 		public Boolean ApplyMusicInfoIntelligently
 		{
 			get => _applyMusicInfoIntelligently;
-			set => RaisePropertyChangedIfSet(ref _applyMusicInfoIntelligently, value);
+			set
+			{
+				if (_isApplyMusicInfoIntelligentlyWarningEnabled && !_applyMusicInfoIntelligently && value
+						&& MessageBox.Show("このオプションを有効にすると、処理速度が遅くなります。\n\n"
+						+ "楽曲情報データベースを整備するまでの暫定対応としてのみ使用し、楽曲情報データベースを整備次第、このオプションは無効にしてください。\n\n"
+						+ "本当に有効にしてもよろしいですか？", "警告", MessageBoxButton.YesNo, MessageBoxImage.Warning)
+						!= MessageBoxResult.Yes)
+				{
+					return;
+				}
+
+				RaisePropertyChangedIfSet(ref _applyMusicInfoIntelligently, value);
+			}
 		}
 
 		// ID 接頭辞
@@ -212,6 +225,17 @@ namespace YukaLister.ViewModels.TabItemViewModels
 			OutputAdditionalYukariAssist = YlModel.Instance.EnvModel.YlSettings.OutputAdditionalYukariAssist;
 			ApplyMusicInfoIntelligently = YlModel.Instance.EnvModel.YlSettings.ApplyMusicInfoIntelligently;
 			IdPrefix = YlModel.Instance.EnvModel.YlSettings.IdPrefix;
+
+			// 初期化完了で警告を有効にする
+			_isApplyMusicInfoIntelligentlyWarningEnabled = true;
 		}
+
+		// ====================================================================
+		// private 変数
+		// ====================================================================
+
+		// 楽曲情報データベースが不十分な場合の誤適用を軽減を有効にしようとした時の警告を表示するか
+		// 初期化時に表示されるのを抑止するため
+		private Boolean _isApplyMusicInfoIntelligentlyWarningEnabled;
 	}
 }
