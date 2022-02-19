@@ -53,14 +53,6 @@ namespace YukaLister.ViewModels.MiscWindowViewModels
 		// View 通信用のプロパティー
 		// --------------------------------------------------------------------
 
-		// アクティブ
-		private Boolean _isActive;
-		public Boolean IsActive
-		{
-			get => _isActive;
-			set => RaisePropertyChangedIfSet(ref _isActive, value);
-		}
-
 		// キーワード
 		private String? keyword;
 		public String? Keyword
@@ -199,11 +191,12 @@ namespace YukaLister.ViewModels.MiscWindowViewModels
 		// --------------------------------------------------------------------
 		// ウィンドウをアクティブ化する
 		// --------------------------------------------------------------------
-		public void Activate()
+		public override void Activate()
 		{
+			base.Activate();
+
 			try
 			{
-				IsActive = true;
 				IsKeywordFocused = true;
 
 				// キーワード全選択

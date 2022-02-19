@@ -712,7 +712,7 @@ namespace YukaLister.ViewModels.MiscWindowViewModels
 			try
 			{
 				// 保存
-				SaveSettingsIfNeeded();
+				SaveSettings();
 
 				// 検索（async を待機しない）
 				_ = YlCommon.LaunchTaskAsync<Object?>(_semaphoreSlim, UpdatePreviewResultByWorker, null, "ファイル検索");
@@ -975,36 +975,6 @@ namespace YukaLister.ViewModels.MiscWindowViewModels
 		}
 		#endregion
 
-		#region OK ボタンの制御
-		private ViewModelCommand? _buttonOKClickedCommand;
-
-		public ViewModelCommand ButtonOKClickedCommand
-		{
-			get
-			{
-				if (_buttonOKClickedCommand == null)
-				{
-					_buttonOKClickedCommand = new ViewModelCommand(ButtonOKClicked);
-				}
-				return _buttonOKClickedCommand;
-			}
-		}
-
-		public void ButtonOKClicked()
-		{
-			try
-			{
-				SaveSettingsIfNeeded();
-				Messenger.Raise(new WindowActionMessage(YlConstants.MESSAGE_KEY_WINDOW_CLOSE));
-			}
-			catch (Exception excep)
-			{
-				YlModel.Instance.EnvModel.LogWriter.ShowLogMessage(TraceEventType.Error, "OK ボタンクリック時エラー：\n" + excep.Message);
-				YlModel.Instance.EnvModel.LogWriter.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, "　スタックトレース：\n" + excep.StackTrace);
-			}
-		}
-		#endregion
-
 		// ====================================================================
 		// public 関数
 		// ====================================================================
@@ -1060,6 +1030,143 @@ namespace YukaLister.ViewModels.MiscWindowViewModels
 			catch (Exception excep)
 			{
 				YlModel.Instance.EnvModel.LogWriter.ShowLogMessage(TraceEventType.Error, "フォルダー設定ウィンドウ初期化時エラー：\n" + excep.Message);
+				YlModel.Instance.EnvModel.LogWriter.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, "　スタックトレース：\n" + excep.StackTrace);
+			}
+		}
+
+		// ====================================================================
+		// protected 関数
+		// ====================================================================
+
+		// --------------------------------------------------------------------
+		// 設定が更新されていれば保存
+		// ＜例外＞ OperationCanceledException, Exception
+		// --------------------------------------------------------------------
+		protected override void SaveSettings()
+		{
+			// 設定途中のファイル命名規則を確認
+			if (!String.IsNullOrEmpty(FileNameRule) && !IsFileNameRuleAdded())
+			{
+				switch (MessageBox.Show("ファイル命名規則に入力中の\n" + FileNameRule + "\nはまだ命名規則として追加されていません。\n追加しますか？",
+						"確認", MessageBoxButton.YesNoCancel, MessageBoxImage.Exclamation))
+				{
+					case MessageBoxResult.Yes:
+						AddFileNameRule();
+						break;
+					case MessageBoxResult.No:
+						break;
+					case MessageBoxResult.Cancel:
+						throw new OperationCanceledException("保存を中止しました。");
+				}
+			}
+
+			// 設定途中のフォルダー固定値を確認
+			String? folderNameRuleFromProperty = FolderNameRuleFromProperty();
+			if (!String.IsNullOrEmpty(FolderNameRuleValueFromProperty())
+					&& !String.IsNullOrEmpty(folderNameRuleFromProperty) && !FolderNameRules.Contains(folderNameRuleFromProperty))
+			{
+				switch (MessageBox.Show("固定値項目に入力中の\n" + folderNameRuleFromProperty + "\nはまだ固定値として追加されていません。\n追加しますか？",
+						"確認", MessageBoxButton.YesNoCancel, MessageBoxImage.Exclamation))
+				{
+					case MessageBoxResult.Yes:
+						AddFolderNameRule();
+						break;
+					case MessageBoxResult.No:
+						break;
+					case MessageBoxResult.Cancel:
+						throw new OperationCanceledException("保存を中止しました。");
+				}
+			}
+
+			if (!_isDirty)
+			{
+				return;
+			}
+
+			// 保存（タグ以外）
+			FolderSettingsInDisk folderSettings = PropertiesToSettings2();
+			SaveFolderSettingsInDisk(folderSettings);
+
+			// 保存（タグを環境設定に）
+			List<String> folderNameRulesList = FolderNameRules.ToList();
+			Int32 tagIndex = FindTagRule(folderNameRulesList);
+			String? tagKey = YlCommon.WithoutDriveLetter(FolderPath);
+			if (!String.IsNullOrEmpty(tagKey))
+			{
+				if (tagIndex >= 0)
+				{
+					// 追加
+					YlModel.Instance.EnvModel.TagSettings.FolderTags[tagKey] = FindRuleValue(folderNameRulesList[tagIndex]);
+				}
+				else
+				{
+					// 削除
+					YlModel.Instance.EnvModel.TagSettings.FolderTags.TryRemove(tagKey, out _);
+				}
+			}
+			YlModel.Instance.EnvModel.TagSettings.Save();
+
+			// 保存（除外設定）
+			String yukaListerExcludeConfigPath = FolderPath + '\\' + YlConstants.FILE_NAME_YUKA_LISTER_EXCLUDE_CONFIG;
+			if (IsExcluded)
+			{
+				if (!File.Exists(yukaListerExcludeConfigPath))
+				{
+					File.Create(yukaListerExcludeConfigPath);
+				}
+			}
+			else
+			{
+				YlCommon.DeleteFileIfExists(yukaListerExcludeConfigPath);
+			}
+
+			// ニコカラりすたーの設定ファイルがある場合は削除
+			YlCommon.DeleteFileIfExists(FolderPath + '\\' + YlConstants.FILE_NAME_NICO_KARA_LISTER_CONFIG);
+
+			// 設定ファイルの状態
+			SettingsFileStatus = YlCommon.DetectFolderSettingsStatus2Ex(FolderPath);
+
+			_isDirty = false;
+		}
+
+		// --------------------------------------------------------------------
+		// フォルダー設定を読み込み、プロパティーに反映する
+		// --------------------------------------------------------------------
+		protected override void SettingsToProperties()
+		{
+			try
+			{
+				// 設定ファイルの状態
+				SettingsFileStatus = YlCommon.DetectFolderSettingsStatus2Ex(FolderPath);
+
+				// 読み込み
+				FolderSettingsInDisk settings = YlCommon.LoadFolderSettings(FolderPath);
+
+				// 設定反映
+				FileNameRules.Clear();
+				foreach (String fileNameRule in settings.FileNameRules)
+				{
+					FileNameRules.Add(fileNameRule);
+				}
+				FolderNameRules.Clear();
+				foreach (String folderNameRule in settings.FolderNameRules)
+				{
+					FolderNameRules.Add(folderNameRule);
+				}
+
+				// タグ設定
+				String tagKey = YlCommon.WithoutDriveLetter(FolderPath);
+				if (YlModel.Instance.EnvModel.TagSettings.FolderTags.ContainsKey(tagKey))
+				{
+					FolderNameRules.Add(WrapVarName(YlConstants.RULE_VAR_TAG) + "=" + YlModel.Instance.EnvModel.TagSettings.FolderTags[tagKey]);
+				}
+
+				// 除外設定
+				IsExcluded = YlCommon.DetectFolderExcludeSettingsStatus(FolderPath) == FolderExcludeSettingsStatus.True;
+			}
+			catch (Exception excep)
+			{
+				YlModel.Instance.EnvModel.LogWriter.ShowLogMessage(TraceEventType.Error, "設定読み込み時エラー：\n" + excep.Message);
 				YlModel.Instance.EnvModel.LogWriter.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, "　スタックトレース：\n" + excep.StackTrace);
 			}
 		}
@@ -1526,7 +1633,7 @@ namespace YukaLister.ViewModels.MiscWindowViewModels
 		// プロパティーの値を設定に格納
 		// ただしタグは除く
 		// --------------------------------------------------------------------
-		private FolderSettingsInDisk PropertiesToSettings()
+		private FolderSettingsInDisk PropertiesToSettings2()
 		{
 			FolderSettingsInDisk folderSettings = new();
 
@@ -1559,97 +1666,6 @@ namespace YukaLister.ViewModels.MiscWindowViewModels
 			{
 				File.SetAttributes(yukaListerConfigPath, prevAttr);
 			}
-		}
-
-		// --------------------------------------------------------------------
-		// 設定が更新されていれば保存
-		// ＜例外＞ OperationCanceledException, Exception
-		// --------------------------------------------------------------------
-		private void SaveSettingsIfNeeded()
-		{
-			// 設定途中のファイル命名規則を確認
-			if (!String.IsNullOrEmpty(FileNameRule) && !IsFileNameRuleAdded())
-			{
-				switch (MessageBox.Show("ファイル命名規則に入力中の\n" + FileNameRule + "\nはまだ命名規則として追加されていません。\n追加しますか？",
-						"確認", MessageBoxButton.YesNoCancel, MessageBoxImage.Exclamation))
-				{
-					case MessageBoxResult.Yes:
-						AddFileNameRule();
-						break;
-					case MessageBoxResult.No:
-						break;
-					case MessageBoxResult.Cancel:
-						throw new OperationCanceledException("保存を中止しました。");
-				}
-			}
-
-			// 設定途中のフォルダー固定値を確認
-			String? folderNameRuleFromProperty = FolderNameRuleFromProperty();
-			if (!String.IsNullOrEmpty(FolderNameRuleValueFromProperty())
-					&& !String.IsNullOrEmpty(folderNameRuleFromProperty) && !FolderNameRules.Contains(folderNameRuleFromProperty))
-			{
-				switch (MessageBox.Show("固定値項目に入力中の\n" + folderNameRuleFromProperty + "\nはまだ固定値として追加されていません。\n追加しますか？",
-						"確認", MessageBoxButton.YesNoCancel, MessageBoxImage.Exclamation))
-				{
-					case MessageBoxResult.Yes:
-						AddFolderNameRule();
-						break;
-					case MessageBoxResult.No:
-						break;
-					case MessageBoxResult.Cancel:
-						throw new OperationCanceledException("保存を中止しました。");
-				}
-			}
-
-			if (!_isDirty)
-			{
-				return;
-			}
-
-			// 保存（タグ以外）
-			FolderSettingsInDisk folderSettings = PropertiesToSettings();
-			SaveFolderSettingsInDisk(folderSettings);
-
-			// 保存（タグを環境設定に）
-			List<String> folderNameRulesList = FolderNameRules.ToList();
-			Int32 tagIndex = FindTagRule(folderNameRulesList);
-			String? tagKey = YlCommon.WithoutDriveLetter(FolderPath);
-			if (!String.IsNullOrEmpty(tagKey))
-			{
-				if (tagIndex >= 0)
-				{
-					// 追加
-					YlModel.Instance.EnvModel.TagSettings.FolderTags[tagKey] = FindRuleValue(folderNameRulesList[tagIndex]);
-				}
-				else
-				{
-					// 削除
-					YlModel.Instance.EnvModel.TagSettings.FolderTags.TryRemove(tagKey, out _);
-				}
-			}
-			YlModel.Instance.EnvModel.TagSettings.Save();
-
-			// 保存（除外設定）
-			String yukaListerExcludeConfigPath = FolderPath + '\\' + YlConstants.FILE_NAME_YUKA_LISTER_EXCLUDE_CONFIG;
-			if (IsExcluded)
-			{
-				if (!File.Exists(yukaListerExcludeConfigPath))
-				{
-					File.Create(yukaListerExcludeConfigPath);
-				}
-			}
-			else
-			{
-				YlCommon.DeleteFileIfExists(yukaListerExcludeConfigPath);
-			}
-
-			// ニコカラりすたーの設定ファイルがある場合は削除
-			YlCommon.DeleteFileIfExists(FolderPath + '\\' + YlConstants.FILE_NAME_NICO_KARA_LISTER_CONFIG);
-
-			// 設定ファイルの状態
-			SettingsFileStatus = YlCommon.DetectFolderSettingsStatus2Ex(FolderPath);
-
-			_isDirty = false;
 		}
 
 		// --------------------------------------------------------------------
@@ -1728,48 +1744,6 @@ namespace YukaLister.ViewModels.MiscWindowViewModels
 			catch (Exception excep)
 			{
 				YlModel.Instance.EnvModel.LogWriter.ShowLogMessage(TraceEventType.Error, "固定値入力反映時エラー：\n" + excep.Message);
-				YlModel.Instance.EnvModel.LogWriter.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, "　スタックトレース：\n" + excep.StackTrace);
-			}
-		}
-
-		// --------------------------------------------------------------------
-		// フォルダー設定を読み込み、プロパティーに反映する
-		// --------------------------------------------------------------------
-		private void SettingsToProperties()
-		{
-			try
-			{
-				// 設定ファイルの状態
-				SettingsFileStatus = YlCommon.DetectFolderSettingsStatus2Ex(FolderPath);
-
-				// 読み込み
-				FolderSettingsInDisk settings = YlCommon.LoadFolderSettings(FolderPath);
-
-				// 設定反映
-				FileNameRules.Clear();
-				foreach (String fileNameRule in settings.FileNameRules)
-				{
-					FileNameRules.Add(fileNameRule);
-				}
-				FolderNameRules.Clear();
-				foreach (String folderNameRule in settings.FolderNameRules)
-				{
-					FolderNameRules.Add(folderNameRule);
-				}
-
-				// タグ設定
-				String tagKey = YlCommon.WithoutDriveLetter(FolderPath);
-				if (YlModel.Instance.EnvModel.TagSettings.FolderTags.ContainsKey(tagKey))
-				{
-					FolderNameRules.Add(WrapVarName(YlConstants.RULE_VAR_TAG) + "=" + YlModel.Instance.EnvModel.TagSettings.FolderTags[tagKey]);
-				}
-
-				// 除外設定
-				IsExcluded = YlCommon.DetectFolderExcludeSettingsStatus(FolderPath) == FolderExcludeSettingsStatus.True;
-			}
-			catch (Exception excep)
-			{
-				YlModel.Instance.EnvModel.LogWriter.ShowLogMessage(TraceEventType.Error, "設定読み込み時エラー：\n" + excep.Message);
 				YlModel.Instance.EnvModel.LogWriter.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, "　スタックトレース：\n" + excep.StackTrace);
 			}
 		}

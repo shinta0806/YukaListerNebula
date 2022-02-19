@@ -102,19 +102,6 @@ namespace YukaLister.ViewModels.ReportWindowViewModels
 			set => RaisePropertyChangedIfSet(ref _selectedStatusString, value);
 		}
 
-		// OK ボタンフォーカス
-		private Boolean _isButtonOkFocused;
-		public Boolean IsButtonOkFocused
-		{
-			get => _isButtonOkFocused;
-			set
-			{
-				// 再度フォーカスを当てられるように強制伝播
-				_isButtonOkFocused = value;
-				RaisePropertyChanged(nameof(IsButtonOkFocused));
-			}
-		}
-
 		// --------------------------------------------------------------------
 		// コマンド
 		// --------------------------------------------------------------------
@@ -214,41 +201,6 @@ namespace YukaLister.ViewModels.ReportWindowViewModels
 		}
 		#endregion
 
-		#region OK ボタンの制御
-		private ViewModelCommand? _buttonOkClickedCommand;
-
-		public ViewModelCommand ButtonOkClickedCommand
-		{
-			get
-			{
-				if (_buttonOkClickedCommand == null)
-				{
-					_buttonOkClickedCommand = new ViewModelCommand(ButtonOKClicked);
-				}
-				return _buttonOkClickedCommand;
-			}
-		}
-
-		public void ButtonOKClicked()
-		{
-			try
-			{
-				// Enter キーでボタンが押された場合はテキストボックスからフォーカスが移らずプロパティーが更新されないため強制フォーカス
-				IsButtonOkFocused = true;
-
-				CheckAndSave();
-
-				Result = MessageBoxResult.OK;
-				Messenger.Raise(new WindowActionMessage(YlConstants.MESSAGE_KEY_WINDOW_CLOSE));
-			}
-			catch (Exception excep)
-			{
-				YlModel.Instance.EnvModel.LogWriter.ShowLogMessage(TraceEventType.Error, "OK ボタンクリック時エラー：\n" + excep.Message);
-				YlModel.Instance.EnvModel.LogWriter.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, "　スタックトレース：\n" + excep.StackTrace);
-			}
-		}
-		#endregion
-
 		// ====================================================================
 		// public 関数
 		// ====================================================================
@@ -281,13 +233,13 @@ namespace YukaLister.ViewModels.ReportWindowViewModels
 		}
 
 		// ====================================================================
-		// private 関数
+		// protected 関数
 		// ====================================================================
 
 		// --------------------------------------------------------------------
-		// 保存
+		// 保存（兼、チェック）
 		// --------------------------------------------------------------------
-		private void CheckAndSave()
+		protected override void SaveSettings()
 		{
 			using ReportContext reportContext = new();
 			TReport? record = DbCommon.SelectBaseById(reportContext.Reports, Report.Id);
@@ -305,6 +257,10 @@ namespace YukaLister.ViewModels.ReportWindowViewModels
 			// 保存
 			reportContext.SaveChanges();
 		}
+
+		// ====================================================================
+		// private 関数
+		// ====================================================================
 
 		// --------------------------------------------------------------------
 		// Report の内容をプロパティーに反映

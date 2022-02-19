@@ -9,7 +9,6 @@
 // ----------------------------------------------------------------------------
 
 using Livet.Commands;
-using Livet.Messaging.Windows;
 
 using Shinta;
 
@@ -116,19 +115,6 @@ namespace YukaLister.ViewModels.OutputSettingsWindowViewModels
 			set => RaisePropertyChangedIfSet(ref _minTabControlWidth, value);
 		}
 
-		// OK ボタンフォーカス
-		private Boolean _isButtonOkFocused;
-		public Boolean IsButtonOkFocused
-		{
-			get => _isButtonOkFocused;
-			set
-			{
-				// 再度フォーカスを当てられるように強制伝播
-				_isButtonOkFocused = value;
-				RaisePropertyChanged(nameof(IsButtonOkFocused));
-			}
-		}
-
 		#endregion
 
 		#region 基本設定タブのプロパティー
@@ -210,46 +196,6 @@ namespace YukaLister.ViewModels.OutputSettingsWindowViewModels
 		}
 		#endregion
 
-		#region OK ボタンの制御
-		private ViewModelCommand? _buttonOkClickedCommand;
-
-		public ViewModelCommand ButtonOkClickedCommand
-		{
-			get
-			{
-				if (_buttonOkClickedCommand == null)
-				{
-					_buttonOkClickedCommand = new ViewModelCommand(ButtonOkClicked);
-				}
-				return _buttonOkClickedCommand;
-			}
-		}
-
-		public void ButtonOkClicked()
-		{
-			try
-			{
-				// Enter キーでボタンが押された場合はテキストボックスからフォーカスが移らずプロパティーが更新されないため強制フォーカス
-				IsButtonOkFocused = true;
-
-				CheckInput();
-				PropertiesToSettings();
-				_outputWriter.OutputSettings.Save();
-				Result = MessageBoxResult.OK;
-				Messenger.Raise(new WindowActionMessage(YlConstants.MESSAGE_KEY_WINDOW_CLOSE));
-			}
-			catch (OperationCanceledException)
-			{
-				YlModel.Instance.EnvModel.LogWriter.LogMessage(Common.TRACE_EVENT_TYPE_STATUS, "設定変更を中止しました。");
-			}
-			catch (Exception excep)
-			{
-				YlModel.Instance.EnvModel.LogWriter.ShowLogMessage(TraceEventType.Error, "OK ボタンクリック時エラー：\n" + excep.Message);
-				YlModel.Instance.EnvModel.LogWriter.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, "　スタックトレース：\n" + excep.StackTrace);
-			}
-		}
-		#endregion
-
 		// ====================================================================
 		// public 関数
 		// ====================================================================
@@ -324,18 +270,12 @@ namespace YukaLister.ViewModels.OutputSettingsWindowViewModels
 		}
 
 		// --------------------------------------------------------------------
-		// 設定画面に入力された値が適正か確認
-		// ＜例外＞ Exception
-		// --------------------------------------------------------------------
-		protected virtual void CheckInput()
-		{
-		}
-
-		// --------------------------------------------------------------------
 		// プロパティーから設定に反映
 		// --------------------------------------------------------------------
-		protected virtual void PropertiesToSettings()
+		protected override void PropertiesToSettings()
 		{
+			base.PropertiesToSettings();
+
 			// 出力項目のタイプ
 			_outputWriter.OutputSettings.OutputAllItems = OutputAllItems;
 
@@ -353,10 +293,20 @@ namespace YukaLister.ViewModels.OutputSettingsWindowViewModels
 		}
 
 		// --------------------------------------------------------------------
+		// 設定を保存
+		// --------------------------------------------------------------------
+		protected override void SaveSettings()
+		{
+			_outputWriter.OutputSettings.Save();
+		}
+
+		// --------------------------------------------------------------------
 		// 設定をプロパティーに反映
 		// --------------------------------------------------------------------
-		protected virtual void SettingsToProperties()
+		protected override void SettingsToProperties()
 		{
+			base.SettingsToProperties();
+
 			// 出力項目のタイプ
 			OutputAllItems = _outputWriter.OutputSettings.OutputAllItems;
 			OutputAllItemsInvert = !OutputAllItems;

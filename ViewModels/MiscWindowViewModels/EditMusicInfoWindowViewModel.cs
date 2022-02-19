@@ -627,42 +627,6 @@ namespace YukaLister.ViewModels.MiscWindowViewModels
 		}
 		#endregion
 
-		#region OK ボタンの制御
-		private ViewModelCommand? _buttonOkClickedCommand;
-
-		public ViewModelCommand ButtonOkClickedCommand
-		{
-			get
-			{
-				if (_buttonOkClickedCommand == null)
-				{
-					_buttonOkClickedCommand = new ViewModelCommand(ButtonOkClicked);
-				}
-				return _buttonOkClickedCommand;
-			}
-		}
-
-		public async void ButtonOkClicked()
-		{
-			try
-			{
-				(String? songOriginalId, String? tieUpOriginalId) = CheckInput();
-				await Save(songOriginalId, tieUpOriginalId);
-				Messenger.Raise(new WindowActionMessage(YlConstants.MESSAGE_KEY_WINDOW_CLOSE));
-			}
-			catch (OperationCanceledException excep)
-			{
-				YlModel.Instance.EnvModel.LogWriter.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, "OK ボタンクリック時中止");
-				YlModel.Instance.EnvModel.LogWriter.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, "　スタックトレース：\n" + excep.StackTrace);
-			}
-			catch (Exception excep)
-			{
-				YlModel.Instance.EnvModel.LogWriter.ShowLogMessage(TraceEventType.Error, "OK ボタンクリック時エラー：\n" + excep.Message);
-				YlModel.Instance.EnvModel.LogWriter.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, "　スタックトレース：\n" + excep.StackTrace);
-			}
-		}
-		#endregion
-
 		// ====================================================================
 		// public 関数
 		// ====================================================================
@@ -700,6 +664,19 @@ namespace YukaLister.ViewModels.MiscWindowViewModels
 				YlModel.Instance.EnvModel.LogWriter.ShowLogMessage(TraceEventType.Error, "楽曲情報等編集ウィンドウ初期化時エラー：\n" + excep.Message);
 				YlModel.Instance.EnvModel.LogWriter.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, "　スタックトレース：\n" + excep.StackTrace);
 			}
+		}
+
+		// ====================================================================
+		// protected 関数
+		// ====================================================================
+
+		// --------------------------------------------------------------------
+		// 設定を保存
+		// --------------------------------------------------------------------
+		protected override async void SaveSettings()
+		{
+			(String? songOriginalId, String? tieUpOriginalId) = CheckInput();
+			await Save(songOriginalId, tieUpOriginalId);
 		}
 
 		// ====================================================================

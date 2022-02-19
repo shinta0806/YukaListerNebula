@@ -403,37 +403,6 @@ namespace YukaLister.ViewModels.EditSequenceWindowViewModels
 		}
 		#endregion
 
-		#region OK ボタンの制御
-		private ViewModelCommand? _buttonOkClickedCommand;
-
-		public ViewModelCommand ButtonOkClickedCommand
-		{
-			get
-			{
-				if (_buttonOkClickedCommand == null)
-				{
-					_buttonOkClickedCommand = new ViewModelCommand(ButtonOkClicked);
-				}
-				return _buttonOkClickedCommand;
-			}
-		}
-
-		public void ButtonOkClicked()
-		{
-			try
-			{
-				Result = MessageBoxResult.OK;
-				OkSelectedMasters = Masters.ToList();
-				Messenger.Raise(new WindowActionMessage(YlConstants.MESSAGE_KEY_WINDOW_CLOSE));
-			}
-			catch (Exception excep)
-			{
-				YlModel.Instance.EnvModel.LogWriter.ShowLogMessage(TraceEventType.Error, "OK ボタンクリック時エラー：\n" + excep.Message);
-				YlModel.Instance.EnvModel.LogWriter.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, "　スタックトレース：\n" + excep.StackTrace);
-			}
-		}
-		#endregion
-
 		// ====================================================================
 		// public 関数
 		// ====================================================================
@@ -492,6 +461,16 @@ namespace YukaLister.ViewModels.EditSequenceWindowViewModels
 		// マスター編集ウィンドウの ViewModel 作成
 		// --------------------------------------------------------------------
 		protected abstract EditMasterWindowViewModel<T> CreateEditMasterWindowViewModel();
+
+		// --------------------------------------------------------------------
+		// 設定を保存
+		// --------------------------------------------------------------------
+		protected override void SaveSettings()
+		{
+			base.SaveSettings();
+
+			OkSelectedMasters = Masters.ToList();
+		}
 
 		// ====================================================================
 		// private 変数

@@ -179,9 +179,9 @@ namespace YukaLister.ViewModels.EditMasterWindowViewModels
 		// 入力値を確認する
 		// ＜例外＞ Exception, OperationCanceledException
 		// --------------------------------------------------------------------
-		protected override void CheckInput()
+		protected override void CheckProperties()
 		{
-			base.CheckInput();
+			base.CheckProperties();
 
 			// チェックされているのに指定されていない項目を確認
 			if (HasCategory && String.IsNullOrEmpty(_categoryId))

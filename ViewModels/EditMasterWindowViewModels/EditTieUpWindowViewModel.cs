@@ -349,9 +349,9 @@ namespace YukaLister.ViewModels.EditMasterWindowViewModels
 		// 入力値を確認する
 		// ＜例外＞ Exception
 		// --------------------------------------------------------------------
-		protected override void CheckInput()
+		protected override void CheckProperties()
 		{
-			base.CheckInput();
+			base.CheckProperties();
 
 			// チェックされているのに指定されていない項目を確認
 			if (HasMaker && String.IsNullOrEmpty(_makerId))
@@ -422,7 +422,7 @@ namespace YukaLister.ViewModels.EditMasterWindowViewModels
 		// --------------------------------------------------------------------
 		// レコード保存
 		// --------------------------------------------------------------------
-		protected override async Task Save(TTieUp master)
+		protected override async Task SaveRecord(TTieUp master)
 		{
 			if (master.Id == NewIdForDisplay())
 			{

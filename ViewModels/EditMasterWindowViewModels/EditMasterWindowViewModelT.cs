@@ -144,19 +144,6 @@ namespace YukaLister.ViewModels.EditMasterWindowViewModels
 			set => RaisePropertyChangedIfSet(ref _keywordHint, value);
 		}
 
-		// OK ボタンフォーカス
-		private Boolean _isButtonOkFocused;
-		public Boolean IsButtonOkFocused
-		{
-			get => _isButtonOkFocused;
-			set
-			{
-				// 再度フォーカスを当てられるように強制伝播
-				_isButtonOkFocused = value;
-				RaisePropertyChanged(nameof(IsButtonOkFocused));
-			}
-		}
-
 		// --------------------------------------------------------------------
 		// 一般のプロパティー
 		// --------------------------------------------------------------------
@@ -236,56 +223,6 @@ namespace YukaLister.ViewModels.EditMasterWindowViewModels
 			catch (Exception excep)
 			{
 				YlModel.Instance.EnvModel.LogWriter.ShowLogMessage(TraceEventType.Error, "削除ボタンクリック時エラー：\n" + excep.Message);
-				YlModel.Instance.EnvModel.LogWriter.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, "　スタックトレース：\n" + excep.StackTrace);
-			}
-		}
-		#endregion
-
-		#region OK ボタンの制御
-		private ViewModelCommand? _buttonOkClickedCommand;
-
-		public ViewModelCommand ButtonOkClickedCommand
-		{
-			get
-			{
-				if (_buttonOkClickedCommand == null)
-				{
-					_buttonOkClickedCommand = new ViewModelCommand(ButtonOKClicked);
-				}
-				return _buttonOkClickedCommand;
-			}
-		}
-
-		public async void ButtonOKClicked()
-		{
-			try
-			{
-				// Enter キーでボタンが押された場合はテキストボックスからフォーカスが移らずプロパティーが更新されないため強制フォーカス
-				IsButtonOkFocused = true;
-
-				CheckInput();
-
-				// データベースをバックアップ
-				_musicInfoContext.BackupDatabase();
-
-				// 保存
-				T master = new();
-				PropertiesToRecord(master);
-				await Save(master);
-				Result = MessageBoxResult.OK;
-				OkSelectedMaster = master;
-				Messenger.Raise(new WindowActionMessage(YlConstants.MESSAGE_KEY_WINDOW_CLOSE));
-			}
-			catch (OperationCanceledException excep)
-			{
-				YlModel.Instance.EnvModel.LogWriter.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, "OK ボタンクリック時中止");
-				YlModel.Instance.EnvModel.LogWriter.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, "　スタックトレース：\n" + excep.StackTrace);
-			}
-			catch (Exception excep)
-			{
-				DbCommon.LogDatabaseExceptionIfCan(excep);
-
-				YlModel.Instance.EnvModel.LogWriter.ShowLogMessage(TraceEventType.Error, "OK ボタンクリック時エラー：\n" + excep.Message);
 				YlModel.Instance.EnvModel.LogWriter.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, "　スタックトレース：\n" + excep.StackTrace);
 			}
 		}
@@ -397,8 +334,10 @@ namespace YukaLister.ViewModels.EditMasterWindowViewModels
 		// 入力値を確認する
 		// ＜例外＞ Exception, OperationCanceledException
 		// --------------------------------------------------------------------
-		protected virtual void CheckInput()
+		protected override void CheckProperties()
 		{
+			base.CheckProperties();
+
 			if (SelectedMaster == null)
 			{
 				throw new Exception("内部エラー：登録対象が指定されていません。");
@@ -560,7 +499,7 @@ namespace YukaLister.ViewModels.EditMasterWindowViewModels
 		// --------------------------------------------------------------------
 		// レコード保存
 		// --------------------------------------------------------------------
-		protected virtual async Task Save(T master)
+		protected virtual async Task SaveRecord(T master)
 		{
 			if (master.Id == NewIdForDisplay())
 			{
@@ -582,6 +521,31 @@ namespace YukaLister.ViewModels.EditMasterWindowViewModels
 			}
 
 			_musicInfoContext.SaveChanges();
+		}
+
+		// --------------------------------------------------------------------
+		// 設定を保存
+		// --------------------------------------------------------------------
+		protected override async void SaveSettings()
+		{
+			base.SaveSettings();
+
+			try
+			{
+				// データベースをバックアップ
+				_musicInfoContext.BackupDatabase();
+
+				// 保存
+				T master = new();
+				PropertiesToRecord(master);
+				await SaveRecord(master);
+				OkSelectedMaster = master;
+			}
+			catch (Exception ex)
+			{
+				DbCommon.LogDatabaseExceptionIfCan(ex);
+				throw;
+			}
 		}
 
 		// --------------------------------------------------------------------

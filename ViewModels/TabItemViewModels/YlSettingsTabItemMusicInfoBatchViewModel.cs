@@ -24,7 +24,7 @@ using YukaLister.ViewModels.ImportExportWindowViewModels;
 
 namespace YukaLister.ViewModels.TabItemViewModels
 {
-	internal class YlSettingsTabItemMusicInfoBatchViewModel : TabItemViewModel
+	internal class YlSettingsTabItemMusicInfoBatchViewModel : YlTabItemViewModel
 	{
 		// ====================================================================
 		// コンストラクター

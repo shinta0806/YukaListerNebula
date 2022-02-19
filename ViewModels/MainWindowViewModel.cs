@@ -72,38 +72,6 @@ namespace YukaLister.ViewModels
 		// View 通信用のプロパティー
 		// --------------------------------------------------------------------
 
-		// ウィンドウ左端
-		private Double _left;
-		public Double Left
-		{
-			get => _left;
-			set => RaisePropertyChangedIfSet(ref _left, value);
-		}
-
-		// ウィンドウ上端
-		private Double _top;
-		public Double Top
-		{
-			get => _top;
-			set => RaisePropertyChangedIfSet(ref _top, value);
-		}
-
-		// ウィンドウ幅
-		private Double _width;
-		public Double Width
-		{
-			get => _width;
-			set => RaisePropertyChangedIfSet(ref _width, value);
-		}
-
-		// ウィンドウ高さ
-		private Double _height;
-		public Double Height
-		{
-			get => _height;
-			set => RaisePropertyChangedIfSet(ref _height, value);
-		}
-
 		// ゆかりすたー NEBULA 全体の動作状況
 		private String _yukaListerStatusLabel = String.Empty;
 		public String YukaListerStatusLabel

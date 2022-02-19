@@ -119,9 +119,9 @@ namespace YukaLister.ViewModels.OutputSettingsWindowViewModels
 		// 設定画面に入力された値が適正か確認
 		// ＜例外＞ Exception
 		// --------------------------------------------------------------------
-		protected override void CheckInput()
+		protected override void CheckProperties()
 		{
-			base.CheckInput();
+			base.CheckProperties();
 
 			// 新着の日数
 			if (EnableNew)

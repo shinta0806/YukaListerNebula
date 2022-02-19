@@ -10,12 +10,16 @@
 
 using Livet;
 
+using Shinta.ViewModels;
+
 using System;
 using System.IO;
 
+using YukaLister.Models.Settings;
+
 namespace YukaLister.ViewModels.TabItemViewModels
 {
-	internal class TabItemViewModel : ViewModel
+	internal class YlTabItemViewModel : TabItemViewModel<YlSettings>
 	{
 		// ====================================================================
 		// コンストラクター
@@ -24,7 +28,7 @@ namespace YukaLister.ViewModels.TabItemViewModels
 		// --------------------------------------------------------------------
 		// プログラマーが使うべき引数付きコンストラクター
 		// --------------------------------------------------------------------
-		public TabItemViewModel(YlViewModel windowViewModel)
+		public YlTabItemViewModel(YlViewModel windowViewModel)
 		{
 			_windowViewModel = windowViewModel;
 		}
@@ -32,7 +36,7 @@ namespace YukaLister.ViewModels.TabItemViewModels
 		// --------------------------------------------------------------------
 		// ダミーコンストラクター
 		// --------------------------------------------------------------------
-		public TabItemViewModel()
+		public YlTabItemViewModel()
 		{
 			_windowViewModel = null!;
 		}

@@ -68,7 +68,7 @@ namespace YukaLister.ViewModels.EditMasterWindowViewModels
 		// 入力値を確認する
 		// ＜例外＞ Exception, OperationCanceledException
 		// --------------------------------------------------------------------
-		protected override void CheckInput()
+		protected override void CheckProperties()
 		{
 			// タイアップグループの場合、名前の重複は無条件で NG のため、基底より先にチェック
 			String? normalizedName = YlCommon.NormalizeDbString(Name);
@@ -82,7 +82,7 @@ namespace YukaLister.ViewModels.EditMasterWindowViewModels
 			}
 
 			// 基底
-			base.CheckInput();
+			base.CheckProperties();
 		}
 
 		// --------------------------------------------------------------------

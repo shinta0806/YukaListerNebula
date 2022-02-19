@@ -5,24 +5,22 @@
 // ============================================================================
 
 // ----------------------------------------------------------------------------
-// スプラッシュウィンドウ ViewModel 以外のすべてのウィンドウの ViewModel に適用する
+// 
 // ----------------------------------------------------------------------------
 
-using Livet;
 using Livet.Messaging.IO;
 
-using Shinta;
+using Shinta.ViewModels;
+
 using System;
 using System.IO;
-using System.Windows;
-using System.Windows.Input;
 
 using YukaLister.Models.SharedMisc;
 using YukaLister.Models.YukaListerModels;
 
 namespace YukaLister.ViewModels
 {
-	internal class YlViewModel : ViewModel
+	internal class YlViewModel : BasicWindowViewModel
 	{
 		// ====================================================================
 		// コンストラクター
@@ -31,62 +29,14 @@ namespace YukaLister.ViewModels
 		// --------------------------------------------------------------------
 		// メインコンストラクター
 		// --------------------------------------------------------------------
-		public YlViewModel()
+		public YlViewModel(Boolean useLogWriter = true)
+				: base(useLogWriter ? YlModel.Instance.EnvModel.LogWriter : null)
 		{
 		}
-
-		// ====================================================================
-		// public プロパティー
-		// ====================================================================
-
-		// --------------------------------------------------------------------
-		// View 通信用のプロパティー
-		// --------------------------------------------------------------------
-
-		// ウィンドウタイトル（デフォルトが null だと実行時にエラーが発生するので Empty にしておく）
-		private String _title = String.Empty;
-		public String Title
-		{
-			get => _title;
-			set
-			{
-				String title = value;
-#if DEBUG
-				title = "［デバッグ］" + title;
-#endif
-#if TEST
-				title = "［テスト］" + title;
-#endif
-				RaisePropertyChangedIfSet(ref _title, title);
-			}
-		}
-
-		// カーソル
-		private Cursor? _cursor;
-		public Cursor? Cursor
-		{
-			get => _cursor;
-			set => RaisePropertyChangedIfSet(ref _cursor, value);
-		}
-
-		// --------------------------------------------------------------------
-		// 一般のプロパティー
-		// --------------------------------------------------------------------
-
-		// OK、Yes、No 等の結果
-		public MessageBoxResult Result { get; protected set; } = MessageBoxResult.None;
 
 		// ====================================================================
 		// public 関数
 		// ====================================================================
-
-		// --------------------------------------------------------------------
-		// 初期化
-		// --------------------------------------------------------------------
-		public virtual void Initialize()
-		{
-			YlModel.Instance.EnvModel.LogWriter.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, GetType().Name + " 初期化中...");
-		}
 
 		// --------------------------------------------------------------------
 		// 開くダイアログを表示し、ファイルパスを取得
@@ -130,20 +80,6 @@ namespace YukaLister.ViewModels
 			}
 
 			return message.Response[0];
-		}
-
-		// ====================================================================
-		// protected 関数
-		// ====================================================================
-
-		// --------------------------------------------------------------------
-		// リソース解放
-		// --------------------------------------------------------------------
-		protected override void Dispose(Boolean isDisposing)
-		{
-			base.Dispose(isDisposing);
-
-			YlModel.Instance.EnvModel.LogWriter.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, GetType().Name + " 破棄中...");
 		}
 	}
 }

@@ -43,7 +43,7 @@ namespace YukaLister.ViewModels.MiscWindowViewModels
 			_ylSettingsTabItemMusicInfoBatchViewModel = new YlSettingsTabItemMusicInfoBatchViewModel(this);
 			_ylSettingsTabItemYukariStatisticsViewModel = new YlSettingsTabItemYukariStatisticsViewModel(this);
 			_ylSettingsTabItemSyncViewModel = new YlSettingsTabItemSyncViewModel(this);
-			_ylSettingsTabItemViewModels = new TabItemViewModel[]
+			_ylSettingsTabItemViewModels = new YlTabItemViewModel[]
 			{
 				_ylSettingsTabItemSettingsViewModel,
 				_ylSettingsTabItemListTargetViewModel,
@@ -284,7 +284,7 @@ namespace YukaLister.ViewModels.MiscWindowViewModels
 		// ====================================================================
 
 		// タブアイテムの ViewModel
-		private readonly TabItemViewModel[] _ylSettingsTabItemViewModels;
+		private readonly YlTabItemViewModel[] _ylSettingsTabItemViewModels;
 
 		// ====================================================================
 		// private 関数
