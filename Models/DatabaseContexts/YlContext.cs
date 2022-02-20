@@ -153,8 +153,7 @@ namespace YukaLister.Models.DatabaseContexts
 
 			Database.EnsureCreated();
 
-			SqliteConnection? sqliteConnection = Database.GetDbConnection() as SqliteConnection;
-			if (sqliteConnection == null)
+			if (Database.GetDbConnection() is not SqliteConnection sqliteConnection)
 			{
 				YlModel.Instance.EnvModel.LogWriter.LogMessage(TraceEventType.Error, _databaseName + "データベースの接続を取得できませんでした。");
 				return;

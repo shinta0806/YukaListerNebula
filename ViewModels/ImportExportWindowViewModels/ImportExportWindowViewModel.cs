@@ -71,7 +71,7 @@ namespace YukaLister.ViewModels.ImportExportWindowViewModels
 				{
 					if (!String.IsNullOrEmpty(_description))
 					{
-						YlModel.Instance.EnvModel.LogWriter.LogMessage(Common.TRACE_EVENT_TYPE_STATUS, _description);
+						_logWriter?.LogMessage(Common.TRACE_EVENT_TYPE_STATUS, _description);
 					}
 				}
 			}
@@ -88,7 +88,7 @@ namespace YukaLister.ViewModels.ImportExportWindowViewModels
 				{
 					if (!String.IsNullOrEmpty(_progress))
 					{
-						YlModel.Instance.EnvModel.LogWriter.LogMessage(Common.TRACE_EVENT_TYPE_STATUS, _progress);
+						_logWriter?.LogMessage(Common.TRACE_EVENT_TYPE_STATUS, _progress);
 					}
 				}
 			}
@@ -132,8 +132,8 @@ namespace YukaLister.ViewModels.ImportExportWindowViewModels
 			}
 			catch (Exception excep)
 			{
-				YlModel.Instance.EnvModel.LogWriter.ShowLogMessage(TraceEventType.Error, "クローズ処理時エラー：\n" + excep.Message);
-				YlModel.Instance.EnvModel.LogWriter.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, "　スタックトレース：\n" + excep.StackTrace);
+				_logWriter?.ShowLogMessage(TraceEventType.Error, "クローズ処理時エラー：\n" + excep.Message);
+				_logWriter?.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, "　スタックトレース：\n" + excep.StackTrace);
 			}
 		}
 		#endregion
@@ -164,8 +164,8 @@ namespace YukaLister.ViewModels.ImportExportWindowViewModels
 			}
 			catch (Exception excep)
 			{
-				YlModel.Instance.EnvModel.LogWriter.ShowLogMessage(TraceEventType.Error, "中止ボタンクリック時エラー：\n" + excep.Message);
-				YlModel.Instance.EnvModel.LogWriter.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, "　スタックトレース：\n" + excep.StackTrace);
+				_logWriter?.ShowLogMessage(TraceEventType.Error, "中止ボタンクリック時エラー：\n" + excep.Message);
+				_logWriter?.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, "　スタックトレース：\n" + excep.StackTrace);
 			}
 		}
 		#endregion
@@ -191,8 +191,8 @@ namespace YukaLister.ViewModels.ImportExportWindowViewModels
 			}
 			catch (Exception excep)
 			{
-				YlModel.Instance.EnvModel.LogWriter.ShowLogMessage(TraceEventType.Error, "インポートエクスポートウィンドウ初期化時エラー：\n" + excep.Message);
-				YlModel.Instance.EnvModel.LogWriter.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, "　スタックトレース：\n" + excep.StackTrace);
+				_logWriter?.ShowLogMessage(TraceEventType.Error, "インポートエクスポートウィンドウ初期化時エラー：\n" + excep.Message);
+				_logWriter?.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, "　スタックトレース：\n" + excep.StackTrace);
 			}
 			finally
 			{
@@ -261,7 +261,7 @@ namespace YukaLister.ViewModels.ImportExportWindowViewModels
 			if (MessageBox.Show(_kind + "を中止してよろしいですか？", "確認", MessageBoxButton.YesNo, MessageBoxImage.Exclamation) != MessageBoxResult.No)
 			{
 				// 新たにキャンセル
-				YlModel.Instance.EnvModel.LogWriter.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, _kind + "を中止しています...");
+				_logWriter?.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, _kind + "を中止しています...");
 				_abortCancellationTokenSource.Cancel();
 				return true;
 			}
@@ -279,16 +279,16 @@ namespace YukaLister.ViewModels.ImportExportWindowViewModels
 			{
 				await YlCommon.LaunchTaskAsync<Object?>(_semaphoreSlim, ImportExportByWorker, null, _kind);
 				_abortCancellationTokenSource.Token.ThrowIfCancellationRequested();
-				YlModel.Instance.EnvModel.LogWriter.ShowLogMessage(TraceEventType.Information, _kind + "完了。");
+				_logWriter?.ShowLogMessage(TraceEventType.Information, _kind + "完了。");
 			}
 			catch (OperationCanceledException)
 			{
-				YlModel.Instance.EnvModel.LogWriter.LogMessage(TraceEventType.Information, _kind + "を中止しました。");
+				_logWriter?.LogMessage(TraceEventType.Information, _kind + "を中止しました。");
 			}
 			catch (Exception excep)
 			{
-				YlModel.Instance.EnvModel.LogWriter.ShowLogMessage(TraceEventType.Error, _kind + "時エラー：\n" + excep.Message);
-				YlModel.Instance.EnvModel.LogWriter.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, "　スタックトレース：\n" + excep.StackTrace);
+				_logWriter?.ShowLogMessage(TraceEventType.Error, _kind + "時エラー：\n" + excep.Message);
+				_logWriter?.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, "　スタックトレース：\n" + excep.StackTrace);
 			}
 		}
 	}

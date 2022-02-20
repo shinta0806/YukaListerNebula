@@ -190,8 +190,8 @@ namespace YukaLister.ViewModels.OutputSettingsWindowViewModels
 			}
 			catch (Exception excep)
 			{
-				YlModel.Instance.EnvModel.LogWriter.ShowLogMessage(TraceEventType.Error, "初期化ボタンクリック時エラー：\n" + excep.Message);
-				YlModel.Instance.EnvModel.LogWriter.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, "　スタックトレース：\n" + excep.StackTrace);
+				_logWriter?.ShowLogMessage(TraceEventType.Error, "初期化ボタンクリック時エラー：\n" + excep.Message);
+				_logWriter?.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, "　スタックトレース：\n" + excep.StackTrace);
 			}
 		}
 		#endregion
@@ -218,8 +218,8 @@ namespace YukaLister.ViewModels.OutputSettingsWindowViewModels
 			}
 			catch (Exception excep)
 			{
-				YlModel.Instance.EnvModel.LogWriter.ShowLogMessage(TraceEventType.Error, "リスト出力設定ウィンドウ初期化時エラー：\n" + excep.Message);
-				YlModel.Instance.EnvModel.LogWriter.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, "　スタックトレース：\n" + excep.StackTrace);
+				_logWriter?.ShowLogMessage(TraceEventType.Error, "リスト出力設定ウィンドウ初期化時エラー：\n" + excep.Message);
+				_logWriter?.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, "　スタックトレース：\n" + excep.StackTrace);
 			}
 		}
 
@@ -243,7 +243,7 @@ namespace YukaLister.ViewModels.OutputSettingsWindowViewModels
 			Stream? stream = assembly.GetManifestResourceStream("YukaLister.Views.OutputSettingsControls." + controlName + Common.FILE_EXT_XAML);
 			if (stream == null)
 			{
-				YlModel.Instance.EnvModel.LogWriter.LogMessage(TraceEventType.Error, "リソースを読み込めませんでした：" + controlName);
+				_logWriter?.LogMessage(TraceEventType.Error, "リソースを読み込めませんでした：" + controlName);
 				return;
 			}
 			using StreamReader reader = new(stream);
@@ -251,7 +251,7 @@ namespace YukaLister.ViewModels.OutputSettingsWindowViewModels
 			FrameworkElement? element = XamlReader.Load(xml) as FrameworkElement;
 			if (element == null)
 			{
-				YlModel.Instance.EnvModel.LogWriter.LogMessage(TraceEventType.Error, "リソースからコントロールを生成できませんでした：" + controlName);
+				_logWriter?.LogMessage(TraceEventType.Error, "リソースからコントロールを生成できませんでした：" + controlName);
 			}
 			TabItem tabItem = new()
 			{

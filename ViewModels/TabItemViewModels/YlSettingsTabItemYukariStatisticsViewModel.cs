@@ -82,8 +82,8 @@ namespace YukaLister.ViewModels.TabItemViewModels
 					}
 					catch (Exception excep)
 					{
-						YlModel.Instance.EnvModel.LogWriter.ShowLogMessage(TraceEventType.Error, "ゆかり統計出力対象期間変更時エラー：\n" + excep.Message);
-						YlModel.Instance.EnvModel.LogWriter.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, "　スタックトレース：\n" + excep.StackTrace);
+						_logWriter?.ShowLogMessage(TraceEventType.Error, "ゆかり統計出力対象期間変更時エラー：\n" + excep.Message);
+						_logWriter?.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, "　スタックトレース：\n" + excep.StackTrace);
 					}
 				}
 			}
@@ -174,8 +174,8 @@ namespace YukaLister.ViewModels.TabItemViewModels
 			}
 			catch (Exception excep)
 			{
-				YlModel.Instance.EnvModel.LogWriter.ShowLogMessage(TraceEventType.Error, "エクスポート先参照ボタンクリック時エラー：\n" + excep.Message);
-				YlModel.Instance.EnvModel.LogWriter.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, "　スタックトレース：\n" + excep.StackTrace);
+				_logWriter?.ShowLogMessage(TraceEventType.Error, "エクスポート先参照ボタンクリック時エラー：\n" + excep.Message);
+				_logWriter?.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, "　スタックトレース：\n" + excep.StackTrace);
 			}
 		}
 		#endregion
@@ -220,7 +220,7 @@ namespace YukaLister.ViewModels.TabItemViewModels
 				{
 					return;
 				}
-				YlModel.Instance.EnvModel.LogWriter.ShowLogMessage(TraceEventType.Information, "ゆかり統計出力が完了しました。");
+				_logWriter?.ShowLogMessage(TraceEventType.Information, "ゆかり統計出力が完了しました。");
 
 				// 表示
 				try
@@ -234,8 +234,8 @@ namespace YukaLister.ViewModels.TabItemViewModels
 			}
 			catch (Exception excep)
 			{
-				YlModel.Instance.EnvModel.LogWriter.ShowLogMessage(TraceEventType.Error, "ゆかり統計出力ボタンクリック時エラー：\n" + excep.Message);
-				YlModel.Instance.EnvModel.LogWriter.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, "　スタックトレース：\n" + excep.StackTrace);
+				_logWriter?.ShowLogMessage(TraceEventType.Error, "ゆかり統計出力ボタンクリック時エラー：\n" + excep.Message);
+				_logWriter?.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, "　スタックトレース：\n" + excep.StackTrace);
 			}
 			finally
 			{
@@ -259,7 +259,7 @@ namespace YukaLister.ViewModels.TabItemViewModels
 			}
 		}
 
-		public static void ButtonDeleteAllYukariStatisticsClicked()
+		public void ButtonDeleteAllYukariStatisticsClicked()
 		{
 			try
 			{
@@ -271,12 +271,12 @@ namespace YukaLister.ViewModels.TabItemViewModels
 
 				using YukariStatisticsContext yukariStatisticsContext = new();
 				yukariStatisticsContext.CreateDatabase();
-				YlModel.Instance.EnvModel.LogWriter.ShowLogMessage(TraceEventType.Information, "ゆかり統計データベースを削除しました。");
+				_logWriter?.ShowLogMessage(TraceEventType.Information, "ゆかり統計データベースを削除しました。");
 			}
 			catch (Exception excep)
 			{
-				YlModel.Instance.EnvModel.LogWriter.ShowLogMessage(TraceEventType.Error, "ゆかり統計すべて削除ボタンクリック時エラー：\n" + excep.Message);
-				YlModel.Instance.EnvModel.LogWriter.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, "　スタックトレース：\n" + excep.StackTrace);
+				_logWriter?.ShowLogMessage(TraceEventType.Error, "ゆかり統計すべて削除ボタンクリック時エラー：\n" + excep.Message);
+				_logWriter?.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, "　スタックトレース：\n" + excep.StackTrace);
 			}
 		}
 		#endregion
@@ -344,7 +344,7 @@ namespace YukaLister.ViewModels.TabItemViewModels
 		{
 			// ゆかり統計の属性情報を最新化
 			UpdateYukariStatistics();
-			YlModel.Instance.EnvModel.LogWriter.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, "予約当時の動画ファイルが現存しているものについて、可能な限り、ゆかり統計の属性情報を最新化しました。");
+			_logWriter?.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, "予約当時の動画ファイルが現存しているものについて、可能な限り、ゆかり統計の属性情報を最新化しました。");
 
 			// タイトル行
 			List<String> titleColumns = new(new String[] { "No", "PC", "予約日", "ルーム名", "カテゴリー", "タイアップ名", "摘要", "年齢制限", "リリース日", "リリース年", "シリーズ", "制作会社名",

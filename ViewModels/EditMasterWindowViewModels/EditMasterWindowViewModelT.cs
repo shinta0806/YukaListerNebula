@@ -222,8 +222,8 @@ namespace YukaLister.ViewModels.EditMasterWindowViewModels
 			}
 			catch (Exception excep)
 			{
-				YlModel.Instance.EnvModel.LogWriter.ShowLogMessage(TraceEventType.Error, "削除ボタンクリック時エラー：\n" + excep.Message);
-				YlModel.Instance.EnvModel.LogWriter.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, "　スタックトレース：\n" + excep.StackTrace);
+				_logWriter?.ShowLogMessage(TraceEventType.Error, "削除ボタンクリック時エラー：\n" + excep.Message);
+				_logWriter?.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, "　スタックトレース：\n" + excep.StackTrace);
 			}
 		}
 		#endregion
@@ -280,8 +280,8 @@ namespace YukaLister.ViewModels.EditMasterWindowViewModels
 			}
 			catch (Exception excep)
 			{
-				YlModel.Instance.EnvModel.LogWriter.ShowLogMessage(TraceEventType.Error, "楽曲情報データベースマスター詳細編集ウィンドウ <T> 初期化時エラー：\n" + excep.Message);
-				YlModel.Instance.EnvModel.LogWriter.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, "　スタックトレース：\n" + excep.StackTrace);
+				_logWriter?.ShowLogMessage(TraceEventType.Error, "楽曲情報データベースマスター詳細編集ウィンドウ <T> 初期化時エラー：\n" + excep.Message);
+				_logWriter?.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, "　スタックトレース：\n" + excep.StackTrace);
 			}
 		}
 
@@ -326,7 +326,7 @@ namespace YukaLister.ViewModels.EditMasterWindowViewModels
 			await YlCommon.InputIdPrefixIfNeededWithInvoke(this);
 			newRecord.Id = YlModel.Instance.EnvModel.YlSettings.PrepareLastId(_records);
 			_records.Add(newRecord);
-			YlModel.Instance.EnvModel.LogWriter.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS,
+			_logWriter?.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS,
 					YlConstants.MUSIC_INFO_TABLE_NAME_LABELS[DbCommon.MusicInfoTableIndex<T>()] + "テーブル新規登録：" + newRecord.Id + " / " + newRecord.Name);
 		}
 
@@ -438,7 +438,7 @@ namespace YukaLister.ViewModels.EditMasterWindowViewModels
 			existRecord.Invalid = true;
 			existRecord.Dirty = true;
 			_musicInfoContext.SaveChanges();
-			YlModel.Instance.EnvModel.LogWriter.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS,
+			_logWriter?.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS,
 					YlConstants.MUSIC_INFO_TABLE_NAME_LABELS[DbCommon.MusicInfoTableIndex<T>()] + "テーブル無効化：" + existRecord.Id + " / " + existRecord.Name);
 		}
 
@@ -551,13 +551,13 @@ namespace YukaLister.ViewModels.EditMasterWindowViewModels
 		// --------------------------------------------------------------------
 		// レコードを更新（既存のレコードが無効化されている場合は有効化も行う前提）
 		// --------------------------------------------------------------------
-		protected static void UpdateExistRecord(T existRecord, T newRecord)
+		protected void UpdateExistRecord(T existRecord, T newRecord)
 		{
 			Debug.Assert(!newRecord.Invalid, "UpdateExistRecord() invalid");
 
 			newRecord.UpdateTime = existRecord.UpdateTime;
 			Common.ShallowCopyFields(newRecord, existRecord);
-			YlModel.Instance.EnvModel.LogWriter.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS,
+			_logWriter?.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS,
 					YlConstants.MUSIC_INFO_TABLE_NAME_LABELS[DbCommon.MusicInfoTableIndex<T>()] + "テーブル更新：" + newRecord.Id + " / " + newRecord.Name);
 		}
 
@@ -603,7 +603,7 @@ namespace YukaLister.ViewModels.EditMasterWindowViewModels
 					if (numDups > 0)
 					{
 						// 空の名前から変更しようとしている場合は、同名がある場合のみ警告
-						YlModel.Instance.EnvModel.LogWriter.ShowLogMessage(TraceEventType.Warning, "登録しようとしている" + _caption + "名「" + normalizedName
+						_logWriter?.ShowLogMessage(TraceEventType.Warning, "登録しようとしている" + _caption + "名「" + normalizedName
 								+ "」は既にデータベースに登録されています。\n" + _caption + "名は同じでも" + _caption + "自体が異なる場合は、このまま作業を続行して下さい。\n"
 								+ "それ以外の場合は、重複登録を避けるために、" + _caption + " ID コンボボックスから既存の" + _caption + "情報を選択して下さい。");
 					}
@@ -639,8 +639,8 @@ namespace YukaLister.ViewModels.EditMasterWindowViewModels
 			}
 			catch (Exception excep)
 			{
-				YlModel.Instance.EnvModel.LogWriter.ShowLogMessage(TraceEventType.Error, "Name 変更時エラー：\n" + excep.Message);
-				YlModel.Instance.EnvModel.LogWriter.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, "　スタックトレース：\n" + excep.StackTrace);
+				_logWriter?.ShowLogMessage(TraceEventType.Error, "Name 変更時エラー：\n" + excep.Message);
+				_logWriter?.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, "　スタックトレース：\n" + excep.StackTrace);
 			}
 		}
 
@@ -661,8 +661,8 @@ namespace YukaLister.ViewModels.EditMasterWindowViewModels
 			}
 			catch (Exception excep)
 			{
-				YlModel.Instance.EnvModel.LogWriter.ShowLogMessage(TraceEventType.Error, "SelectedMaster 変更時エラー：\n" + excep.Message);
-				YlModel.Instance.EnvModel.LogWriter.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, "　スタックトレース：\n" + excep.StackTrace);
+				_logWriter?.ShowLogMessage(TraceEventType.Error, "SelectedMaster 変更時エラー：\n" + excep.Message);
+				_logWriter?.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, "　スタックトレース：\n" + excep.StackTrace);
 			}
 		}
 
