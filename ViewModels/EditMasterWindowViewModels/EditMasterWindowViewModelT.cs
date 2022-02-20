@@ -218,7 +218,7 @@ namespace YukaLister.ViewModels.EditMasterWindowViewModels
 				PropertiesToRecord(master);
 				Invalidate(master);
 				Result = MessageBoxResult.OK;
-				Messenger.Raise(new WindowActionMessage(YlConstants.MESSAGE_KEY_WINDOW_CLOSE));
+				Messenger.Raise(new WindowActionMessage(Common.MESSAGE_KEY_WINDOW_CLOSE));
 			}
 			catch (Exception excep)
 			{

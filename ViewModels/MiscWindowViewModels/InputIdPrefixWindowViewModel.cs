@@ -101,7 +101,7 @@ namespace YukaLister.ViewModels.MiscWindowViewModels
 				YlModel.Instance.EnvModel.YlSettings.IdPrefix = YlCommon.CheckIdPrefix(IdPrefix, false);
 				YlModel.Instance.EnvModel.YlSettings.Save();
 
-				Messenger.Raise(new WindowActionMessage(YlConstants.MESSAGE_KEY_WINDOW_CLOSE));
+				Messenger.Raise(new WindowActionMessage(Common.MESSAGE_KEY_WINDOW_CLOSE));
 			}
 			catch (Exception excep)
 			{

@@ -5,10 +5,8 @@
 // ============================================================================
 
 // ----------------------------------------------------------------------------
-// ウィンドウではないため、YlViewModel を継承しない
+// 
 // ----------------------------------------------------------------------------
-
-using Livet;
 
 using Shinta.ViewModels;
 
@@ -16,8 +14,10 @@ using System;
 using System.IO;
 
 using YukaLister.Models.Settings;
+using YukaLister.Models.YukaListerModels;
+using YukaLister.ViewModels.MiscWindowViewModels;
 
-namespace YukaLister.ViewModels.TabItemViewModels
+namespace YukaLister.ViewModels
 {
 	internal class YlTabItemViewModel : TabItemViewModel<YlSettings>
 	{
@@ -26,67 +26,19 @@ namespace YukaLister.ViewModels.TabItemViewModels
 		// ====================================================================
 
 		// --------------------------------------------------------------------
-		// プログラマーが使うべき引数付きコンストラクター
+		// プログラム中で使うべき引数付きコンストラクター
 		// --------------------------------------------------------------------
-		public YlTabItemViewModel(YlViewModel windowViewModel)
+		public YlTabItemViewModel(YlSettingsWindowViewModel ylSettingsWindowViewModel)
+				: base(ylSettingsWindowViewModel, YlModel.Instance.EnvModel.LogWriter)
 		{
-			_windowViewModel = windowViewModel;
 		}
 
 		// --------------------------------------------------------------------
-		// ダミーコンストラクター
+		// ダミーコンストラクター（Visual Studio・TransitionMessage 用）
 		// --------------------------------------------------------------------
 		public YlTabItemViewModel()
 		{
-			_windowViewModel = null!;
 		}
-
-		// ====================================================================
-		// public 関数
-		// ====================================================================
-
-		// --------------------------------------------------------------------
-		// 入力された値が適正か確認
-		// ＜例外＞ Exception
-		// --------------------------------------------------------------------
-		public virtual void CheckInput()
-		{
-		}
-
-		// --------------------------------------------------------------------
-		// 初期化
-		// --------------------------------------------------------------------
-		public virtual void Initialize()
-		{
-		}
-
-		// --------------------------------------------------------------------
-		// イベントハンドラー：ファイルやフォルダーがドロップされた
-		// --------------------------------------------------------------------
-		public virtual void PathDropped(String[] pathes)
-		{
-		}
-
-		// --------------------------------------------------------------------
-		// プロパティーから設定に反映
-		// --------------------------------------------------------------------
-		public virtual void PropertiesToSettings()
-		{
-		}
-
-		// --------------------------------------------------------------------
-		// 設定をプロパティーに反映
-		// --------------------------------------------------------------------
-		public virtual void SettingsToProperties()
-		{
-		}
-
-		// ====================================================================
-		// protected 変数
-		// ====================================================================
-
-		// ウィンドウのビューモデル
-		protected YlViewModel _windowViewModel;
 
 		// ====================================================================
 		// protected 関数

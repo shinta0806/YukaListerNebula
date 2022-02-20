@@ -15,7 +15,7 @@ using Shinta;
 using System;
 using System.Diagnostics;
 using System.Windows;
-
+using YukaLister.Models.Settings;
 using YukaLister.Models.SharedMisc;
 using YukaLister.Models.YukaListerModels;
 using YukaLister.ViewModels.MiscWindowViewModels;
@@ -31,8 +31,8 @@ namespace YukaLister.ViewModels.TabItemViewModels
 		// --------------------------------------------------------------------
 		// プログラマーが使うべき引数付きコンストラクター
 		// --------------------------------------------------------------------
-		public YlSettingsTabItemSyncViewModel(YlViewModel windowViewModel)
-				: base(windowViewModel)
+		public YlSettingsTabItemSyncViewModel(YlSettingsWindowViewModel ylSettingsWindowViewModel)
+				: base(ylSettingsWindowViewModel)
 		{
 		}
 
@@ -134,7 +134,7 @@ namespace YukaLister.ViewModels.TabItemViewModels
 				}
 
 				YlModel.Instance.EnvModel.YlSettings.LastSyncDownloadDate = 0.0;
-				((YlSettingsWindowViewModel)_windowViewModel).RegetSyncDataNeeded = true;
+				((YlSettingsWindowViewModel)_tabControlWindowViewModel).RegetSyncDataNeeded = true;
 				YlModel.Instance.EnvModel.LogWriter.ShowLogMessage(TraceEventType.Information, "環境設定ウィンドウを閉じると処理を開始します。");
 			}
 			catch (Exception excep)
@@ -182,7 +182,7 @@ namespace YukaLister.ViewModels.TabItemViewModels
 		// 入力された値が適正か確認
 		// ＜例外＞ Exception
 		// --------------------------------------------------------------------
-		public override void CheckInput()
+		public override void CheckProperties()
 		{
 			if (SyncMusicInfoDb)
 			{
@@ -214,23 +214,23 @@ namespace YukaLister.ViewModels.TabItemViewModels
 		// --------------------------------------------------------------------
 		// プロパティーから設定に反映
 		// --------------------------------------------------------------------
-		public override void PropertiesToSettings()
+		public override void PropertiesToSettings(YlSettings destSettings)
 		{
-			YlModel.Instance.EnvModel.YlSettings.SyncMusicInfoDb = SyncMusicInfoDb;
-			YlModel.Instance.EnvModel.YlSettings.SyncServer = SyncServer;
-			YlModel.Instance.EnvModel.YlSettings.SyncAccount = SyncAccount;
-			YlModel.Instance.EnvModel.YlSettings.SyncPassword = YlCommon.Encrypt(SyncPassword);
+			destSettings.SyncMusicInfoDb = SyncMusicInfoDb;
+			destSettings.SyncServer = SyncServer;
+			destSettings.SyncAccount = SyncAccount;
+			destSettings.SyncPassword = YlCommon.Encrypt(SyncPassword);
 		}
 
 		// --------------------------------------------------------------------
 		// 設定をプロパティーに反映
 		// --------------------------------------------------------------------
-		public override void SettingsToProperties()
+		public override void SettingsToProperties(YlSettings srcSettings)
 		{
-			SyncMusicInfoDb = YlModel.Instance.EnvModel.YlSettings.SyncMusicInfoDb;
-			SyncServer = YlModel.Instance.EnvModel.YlSettings.SyncServer;
-			SyncAccount = YlModel.Instance.EnvModel.YlSettings.SyncAccount;
-			SyncPassword = YlCommon.Decrypt(YlModel.Instance.EnvModel.YlSettings.SyncPassword);
+			SyncMusicInfoDb = srcSettings.SyncMusicInfoDb;
+			SyncServer = srcSettings.SyncServer;
+			SyncAccount = srcSettings.SyncAccount;
+			SyncPassword = YlCommon.Decrypt(srcSettings.SyncPassword);
 		}
 
 		// ====================================================================

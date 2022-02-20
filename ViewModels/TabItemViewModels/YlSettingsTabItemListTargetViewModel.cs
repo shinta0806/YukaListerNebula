@@ -16,8 +16,11 @@ using System;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Linq;
+
+using YukaLister.Models.Settings;
 using YukaLister.Models.SharedMisc;
 using YukaLister.Models.YukaListerModels;
+using YukaLister.ViewModels.MiscWindowViewModels;
 
 namespace YukaLister.ViewModels.TabItemViewModels
 {
@@ -28,15 +31,15 @@ namespace YukaLister.ViewModels.TabItemViewModels
 		// ====================================================================
 
 		// --------------------------------------------------------------------
-		// プログラマーが使うべき引数付きコンストラクター
+		// プログラム中で使うべき引数付きコンストラクター
 		// --------------------------------------------------------------------
-		public YlSettingsTabItemListTargetViewModel(YlViewModel windowViewModel)
-				: base(windowViewModel)
+		public YlSettingsTabItemListTargetViewModel(YlSettingsWindowViewModel ylSettingsWindowViewModel)
+				: base(ylSettingsWindowViewModel)
 		{
 		}
 
 		// --------------------------------------------------------------------
-		// ダミーコンストラクター
+		// ダミーコンストラクター（Visual Studio・TransitionMessage 用）
 		// --------------------------------------------------------------------
 		public YlSettingsTabItemListTargetViewModel()
 				: base()
@@ -455,8 +458,10 @@ namespace YukaLister.ViewModels.TabItemViewModels
 		// 入力された値が適正か確認
 		// ＜例外＞ Exception
 		// --------------------------------------------------------------------
-		public override void CheckInput()
+		public override void CheckProperties()
 		{
+			base.CheckProperties();
+
 			if (!TargetExts.Any())
 			{
 				throw new Exception("リスト化対象ファイルの拡張子を指定して下さい。");
@@ -466,40 +471,40 @@ namespace YukaLister.ViewModels.TabItemViewModels
 		// --------------------------------------------------------------------
 		// プロパティーから設定に反映
 		// --------------------------------------------------------------------
-		public override void PropertiesToSettings()
+		public override void PropertiesToSettings(YlSettings destSettings)
 		{
-			YlModel.Instance.EnvModel.YlSettings.TargetExts.Clear();
-			YlModel.Instance.EnvModel.YlSettings.TargetExts.AddRange(TargetExts);
-			YlModel.Instance.EnvModel.YlSettings.TargetExts.Sort();
+			destSettings.TargetExts.Clear();
+			destSettings.TargetExts.AddRange(TargetExts);
+			destSettings.TargetExts.Sort();
 
 			// SMART_TRACK_SEPARATOR が埋め込まれている場合は分割する
-			YlModel.Instance.EnvModel.YlSettings.OffVocalWords.Clear();
-			YlModel.Instance.EnvModel.YlSettings.OffVocalWords.AddRange(String.Join(YlConstants.SMART_TRACK_SEPARATOR, OffVocalWords).Split(YlConstants.SMART_TRACK_SEPARATOR));
-			YlModel.Instance.EnvModel.YlSettings.OffVocalWords.Sort();
+			destSettings.OffVocalWords.Clear();
+			destSettings.OffVocalWords.AddRange(String.Join(YlConstants.SMART_TRACK_SEPARATOR, OffVocalWords).Split(YlConstants.SMART_TRACK_SEPARATOR));
+			destSettings.OffVocalWords.Sort();
 
 			// SMART_TRACK_SEPARATOR が埋め込まれている場合は分割する
-			YlModel.Instance.EnvModel.YlSettings.BothVocalWords.Clear();
-			YlModel.Instance.EnvModel.YlSettings.BothVocalWords.AddRange(String.Join(YlConstants.SMART_TRACK_SEPARATOR, BothVocalWords).Split(YlConstants.SMART_TRACK_SEPARATOR));
-			YlModel.Instance.EnvModel.YlSettings.BothVocalWords.Sort();
+			destSettings.BothVocalWords.Clear();
+			destSettings.BothVocalWords.AddRange(String.Join(YlConstants.SMART_TRACK_SEPARATOR, BothVocalWords).Split(YlConstants.SMART_TRACK_SEPARATOR));
+			destSettings.BothVocalWords.Sort();
 		}
 
 		// --------------------------------------------------------------------
 		// 設定をプロパティーに反映
 		// --------------------------------------------------------------------
-		public override void SettingsToProperties()
+		public override void SettingsToProperties(YlSettings srcSettings)
 		{
 			TargetExts.Clear();
-			foreach (String ext in YlModel.Instance.EnvModel.YlSettings.TargetExts)
+			foreach (String ext in srcSettings.TargetExts)
 			{
 				TargetExts.Add(ext);
 			}
 			OffVocalWords.Clear();
-			foreach (String word in YlModel.Instance.EnvModel.YlSettings.OffVocalWords)
+			foreach (String word in srcSettings.OffVocalWords)
 			{
 				OffVocalWords.Add(word);
 			}
 			BothVocalWords.Clear();
-			foreach (String word in YlModel.Instance.EnvModel.YlSettings.BothVocalWords)
+			foreach (String word in srcSettings.BothVocalWords)
 			{
 				BothVocalWords.Add(word);
 			}

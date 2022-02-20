@@ -400,7 +400,7 @@ namespace YukaLister.ViewModels.SearchMasterWindowViewModels
 
 			Result = MessageBoxResult.OK;
 			OkSelectedMaster = SelectedFound;
-			Messenger.Raise(new WindowActionMessage(YlConstants.MESSAGE_KEY_WINDOW_CLOSE));
+			Messenger.Raise(new WindowActionMessage(Common.MESSAGE_KEY_WINDOW_CLOSE));
 		}
 
 		// --------------------------------------------------------------------

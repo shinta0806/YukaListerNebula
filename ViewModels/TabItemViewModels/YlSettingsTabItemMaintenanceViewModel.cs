@@ -32,15 +32,15 @@ namespace YukaLister.ViewModels.TabItemViewModels
 		// ====================================================================
 
 		// --------------------------------------------------------------------
-		// プログラマーが使うべき引数付きコンストラクター
+		// プログラム中で使うべき引数付きコンストラクター
 		// --------------------------------------------------------------------
-		public YlSettingsTabItemMaintenanceViewModel(YlViewModel windowViewModel)
-				: base(windowViewModel)
+		public YlSettingsTabItemMaintenanceViewModel(YlSettingsWindowViewModel ylSettingsWindowViewModel)
+				: base(ylSettingsWindowViewModel)
 		{
 		}
 
 		// --------------------------------------------------------------------
-		// ダミーコンストラクター
+		// ダミーコンストラクター（Visual Studio・TransitionMessage 用）
 		// --------------------------------------------------------------------
 		public YlSettingsTabItemMaintenanceViewModel()
 				: base()
@@ -125,7 +125,10 @@ namespace YukaLister.ViewModels.TabItemViewModels
 				YlModel.Instance.EnvModel.LogWriter.ShowLogMessage(TraceEventType.Error, "最新情報確認時エラー：\n" + excep.Message);
 				YlModel.Instance.EnvModel.LogWriter.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, "　スタックトレース：\n" + excep.StackTrace);
 			}
-			ProgressBarCheckRssVisibility = Visibility.Hidden;
+			finally
+			{
+				ProgressBarCheckRssVisibility = Visibility.Hidden;
+			}
 		}
 		#endregion
 
@@ -148,7 +151,7 @@ namespace YukaLister.ViewModels.TabItemViewModels
 		{
 			try
 			{
-				String? path = _windowViewModel.PathBySavingDialog("設定のバックアップ", YlConstants.DIALOG_FILTER_SETTINGS_ARCHIVE, "YukaListerSettings_" + DateTime.Now.ToString("yyyy_MM_dd-HH_mm_ss"));
+				String? path = _tabControlWindowViewModel.PathBySavingDialog("設定のバックアップ", YlConstants.DIALOG_FILTER_SETTINGS_ARCHIVE, "YukaListerSettings_" + DateTime.Now.ToString("yyyy_MM_dd-HH_mm_ss"));
 				if (path == null)
 				{
 					return;
@@ -186,7 +189,7 @@ namespace YukaLister.ViewModels.TabItemViewModels
 		{
 			try
 			{
-				String? path = _windowViewModel.PathByOpeningDialog("設定の復元", YlConstants.DIALOG_FILTER_SETTINGS_ARCHIVE, null);
+				String? path = _tabControlWindowViewModel.PathByOpeningDialog("設定の復元", YlConstants.DIALOG_FILTER_SETTINGS_ARCHIVE, null);
 				if (path == null)
 				{
 					return;
@@ -207,7 +210,7 @@ namespace YukaLister.ViewModels.TabItemViewModels
 				String settingsFilePath = unzipFolder + Path.GetFileName(Path.GetDirectoryName(Common.UserAppDataFolderPath())) + "\\" + Path.GetFileName(YlSettings.YlSettingsPath());
 				File.Copy(settingsFilePath, YlSettings.YlSettingsPath(), true);
 				YlModel.Instance.EnvModel.YlSettings.Load();
-				SettingsToProperties();
+				_tabControlWindowViewModel.Initialize();
 				YlModel.Instance.EnvModel.LogWriter.ShowLogMessage(TraceEventType.Information, "設定を復元しました。");
 			}
 			catch (Exception excep)
@@ -234,25 +237,17 @@ namespace YukaLister.ViewModels.TabItemViewModels
 		// --------------------------------------------------------------------
 		// プロパティーから設定に反映
 		// --------------------------------------------------------------------
-		public override void PropertiesToSettings()
+		public override void PropertiesToSettings(YlSettings destSettings)
 		{
-			YlModel.Instance.EnvModel.YlSettings.CheckRss = CheckRss;
+			destSettings.CheckRss = CheckRss;
 		}
 
 		// --------------------------------------------------------------------
 		// 設定をプロパティーに反映
 		// --------------------------------------------------------------------
-		public override void SettingsToProperties()
+		public override void SettingsToProperties(YlSettings srcSettings)
 		{
-			CheckRss = YlModel.Instance.EnvModel.YlSettings.CheckRss;
-		}
-
-		// --------------------------------------------------------------------
-		// 設定をプロパティーに反映
-		// --------------------------------------------------------------------
-		public void UpdaterUiDisplayed()
-		{
-			ProgressBarCheckRssVisibility = Visibility.Hidden;
+			CheckRss = srcSettings.CheckRss;
 		}
 	}
 }

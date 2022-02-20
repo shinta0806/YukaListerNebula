@@ -27,6 +27,7 @@ using YukaLister.Models.OutputWriters;
 using YukaLister.Models.Settings;
 using YukaLister.Models.SharedMisc;
 using YukaLister.Models.YukaListerModels;
+using YukaLister.ViewModels.MiscWindowViewModels;
 using YukaLister.ViewModels.OutputSettingsWindowViewModels;
 
 namespace YukaLister.ViewModels.TabItemViewModels
@@ -38,16 +39,16 @@ namespace YukaLister.ViewModels.TabItemViewModels
 		// ====================================================================
 
 		// --------------------------------------------------------------------
-		// プログラマーが使うべき引数付きコンストラクター
+		// プログラム中で使うべき引数付きコンストラクター
 		// --------------------------------------------------------------------
-		public YlSettingsTabItemListOutputViewModel(YlViewModel windowViewModel)
-				: base(windowViewModel)
+		public YlSettingsTabItemListOutputViewModel(YlSettingsWindowViewModel ylSettingsWindowViewModel)
+				: base(ylSettingsWindowViewModel)
 		{
 			CompositeDisposable.Add(_semaphoreSlim);
 		}
 
 		// --------------------------------------------------------------------
-		// ダミーコンストラクター
+		// ダミーコンストラクター（Visual Studio・TransitionMessage 用）
 		// --------------------------------------------------------------------
 		public YlSettingsTabItemListOutputViewModel()
 				: base()
@@ -144,7 +145,7 @@ namespace YukaLister.ViewModels.TabItemViewModels
 
 				// ViewModel 経由でリスト出力設定ウィンドウを開く
 				using OutputSettingsWindowViewModel outputSettingsWindowViewModel = yukariOutputWriter.CreateOutputSettingsWindowViewModel();
-				_windowViewModel.Messenger.Raise(new TransitionMessage(outputSettingsWindowViewModel, YlConstants.MESSAGE_KEY_OPEN_OUTPUT_SETTINGS_WINDOW));
+				_tabControlWindowViewModel.Messenger.Raise(new TransitionMessage(outputSettingsWindowViewModel, YlConstants.MESSAGE_KEY_OPEN_OUTPUT_SETTINGS_WINDOW));
 
 				if (outputSettingsWindowViewModel.Result != MessageBoxResult.OK)
 				{
@@ -189,7 +190,7 @@ namespace YukaLister.ViewModels.TabItemViewModels
 
 				// ViewModel 経由でリスト出力設定ウィンドウを開く
 				using OutputSettingsWindowViewModel outputSettingsWindowViewModel = SelectedOutputWriter.CreateOutputSettingsWindowViewModel();
-				_windowViewModel.Messenger.Raise(new TransitionMessage(outputSettingsWindowViewModel, YlConstants.MESSAGE_KEY_OPEN_OUTPUT_SETTINGS_WINDOW));
+				_tabControlWindowViewModel.Messenger.Raise(new TransitionMessage(outputSettingsWindowViewModel, YlConstants.MESSAGE_KEY_OPEN_OUTPUT_SETTINGS_WINDOW));
 
 				if (outputSettingsWindowViewModel.Result != MessageBoxResult.OK)
 				{
@@ -313,6 +314,8 @@ namespace YukaLister.ViewModels.TabItemViewModels
 		// --------------------------------------------------------------------
 		public override void Initialize()
 		{
+			base.Initialize();
+
 			// 警告表示
 			if (YlModel.Instance.EnvModel.YukaListerWholeStatus == YukaListerStatus.Error)
 			{
@@ -362,19 +365,19 @@ namespace YukaLister.ViewModels.TabItemViewModels
 		// --------------------------------------------------------------------
 		// プロパティーから設定に反映
 		// --------------------------------------------------------------------
-		public override void PropertiesToSettings()
+		public override void PropertiesToSettings(YlSettings destSettings)
 		{
-			YlModel.Instance.EnvModel.YlSettings.ListOutputFolder = ListFolder;
+			destSettings.ListOutputFolder = ListFolder;
 		}
 
 		// --------------------------------------------------------------------
 		// 設定をプロパティーに反映
 		// --------------------------------------------------------------------
-		public override void SettingsToProperties()
+		public override void SettingsToProperties(YlSettings srcSettings)
 		{
 			// リスト出力タブ
 			SelectedOutputWriter = OutputWriters[0];
-			ListFolder = YlModel.Instance.EnvModel.YlSettings.ListOutputFolder;
+			ListFolder = srcSettings.ListOutputFolder;
 		}
 
 		// --------------------------------------------------------------------

@@ -665,7 +665,7 @@ namespace YukaLister.ViewModels.MiscWindowViewModels
 		{
 			if (_findKeywordWindowViewModel != null && !_findKeywordWindowViewModel.IsClosed)
 			{
-				_findKeywordWindowViewModel.Messenger.Raise(new WindowActionMessage(YlConstants.MESSAGE_KEY_WINDOW_CLOSE));
+				_findKeywordWindowViewModel.Messenger.Raise(new WindowActionMessage(Common.MESSAGE_KEY_WINDOW_CLOSE));
 			}
 		}
 
@@ -834,7 +834,7 @@ namespace YukaLister.ViewModels.MiscWindowViewModels
 			}
 
 			// ウィンドウを前面に出すなど
-			_findKeywordWindowViewModel.Messenger.Raise(new InteractionMessage(YlConstants.MESSAGE_KEY_WINDOW_ACTIVATE));
+			_findKeywordWindowViewModel.Messenger.Raise(new InteractionMessage(Common.MESSAGE_KEY_WINDOW_ACTIVATE));
 		}
 
 		// --------------------------------------------------------------------

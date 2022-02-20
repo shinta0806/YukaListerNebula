@@ -25,6 +25,7 @@ using YukaLister.Models.DatabaseAssist;
 using YukaLister.Models.DatabaseContexts;
 using YukaLister.Models.SharedMisc;
 using YukaLister.Models.YukaListerModels;
+using YukaLister.ViewModels.MiscWindowViewModels;
 using YukaLister.ViewModels.ViewMastersWindowViewModels;
 
 namespace YukaLister.ViewModels.TabItemViewModels
@@ -38,8 +39,8 @@ namespace YukaLister.ViewModels.TabItemViewModels
 		// --------------------------------------------------------------------
 		// プログラマーが使うべき引数付きコンストラクター
 		// --------------------------------------------------------------------
-		public YlSettingsTabItemMusicInfoListViewModel(YlViewModel windowViewModel)
-				: base(windowViewModel)
+		public YlSettingsTabItemMusicInfoListViewModel(YlSettingsWindowViewModel ylSettingsWindowViewModel)
+				: base(ylSettingsWindowViewModel)
 		{
 		}
 
@@ -86,7 +87,7 @@ namespace YukaLister.ViewModels.TabItemViewModels
 
 				// ViewModel 経由で楽曲情報データベースマスター一覧ウィンドウを開く
 				using ViewTieUpsWindowViewModel viewTieUpsWindowViewModel = new(musicInfoContextDefault, musicInfoContextDefault.TieUps, CreateTieUpColumns());
-				_windowViewModel.Messenger.Raise(new TransitionMessage(viewTieUpsWindowViewModel, YlConstants.MESSAGE_KEY_OPEN_VIEW_MASTERS_WINDOW));
+				_tabControlWindowViewModel.Messenger.Raise(new TransitionMessage(viewTieUpsWindowViewModel, YlConstants.MESSAGE_KEY_OPEN_VIEW_MASTERS_WINDOW));
 			}
 			catch (Exception excep)
 			{
@@ -119,7 +120,7 @@ namespace YukaLister.ViewModels.TabItemViewModels
 
 				// ViewModel 経由で楽曲情報データベースマスター一覧ウィンドウを開く
 				using ViewMakersWindowViewModel viewMastersWindowViewModel = new(musicInfoContextDefault, musicInfoContextDefault.Makers, CreateMasterColumns<TMaker>());
-				_windowViewModel.Messenger.Raise(new TransitionMessage(viewMastersWindowViewModel, YlConstants.MESSAGE_KEY_OPEN_VIEW_MASTERS_WINDOW));
+				_tabControlWindowViewModel.Messenger.Raise(new TransitionMessage(viewMastersWindowViewModel, YlConstants.MESSAGE_KEY_OPEN_VIEW_MASTERS_WINDOW));
 			}
 			catch (Exception excep)
 			{
@@ -153,7 +154,7 @@ namespace YukaLister.ViewModels.TabItemViewModels
 
 				// ViewModel 経由で楽曲情報データベースマスター一覧ウィンドウを開く
 				using ViewTieUpGroupsWindowViewModel viewTieUpGroupsWindowViewModel = new(musicInfoContextDefault, musicInfoContextDefault.TieUpGroups, CreateMasterColumns<TTieUpGroup>());
-				_windowViewModel.Messenger.Raise(new TransitionMessage(viewTieUpGroupsWindowViewModel, YlConstants.MESSAGE_KEY_OPEN_VIEW_MASTERS_WINDOW));
+				_tabControlWindowViewModel.Messenger.Raise(new TransitionMessage(viewTieUpGroupsWindowViewModel, YlConstants.MESSAGE_KEY_OPEN_VIEW_MASTERS_WINDOW));
 			}
 			catch (Exception excep)
 			{
@@ -186,7 +187,7 @@ namespace YukaLister.ViewModels.TabItemViewModels
 
 				// ViewModel 経由で楽曲情報データベースマスター一覧ウィンドウを開く
 				using ViewSongsWindowViewModel viewSongsWindowViewModel = new(musicInfoContextDefault, musicInfoContextDefault.Songs, CreateSongColumns());
-				_windowViewModel.Messenger.Raise(new TransitionMessage(viewSongsWindowViewModel, YlConstants.MESSAGE_KEY_OPEN_VIEW_MASTERS_WINDOW));
+				_tabControlWindowViewModel.Messenger.Raise(new TransitionMessage(viewSongsWindowViewModel, YlConstants.MESSAGE_KEY_OPEN_VIEW_MASTERS_WINDOW));
 			}
 			catch (Exception excep)
 			{
@@ -219,7 +220,7 @@ namespace YukaLister.ViewModels.TabItemViewModels
 
 				// ViewModel 経由で楽曲情報データベースマスター一覧ウィンドウを開く
 				using ViewPeopleWindowViewModel viewPeopleWindowViewModel = new(musicInfoContextDefault, musicInfoContextDefault.People, CreateMasterColumns<TPerson>());
-				_windowViewModel.Messenger.Raise(new TransitionMessage(viewPeopleWindowViewModel, YlConstants.MESSAGE_KEY_OPEN_VIEW_MASTERS_WINDOW));
+				_tabControlWindowViewModel.Messenger.Raise(new TransitionMessage(viewPeopleWindowViewModel, YlConstants.MESSAGE_KEY_OPEN_VIEW_MASTERS_WINDOW));
 			}
 			catch (Exception excep)
 			{
@@ -252,7 +253,7 @@ namespace YukaLister.ViewModels.TabItemViewModels
 
 				// ViewModel 経由で楽曲情報データベースマスター一覧ウィンドウを開く
 				using ViewTagsWindowViewModel viewTagsWindowViewModel = new(musicInfoContextDefault, musicInfoContextDefault.Tags, CreateMasterColumns<TTag>());
-				_windowViewModel.Messenger.Raise(new TransitionMessage(viewTagsWindowViewModel, YlConstants.MESSAGE_KEY_OPEN_VIEW_MASTERS_WINDOW));
+				_tabControlWindowViewModel.Messenger.Raise(new TransitionMessage(viewTagsWindowViewModel, YlConstants.MESSAGE_KEY_OPEN_VIEW_MASTERS_WINDOW));
 			}
 			catch (Exception excep)
 			{

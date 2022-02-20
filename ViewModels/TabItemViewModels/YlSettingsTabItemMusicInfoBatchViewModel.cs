@@ -21,6 +21,7 @@ using YukaLister.Models.DatabaseContexts;
 using YukaLister.Models.SharedMisc;
 using YukaLister.Models.YukaListerModels;
 using YukaLister.ViewModels.ImportExportWindowViewModels;
+using YukaLister.ViewModels.MiscWindowViewModels;
 
 namespace YukaLister.ViewModels.TabItemViewModels
 {
@@ -33,8 +34,8 @@ namespace YukaLister.ViewModels.TabItemViewModels
 		// --------------------------------------------------------------------
 		// プログラマーが使うべき引数付きコンストラクター
 		// --------------------------------------------------------------------
-		public YlSettingsTabItemMusicInfoBatchViewModel(YlViewModel windowViewModel)
-				: base(windowViewModel)
+		public YlSettingsTabItemMusicInfoBatchViewModel(YlSettingsWindowViewModel ylSettingsWindowViewModel)
+				: base(ylSettingsWindowViewModel)
 		{
 		}
 
@@ -131,7 +132,7 @@ namespace YukaLister.ViewModels.TabItemViewModels
 		{
 			try
 			{
-				String? path = _windowViewModel.PathByOpeningDialog("インポート", "インポート可能ファイル|*" + YlConstants.FILE_EXT_YL_EXPORT_ARCHIVE + ";" + YlConstants.FILE_NAME_MUSIC_INFO_DATABASE
+				String? path = _tabControlWindowViewModel.PathByOpeningDialog("インポート", "インポート可能ファイル|*" + YlConstants.FILE_EXT_YL_EXPORT_ARCHIVE + ";" + YlConstants.FILE_NAME_MUSIC_INFO_DATABASE
 						+ "|" + YlConstants.DIALOG_FILTER_YL_EXPORT_ARCHIVE + "|楽曲情報データベース|" + YlConstants.FILE_NAME_MUSIC_INFO_DATABASE, null);
 				if (path != null)
 				{
@@ -172,7 +173,7 @@ namespace YukaLister.ViewModels.TabItemViewModels
 
 				// ViewModel 経由でインポート・エクスポートウィンドウを開く
 				using ImportWindowViewModel importWindowViewModel = new(ImportYukaListerPath, ImportTag, ImportSameName);
-				_windowViewModel.Messenger.Raise(new TransitionMessage(importWindowViewModel, YlConstants.MESSAGE_KEY_OPEN_IMPORT_EXPORT_WINDOW));
+				_tabControlWindowViewModel.Messenger.Raise(new TransitionMessage(importWindowViewModel, YlConstants.MESSAGE_KEY_OPEN_IMPORT_EXPORT_WINDOW));
 			}
 			catch (Exception excep)
 			{
@@ -201,7 +202,7 @@ namespace YukaLister.ViewModels.TabItemViewModels
 		{
 			try
 			{
-				String? path = _windowViewModel.PathBySavingDialog("エクスポート", YlConstants.DIALOG_FILTER_YL_EXPORT_ARCHIVE, "YukaListerInfo_" + DateTime.Now.ToString("yyyy_MM_dd-HH_mm_ss"));
+				String? path = _tabControlWindowViewModel.PathBySavingDialog("エクスポート", YlConstants.DIALOG_FILTER_YL_EXPORT_ARCHIVE, "YukaListerInfo_" + DateTime.Now.ToString("yyyy_MM_dd-HH_mm_ss"));
 				if (path != null)
 				{
 					ExportYukaListerPath = path;
@@ -241,7 +242,7 @@ namespace YukaLister.ViewModels.TabItemViewModels
 
 				// ViewModel 経由でインポート・エクスポートウィンドウを開く
 				using ExportWindowViewModel exportWindowViewModel = new(ExportYukaListerPath);
-				_windowViewModel.Messenger.Raise(new TransitionMessage(exportWindowViewModel, YlConstants.MESSAGE_KEY_OPEN_IMPORT_EXPORT_WINDOW));
+				_tabControlWindowViewModel.Messenger.Raise(new TransitionMessage(exportWindowViewModel, YlConstants.MESSAGE_KEY_OPEN_IMPORT_EXPORT_WINDOW));
 			}
 			catch (Exception excep)
 			{

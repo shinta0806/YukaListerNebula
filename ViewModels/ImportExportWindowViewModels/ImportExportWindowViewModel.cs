@@ -159,7 +159,7 @@ namespace YukaLister.ViewModels.ImportExportWindowViewModels
 			{
 				if (CancelImportExportIfNeeded())
 				{
-					Messenger.Raise(new WindowActionMessage(YlConstants.MESSAGE_KEY_WINDOW_CLOSE));
+					Messenger.Raise(new WindowActionMessage(Common.MESSAGE_KEY_WINDOW_CLOSE));
 				}
 			}
 			catch (Exception excep)
@@ -200,7 +200,7 @@ namespace YukaLister.ViewModels.ImportExportWindowViewModels
 				_abortCancellationTokenSource.Cancel();
 
 				YlModel.Instance.EnvModel.LogWriter.AppendDisplayText = null;
-				Messenger.Raise(new WindowActionMessage(YlConstants.MESSAGE_KEY_WINDOW_CLOSE));
+				Messenger.Raise(new WindowActionMessage(Common.MESSAGE_KEY_WINDOW_CLOSE));
 			}
 		}
 

@@ -26,8 +26,10 @@ using System.Windows.Controls;
 
 using YukaLister.Models.Database;
 using YukaLister.Models.DatabaseContexts;
+using YukaLister.Models.Settings;
 using YukaLister.Models.SharedMisc;
 using YukaLister.Models.YukaListerModels;
+using YukaLister.ViewModels.MiscWindowViewModels;
 
 namespace YukaLister.ViewModels.TabItemViewModels
 {
@@ -40,8 +42,8 @@ namespace YukaLister.ViewModels.TabItemViewModels
 		// --------------------------------------------------------------------
 		// プログラマーが使うべき引数付きコンストラクター
 		// --------------------------------------------------------------------
-		public YlSettingsTabItemYukariStatisticsViewModel(YlViewModel windowViewModel)
-				: base(windowViewModel)
+		public YlSettingsTabItemYukariStatisticsViewModel(YlSettingsWindowViewModel ylSettingsWindowViewModel)
+				: base(ylSettingsWindowViewModel)
 		{
 			CompositeDisposable.Add(_semaphoreSlim);
 		}
@@ -164,7 +166,7 @@ namespace YukaLister.ViewModels.TabItemViewModels
 		{
 			try
 			{
-				String? path = _windowViewModel.PathBySavingDialog("ゆかり統計出力", YlConstants.DIALOG_FILTER_CSV, "YukariStatistics");
+				String? path = _tabControlWindowViewModel.PathBySavingDialog("ゆかり統計出力", YlConstants.DIALOG_FILTER_CSV, "YukariStatistics");
 				if (path != null)
 				{
 					YukariStatisticsPath = path;
@@ -284,14 +286,6 @@ namespace YukaLister.ViewModels.TabItemViewModels
 		// ====================================================================
 
 		// --------------------------------------------------------------------
-		// 入力された値が適正か確認
-		// ＜例外＞ Exception
-		// --------------------------------------------------------------------
-		public override void CheckInput()
-		{
-		}
-
-		// --------------------------------------------------------------------
 		// 初期化
 		// --------------------------------------------------------------------
 		public override void Initialize()
@@ -310,17 +304,17 @@ namespace YukaLister.ViewModels.TabItemViewModels
 		// --------------------------------------------------------------------
 		// プロパティーから設定に反映
 		// --------------------------------------------------------------------
-		public override void PropertiesToSettings()
+		public override void PropertiesToSettings(YlSettings destSettings)
 		{
-			YlModel.Instance.EnvModel.YlSettings.YukariStatisticsPath = YukariStatisticsPath;
+			destSettings.YukariStatisticsPath = YukariStatisticsPath;
 		}
 
 		// --------------------------------------------------------------------
 		// 設定をプロパティーに反映
 		// --------------------------------------------------------------------
-		public override void SettingsToProperties()
+		public override void SettingsToProperties(YlSettings srcSettings)
 		{
-			YukariStatisticsPath = YlModel.Instance.EnvModel.YlSettings.YukariStatisticsPath;
+			YukariStatisticsPath = srcSettings.YukariStatisticsPath;
 		}
 
 		// ====================================================================

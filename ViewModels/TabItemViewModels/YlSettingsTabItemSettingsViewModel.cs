@@ -16,6 +16,7 @@ using System;
 using System.Diagnostics;
 using System.Windows;
 
+using YukaLister.Models.Settings;
 using YukaLister.Models.SharedMisc;
 using YukaLister.Models.YukaListerModels;
 using YukaLister.ViewModels.MiscWindowViewModels;
@@ -29,15 +30,15 @@ namespace YukaLister.ViewModels.TabItemViewModels
 		// ====================================================================
 
 		// --------------------------------------------------------------------
-		// プログラマーが使うべき引数付きコンストラクター
+		// プログラム中で使うべき引数付きコンストラクター
 		// --------------------------------------------------------------------
-		public YlSettingsTabItemSettingsViewModel(YlViewModel windowViewModel)
-				: base(windowViewModel)
+		public YlSettingsTabItemSettingsViewModel(YlSettingsWindowViewModel ylSettingsWindowViewModel)
+				: base(ylSettingsWindowViewModel)
 		{
 		}
 
 		// --------------------------------------------------------------------
-		// ダミーコンストラクター
+		// ダミーコンストラクター（Visual Studio・TransitionMessage 用）
 		// --------------------------------------------------------------------
 		public YlSettingsTabItemSettingsViewModel()
 				: base()
@@ -61,7 +62,7 @@ namespace YukaLister.ViewModels.TabItemViewModels
 			{
 				if (RaisePropertyChangedIfSet(ref _yukariConfigPathSeed, value))
 				{
-					((YlSettingsWindowViewModel)_windowViewModel).YukariConfigPathSeedChanged(_yukariConfigPathSeed);
+					((YlSettingsWindowViewModel)_tabControlWindowViewModel).YukariConfigPathSeedChanged(_yukariConfigPathSeed);
 				}
 			}
 		}
@@ -162,7 +163,7 @@ namespace YukaLister.ViewModels.TabItemViewModels
 		{
 			try
 			{
-				String? path = _windowViewModel.PathByOpeningDialog("ゆかり設定ファイル", "ゆかり設定ファイル|" + YlConstants.FILE_NAME_YUKARI_CONFIG, YlConstants.FILE_NAME_YUKARI_CONFIG);
+				String? path = _tabControlWindowViewModel.PathByOpeningDialog("ゆかり設定ファイル", "ゆかり設定ファイル|" + YlConstants.FILE_NAME_YUKARI_CONFIG, YlConstants.FILE_NAME_YUKARI_CONFIG);
 				if (path != null)
 				{
 					YukariConfigPathSeed = path;
@@ -184,8 +185,10 @@ namespace YukaLister.ViewModels.TabItemViewModels
 		// 入力された値が適正か確認
 		// ＜例外＞ Exception
 		// --------------------------------------------------------------------
-		public override void CheckInput()
+		public override void CheckProperties()
 		{
+			base.CheckProperties();
+
 			if (String.IsNullOrEmpty(YukariConfigPathSeed))
 			{
 				throw new Exception("ゆかり設定ファイルを指定して下さい。");
@@ -204,27 +207,27 @@ namespace YukaLister.ViewModels.TabItemViewModels
 		// --------------------------------------------------------------------
 		// プロパティーから設定に反映
 		// --------------------------------------------------------------------
-		public override void PropertiesToSettings()
+		public override void PropertiesToSettings(YlSettings destSettings)
 		{
-			YlModel.Instance.EnvModel.YlSettings.YukariConfigPathSeed2 = YukariConfigPathSeed;
-			YlModel.Instance.EnvModel.YlSettings.AddFolderOnDeviceArrived = AddFolderOnDeviceArrived;
-			YlModel.Instance.EnvModel.YlSettings.ProvideYukariPreview = ProvideYukariPreview;
-			YlModel.Instance.EnvModel.YlSettings.OutputAdditionalYukariAssist = OutputAdditionalYukariAssist;
-			YlModel.Instance.EnvModel.YlSettings.ApplyMusicInfoIntelligently = ApplyMusicInfoIntelligently;
-			YlModel.Instance.EnvModel.YlSettings.IdPrefix = IdPrefix;
+			destSettings.YukariConfigPathSeed2 = YukariConfigPathSeed;
+			destSettings.AddFolderOnDeviceArrived = AddFolderOnDeviceArrived;
+			destSettings.ProvideYukariPreview = ProvideYukariPreview;
+			destSettings.OutputAdditionalYukariAssist = OutputAdditionalYukariAssist;
+			destSettings.ApplyMusicInfoIntelligently = ApplyMusicInfoIntelligently;
+			destSettings.IdPrefix = IdPrefix;
 		}
 
 		// --------------------------------------------------------------------
 		// 設定をプロパティーに反映
 		// --------------------------------------------------------------------
-		public override void SettingsToProperties()
+		public override void SettingsToProperties(YlSettings srcSettings)
 		{
-			YukariConfigPathSeed = YlModel.Instance.EnvModel.YlSettings.YukariConfigPathSeed2;
-			AddFolderOnDeviceArrived = YlModel.Instance.EnvModel.YlSettings.AddFolderOnDeviceArrived;
-			ProvideYukariPreview = YlModel.Instance.EnvModel.YlSettings.ProvideYukariPreview;
-			OutputAdditionalYukariAssist = YlModel.Instance.EnvModel.YlSettings.OutputAdditionalYukariAssist;
-			ApplyMusicInfoIntelligently = YlModel.Instance.EnvModel.YlSettings.ApplyMusicInfoIntelligently;
-			IdPrefix = YlModel.Instance.EnvModel.YlSettings.IdPrefix;
+			YukariConfigPathSeed = srcSettings.YukariConfigPathSeed2;
+			AddFolderOnDeviceArrived = srcSettings.AddFolderOnDeviceArrived;
+			ProvideYukariPreview = srcSettings.ProvideYukariPreview;
+			OutputAdditionalYukariAssist = srcSettings.OutputAdditionalYukariAssist;
+			ApplyMusicInfoIntelligently = srcSettings.ApplyMusicInfoIntelligently;
+			IdPrefix = srcSettings.IdPrefix;
 
 			// 初期化完了で警告を有効にする
 			_isApplyMusicInfoIntelligentlyWarningEnabled = true;

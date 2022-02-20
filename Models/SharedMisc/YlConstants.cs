@@ -503,14 +503,8 @@ namespace YukaLister.Models.SharedMisc
 		// ID 接頭辞入力ウィンドウを開く
 		public const String MESSAGE_KEY_OPEN_INPUT_ID_PREFIX_WINDOW = "OpenInputIdPrefixWindow";
 
-		// 開くダイアログを開く
-		public const String MESSAGE_KEY_OPEN_OPEN_FILE_DIALOG = "OpenOpenFileDialog";
-
 		// リスト出力設定ウィンドウを開く
 		public const String MESSAGE_KEY_OPEN_OUTPUT_SETTINGS_WINDOW = "OpenOutputSettingsWindow";
-
-		// 保存ダイアログを開く
-		public const String MESSAGE_KEY_OPEN_SAVE_FILE_DIALOG = "OpenSaveFileDialog";
 
 		// 楽曲情報データベースマスター検索ウィンドウを開く
 		public const String MESSAGE_KEY_OPEN_SEARCH_MASTER_WINDOW = "OpenSearchMasterWindow";
@@ -526,12 +520,6 @@ namespace YukaLister.Models.SharedMisc
 
 		// 環境設定ウィンドウを開く
 		public const String MESSAGE_KEY_OPEN_YL_SETTINGS_WINDOW = "OpenYlSettingsWindow";
-
-		// ウィンドウをアクティブ化する
-		public const String MESSAGE_KEY_WINDOW_ACTIVATE = "Activate";
-
-		// ウィンドウを閉じる
-		public const String MESSAGE_KEY_WINDOW_CLOSE = "Close";
 
 		// --------------------------------------------------------------------
 		// アプリ独自ルールでの変数名（小文字で表記）

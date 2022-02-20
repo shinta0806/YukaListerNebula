@@ -4,6 +4,7 @@
         xmlns:l="http://schemas.livet-mvvm.net/2011/wpf"
         xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
         xmlns:msm="clr-namespace:YukaLister.Models.SharedMisc"
+        xmlns:s="clr-namespace:Shinta"
         xmlns:sb="clr-namespace:Shinta.Behaviors"
         xmlns:v="clr-namespace:YukaLister.Views"
         xmlns:vm="clr-namespace:YukaLister.ViewModels"
@@ -36,7 +37,7 @@
 
         <!-- If you make user choose 'OK or Cancel' closing Window, then please use Window Close cancel Behavior. -->
 
-        <l:InteractionMessageTrigger MessageKey="{x:Static msm:YlConstants.MESSAGE_KEY_WINDOW_CLOSE}" Messenger="{Binding Messenger}">
+        <l:InteractionMessageTrigger MessageKey="{x:Static s:Common.MESSAGE_KEY_WINDOW_CLOSE}" Messenger="{Binding Messenger}">
             <l:WindowInteractionMessageAction InvokeActionOnlyWhenWindowIsActive="False" />
         </l:InteractionMessageTrigger>
 

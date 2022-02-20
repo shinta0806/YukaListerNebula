@@ -9,21 +9,21 @@
 // ----------------------------------------------------------------------------
 
 using Livet.Commands;
-using Livet.Messaging.Windows;
 
 using Shinta;
+using Shinta.ViewModels;
 
 using System;
 using System.Diagnostics;
-using System.Windows;
 
+using YukaLister.Models.Settings;
 using YukaLister.Models.SharedMisc;
 using YukaLister.Models.YukaListerModels;
 using YukaLister.ViewModels.TabItemViewModels;
 
 namespace YukaLister.ViewModels.MiscWindowViewModels
 {
-	internal class YlSettingsWindowViewModel : YlViewModel
+	internal class YlSettingsWindowViewModel : TabControlWindowViewModel<YlSettings>
 	{
 		// ====================================================================
 		// コンストラクター
@@ -34,31 +34,7 @@ namespace YukaLister.ViewModels.MiscWindowViewModels
 		// --------------------------------------------------------------------
 		public YlSettingsWindowViewModel()
 		{
-			// タブアイテムの ViewModel 初期化
-			_ylSettingsTabItemSettingsViewModel = new YlSettingsTabItemSettingsViewModel(this);
-			_ylSettingsTabItemListTargetViewModel = new YlSettingsTabItemListTargetViewModel(this);
-			_ylSettingsTabItemListOutputViewModel = new YlSettingsTabItemListOutputViewModel(this);
-			_ylSettingsTabItemMaintenanceViewModel = new YlSettingsTabItemMaintenanceViewModel(this);
-			_ylSettingsTabItemMusicInfoListViewModel = new YlSettingsTabItemMusicInfoListViewModel(this);
-			_ylSettingsTabItemMusicInfoBatchViewModel = new YlSettingsTabItemMusicInfoBatchViewModel(this);
-			_ylSettingsTabItemYukariStatisticsViewModel = new YlSettingsTabItemYukariStatisticsViewModel(this);
-			_ylSettingsTabItemSyncViewModel = new YlSettingsTabItemSyncViewModel(this);
-			_ylSettingsTabItemViewModels = new YlTabItemViewModel[]
-			{
-				_ylSettingsTabItemSettingsViewModel,
-				_ylSettingsTabItemListTargetViewModel,
-				_ylSettingsTabItemListOutputViewModel,
-				_ylSettingsTabItemMaintenanceViewModel,
-				_ylSettingsTabItemMusicInfoListViewModel,
-				_ylSettingsTabItemMusicInfoBatchViewModel,
-				_ylSettingsTabItemYukariStatisticsViewModel,
-				_ylSettingsTabItemSyncViewModel,
-			};
-			Debug.Assert(_ylSettingsTabItemViewModels.Length == (Int32)YlSettingsTabItem.__End__, "YlSettingsWindowViewModel() bad tab vm nums");
-			for (Int32 i = 0; i < _ylSettingsTabItemViewModels.Length; i++)
-			{
-				CompositeDisposable.Add(_ylSettingsTabItemViewModels[i]);
-			}
+			Debug.Assert(_tabItemViewModels.Length == (Int32)YlSettingsTabItem.__End__, "YlSettingsWindowViewModel() bad tab vm nums");
 		}
 
 		// ====================================================================
@@ -70,88 +46,51 @@ namespace YukaLister.ViewModels.MiscWindowViewModels
 		// --------------------------------------------------------------------
 
 		// タブアイテム：設定
-		private YlSettingsTabItemSettingsViewModel _ylSettingsTabItemSettingsViewModel;
 		public YlSettingsTabItemSettingsViewModel YlSettingsTabItemSettingsViewModel
 		{
-			get => _ylSettingsTabItemSettingsViewModel;
-			set => RaisePropertyChangedIfSet(ref _ylSettingsTabItemSettingsViewModel, value);
+			get => (YlSettingsTabItemSettingsViewModel)_tabItemViewModels[(Int32)YlSettingsTabItem.Settings];
 		}
 
 		// タブアイテム：リスト対象
-		private YlSettingsTabItemListTargetViewModel _ylSettingsTabItemListTargetViewModel;
 		public YlSettingsTabItemListTargetViewModel YlSettingsTabItemListTargetViewModel
 		{
-			get => _ylSettingsTabItemListTargetViewModel;
-			set => RaisePropertyChangedIfSet(ref _ylSettingsTabItemListTargetViewModel, value);
+			get => (YlSettingsTabItemListTargetViewModel)_tabItemViewModels[(Int32)YlSettingsTabItem.ListTarget];
 		}
 
 		// タブアイテム：リスト出力
-		private YlSettingsTabItemListOutputViewModel _ylSettingsTabItemListOutputViewModel;
 		public YlSettingsTabItemListOutputViewModel YlSettingsTabItemListOutputViewModel
 		{
-			get => _ylSettingsTabItemListOutputViewModel;
-			set => RaisePropertyChangedIfSet(ref _ylSettingsTabItemListOutputViewModel, value);
+			get => (YlSettingsTabItemListOutputViewModel)_tabItemViewModels[(Int32)YlSettingsTabItem.ListOutput];
 		}
 
 		// タブアイテム：メンテナンス
-		private YlSettingsTabItemMaintenanceViewModel _ylSettingsTabItemMaintenanceViewModel;
 		public YlSettingsTabItemMaintenanceViewModel YlSettingsTabItemMaintenanceViewModel
 		{
-			get => _ylSettingsTabItemMaintenanceViewModel;
-			set => RaisePropertyChangedIfSet(ref _ylSettingsTabItemMaintenanceViewModel, value);
+			get => (YlSettingsTabItemMaintenanceViewModel)_tabItemViewModels[(Int32)YlSettingsTabItem.Maintenance];
 		}
 
 		// タブアイテム：楽曲情報一覧
-		private YlSettingsTabItemMusicInfoListViewModel _ylSettingsTabItemMusicInfoListViewModel;
 		public YlSettingsTabItemMusicInfoListViewModel YlSettingsTabItemMusicInfoListViewModel
 		{
-			get => _ylSettingsTabItemMusicInfoListViewModel;
-			set => RaisePropertyChangedIfSet(ref _ylSettingsTabItemMusicInfoListViewModel, value);
+			get => (YlSettingsTabItemMusicInfoListViewModel)_tabItemViewModels[(Int32)YlSettingsTabItem.MusicInfoList];
 		}
 
 		// タブアイテム：楽曲情報一括操作
-		private YlSettingsTabItemMusicInfoBatchViewModel _ylSettingsTabItemMusicInfoBatchViewModel;
 		public YlSettingsTabItemMusicInfoBatchViewModel YlSettingsTabItemMusicInfoBatchViewModel
 		{
-			get => _ylSettingsTabItemMusicInfoBatchViewModel;
-			set => RaisePropertyChangedIfSet(ref _ylSettingsTabItemMusicInfoBatchViewModel, value);
+			get => (YlSettingsTabItemMusicInfoBatchViewModel)_tabItemViewModels[(Int32)YlSettingsTabItem.MusicInfoBatch];
 		}
 
 		// タブアイテム：ゆかり統計
-		private YlSettingsTabItemYukariStatisticsViewModel _ylSettingsTabItemYukariStatisticsViewModel;
 		public YlSettingsTabItemYukariStatisticsViewModel YlSettingsTabItemYukariStatisticsViewModel
 		{
-			get => _ylSettingsTabItemYukariStatisticsViewModel;
-			set => RaisePropertyChangedIfSet(ref _ylSettingsTabItemYukariStatisticsViewModel, value);
+			get => (YlSettingsTabItemYukariStatisticsViewModel)_tabItemViewModels[(Int32)YlSettingsTabItem.YukariStatistics];
 		}
 
 		// タブアイテム：同期
-		private YlSettingsTabItemSyncViewModel _ylSettingsTabItemSyncViewModel;
 		public YlSettingsTabItemSyncViewModel YlSettingsTabItemSyncViewModel
 		{
-			get => _ylSettingsTabItemSyncViewModel;
-			set => RaisePropertyChangedIfSet(ref _ylSettingsTabItemSyncViewModel, value);
-		}
-
-		// 選択されているタブ（ドロップ先識別用等）
-		private Int32 _selectedTabIndex;
-		public Int32 SelectedTabIndex
-		{
-			get => _selectedTabIndex;
-			set => RaisePropertyChangedIfSet(ref _selectedTabIndex, value);
-		}
-
-		// OK ボタンフォーカス
-		private Boolean _isButtonOkFocused;
-		public Boolean IsButtonOkFocused
-		{
-			get => _isButtonOkFocused;
-			set
-			{
-				// 再度フォーカスを当てられるように強制伝播
-				_isButtonOkFocused = value;
-				RaisePropertyChanged(nameof(IsButtonOkFocused));
-			}
+			get => (YlSettingsTabItemSyncViewModel)_tabItemViewModels[(Int32)YlSettingsTabItem.Sync];
 		}
 
 		// --------------------------------------------------------------------
@@ -172,75 +111,6 @@ namespace YukaLister.ViewModels.MiscWindowViewModels
 		}
 		#endregion
 
-		#region ファイルドロップの制御
-		private ListenerCommand<String[]>? _tabControlFileDropCommand;
-
-		public ListenerCommand<String[]> TabControlFileDropCommand
-		{
-			get
-			{
-				if (_tabControlFileDropCommand == null)
-				{
-					_tabControlFileDropCommand = new ListenerCommand<String[]>(TabControlFileDrop);
-				}
-				return _tabControlFileDropCommand;
-			}
-		}
-
-		public void TabControlFileDrop(String[] pathes)
-		{
-			try
-			{
-				if (SelectedTabIndex < 0 || SelectedTabIndex >= _ylSettingsTabItemViewModels.Length)
-				{
-					return;
-				}
-				_ylSettingsTabItemViewModels[SelectedTabIndex].PathDropped(pathes);
-			}
-			catch (Exception excep)
-			{
-				YlModel.Instance.EnvModel.LogWriter.ShowLogMessage(TraceEventType.Error, "タブコントロールファイルドロップ時エラー：\n" + excep.Message);
-				YlModel.Instance.EnvModel.LogWriter.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, "　スタックトレース：\n" + excep.StackTrace);
-			}
-		}
-		#endregion
-
-		#region OK ボタンの制御
-		private ViewModelCommand? _buttonOkClickedCommand;
-
-		public ViewModelCommand ButtonOkClickedCommand
-		{
-			get
-			{
-				if (_buttonOkClickedCommand == null)
-				{
-					_buttonOkClickedCommand = new ViewModelCommand(ButtonOkClicked);
-				}
-				return _buttonOkClickedCommand;
-			}
-		}
-
-		public void ButtonOkClicked()
-		{
-			try
-			{
-				// Enter キーでボタンが押された場合はテキストボックスからフォーカスが移らずプロパティーが更新されないため強制フォーカス
-				IsButtonOkFocused = true;
-
-				CheckInput();
-				PropertiesToSettings();
-				YlModel.Instance.EnvModel.YlSettings.Save();
-				Result = MessageBoxResult.OK;
-				Messenger.Raise(new WindowActionMessage(YlConstants.MESSAGE_KEY_WINDOW_CLOSE));
-			}
-			catch (Exception excep)
-			{
-				YlModel.Instance.EnvModel.LogWriter.ShowLogMessage(TraceEventType.Error, "OK ボタンクリック時エラー：\n" + excep.Message);
-				YlModel.Instance.EnvModel.LogWriter.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, "　スタックトレース：\n" + excep.StackTrace);
-			}
-		}
-		#endregion
-
 		// ====================================================================
 		// public 関数
 		// ====================================================================
@@ -257,12 +127,8 @@ namespace YukaLister.ViewModels.MiscWindowViewModels
 				// タイトルバー
 				Title = "環境設定";
 
-				for (Int32 i = 0; i < _ylSettingsTabItemViewModels.Length; i++)
-				{
-					_ylSettingsTabItemViewModels[i].Initialize();
-				}
-
-				SettingsToProperties();
+				// 設定
+				SettingsToProperties(YlModel.Instance.EnvModel.YlSettings);
 			}
 			catch (Exception excep)
 			{
@@ -280,48 +146,45 @@ namespace YukaLister.ViewModels.MiscWindowViewModels
 		}
 
 		// ====================================================================
-		// private 変数
-		// ====================================================================
-
-		// タブアイテムの ViewModel
-		private readonly YlTabItemViewModel[] _ylSettingsTabItemViewModels;
-
-		// ====================================================================
-		// private 関数
+		// protected 関数
 		// ====================================================================
 
 		// --------------------------------------------------------------------
-		// 入力された値が適正か確認
-		// ＜例外＞ Exception
+		// タブアイテムの ViewModel を生成
 		// --------------------------------------------------------------------
-		private void CheckInput()
+		protected override TabItemViewModel<YlSettings>[] CreateTabItemViewModels()
 		{
-			for (Int32 i = 0; i < _ylSettingsTabItemViewModels.Length; i++)
+			return new TabItemViewModel<YlSettings>[]
 			{
-				_ylSettingsTabItemViewModels[i].CheckInput();
-			}
+				new YlSettingsTabItemSettingsViewModel(this),
+				new YlSettingsTabItemListTargetViewModel(this),
+				new YlSettingsTabItemListOutputViewModel(this),
+				new YlSettingsTabItemMaintenanceViewModel(this),
+				new YlSettingsTabItemMusicInfoListViewModel(this),
+				new YlSettingsTabItemMusicInfoBatchViewModel(this),
+				new YlSettingsTabItemYukariStatisticsViewModel(this),
+				new YlSettingsTabItemSyncViewModel(this),
+			};
 		}
 
 		// --------------------------------------------------------------------
-		// プロパティーから設定に反映
+		// プロパティーを設定に反映
 		// --------------------------------------------------------------------
-		private void PropertiesToSettings()
+		protected override void PropertiesToSettings()
 		{
-			for (Int32 i = 0; i < _ylSettingsTabItemViewModels.Length; i++)
-			{
-				_ylSettingsTabItemViewModels[i].PropertiesToSettings();
-			}
+			base.PropertiesToSettings();
+
+			PropertiesToSettings(YlModel.Instance.EnvModel.YlSettings);
 		}
 
 		// --------------------------------------------------------------------
-		// 設定をプロパティーに反映
+		// 設定を保存
 		// --------------------------------------------------------------------
-		private void SettingsToProperties()
+		protected override void SaveSettings()
 		{
-			for (Int32 i = 0; i < _ylSettingsTabItemViewModels.Length; i++)
-			{
-				_ylSettingsTabItemViewModels[i].SettingsToProperties();
-			}
+			base.SaveSettings();
+
+			YlModel.Instance.EnvModel.YlSettings.Save();
 		}
 	}
 }

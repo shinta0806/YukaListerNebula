@@ -982,9 +982,6 @@ namespace YukaLister.Models.SharedMisc
 		// 同期詳細ログ
 		private const String FILE_NAME_SYNC_DETAIL_LOG = YlConstants.APP_ID + YlConstants.SYNC_DETAIL_ID + Common.FILE_EXT_LOG;
 
-		// 西暦 2 桁時の世紀の曖昧さ回避用
-		private const Int32 YEAR_DISAMBIGUATION_DELTA = 10;
-
 		// ====================================================================
 		// private 変数
 		// ====================================================================
