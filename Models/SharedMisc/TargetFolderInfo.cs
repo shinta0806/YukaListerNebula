@@ -209,7 +209,7 @@ namespace YukaLister.Models.SharedMisc
 		// ====================================================================
 
 		// ボリュームシリアル番号のセパレーター（パスとして使えない文字）
-		private const String SEPARATOR = "|";
+		//private const String SEPARATOR = "|";
 
 		// ====================================================================
 		// private 関数

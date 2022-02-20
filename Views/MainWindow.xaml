@@ -126,7 +126,7 @@
             <Button Content="検索可能ファイル一覧 (_L)" Style="{StaticResource MaterialDesignRaisedLightButton}" Width="160" Height="Auto" Margin="0,0,20,0" ToolTip="ゆかり検索対象のファイルを一覧表示" DockPanel.Dock="Right" Padding="4" Command="{Binding ButtonTFoundsClickedCommand}" />
         </DockPanel>
         <DataGrid AutoGenerateColumns="False" CanUserReorderColumns="False" CanUserSortColumns="False" CanUserResizeRows="False" CanUserAddRows="False" CanUserDeleteRows="False" 
-                  SelectionMode="Single" ItemsSource="{Binding TargetFolderInfosVisible}" SelectedItem="{Binding SelectedTargetFolderInfo}" 
+                  SelectionMode="Extended" ItemsSource="{Binding TargetFolderInfosVisible}" SelectedItem="{Binding SelectedTargetFolderInfo}" 
                   Margin="20,10,20,20" materialDesign:DataGridAssist.ColumnHeaderPadding="3 5 3 5" materialDesign:DataGridAssist.CellPadding="3" >
             <DataGrid.InputBindings>
                 <MouseBinding MouseAction="LeftDoubleClick" Command="{Binding DataGridDoubleClickedCommand}" />
@@ -134,8 +134,16 @@
             <DataGrid.ItemContainerStyle>
                 <Style TargetType="DataGridRow" >
                     <Setter Property="Background" Value="{Binding Background}"/>
+                    <Style.Triggers>
+                        <Trigger Property="IsSelected" Value="True" >
+                            <Setter Property="Background" Value="{x:Static msm:YlConstants.BRUSH_MATERIAL_DESIGN_SELECTED}" />
+                        </Trigger>
+                    </Style.Triggers>
                 </Style>
             </DataGrid.ItemContainerStyle>
+            <behaviors:Interaction.Behaviors>
+                <sb:DataGridBindingSupportBehavior SelectedItems="{Binding SelectedTargetFolderInfos}" />
+            </behaviors:Interaction.Behaviors>
             <DataGrid.Columns>
                 <vdgc:DataGridFtcColumn Header="フォルダー" Width="*" Binding="{Binding Mode=OneWay}" IsReadOnly="True" />
                 <DataGridTextColumn Header="設定有無" Width="80" Binding="{Binding FolderSettingsStatusLabel}" IsReadOnly="True"/>

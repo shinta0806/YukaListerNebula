@@ -127,6 +127,14 @@ namespace YukaLister.ViewModels
 			}
 		}
 
+		// DataGrid の複数選択
+		private List<TargetFolderInfo> _selectedTargetFolderInfos = new();
+		public List<TargetFolderInfo> SelectedTargetFolderInfos
+		{
+			get => _selectedTargetFolderInfos;
+			set => RaisePropertyChangedIfSet(ref _selectedTargetFolderInfos, value);
+		}
+
 		// ゆかり検索対象フォルダー（表示用）
 		private List<TargetFolderInfo>? _targetFolderInfosVisible;
 		public List<TargetFolderInfo>? TargetFolderInfosVisible
@@ -674,6 +682,14 @@ namespace YukaLister.ViewModels
 		{
 			try
 			{
+#if DEBUG
+				String db = String.Empty;
+				foreach (TargetFolderInfo targetFolderInfo in SelectedTargetFolderInfos)
+				{
+					db += targetFolderInfo.TargetPath + "\n";
+				}
+				MessageBox.Show(db);
+#endif
 				FolderSettings();
 			}
 			catch (Exception ex)

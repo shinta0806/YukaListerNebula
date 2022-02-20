@@ -630,6 +630,10 @@ namespace YukaLister.Models.SharedMisc
 		// 対象外
 		public static readonly Color COLOR_EXCLUDE = Color.FromRgb(0xCC, 0xCC, 0xCC);
 
+		// マテリアルデザイン DataGrid の選択色
+		// 選択時かつ非マウスオーバー時の色の指定方法が不明のため、マテリアルデザイン色に寄せるための定義
+		public static readonly Color COLOR_MATERIAL_DESIGN_SELECTED = Color.FromRgb(0xDE, 0xDE, 0xDE);
+
 		// --------------------------------------------------------------------
 		// 状態ブラシ
 		// --------------------------------------------------------------------
@@ -648,6 +652,9 @@ namespace YukaLister.Models.SharedMisc
 
 		// 対象外
 		public static readonly SolidColorBrush BRUSH_EXCLUDE = new(COLOR_EXCLUDE);
+
+		// 選択
+		public static readonly SolidColorBrush BRUSH_MATERIAL_DESIGN_SELECTED = new(COLOR_MATERIAL_DESIGN_SELECTED);
 
 		// --------------------------------------------------------------------
 		// 文字ブラシ
