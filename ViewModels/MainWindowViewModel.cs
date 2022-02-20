@@ -564,7 +564,7 @@ namespace YukaLister.ViewModels
 		}
 		#endregion
 
-		#region 削除ボタンの制御
+		#region 除外ボタンの制御
 		private ViewModelCommand? _buttonRemoveTargetFolderClickedCommand;
 
 		public ViewModelCommand ButtonRemoveTargetFolderClickedCommand
@@ -588,18 +588,26 @@ namespace YukaLister.ViewModels
 		{
 			try
 			{
-				if (SelectedTargetFolderInfo == null)
+				if (!SelectedTargetFolderInfos.Any())
 				{
 					return;
 				}
 
-				if (MessageBox.Show(SelectedTargetFolderInfo.ParentPath + "\nおよびサブフォルダーをゆかり検索対象から除外しますか？",
-						"確認", MessageBoxButton.YesNo, MessageBoxImage.Exclamation) != MessageBoxResult.Yes)
+				String message = SelectedTargetFolderInfos[0].ParentPath + "\n";
+				if (SelectedTargetFolderInfos.Count > 1)
+				{
+					message += "他 " + (SelectedTargetFolderInfos.Count - 1).ToString() + " フォルダー\n";
+				}
+				message += "\nおよびサブフォルダーをゆかり検索対象から除外しますか？";
+				if (MessageBox.Show(message, "確認", MessageBoxButton.YesNo, MessageBoxImage.Exclamation) != MessageBoxResult.Yes)
 				{
 					return;
 				}
 
-				YlModel.Instance.ProjModel.SetFolderTaskDetailOfFolderToRemove(SelectedTargetFolderInfo.ParentPath);
+				foreach (TargetFolderInfo targetFolderInfo in SelectedTargetFolderInfos)
+				{
+					YlModel.Instance.ProjModel.SetFolderTaskDetailOfFolderToRemove(targetFolderInfo.ParentPath);
+				}
 				UpdateDataGrid();
 
 				// 次回 UI 更新タイミングまでに削除が完了してしまっていても検索可能ファイル数が更新されるようにする
@@ -682,7 +690,7 @@ namespace YukaLister.ViewModels
 		{
 			try
 			{
-#if DEBUG
+#if DEBUGz
 				String db = String.Empty;
 				foreach (TargetFolderInfo targetFolderInfo in SelectedTargetFolderInfos)
 				{
