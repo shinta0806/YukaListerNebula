@@ -228,13 +228,12 @@ div.programs td.small
 	font-size: 75%;
 }
 
-div.programs tr.even
-{
-	background-color: #dce6f1;
-}
-
-div.programs tr.odd
+div.programs tr
 {
 	background-color: white;
 }
 
+div.programs tr:nth-child(even)
+{
+	background-color: #dce6f1;
+}

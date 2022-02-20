@@ -546,16 +546,7 @@ namespace YukaLister.Models.OutputWriters
 		// --------------------------------------------------------------------
 		private void AppendSongInfo(StringBuilder stringBuilder, OutputItems chapterItem, Int32 songsIndex, TFound found)
 		{
-			stringBuilder.Append("  <tr class=\"");
-			if (songsIndex % 2 == 0)
-			{
-				stringBuilder.Append("even");
-			}
-			else
-			{
-				stringBuilder.Append("odd");
-			}
-			stringBuilder.Append("\">\n    ");
+			stringBuilder.Append("  <tr>\n    ");
 			AppendSongInfoAddTd(stringBuilder, chapterItem, found);
 			stringBuilder.Append("\n  </tr>\n");
 		}
