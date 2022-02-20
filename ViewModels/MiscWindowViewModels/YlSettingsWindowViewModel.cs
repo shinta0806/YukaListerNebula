@@ -33,6 +33,7 @@ namespace YukaLister.ViewModels.MiscWindowViewModels
 		// メインコンストラクター
 		// --------------------------------------------------------------------
 		public YlSettingsWindowViewModel()
+				: base(YlModel.Instance.EnvModel.LogWriter)
 		{
 			Debug.Assert(_tabItemViewModels.Length == (Int32)YlSettingsTabItem.__End__, "YlSettingsWindowViewModel() bad tab vm nums");
 		}

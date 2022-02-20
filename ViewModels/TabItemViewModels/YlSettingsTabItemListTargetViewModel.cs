@@ -19,7 +19,6 @@ using System.Linq;
 
 using YukaLister.Models.Settings;
 using YukaLister.Models.SharedMisc;
-using YukaLister.Models.YukaListerModels;
 using YukaLister.ViewModels.MiscWindowViewModels;
 
 namespace YukaLister.ViewModels.TabItemViewModels

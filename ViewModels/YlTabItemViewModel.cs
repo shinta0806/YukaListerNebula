@@ -8,11 +8,13 @@
 // 
 // ----------------------------------------------------------------------------
 
+using Shinta;
 using Shinta.ViewModels;
 
 using System;
+using System.Collections.Generic;
 using System.IO;
-
+using System.Linq;
 using YukaLister.Models.Settings;
 using YukaLister.Models.YukaListerModels;
 using YukaLister.ViewModels.MiscWindowViewModels;
@@ -51,42 +53,12 @@ namespace YukaLister.ViewModels
 		// --------------------------------------------------------------------
 		protected static String DroppedFile(String[] pathes, String[] exts)
 		{
-			String dropped = String.Empty;
-			String unknown = String.Empty;
-			Boolean isFile = false;
-
-			foreach (String path in pathes)
+			List<String> files = Common.SelectFiles(pathes, exts);
+			if (!files.Any())
 			{
-				if (!File.Exists(path))
-				{
-					continue;
-				}
-
-				if (Array.IndexOf(exts, Path.GetExtension(path).ToLower()) >= 0)
-				{
-					dropped = path;
-					break;
-				}
-				else
-				{
-					isFile = true;
-					unknown = Path.GetFileName(path) + "\n";
-				}
+				throw new Exception("ドロップされたファイルの種類を自動判定できませんでした。\n参照ボタンでファイルを指定して下さい。\n\n対応している形式：" + String.Join(" ", exts));
 			}
-
-			if (String.IsNullOrEmpty(dropped))
-			{
-				if (isFile)
-				{
-					throw new Exception("ドロップされたファイルの種類を自動判定できませんでした。\n参照ボタンでファイルを指定して下さい。\n" + unknown + "\n対応している形式：" + String.Join(" ", exts));
-				}
-				else
-				{
-					throw new Exception("ファイルをドロップしてください。");
-				}
-			}
-
-			return dropped;
+			return files[0];
 		}
 
 		// --------------------------------------------------------------------
@@ -95,26 +67,11 @@ namespace YukaLister.ViewModels
 		// --------------------------------------------------------------------
 		protected static String DroppedFolder(String[] pathes)
 		{
-			String? folderPath = null;
-			foreach (String path in pathes)
-			{
-				if (Directory.Exists(path))
-				{
-					// フォルダーがドロップされた場合は、そのフォルダーを使用することで確定する
-					folderPath = path;
-					break;
-				}
-				if (File.Exists(path))
-				{
-					// ファイルがドロップされた場合は、そのファイルを含むフォルダーを使用（フォルダーが指定されればフォルダー優先のため、ループは継続）
-					folderPath = Path.GetDirectoryName(path);
-				}
-			}
+			String? folderPath = Common.SelectFolder(pathes);
 			if (String.IsNullOrEmpty(folderPath))
 			{
 				throw new Exception("ドロップされたフォルダーを取得できませんでした。\n参照ボタンでフォルダーを指定して下さい。");
 			}
-
 			return folderPath;
 		}
 	}
