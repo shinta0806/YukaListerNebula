@@ -72,7 +72,7 @@
                     <DockPanel Margin="20,20,20,0">
                         <Label Content="ゆかり設定ファイル (_Y)：" Target="{Binding ElementName=TextBoxYukariConfigPathSeed}" VerticalAlignment="Center" Width="140" HorizontalContentAlignment="Right" />
                         <Button Height="Auto" Content="参照 (_B)" Style="{StaticResource MaterialDesignRaisedLightButton}" Margin="0" DockPanel.Dock="Right" Width="100" Command="{Binding ButtonBrowseYukariConfigPathSeedClickedCommand}"/>
-                        <TextBox Name="TextBoxYukariConfigPathSeed" Text="{Binding YukariConfigPathSeed}" VerticalAlignment="Center" Margin="0,0,10,0" sb:FileDropAttachedBehavior.PreviewDragCommand="{Binding TextBoxYukariConfigPathSeedPreviewDragCommand}" />
+                        <TextBox Name="TextBoxYukariConfigPathSeed" Text="{Binding YukariConfigPathSeed, UpdateSourceTrigger=PropertyChanged}" VerticalAlignment="Center" Margin="0,0,10,0" sb:FileDropAttachedBehavior.PreviewDragCommand="{Binding TextBoxYukariConfigPathSeedPreviewDragCommand}" />
                     </DockPanel>
                     <CheckBox Content="起動時やリムーバブルメディア接続時、前回のフォルダーを自動的に追加する (_A)" IsChecked="{Binding AddFolderOnDeviceArrived}" Margin="20,20,0,0" />
                     <CheckBox Content="ゆかり用サーバー機能（プレビュー等）を提供する (_P)" IsChecked="{Binding ProvideYukariPreview}" Margin="20,10,0,0" />
