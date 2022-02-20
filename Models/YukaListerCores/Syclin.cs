@@ -136,7 +136,7 @@ namespace YukaLister.Models.YukaListerCores
 
 					// メッセージボックスではなくステータスバーにエラー表示
 					MainWindowViewModel.SetStatusBarMessageWithInvoke(TraceEventType.Error, excep.Message);
-					YlModel.Instance.EnvModel.LogWriter.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, "　スタックトレース：\n" + excep.StackTrace);
+					YlModel.Instance.EnvModel.LogWriter.LogMessage(Common.TRACE_EVENT_TYPE_STATUS, "　スタックトレース：\n" + excep.StackTrace);
 				}
 
 				IsActive = false;

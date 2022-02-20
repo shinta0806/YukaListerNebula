@@ -190,10 +190,10 @@ namespace YukaLister.ViewModels
 					await AddFolderAsync(file);
 				}
 			}
-			catch (Exception excep)
+			catch (Exception ex)
 			{
-				_logWriter?.ShowLogMessage(TraceEventType.Error, "ファイルドロップ時エラー：\n" + excep.Message);
-				_logWriter?.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, "　スタックトレース：\n" + excep.StackTrace);
+				_logWriter?.ShowLogMessage(TraceEventType.Error, "ファイルドロップ時エラー：\n" + ex.Message);
+				_logWriter?.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, "　スタックトレース：\n" + ex.StackTrace);
 			}
 		}
 		#endregion
@@ -234,10 +234,10 @@ namespace YukaLister.ViewModels
 						break;
 				}
 			}
-			catch (Exception excep)
+			catch (Exception ex)
 			{
-				_logWriter?.ShowLogMessage(TraceEventType.Error, "デバイス着脱時エラー：\n" + excep.Message);
-				_logWriter?.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, "　スタックトレース：\n" + excep.StackTrace);
+				_logWriter?.ShowLogMessage(TraceEventType.Error, "デバイス着脱時エラー：\n" + ex.Message);
+				_logWriter?.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, "　スタックトレース：\n" + ex.StackTrace);
 			}
 		}
 		#endregion
@@ -267,10 +267,10 @@ namespace YukaLister.ViewModels
 				}
 				Common.ShellExecute(_labelYukaListerStatusUrl);
 			}
-			catch (Exception excep)
+			catch (Exception ex)
 			{
-				_logWriter?.ShowLogMessage(TraceEventType.Error, "ゆかりすたー NEBULA 全体の動作状況ラベルクリック時エラー：\n" + excep.Message);
-				_logWriter?.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, "　スタックトレース：\n" + excep.StackTrace);
+				_logWriter?.ShowLogMessage(TraceEventType.Error, "ゆかりすたー NEBULA 全体の動作状況ラベルクリック時エラー：\n" + ex.Message);
+				_logWriter?.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, "　スタックトレース：\n" + ex.StackTrace);
 			}
 		}
 
@@ -300,10 +300,10 @@ namespace YukaLister.ViewModels
 				using ViewTReportsWindowViewModel viewTReportsWindowViewModel = new();
 				Messenger.Raise(new TransitionMessage(viewTReportsWindowViewModel, YlConstants.MESSAGE_KEY_OPEN_VIEW_TREPORTS_WINDOW));
 			}
-			catch (Exception excep)
+			catch (Exception ex)
 			{
-				_logWriter?.ShowLogMessage(TraceEventType.Error, "リスト問題報告ボタンクリック時エラー：\n" + excep.Message);
-				_logWriter?.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, "　スタックトレース：\n" + excep.StackTrace);
+				_logWriter?.ShowLogMessage(TraceEventType.Error, "リスト問題報告ボタンクリック時エラー：\n" + ex.Message);
+				_logWriter?.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, "　スタックトレース：\n" + ex.StackTrace);
 			}
 		}
 		#endregion
@@ -393,10 +393,10 @@ namespace YukaLister.ViewModels
 					}
 				}
 			}
-			catch (Exception excep)
+			catch (Exception ex)
 			{
-				_logWriter?.ShowLogMessage(TraceEventType.Error, "環境設定ボタンクリック時エラー：\n" + excep.Message);
-				_logWriter?.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, "　スタックトレース：\n" + excep.StackTrace);
+				_logWriter?.ShowLogMessage(TraceEventType.Error, "環境設定ボタンクリック時エラー：\n" + ex.Message);
+				_logWriter?.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, "　スタックトレース：\n" + ex.StackTrace);
 			}
 		}
 		#endregion
@@ -429,10 +429,10 @@ namespace YukaLister.ViewModels
 			{
 				Common.ShellExecute(YlConstants.URL_FAQ);
 			}
-			catch (Exception excep)
+			catch (Exception ex)
 			{
-				_logWriter?.ShowLogMessage(TraceEventType.Error, "よくある質問メニュークリック時エラー：\n" + excep.Message);
-				_logWriter?.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, "　スタックトレース：\n" + excep.StackTrace);
+				_logWriter?.ShowLogMessage(TraceEventType.Error, "よくある質問メニュークリック時エラー：\n" + ex.Message);
+				_logWriter?.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, "　スタックトレース：\n" + ex.StackTrace);
 			}
 		}
 		#endregion
@@ -459,10 +459,10 @@ namespace YukaLister.ViewModels
 			{
 				Common.ShellExecute(YlModel.Instance.EnvModel.ExeFullFolder + YlConstants.FOLDER_NAME_DOCUMENTS + YlConstants.FOLDER_NAME_SAMPLE_FOLDER_SETTINGS);
 			}
-			catch (Exception excep)
+			catch (Exception ex)
 			{
-				_logWriter?.ShowLogMessage(TraceEventType.Error, "サンプルフォルダーメニュークリック時エラー：\n" + excep.Message);
-				_logWriter?.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, "　スタックトレース：\n" + excep.StackTrace);
+				_logWriter?.ShowLogMessage(TraceEventType.Error, "サンプルフォルダーメニュークリック時エラー：\n" + ex.Message);
+				_logWriter?.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, "　スタックトレース：\n" + ex.StackTrace);
 			}
 		}
 		#endregion
@@ -488,10 +488,10 @@ namespace YukaLister.ViewModels
 			{
 				Common.ShellExecute(YlModel.Instance.EnvModel.ExeFullFolder + YlConstants.FOLDER_NAME_DOCUMENTS + FILE_NAME_HISTORY);
 			}
-			catch (Exception excep)
+			catch (Exception ex)
 			{
-				_logWriter?.ShowLogMessage(TraceEventType.Error, "改訂履歴メニュークリック時エラー：\n" + excep.Message);
-				_logWriter?.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, "　スタックトレース：\n" + excep.StackTrace);
+				_logWriter?.ShowLogMessage(TraceEventType.Error, "改訂履歴メニュークリック時エラー：\n" + ex.Message);
+				_logWriter?.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, "　スタックトレース：\n" + ex.StackTrace);
 			}
 		}
 		#endregion
@@ -519,10 +519,10 @@ namespace YukaLister.ViewModels
 				using AboutWindowViewModel aboutWindowViewModel = new();
 				Messenger.Raise(new TransitionMessage(aboutWindowViewModel, YlConstants.MESSAGE_KEY_OPEN_ABOUT_WINDOW));
 			}
-			catch (Exception excep)
+			catch (Exception ex)
 			{
-				_logWriter?.ShowLogMessage(TraceEventType.Error, "バージョン情報メニュークリック時エラー：\n" + excep.Message);
-				_logWriter?.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, "　スタックトレース：\n" + excep.StackTrace);
+				_logWriter?.ShowLogMessage(TraceEventType.Error, "バージョン情報メニュークリック時エラー：\n" + ex.Message);
+				_logWriter?.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, "　スタックトレース：\n" + ex.StackTrace);
 			}
 		}
 		#endregion
@@ -548,10 +548,10 @@ namespace YukaLister.ViewModels
 			{
 				FolderSettings();
 			}
-			catch (Exception excep)
+			catch (Exception ex)
 			{
-				_logWriter?.ShowLogMessage(TraceEventType.Error, "DataGrid ダブルクリック時エラー：\n" + excep.Message);
-				_logWriter?.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, "　スタックトレース：\n" + excep.StackTrace);
+				_logWriter?.ShowLogMessage(TraceEventType.Error, "DataGrid ダブルクリック時エラー：\n" + ex.Message);
+				_logWriter?.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, "　スタックトレース：\n" + ex.StackTrace);
 			}
 		}
 		#endregion
@@ -597,10 +597,10 @@ namespace YukaLister.ViewModels
 				// 次回 UI 更新タイミングまでに削除が完了してしまっていても検索可能ファイル数が更新されるようにする
 				_prevYukaListerWholeStatus = YukaListerStatus.__End__;
 			}
-			catch (Exception excep)
+			catch (Exception ex)
 			{
-				_logWriter?.ShowLogMessage(TraceEventType.Error, "削除ボタンクリック時エラー：\n" + excep.Message);
-				_logWriter?.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, "　スタックトレース：\n" + excep.StackTrace);
+				_logWriter?.ShowLogMessage(TraceEventType.Error, "削除ボタンクリック時エラー：\n" + ex.Message);
+				_logWriter?.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, "　スタックトレース：\n" + ex.StackTrace);
 			}
 		}
 		#endregion
@@ -642,10 +642,10 @@ namespace YukaLister.ViewModels
 					YlCommon.ActivateSyclinIfNeeded();
 				}
 			}
-			catch (Exception excep)
+			catch (Exception ex)
 			{
-				_logWriter?.ShowLogMessage(TraceEventType.Error, "ファイル一覧ボタンクリック時エラー：\n" + excep.Message);
-				_logWriter?.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, "　スタックトレース：\n" + excep.StackTrace);
+				_logWriter?.ShowLogMessage(TraceEventType.Error, "ファイル一覧ボタンクリック時エラー：\n" + ex.Message);
+				_logWriter?.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, "　スタックトレース：\n" + ex.StackTrace);
 			}
 		}
 		#endregion
@@ -676,10 +676,10 @@ namespace YukaLister.ViewModels
 			{
 				FolderSettings();
 			}
-			catch (Exception excep)
+			catch (Exception ex)
 			{
-				_logWriter?.ShowLogMessage(TraceEventType.Error, "フォルダー設定ボタンクリック時エラー：\n" + excep.Message);
-				_logWriter?.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, "　スタックトレース：\n" + excep.StackTrace);
+				_logWriter?.ShowLogMessage(TraceEventType.Error, "フォルダー設定ボタンクリック時エラー：\n" + ex.Message);
+				_logWriter?.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, "　スタックトレース：\n" + ex.StackTrace);
 			}
 		}
 		#endregion
@@ -701,10 +701,10 @@ namespace YukaLister.ViewModels
 				}
 				await AddFolderAsync(folderSelectionMessage.Response[0]);
 			}
-			catch (Exception excep)
+			catch (Exception ex)
 			{
-				_logWriter?.ShowLogMessage(TraceEventType.Error, "追加フォルダー選択時エラー：\n" + excep.Message);
-				_logWriter?.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, "　スタックトレース：\n" + excep.StackTrace);
+				_logWriter?.ShowLogMessage(TraceEventType.Error, "追加フォルダー選択時エラー：\n" + ex.Message);
+				_logWriter?.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, "　スタックトレース：\n" + ex.StackTrace);
 			}
 		}
 
@@ -813,10 +813,10 @@ namespace YukaLister.ViewModels
 				// スタートアップ終了
 				YlModel.Instance.EnvModel.YukaListerPartsStatus[(Int32)YukaListerPartsStatusIndex.Startup] = YukaListerStatus.Ready;
 			}
-			catch (Exception excep)
+			catch (Exception ex)
 			{
-				_logWriter?.ShowLogMessage(TraceEventType.Error, "メインウィンドウ初期化時エラー：\n" + excep.Message);
-				_logWriter?.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, "　スタックトレース：\n" + excep.StackTrace);
+				_logWriter?.ShowLogMessage(TraceEventType.Error, "メインウィンドウ初期化時エラー：\n" + ex.Message);
+				_logWriter?.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, "　スタックトレース：\n" + ex.StackTrace);
 			}
 		}
 
@@ -878,10 +878,10 @@ namespace YukaLister.ViewModels
 
 				_isDisposed = true;
 			}
-			catch (Exception excep)
+			catch (Exception ex)
 			{
-				_logWriter?.ShowLogMessage(TraceEventType.Error, "メインウィンドウ破棄時エラー：\n" + excep.Message);
-				_logWriter?.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, "　スタックトレース：\n" + excep.StackTrace);
+				_logWriter?.ShowLogMessage(TraceEventType.Error, "メインウィンドウ破棄時エラー：\n" + ex.Message);
+				_logWriter?.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, "　スタックトレース：\n" + ex.StackTrace);
 			}
 		}
 
@@ -1022,12 +1022,12 @@ namespace YukaLister.ViewModels
 				{
 					await YlModel.Instance.ProjModel.AddTargetFolderAsync(driveLetter + folder);
 				}
-				catch (Exception excep)
+				catch (Exception ex)
 				{
 					// 前回からフォルダー名が変更されている場合等にエラーとなるが、自動処理なのでエラー表示は抑止する
 					// ここで捕捉しておかないと、Initialize() の後半が実行されない
-					_logWriter?.LogMessage(TraceEventType.Error, "デバイス接続時時エラー：\n" + excep.Message);
-					_logWriter?.LogMessage(Common.TRACE_EVENT_TYPE_STATUS, "　スタックトレース：\n" + excep.StackTrace);
+					_logWriter?.LogMessage(TraceEventType.Error, "デバイス接続時時エラー：\n" + ex.Message);
+					_logWriter?.LogMessage(Common.TRACE_EVENT_TYPE_STATUS, "　スタックトレース：\n" + ex.StackTrace);
 				}
 			}
 		}
@@ -1038,7 +1038,7 @@ namespace YukaLister.ViewModels
 		// --------------------------------------------------------------------
 		private void DisplayNebulaCoreError()
 		{
-			if (!YlModel.Instance.EnvModel.NebulaCoreErrors.TryTake(out String? error))
+			if (!YlModel.Instance.EnvModel.NebulaCoreErrors.TryDequeue(out String? error))
 			{
 				return;
 			}
@@ -1064,10 +1064,10 @@ namespace YukaLister.ViewModels
 						true, true, null, YlModel.Instance.EnvModel.AppCancellationTokenSource.Token);
 				importer.Import();
 			}
-			catch (Exception excep)
+			catch (Exception ex)
 			{
-				_logWriter?.ShowLogMessage(TraceEventType.Error, "サンプルインポート時エラー：\n" + excep.Message);
-				_logWriter?.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, "　スタックトレース：\n" + excep.StackTrace);
+				_logWriter?.ShowLogMessage(TraceEventType.Error, "サンプルインポート時エラー：\n" + ex.Message);
+				_logWriter?.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, "　スタックトレース：\n" + ex.StackTrace);
 			}
 		}
 
@@ -1395,11 +1395,11 @@ namespace YukaLister.ViewModels
 				using ReportContext reportContext = new();
 				reportContext.SetJournalModeIfNeeded();
 			}
-			catch (Exception excep)
+			catch (Exception ex)
 			{
 				// アプリ終了時にエラーとなるため、念のためここでも例外を捕捉する。ユーザーには表示しない
-				_logWriter?.LogMessage(TraceEventType.Error, "ジャーナル設定時エラー：\n" + excep.Message);
-				_logWriter?.LogMessage(Common.TRACE_EVENT_TYPE_STATUS, "　スタックトレース：\n" + excep.StackTrace);
+				_logWriter?.LogMessage(TraceEventType.Error, "ジャーナル設定時エラー：\n" + ex.Message);
+				_logWriter?.LogMessage(Common.TRACE_EVENT_TYPE_STATUS, "　スタックトレース：\n" + ex.StackTrace);
 			}
 		}
 
@@ -1459,10 +1459,10 @@ namespace YukaLister.ViewModels
 				YlModel.Instance.ProjModel.UpdateTargetFolderInfosVisible(targetFolderInfo);
 				UpdateDataGrid();
 			}
-			catch (Exception excep)
+			catch (Exception ex)
 			{
-				_logWriter?.ShowLogMessage(TraceEventType.Error, "IsOpen 変更時エラー：\n" + excep.Message);
-				_logWriter?.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, "　スタックトレース：\n" + excep.StackTrace);
+				_logWriter?.ShowLogMessage(TraceEventType.Error, "IsOpen 変更時エラー：\n" + ex.Message);
+				_logWriter?.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, "　スタックトレース：\n" + ex.StackTrace);
 			}
 		}
 
@@ -1485,11 +1485,11 @@ namespace YukaLister.ViewModels
 
 				_timerUpdateUi.Start();
 			}
-			catch (Exception excep)
+			catch (Exception ex)
 			{
 				// 定期的にタイマーエラーが表示されることのないよう、エラー発生時はタイマーを再開しない
-				_logWriter?.ShowLogMessage(TraceEventType.Error, "タイマー時エラー：\n" + excep.Message + "\n再起動してください。");
-				_logWriter?.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, "　スタックトレース：\n" + excep.StackTrace);
+				_logWriter?.ShowLogMessage(TraceEventType.Error, "タイマー時エラー：\n" + ex.Message + "\n再起動してください。");
+				_logWriter?.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, "　スタックトレース：\n" + ex.StackTrace);
 			}
 		}
 

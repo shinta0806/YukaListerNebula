@@ -160,10 +160,10 @@ namespace YukaLister.Models.YukaListerCores
 				{
 					return Task.CompletedTask;
 				}
-				catch (Exception excep)
+				catch (Exception ex)
 				{
-					YlModel.Instance.EnvModel.LogWriter.ShowLogMessage(TraceEventType.Error, GetType().Name + " ループ稼働時エラー：\n" + excep.Message);
-					YlModel.Instance.EnvModel.LogWriter.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, "　スタックトレース：\n" + excep.StackTrace);
+					YlModel.Instance.EnvModel.NebulaCoreErrors.Enqueue(GetType().Name + " ループ稼働時エラー：\n" + ex.Message);
+					YlModel.Instance.EnvModel.LogWriter.LogMessage(Common.TRACE_EVENT_TYPE_STATUS, "　スタックトレース：\n" + ex.StackTrace);
 				}
 
 				// 念のため最後に表示を更新
@@ -398,10 +398,10 @@ namespace YukaLister.Models.YukaListerCores
 					}
 				}
 			}
-			catch (Exception excep)
+			catch (Exception ex)
 			{
-				YlModel.Instance.EnvModel.LogWriter.ShowLogMessage(TraceEventType.Error, "フォルダー設定タグ付与時エラー：\n" + excep.Message);
-				YlModel.Instance.EnvModel.LogWriter.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, "　スタックトレース：\n" + excep.StackTrace);
+				YlModel.Instance.EnvModel.NebulaCoreErrors.Enqueue("フォルダー設定タグ付与時エラー：\n" + ex.Message);
+				YlModel.Instance.EnvModel.LogWriter.LogMessage(Common.TRACE_EVENT_TYPE_STATUS, "　スタックトレース：\n" + ex.StackTrace);
 			}
 		}
 
@@ -506,12 +506,12 @@ namespace YukaLister.Models.YukaListerCores
 					cacheRecords = cacheContext.Founds.Where(x => x.ParentFolder.Contains(withoutDriveLetterOne)).ToList();
 					if (!cacheRecords.Any())
 					{
-						YlModel.Instance.EnvModel.LogWriter.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, targetFolderInfo.TargetPath
+						YlModel.Instance.EnvModel.LogWriter.LogMessage(Common.TRACE_EVENT_TYPE_STATUS, targetFolderInfo.TargetPath
 								+ "\nキャッシュはありませんでした。");
 						return;
 					}
 
-					YlModel.Instance.EnvModel.LogWriter.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, targetFolderInfo.TargetPath
+					YlModel.Instance.EnvModel.LogWriter.LogMessage(Common.TRACE_EVENT_TYPE_STATUS, targetFolderInfo.TargetPath
 							+ "\nキャッシュのドライブレターを変換しています...");
 					String drive = YlCommon.DriveLetter(targetFolderInfo.TargetPath);
 					foreach (TFound cacheRecord in cacheRecords)
@@ -522,7 +522,7 @@ namespace YukaLister.Models.YukaListerCores
 					}
 				}
 
-				YlModel.Instance.EnvModel.LogWriter.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, targetFolderInfo.TargetPath
+				YlModel.Instance.EnvModel.LogWriter.LogMessage(Common.TRACE_EVENT_TYPE_STATUS, targetFolderInfo.TargetPath
 						+ "\nキャッシュをゆかり用リストデータベースに反映しています...");
 
 				// キャッシュの Uid 初期化
@@ -535,7 +535,7 @@ namespace YukaLister.Models.YukaListerCores
 				listContextInDisk.Founds.AddRange(cacheRecords);
 				listContextInDisk.SaveChanges();
 				targetFolderInfo.IsCacheUsed = true;
-				YlModel.Instance.EnvModel.LogWriter.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, targetFolderInfo.TargetPath
+				YlModel.Instance.EnvModel.LogWriter.LogMessage(Common.TRACE_EVENT_TYPE_STATUS, targetFolderInfo.TargetPath
 						+ "\nキャッシュをゆかり用リストデータベースに反映しました。");
 			}
 			catch (Exception excep)
@@ -621,7 +621,7 @@ namespace YukaLister.Models.YukaListerCores
 			{
 				// 追加済みの親を削除
 				YlModel.Instance.ProjModel.SetFolderTaskDetailOfFolderToRemove(targetFolderInfo.ParentPath);
-				YlModel.Instance.EnvModel.LogWriter.ShowLogMessage(TraceEventType.Error, targetFolderInfo.TargetPath
+				YlModel.Instance.EnvModel.NebulaCoreErrors.Enqueue(targetFolderInfo.TargetPath
 						+ "\nのサブフォルダーが既に追加されています。\nサブフォルダーを一旦削除してから追加しなおして下さい。");
 				return;
 			}
@@ -634,7 +634,7 @@ namespace YukaLister.Models.YukaListerCores
 			targetFolderInfo.NumTotalFolders = 1 + subFolders.Count;
 
 			// その他
-			YlModel.Instance.EnvModel.LogWriter.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, targetFolderInfo.TargetPath
+			YlModel.Instance.EnvModel.LogWriter.LogMessage(Common.TRACE_EVENT_TYPE_STATUS, targetFolderInfo.TargetPath
 					+ "\n" + targetFolderInfo.NumTotalFolders + " 個のフォルダーをキューに追加しました。");
 		}
 
@@ -759,7 +759,7 @@ namespace YukaLister.Models.YukaListerCores
 			YlModel.Instance.ProjModel.RemoveTargetFolders(targetFolderInfo.ParentPath);
 
 			// その他
-			YlModel.Instance.EnvModel.LogWriter.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, targetFolderInfo.ParentPath
+			YlModel.Instance.EnvModel.LogWriter.LogMessage(Common.TRACE_EVENT_TYPE_STATUS, targetFolderInfo.ParentPath
 					+ "\nとその配下のフォルダーをゆかり検索対象から削除しました。");
 		}
 

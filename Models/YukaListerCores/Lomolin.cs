@@ -391,22 +391,25 @@ namespace YukaLister.Models.YukaListerCores
 			// 存在を検知したら出す警告
 			if (!_ownCloudWarned && instanceName.Contains(INSTANCE_NAME_OWNCLOUD, StringComparison.OrdinalIgnoreCase))
 			{
-				_ownCloudWarned = YlModel.Instance.EnvModel.NebulaCoreErrors.TryAdd("ownCloud が動作しています。\n\n"
+				YlModel.Instance.EnvModel.NebulaCoreErrors.Enqueue("ownCloud が動作しています。\n\n"
 						+ "ゆかり・" + YlConstants.APP_NAME_J + "動作中は ownCloud を終了することを推奨します。");
+				_ownCloudWarned = true;
 			}
 			if (!_everythingWarned && instanceName.Contains(INSTANCE_NAME_EVERYTHING, StringComparison.OrdinalIgnoreCase))
 			{
-				_everythingWarned = YlModel.Instance.EnvModel.NebulaCoreErrors.TryAdd("Everything が動作しています。\n\n"
+				YlModel.Instance.EnvModel.NebulaCoreErrors.Enqueue("Everything が動作しています。\n\n"
 						+ "ゆかりの動作に Everything は不要となりましたので、Everything をアンインストールすることを推奨します。");
+				_everythingWarned = true;
 			}
 
 			// 高負荷を検知したら出す警告
 			if (!_defenderWarned && loadAsOneCpu >= HIGH_LOAD_THRESHOLD && instanceName.Contains(INSTANCE_NAME_WINDOWS_DEFENDER, StringComparison.OrdinalIgnoreCase))
 			{
-				_defenderWarned = YlModel.Instance.EnvModel.NebulaCoreErrors.TryAdd("Windows Defender が高負荷になっています。\n\n"
+				YlModel.Instance.EnvModel.NebulaCoreErrors.Enqueue("Windows Defender が高負荷になっています。\n\n"
 						+ "ゆかり・" + YlConstants.APP_NAME_J + "動作中は Windows Defender を無効化することを推奨します。\n"
 						+ "（Windows Defender 以外のセキュリティーソフトを使用することを推奨します）\n\n"
 						+ "やり方については「よくある質問」を参照してください。");
+				_defenderWarned = true;
 			}
 		}
 	}

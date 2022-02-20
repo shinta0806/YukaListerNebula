@@ -126,8 +126,8 @@ namespace YukaLister.Models.YukaListerModels
 			set => _isMainWindowDataGridItemUpdated = value;
 		}
 
-		// ネビュラからのエラーメッセージ
-		public BlockingCollection<String> NebulaCoreErrors { get; set; } = new();
+		// ネビュラコアからのエラーメッセージ
+		public ConcurrentQueue<String> NebulaCoreErrors { get; set; } = new();
 
 		// EXE フルパス
 		private String? _exeFullPath;

@@ -544,7 +544,7 @@ namespace YukaLister.Models.OutputWriters
 		// --------------------------------------------------------------------
 		// 曲情報を文字列に追加する
 		// --------------------------------------------------------------------
-		private void AppendSongInfo(StringBuilder stringBuilder, OutputItems chapterItem, Int32 songsIndex, TFound found)
+		private void AppendSongInfo(StringBuilder stringBuilder, OutputItems chapterItem, TFound found)
 		{
 			stringBuilder.Append("  <tr>\n    ");
 			AppendSongInfoAddTd(stringBuilder, chapterItem, found);
@@ -1113,7 +1113,7 @@ namespace YukaLister.Models.OutputWriters
 					BeginChapter(stringBuilder, chapterItem, chapterIndex, chaptersAndTFounds.Count, list);
 					for (Int32 i = 0; i < list.Count; i++)
 					{
-						AppendSongInfo(stringBuilder, chapterItem, i, list[i]);
+						AppendSongInfo(stringBuilder, chapterItem, list[i]);
 					}
 					EndChapter(stringBuilder);
 

@@ -119,10 +119,10 @@ namespace YukaLister.Models.YukaListerCores
 				{
 					return;
 				}
-				catch (Exception excep)
+				catch (Exception ex)
 				{
-					YlModel.Instance.EnvModel.LogWriter.ShowLogMessage(TraceEventType.Error, GetType().Name + " ループ稼働時エラー：\n" + excep.Message);
-					YlModel.Instance.EnvModel.LogWriter.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, "　スタックトレース：\n" + excep.StackTrace);
+					YlModel.Instance.EnvModel.NebulaCoreErrors.Enqueue(GetType().Name + " ループ稼働時エラー：\n" + ex.Message);
+					YlModel.Instance.EnvModel.LogWriter.LogMessage(Common.TRACE_EVENT_TYPE_STATUS, "　スタックトレース：\n" + ex.StackTrace);
 				}
 
 				TimeSpan timeSpan = new(YlCommon.MiliToHNano(Environment.TickCount - startTick));
