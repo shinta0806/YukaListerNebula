@@ -36,7 +36,7 @@ namespace YukaLister.Models.SharedMisc
 			TargetPath = ParentPath;
 			TargetPathLabel = ParentPath;
 			Level = 0;
-			FolderTaskKind = FolderTaskKind.Add;
+			_folderTaskKind = (Int32)FolderTaskKind.Add;
 			_folderTaskDetail = (Int32)(YlModel.Instance.EnvModel.YukaListerWholeStatus != YukaListerStatus.Error ? FolderTaskDetail.CacheToDisk : FolderTaskDetail.FindSubFolders);
 			Visible = true;
 		}
@@ -56,7 +56,7 @@ namespace YukaLister.Models.SharedMisc
 			Level = level;
 
 			// 自動設定
-			FolderTaskKind = FolderTaskKind.Add;
+			_folderTaskKind = (Int32)FolderTaskKind.Add;
 			_folderTaskDetail = (Int32)FolderTaskDetail.AddFileNames;
 			TargetPathLabel = Path.GetFileName(TargetPath);
 		}
@@ -84,7 +84,10 @@ namespace YukaLister.Models.SharedMisc
 		}
 
 		// サブフォルダーがあるかどうか
-		public Boolean HasChildren { get; set; }
+		public Boolean HasChildren
+		{
+			get => NumTotalFolders > 1;
+		}
 
 		// 自分＋サブフォルダーの数（サブフォルダーが無い場合は 1 となる）
 		public Int32 NumTotalFolders { get; set; } = 1;
@@ -95,7 +98,7 @@ namespace YukaLister.Models.SharedMisc
 		{
 			get
 			{
-				if (HasChildren && NumTotalFolders > 1)
+				if (HasChildren)
 				{
 					return _isOpen;
 				}
@@ -103,7 +106,11 @@ namespace YukaLister.Models.SharedMisc
 			}
 			set
 			{
-				if (HasChildren && NumTotalFolders > 1 && value != null && value != _isOpen)
+				if (!HasChildren && value == true)
+				{
+					return;
+				}
+				if (value != null && value != _isOpen)
 				{
 					_isOpen = (Boolean)value;
 					IsOpenChanged(this);
@@ -112,11 +119,15 @@ namespace YukaLister.Models.SharedMisc
 		}
 
 		// キャッシュ DB からディスク DB へコピーにコピー済かどうか
-		// 親でない場合は、常に親フォルダーの IsCacheUsed と同じ値とする
+		// 親でない場合は、基本的には親フォルダーの IsCacheUsed と同じ値だが、更新すると false となる
 		public Boolean IsCacheUsed { get; set; }
 
 		// 操作の種類
-		public FolderTaskKind FolderTaskKind { get; set; }
+		private volatile Int32 _folderTaskKind;
+		public FolderTaskKind FolderTaskKind
+		{
+			get => (FolderTaskKind)_folderTaskKind;
+		}
 
 		// 操作の詳細
 		private volatile Int32 _folderTaskDetail;
@@ -195,6 +206,14 @@ namespace YukaLister.Models.SharedMisc
 		}
 
 		// --------------------------------------------------------------------
+		// FolderTaskKind を指定値に設定
+		// --------------------------------------------------------------------
+		public void SetFolderTaskKind(FolderTaskKind folderTaskKind)
+		{
+			_folderTaskKind = (Int32)folderTaskKind;
+		}
+
+		// --------------------------------------------------------------------
 		// FolderTaskDetail を from から to に変更
 		// 現在値が from と等しくない場合は変更しない
 		// ユーザーの意思により現在値が別の値に変更されている場合に、ユーザーの意思を継続するための関数
@@ -202,6 +221,16 @@ namespace YukaLister.Models.SharedMisc
 		public void SetFolderTaskDetail(FolderTaskDetail from, FolderTaskDetail to)
 		{
 			Interlocked.CompareExchange(ref _folderTaskDetail, (Int32)to, (Int32)from);
+		}
+
+		// --------------------------------------------------------------------
+		// SetFolderTaskKind を from から to に変更
+		// 現在値が from と等しくない場合は変更しない
+		// ユーザーの意思により現在値が別の値に変更されている場合に、ユーザーの意思を継続するための関数
+		// --------------------------------------------------------------------
+		public void SetFolderTaskKind(FolderTaskKind from, FolderTaskKind to)
+		{
+			Interlocked.CompareExchange(ref _folderTaskKind, (Int32)to, (Int32)from);
 		}
 
 		// ====================================================================
@@ -256,6 +285,10 @@ namespace YukaLister.Models.SharedMisc
 								break;
 							case FolderTaskDetail.Remove:
 								label = "削除予定";
+								break;
+							case FolderTaskDetail.UpdateRemove:
+							case FolderTaskDetail.UpdateFindSubFolders:
+								label = "更新予定";
 								break;
 							case FolderTaskDetail.Done:
 								Debug.Assert(false, "FolderTaskStatusLabelAndBrush() done but Queued");

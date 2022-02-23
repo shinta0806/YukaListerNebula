@@ -25,6 +25,7 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Threading;
@@ -564,6 +565,47 @@ namespace YukaLister.ViewModels
 		}
 		#endregion
 
+		#region DataGrid 更新メニューアイテムの制御
+		private ViewModelCommand? _menuItemUpdateClickedCommand;
+
+		public ViewModelCommand MenuItemUpdateClickedCommand
+		{
+			get
+			{
+				if (_menuItemUpdateClickedCommand == null)
+				{
+					_menuItemUpdateClickedCommand = new ViewModelCommand(MenuItemUpdateClicked);
+				}
+				return _menuItemUpdateClickedCommand;
+			}
+		}
+
+		public void MenuItemUpdateClicked()
+		{
+			try
+			{
+				if (!SelectedTargetFolderInfos.Any())
+				{
+					return;
+				}
+
+				foreach (TargetFolderInfo targetFolderInfo in SelectedTargetFolderInfos)
+				{
+					YlModel.Instance.ProjModel.SetFolderTaskDetailToUpdateRemove(targetFolderInfo.TargetPath);
+				}
+				UpdateDataGrid();
+
+				// 次回 UI 更新タイミングまでに更新削除が完了してしまっていても検索可能ファイル数が更新されるようにする
+				_prevYukaListerWholeStatus = YukaListerStatus.__End__;
+			}
+			catch (Exception ex)
+			{
+				_logWriter?.ShowLogMessage(TraceEventType.Error, "更新メニューアイテムクリック時エラー：\n" + ex.Message);
+				_logWriter?.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, "　スタックトレース：\n" + ex.StackTrace);
+			}
+		}
+		#endregion
+
 		#region 除外ボタンの制御
 		private ViewModelCommand? _buttonRemoveTargetFolderClickedCommand;
 
@@ -1012,6 +1054,14 @@ namespace YukaLister.ViewModels
 				return;
 			}
 			await YlCommon.CheckLatestInfoAsync(false);
+		}
+
+		// --------------------------------------------------------------------
+		// イベントハンドラー
+		// --------------------------------------------------------------------
+		private void ContextMenuDataGridTargetFolders_Click(Object sender, RoutedEventArgs routedEventArgs)
+		{
+			Debug.WriteLine("ContextMenuDataGridTargetFolders_Click() " + sender.ToString());
 		}
 
 		// --------------------------------------------------------------------

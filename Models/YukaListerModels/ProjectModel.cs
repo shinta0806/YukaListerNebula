@@ -116,6 +116,23 @@ namespace YukaLister.Models.YukaListerModels
 		}
 
 		// --------------------------------------------------------------------
+		// targetFolderInfo の NumTotalFolders が delta 増減したので、上位の NumTotalFolders を調整する
+		// targetFolderInfo の NumTotalFolders はいじらない
+		// --------------------------------------------------------------------
+		public void AdjustNumTotalFolders(TargetFolderInfo targetFolderInfo, Int32 delta)
+		{
+			lock (_targetFolderInfos)
+			{
+				Int32 index = IndexOfTargetFolderInfoWithoutLock(targetFolderInfo.TargetPath);
+				if (index < 0)
+				{
+					return;
+				}
+				AdjustNumTotalFoldersWithoutLock(index, delta);
+			}
+		}
+
+		// --------------------------------------------------------------------
 		// TargetFolderInfos の中から指定された FolderTaskDetail を持つ TargetFolderInfo を探す
 		// --------------------------------------------------------------------
 		public TargetFolderInfo? FindTargetFolderInfo(FolderTaskDetail folderTaskDetail)
@@ -146,6 +163,7 @@ namespace YukaLister.Models.YukaListerModels
 
 		// --------------------------------------------------------------------
 		// ゆかり検索対象フォルダーから削除（サブフォルダー含む）
+		// parentFolder は IsParent である必要がある
 		// TargetFolderInfo のみの削除で、データベースはいじらない
 		// --------------------------------------------------------------------
 		public Boolean RemoveTargetFolders(String parentFolder)
@@ -166,6 +184,33 @@ namespace YukaLister.Models.YukaListerModels
 		}
 
 		// --------------------------------------------------------------------
+		// ゆかり検索対象フォルダーからサブフォルダーを削除（当該フォルダーは削除しない）
+		// folder は IsParent でなくても構わない
+		// TargetFolderInfo のみの削除で、データベースはいじらない
+		// --------------------------------------------------------------------
+		public Boolean RemoveTargetSubFolders(String folder)
+		{
+			lock (_targetFolderInfos)
+			{
+				Int32 index = IndexOfTargetFolderInfoWithoutLock(folder);
+				if (index < 0)
+				{
+					return false;
+				}
+				if (_targetFolderInfos[index].NumTotalFolders == 1)
+				{
+					return false;
+				}
+				_targetFolderInfos.RemoveRange(index + 1, _targetFolderInfos[index].NumTotalFolders - 1);
+				AdjustNumTotalFoldersWithoutLock(index, 1 - _targetFolderInfos[index].NumTotalFolders);
+				_targetFolderInfos[index].NumTotalFolders = 1;
+				_targetFolderInfos[index].IsOpen = false;
+			}
+			YlModel.Instance.EnvModel.IsMainWindowDataGridCountChanged = true;
+			return true;
+		}
+
+		// --------------------------------------------------------------------
 		// FolderTaskStatus が Running の TargetFolderInfo を取得
 		// --------------------------------------------------------------------
 		public TargetFolderInfo? RunningTargetFolderInfo()
@@ -174,6 +219,25 @@ namespace YukaLister.Models.YukaListerModels
 			{
 				return _targetFolderInfos.FirstOrDefault(x => x.FolderTaskStatus == FolderTaskStatus.Running);
 			}
+		}
+
+		// --------------------------------------------------------------------
+		// すべての FolderTaskStatus.DoneInMemory を DoneInDisk にする
+		// --------------------------------------------------------------------
+		public void SetAllFolderTaskStatusToDoneInDisk()
+		{
+			lock (_targetFolderInfos)
+			{
+				for (Int32 i = 0; i < _targetFolderInfos.Count; i++)
+				{
+					if (_targetFolderInfos[i].FolderTaskStatus == FolderTaskStatus.DoneInMemory)
+					{
+						Debug.Assert(_targetFolderInfos[i].FolderTaskDetail == FolderTaskDetail.Done, "SetAllFolderTaskStatusToDoneInDisk() not done");
+						_targetFolderInfos[i].FolderTaskStatus = FolderTaskStatus.DoneInDisk;
+					}
+				}
+			}
+			YlModel.Instance.EnvModel.IsMainWindowDataGridItemUpdated = true;
 		}
 
 		// --------------------------------------------------------------------
@@ -198,7 +262,6 @@ namespace YukaLister.Models.YukaListerModels
 
 			// 通知
 			YlModel.Instance.EnvModel.IsMainWindowDataGridItemUpdated = true;
-			//ListCancellationTokenSource?.Cancel();
 			return true;
 		}
 
@@ -223,6 +286,7 @@ namespace YukaLister.Models.YukaListerModels
 
 		// --------------------------------------------------------------------
 		// サブフォルダーも含めて FolderTaskDetail を Remove にする
+		// parentFolder は IsParent である必要がある
 		// --------------------------------------------------------------------
 		public Boolean SetFolderTaskDetailOfFolderToRemove(String parentFolder)
 		{
@@ -236,7 +300,7 @@ namespace YukaLister.Models.YukaListerModels
 				Debug.Assert(_targetFolderInfos[parentIndex].IsParent, "SetFolderTaskDetailToRemove() not parent");
 				for (Int32 i = parentIndex; i < parentIndex + _targetFolderInfos[parentIndex].NumTotalFolders; i++)
 				{
-					_targetFolderInfos[i].FolderTaskKind = FolderTaskKind.Remove;
+					_targetFolderInfos[i].SetFolderTaskKind(FolderTaskKind.Remove);
 					_targetFolderInfos[i].SetFolderTaskDetail(FolderTaskDetail.Remove);
 					_targetFolderInfos[i].FolderTaskStatus = FolderTaskStatus.Queued;
 				}
@@ -246,27 +310,36 @@ namespace YukaLister.Models.YukaListerModels
 			YlModel.Instance.EnvModel.IsMainWindowDataGridItemUpdated = true;
 			YlModel.Instance.EnvModel.Sifolin.MainEvent.Set();
 			AdjustAutoTargetInfoIfNeeded(YlCommon.DriveLetter(parentFolder));
-			//ListCancellationTokenSource?.Cancel();
 			return true;
 		}
 
 		// --------------------------------------------------------------------
-		// すべての FolderTaskStatus.DoneInMemory を DoneInDisk にする
+		// FolderTaskDetail を UpdateRemove にする（サブフォルダーは含めない）
+		// folder は IsParent でなくても構わない
 		// --------------------------------------------------------------------
-		public void SetAllFolderTaskStatusToDoneInDisk()
+		public Boolean SetFolderTaskDetailToUpdateRemove(String folder)
 		{
 			lock (_targetFolderInfos)
 			{
-				for (Int32 i = 0; i < _targetFolderInfos.Count; i++)
+				Int32 index = IndexOfTargetFolderInfoWithoutLock(folder);
+				if (index < 0)
 				{
-					if (_targetFolderInfos[i].FolderTaskStatus == FolderTaskStatus.DoneInMemory)
-					{
-						Debug.Assert(_targetFolderInfos[i].FolderTaskDetail == FolderTaskDetail.Done, "SetAllFolderTaskStatusToDoneInDisk() not done");
-						_targetFolderInfos[i].FolderTaskStatus = FolderTaskStatus.DoneInDisk;
-					}
+					return false;
 				}
+				if (_targetFolderInfos[index].FolderTaskKind == FolderTaskKind.Remove)
+				{
+					return false;
+				}
+				_targetFolderInfos[index].SetFolderTaskKind(FolderTaskKind.Update);
+				_targetFolderInfos[index].SetFolderTaskDetail(FolderTaskDetail.UpdateRemove);
+				_targetFolderInfos[index].FolderTaskStatus = FolderTaskStatus.Queued;
+				_targetFolderInfos[index].IsCacheUsed = false;
 			}
+
+			// 通知
 			YlModel.Instance.EnvModel.IsMainWindowDataGridItemUpdated = true;
+			YlModel.Instance.EnvModel.Sifolin.MainEvent.Set();
+			return true;
 		}
 
 		// --------------------------------------------------------------------
@@ -348,7 +421,8 @@ namespace YukaLister.Models.YukaListerModels
 			lock (_targetFolderInfos)
 			{
 				IEnumerable<TargetFolderInfo> targets
-						= _targetFolderInfos.Where(x => x.IsParent && x.FolderTaskKind == FolderTaskKind.Add && x.TargetPath.StartsWith(driveLetter, StringComparison.OrdinalIgnoreCase));
+						= _targetFolderInfos.Where(x => x.IsParent && (x.FolderTaskKind == FolderTaskKind.Add || x.FolderTaskKind == FolderTaskKind.Update)
+						&& x.TargetPath.StartsWith(driveLetter, StringComparison.OrdinalIgnoreCase));
 				foreach (TargetFolderInfo target in targets)
 				{
 					autoTargetInfo.Folders.Add(YlCommon.WithoutDriveLetter(target.TargetPath));
@@ -356,6 +430,35 @@ namespace YukaLister.Models.YukaListerModels
 			}
 			autoTargetInfo.Folders.Sort();
 			autoTargetInfo.Save();
+		}
+
+		// --------------------------------------------------------------------
+		// index 番目の TargetFolderInfos の NumTotalFolders が delta 増減したので、上位の NumTotalFolders を調整する
+		// index 番目の TargetFolderInfos の NumTotalFolders はいじらない
+		// --------------------------------------------------------------------
+		private void AdjustNumTotalFoldersWithoutLock(Int32 changingIndex, Int32 delta)
+		{
+			Debug.Assert(Monitor.IsEntered(_targetFolderInfos), "AdjustNumTotalFoldersWithoutLock() not locked");
+#if DEBUG
+			for (Int32 i = 0; i < changingIndex; i++)
+			{
+				YlModel.Instance.EnvModel.LogWriter.LogMessage(TraceEventType.Verbose, "AdjustNumTotalFoldersWithoutLock() Before " + _targetFolderInfos[i].NumTotalFolders + " " + _targetFolderInfos[i].TargetPath);
+			}
+#endif
+			for (Int32 i = 0; i < changingIndex; i++)
+			{
+				if (_targetFolderInfos[i].ParentPath == _targetFolderInfos[changingIndex].ParentPath
+						&& _targetFolderInfos[i].Level < _targetFolderInfos[changingIndex].Level)
+				{
+					_targetFolderInfos[i].NumTotalFolders += delta;
+				}
+			}
+#if DEBUG
+			for (Int32 i = 0; i < changingIndex; i++)
+			{
+				YlModel.Instance.EnvModel.LogWriter.LogMessage(TraceEventType.Verbose, "AdjustNumTotalFoldersWithoutLock() After " + _targetFolderInfos[i].NumTotalFolders + " " + _targetFolderInfos[i].TargetPath);
+			}
+#endif
 		}
 
 		// --------------------------------------------------------------------

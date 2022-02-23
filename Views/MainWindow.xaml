@@ -69,7 +69,7 @@
         </Label>
         <DockPanel DockPanel.Dock="Top" Margin="20,5,20,0" LastChildFill="False">
             <Label Content="検索可能ファイル数：" VerticalAlignment="Center" />
-            <Label Content="{Binding NumRecordsLabel}" VerticalAlignment="Center"/>
+            <Label Content="{Binding NumRecordsLabel}" VerticalAlignment="Center" />
             <Button Name="ButtonHelp" Style="{StaticResource MaterialDesignRaisedLightButton}" ToolTip="ヘルプ" Width="50" Height="25" DockPanel.Dock="Right" VerticalAlignment="Center">
                 <behaviors:Interaction.Triggers>
                     <behaviors:EventTrigger EventName="Click">
@@ -134,6 +134,14 @@
             <DataGrid.ItemContainerStyle>
                 <Style TargetType="DataGridRow" >
                     <Setter Property="Background" Value="{Binding Background}"/>
+                    <Setter Property="Tag" Value="{Binding RelativeSource={RelativeSource AncestorType=Window}, Path=DataContext}"/>
+                    <Setter Property="ContextMenu">
+                        <Setter.Value>
+                            <ContextMenu DataContext="{Binding Path=PlacementTarget.Tag, RelativeSource={RelativeSource Self}}">
+                                <MenuItem Header="更新" Command="{Binding MenuItemUpdateClickedCommand}"/>
+                            </ContextMenu>
+                        </Setter.Value>
+                    </Setter>
                     <Style.Triggers>
                         <Trigger Property="IsSelected" Value="True" >
                             <Setter Property="Background" Value="{x:Static msm:YlConstants.BRUSH_MATERIAL_DESIGN_SELECTED}" />

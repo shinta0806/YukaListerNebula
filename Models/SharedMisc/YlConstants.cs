@@ -52,16 +52,20 @@ namespace YukaLister.Models.SharedMisc
 	public enum FolderTaskDetail
 	{
 		// 追加詳細
-		CacheToDisk,    // キャッシュ DB からディスク DB へコピー　※親の場合のみなり得る
-		FindSubFolders, // サブフォルダーの検索
-		AddFileNames,    // 追加（ファイル名のみ）
-		AddInfos,        // 追加（ファイルが追加されたレコードに対してその他の情報を付与）
+		CacheToDisk,            // キャッシュ DB からディスク DB へコピー　※親の場合のみなり得る
+		FindSubFolders,         // サブフォルダーの検索
+		AddFileNames,           // 追加（ファイル名のみ）
+		AddInfos,               // 追加（ファイルが追加されたレコードに対してその他の情報を付与）
 
 		// 削除詳細
-		Remove,         // 削除
+		Remove,                 // 削除
+
+		// 更新詳細
+		UpdateRemove,           // 更新前の削除
+		UpdateFindSubFolders,   // 更新時のサブフォルダーの検索
 
 		// 完了
-		Done,           // 完了（ゆかり用データベースに反映されているとは限らない）
+		Done,                   // 完了（ゆかり用データベースに反映されているとは限らない）
 	}
 
 	// --------------------------------------------------------------------
@@ -71,6 +75,7 @@ namespace YukaLister.Models.SharedMisc
 	{
 		Add,            // 追加
 		Remove,         // 削除
+		Update,         // 更新
 	}
 
 	// --------------------------------------------------------------------
@@ -80,7 +85,6 @@ namespace YukaLister.Models.SharedMisc
 	{
 		Queued,         // 待機
 		Running,        // 実行中
-						//Error,          // エラー
 		DoneInMemory,   // 完了（インメモリデータベースへの反映）
 		DoneInDisk,     // 完了（ゆかり用データベースへの反映）
 	}

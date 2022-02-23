@@ -106,6 +106,22 @@ namespace YukaLister.Models.YukaListerCores
 							YlCommon.ActivateYurelinIfNeeded();
 						}
 
+						// 更新削除
+						targetFolderInfo = YlModel.Instance.ProjModel.FindTargetFolderInfo(FolderTaskDetail.UpdateRemove);
+						if (targetFolderInfo != null)
+						{
+							UpdateRemove(targetFolderInfo);
+							continue;
+						}
+
+						// 更新サブフォルダー検索
+						targetFolderInfo = YlModel.Instance.ProjModel.FindTargetFolderInfo(FolderTaskDetail.UpdateFindSubFolders);
+						if (targetFolderInfo != null)
+						{
+							UpdateFindSubFolders(targetFolderInfo);
+							continue;
+						}
+
 						// サブフォルダー検索
 						targetFolderInfo = YlModel.Instance.ProjModel.FindTargetFolderInfo(FolderTaskDetail.FindSubFolders);
 						if (targetFolderInfo != null)
@@ -578,7 +594,6 @@ namespace YukaLister.Models.YukaListerCores
 					folders.AddRange(subSubFolders);
 
 					// サブフォルダーの情報
-					subFolder.HasChildren = subSubFolders.Any();
 					subFolder.NumTotalFolders = 1 + subSubFolders.Count;
 				}
 			}
@@ -630,7 +645,6 @@ namespace YukaLister.Models.YukaListerCores
 			YlModel.Instance.ProjModel.AddTargetSubFolders(targetFolderInfo, subFolders);
 
 			// 親設定
-			targetFolderInfo.HasChildren = subFolders.Any();
 			targetFolderInfo.NumTotalFolders = 1 + subFolders.Count;
 
 			// その他
@@ -773,6 +787,94 @@ namespace YukaLister.Models.YukaListerCores
 			{
 				YlModel.Instance.EnvModel.IsMainWindowDataGridItemUpdated = true;
 			}
+		}
+
+		// --------------------------------------------------------------------
+		// 更新時のサブフォルダーを検索して追加
+		// --------------------------------------------------------------------
+		private void UpdateFindSubFolders(TargetFolderInfo targetFolderInfo)
+		{
+			// 動作状況設定
+			SetFolderTaskStatus(targetFolderInfo, FolderTaskStatus.Running);
+
+			// 作業
+			UpdateFindSubFoldersCore(targetFolderInfo);
+
+			// 動作状況設定
+			targetFolderInfo.SetFolderTaskDetail(FolderTaskDetail.UpdateFindSubFolders, FolderTaskDetail.AddFileNames);
+			targetFolderInfo.SetFolderTaskKind(FolderTaskKind.Update, FolderTaskKind.Add);
+			SetFolderTaskStatus(targetFolderInfo, FolderTaskStatus.Queued);
+			_prevFolderTaskDetail = FolderTaskDetail.UpdateFindSubFolders;
+		}
+
+		// --------------------------------------------------------------------
+		// 更新時のサブフォルダーを検索して追加
+		// --------------------------------------------------------------------
+		private void UpdateFindSubFoldersCore(TargetFolderInfo targetFolderInfo)
+		{
+			// 子の検索
+			List<TargetFolderInfo> subFolders = EnumSubFolders(targetFolderInfo);
+
+			// 子の追加
+			YlModel.Instance.ProjModel.AddTargetSubFolders(targetFolderInfo, subFolders);
+
+			// 対象の設定
+			targetFolderInfo.NumTotalFolders = 1 + subFolders.Count;
+
+			// 上位の NumTotalFolders を調整
+			if (targetFolderInfo.HasChildren)
+			{
+				YlModel.Instance.ProjModel.AdjustNumTotalFolders(targetFolderInfo, subFolders.Count);
+			}
+
+			// その他
+			YlModel.Instance.EnvModel.LogWriter.LogMessage(Common.TRACE_EVENT_TYPE_STATUS, targetFolderInfo.TargetPath
+					+ "\n" + targetFolderInfo.NumTotalFolders + " 個のフォルダーをキューに追加しました（更新用）。");
+		}
+
+		// --------------------------------------------------------------------
+		// 更新削除
+		// --------------------------------------------------------------------
+		private void UpdateRemove(TargetFolderInfo targetFolderInfo)
+		{
+			// 動作状況設定
+			SetFolderTaskStatus(targetFolderInfo, FolderTaskStatus.Running);
+
+			// 作業
+			UpdateRemoveCore(targetFolderInfo);
+
+			// 動作状況設定
+			targetFolderInfo.SetFolderTaskDetail(FolderTaskDetail.UpdateRemove, FolderTaskDetail.UpdateFindSubFolders);
+			SetFolderTaskStatus(targetFolderInfo, FolderTaskStatus.Queued);
+			_prevFolderTaskDetail = FolderTaskDetail.UpdateRemove;
+		}
+
+		// --------------------------------------------------------------------
+		// 更新削除
+		// --------------------------------------------------------------------
+		private static void UpdateRemoveCore(TargetFolderInfo targetFolderInfo)
+		{
+			// まずディスク DB から削除（全体の動作状況がエラーではない場合のみ）
+			if (YlModel.Instance.EnvModel.YukaListerWholeStatus != YukaListerStatus.Error)
+			{
+				using ListContextInDisk listContextInDisk = new();
+				listContextInDisk.Founds.RemoveRange(listContextInDisk.Founds.Where(x => x.ParentFolder == targetFolderInfo.ParentPath
+						&& x.Path.StartsWith(targetFolderInfo.TargetPath)));
+				listContextInDisk.SaveChanges();
+			}
+
+			// メモリ DB から削除
+			using ListContextInMemory listContextInMemory = new();
+			listContextInMemory.Founds.RemoveRange(listContextInMemory.Founds.Where(x => x.ParentFolder == targetFolderInfo.ParentPath
+					&& x.Path.StartsWith(targetFolderInfo.TargetPath)));
+			listContextInMemory.SaveChanges();
+
+			// TargetFolderInfo のサブフォルダーを削除
+			YlModel.Instance.ProjModel.RemoveTargetSubFolders(targetFolderInfo.TargetPath);
+
+			// その他
+			YlModel.Instance.EnvModel.LogWriter.LogMessage(Common.TRACE_EVENT_TYPE_STATUS, targetFolderInfo.TargetPath
+					+ "\nの配下のフォルダーをゆかり検索対象から削除しました（更新用）。");
 		}
 	}
 }

@@ -227,6 +227,49 @@ ID 接頭辞の設定ウィンドウが表示された場合は、説明や例�
 サンプルリストについての詳細は、<a href="#Sample">サンプル章</a>をご覧ください。<br>
 </blockquote>
   
+<a name="Mainwindow"></a>
+<h1>メインウィンドウ</h1>
+
+<a name="Irotsukistatuslabel"></a>
+<h3>色つきステータスラベル</h3>
+
+<p>
+<a href="HelpParts/YukaListerNebula_MainWindow.png" target="_blank"><img src="HelpParts/YukaListerNebula_MainWindow.png" alt="" width="256" align="right" border="0" hspace="10" vspace="10"></a>
+メインウィンドウ上部は、色でゆかりすたー 4 NEBULA&nbsp;の状態が分かるステータスラベルになっています。<br>
+<br>
+緑色の時は、ゆかりすたー 4 NEBULA&nbsp;が作業中です。追加されたフォルダーにあるファイルの確認などを行っています。<br>
+<br>
+紫色（青色）の時は、作業が完了しています。<br>
+<br>
+赤色の時は、何らかのエラーが発生しています。主にゆかり連携機能関連のエラーなので、ゆかり連携機能を使用しない場合は赤色でも問題ありません。ステータスラベルをクリックすると対応策が表示されます。<br>
+<br>
+色つきステータスラベルの下に、ゆかりで検索可能となるファイル数が表示されます。<br>
+</p>
+
+<a name="Kakusyubutton"></a>
+<h3>各種ボタン</h3>
+
+<ul>
+  <li>報告されたリストの問題を一覧表示ボタン（<img src="HelpParts/YukaListerNebula_ButtonReport.png" alt="" height="24" class="InlineImg">）……<a href="#HoukokusaretamondainoKakunin">リスト問題報告一覧ウィンドウ</a>を開きます。</li>
+  <li>環境設定ボタン（<img src="HelpParts/YukaListerNebula_ButtonSettings.png" alt="" height="24" class="InlineImg">）……<a href="#Kankyousettei">環境設定ウィンドウ</a>を開きます。</li>
+  <li>ヘルプボタン（<img src="HelpParts/YukaListerNebula_ButtonHelp.png" alt="" height="24" class="InlineImg">）……本ヘルプ等、さまざまな情報を表示するためのメニューが表示されます。</li>
+  <li>追加ボタン……ゆかり検索対象フォルダーを追加します。追加ボタンを使う代わりに、エクスプローラーからフォルダーをドラッグ＆ドロップすることによってもフォルダーを追加することができます。</li>
+  <li>除外ボタン……ゆかり検索対象フォルダーを選択してから除外ボタンをクリックすると、選択したフォルダーを検索対象から除外できます。</li>
+  <li>検索可能ファイル一覧ボタン……<a href="#Fileichiranwindow">ファイル一覧ウィンドウ</a>を開きます。</li>
+  <li>フォルダー設定ボタン……<a href="#FolderSettei">フォルダー設定ウィンドウ</a>を開きます。</li>
+</ul>
+
+<a name="Migiclickmenu"></a>
+<h3>右クリックメニュー</h3>
+
+<p>
+ゆかり検索対象フォルダーを右クリックすると、メニューが表示されます。<br>
+</p>
+
+<ul>
+  <li>更新……フォルダーの最新情報を確認してゆかり用リストを作成し直します。フォルダー内の動画ファイルが増減したり、楽曲情報データベースを更新したりした場合にお使いください。</li>
+</ul>
+
 <a name="ZokuseiniyoruSeiri"></a>
 <h1>属性による整理</h1>
 
@@ -824,7 +867,7 @@ HTML 形式でのリスト出力については、<a href="#ListsyutsuryokutabEt
 利用者から報告されたリストの問題をゆかりすたー 4 NEBULA&nbsp;上で確認するには、ゆかりすたー 4 NEBULA&nbsp;のメインウィンドウを見ます。メインウィンドウ上部の「報告されたリストの問題を一覧表示」ボタン上に、報告された問題の数が表示されます。<br clear="right">
 <br>
 <a href="HelpParts/YukaListerNebula_Report_List.png" target="_blank"><img src="HelpParts/YukaListerNebula_Report_List.png" alt="" width="256" align="right" border="0" hspace="10" vspace="10"></a>
-「報告されたリストの問題を一覧表示」ボタンをクリックすると、報告された問題が一覧表示されます。<br clear="right">
+「報告されたリストの問題を一覧表示」ボタンをクリックすると、リスト問題報告一覧ウィンドウが開き、報告された問題が一覧表示されます。<br clear="right">
 </p>
 
 <a name="HoukokusaretamondaihenoTaiou"></a>
@@ -1436,6 +1479,7 @@ DDD さんは楽曲名の頭文字でファイルを整理していますので�
 <div class="SideMenuItemH2"><a href="#Kido">起動</a></div>
 <div class="SideMenuItemH2"><a href="#YukariKensakutaishouFolderTsuika">フォルダー追加</a></div>
 <div class="SideMenuItemH2"><a href="#EtsuranyoulistnoSyutsuryoku">閲覧用リストの出力</a></div>
+<div class="SideMenuItemH1"><a href="#Mainwindow">メインウィンドウ</a></div>
 <div class="SideMenuItemH1"><a href="#ZokuseiniyoruSeiri">属性による整理</a></div>
 <div class="SideMenuItemH2"><a href="#Zokuseitowa">属性とは</a></div>
 <div class="SideMenuItemH2"><a href="#FolderSettei">フォルダー設定</a></div>
