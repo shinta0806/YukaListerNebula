@@ -719,6 +719,9 @@ namespace YukaLister.Models.SharedMisc
 		// その他
 		// --------------------------------------------------------------------
 
+		// Microsoft Store での製品 ID
+		public const String STORE_PRODUCT_ID = "9NPC1S45SNHB";
+
 		// FolderSettingsStatus に対応する文字列
 		public static readonly String[] FOLDER_SETTINGS_STATUS_LABELS = { "無", "有", "親に有", "未確認" };
 

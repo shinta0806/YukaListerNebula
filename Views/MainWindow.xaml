@@ -80,13 +80,14 @@
                 <Button.ContextMenu>
                     <ContextMenu>
                         <MenuItem Header="ヘルプ (_H)" Command="{Binding MenuItemHelpClickedCommand}" />
-                        <MenuItem Header="よくある質問 (_F)" Command="{Binding MenuItemFaqClickedCommand}" />
+                        <MenuItem Header="よくある質問 (_Q)" Command="{Binding MenuItemFaqClickedCommand}" />
                         <Separator />
                         <MenuItem Header="ファンサイト (_F)" Command="{Binding MenuItemFantiaClickedCommand}" />
                         <Separator />
                         <MenuItem Header="サンプルフォルダー (_S)" Command="{Binding MenuItemSampleFolderClickedCommand}" />
                         <Separator />
-                        <MenuItem Header="改訂履歴 (_U)" Command="{Binding MenuItemHistoryClickedCommand}" />
+                        <MenuItem Header="更新プログラムの確認 (_U)" Command="{Binding MenuItemCheckUpdateClickedCommand}" />
+                        <MenuItem Header="改訂履歴 (_I)" Command="{Binding MenuItemHistoryClickedCommand}" />
                         <MenuItem Header="バージョン情報 (_A)" Command="{Binding MenuItemAboutClickedCommand}" />
                     </ContextMenu>
                 </Button.ContextMenu>
@@ -140,7 +141,7 @@
                     <Setter Property="ContextMenu">
                         <Setter.Value>
                             <ContextMenu DataContext="{Binding Path=PlacementTarget.Tag, RelativeSource={RelativeSource Self}}">
-                                <MenuItem Header="更新" Command="{Binding MenuItemUpdateClickedCommand}"/>
+                                <MenuItem Header="更新" Command="{Binding MenuItemUpdateFolderClickedCommand}"/>
                             </ContextMenu>
                         </Setter.Value>
                     </Setter>

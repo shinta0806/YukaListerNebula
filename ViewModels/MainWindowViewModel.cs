@@ -505,6 +505,35 @@ namespace YukaLister.ViewModels
 		}
 		#endregion
 
+		#region 更新プログラムの確認メニューアイテムの制御
+		private ViewModelCommand? _menuItemCheckUpdateClickedCommand;
+
+		public ViewModelCommand MenuItemCheckUpdateClickedCommand
+		{
+			get
+			{
+				if (_menuItemCheckUpdateClickedCommand == null)
+				{
+					_menuItemCheckUpdateClickedCommand = new ViewModelCommand(MenuItemCheckUpdateClicked);
+				}
+				return _menuItemCheckUpdateClickedCommand;
+			}
+		}
+
+		public void MenuItemCheckUpdateClicked()
+		{
+			try
+			{
+				Common.OpenMicrosoftStore(YlConstants.STORE_PRODUCT_ID);
+			}
+			catch (Exception ex)
+			{
+				_logWriter?.ShowLogMessage(TraceEventType.Error, "更新プログラムの確認メニューアイテムクリック時エラー：\n" + ex.Message);
+				_logWriter?.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, "　スタックトレース：\n" + ex.StackTrace);
+			}
+		}
+		#endregion
+
 		#region 改訂履歴メニューアイテムの制御
 		private ViewModelCommand? _menuItemHistoryClickedCommand;
 
@@ -595,21 +624,21 @@ namespace YukaLister.ViewModels
 		#endregion
 
 		#region DataGrid 更新メニューアイテムの制御
-		private ViewModelCommand? _menuItemUpdateClickedCommand;
+		private ViewModelCommand? _menuItemUpdateFolderClickedCommand;
 
-		public ViewModelCommand MenuItemUpdateClickedCommand
+		public ViewModelCommand MenuItemUpdateFolderClickedCommand
 		{
 			get
 			{
-				if (_menuItemUpdateClickedCommand == null)
+				if (_menuItemUpdateFolderClickedCommand == null)
 				{
-					_menuItemUpdateClickedCommand = new ViewModelCommand(MenuItemUpdateClicked);
+					_menuItemUpdateFolderClickedCommand = new ViewModelCommand(MenuItemUpdateFolderClicked);
 				}
-				return _menuItemUpdateClickedCommand;
+				return _menuItemUpdateFolderClickedCommand;
 			}
 		}
 
-		public void MenuItemUpdateClicked()
+		public void MenuItemUpdateFolderClicked()
 		{
 			try
 			{
