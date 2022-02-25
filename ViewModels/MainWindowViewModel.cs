@@ -664,6 +664,38 @@ namespace YukaLister.ViewModels
 		}
 		#endregion
 
+		#region DataGrid エクスプローラーで開くメニューアイテムの制御
+		private ViewModelCommand? _menuItemExplorerClickedCommand;
+
+		public ViewModelCommand MenuItemExplorerClickedCommand
+		{
+			get
+			{
+				if (_menuItemExplorerClickedCommand == null)
+				{
+					_menuItemExplorerClickedCommand = new ViewModelCommand(MenuItemExplorerClicked);
+				}
+				return _menuItemExplorerClickedCommand;
+			}
+		}
+
+		public void MenuItemExplorerClicked()
+		{
+			try
+			{
+				foreach (TargetFolderInfo targetFolderInfo in SelectedTargetFolderInfos)
+				{
+					Common.ShellExecute(targetFolderInfo.TargetPath);
+				}
+			}
+			catch (Exception ex)
+			{
+				_logWriter?.ShowLogMessage(TraceEventType.Error, "エクスプローラーで開くメニューアイテムクリック時エラー：\n" + ex.Message);
+				_logWriter?.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, "　スタックトレース：\n" + ex.StackTrace);
+			}
+		}
+		#endregion
+
 		#region 除外ボタンの制御
 		private ViewModelCommand? _buttonRemoveTargetFolderClickedCommand;
 

@@ -142,6 +142,8 @@
                         <Setter.Value>
                             <ContextMenu DataContext="{Binding Path=PlacementTarget.Tag, RelativeSource={RelativeSource Self}}">
                                 <MenuItem Header="更新" Command="{Binding MenuItemUpdateFolderClickedCommand}"/>
+                                <Separator />
+                                <MenuItem Header="エクスプローラーで開く" Command="{Binding MenuItemExplorerClickedCommand}"/>
                             </ContextMenu>
                         </Setter.Value>
                     </Setter>
