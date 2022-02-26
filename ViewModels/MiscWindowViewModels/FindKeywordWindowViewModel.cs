@@ -174,7 +174,8 @@ namespace YukaLister.ViewModels.MiscWindowViewModels
 		{
 			try
 			{
-				Messenger.Raise(new WindowActionMessage(Common.MESSAGE_KEY_WINDOW_CLOSE));
+				// ToolWindow だからか、キャンセルボタンで自動クローズしないため、明示的にクローズする
+				Close();
 			}
 			catch (Exception excep)
 			{
