@@ -69,6 +69,7 @@ namespace YukaLister.ViewModels.ImportExportWindowViewModels
 			Importer importer = new(_importYukaListerPath, _importTag, _importSameName, (x) => Description = x, _abortCancellationTokenSource.Token);
 			importer.Import();
 
+			_abortCancellationTokenSource.Token.ThrowIfCancellationRequested();
 			return Task.CompletedTask;
 		}
 

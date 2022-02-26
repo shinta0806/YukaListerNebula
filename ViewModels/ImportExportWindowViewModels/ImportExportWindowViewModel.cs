@@ -130,10 +130,10 @@ namespace YukaLister.ViewModels.ImportExportWindowViewModels
 					cancelEventArgs.Cancel = true;
 				}
 			}
-			catch (Exception excep)
+			catch (Exception ex)
 			{
-				_logWriter?.ShowLogMessage(TraceEventType.Error, "クローズ処理時エラー：\n" + excep.Message);
-				_logWriter?.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, "　スタックトレース：\n" + excep.StackTrace);
+				_logWriter?.ShowLogMessage(TraceEventType.Error, "クローズ処理時エラー：\n" + ex.Message);
+				_logWriter?.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, "　スタックトレース：\n" + ex.StackTrace);
 			}
 		}
 		#endregion
@@ -162,10 +162,10 @@ namespace YukaLister.ViewModels.ImportExportWindowViewModels
 					Messenger.Raise(new WindowActionMessage(Common.MESSAGE_KEY_WINDOW_CLOSE));
 				}
 			}
-			catch (Exception excep)
+			catch (Exception ex)
 			{
-				_logWriter?.ShowLogMessage(TraceEventType.Error, "中止ボタンクリック時エラー：\n" + excep.Message);
-				_logWriter?.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, "　スタックトレース：\n" + excep.StackTrace);
+				_logWriter?.ShowLogMessage(TraceEventType.Error, "中止ボタンクリック時エラー：\n" + ex.Message);
+				_logWriter?.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, "　スタックトレース：\n" + ex.StackTrace);
 			}
 		}
 		#endregion
@@ -189,10 +189,10 @@ namespace YukaLister.ViewModels.ImportExportWindowViewModels
 
 				await ImportExportAsync();
 			}
-			catch (Exception excep)
+			catch (Exception ex)
 			{
-				_logWriter?.ShowLogMessage(TraceEventType.Error, "インポートエクスポートウィンドウ初期化時エラー：\n" + excep.Message);
-				_logWriter?.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, "　スタックトレース：\n" + excep.StackTrace);
+				_logWriter?.ShowLogMessage(TraceEventType.Error, "インポートエクスポートウィンドウ初期化時エラー：\n" + ex.Message);
+				_logWriter?.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, "　スタックトレース：\n" + ex.StackTrace);
 			}
 			finally
 			{
@@ -214,6 +214,28 @@ namespace YukaLister.ViewModels.ImportExportWindowViewModels
 		// ====================================================================
 		// protected 関数
 		// ====================================================================
+
+		// --------------------------------------------------------------------
+		// リソース解放
+		// --------------------------------------------------------------------
+		protected override void Dispose(Boolean isDisposing)
+		{
+			try
+			{
+				// タスク実行中は待機（セマフォが破棄されないようにするため）
+				while (_semaphoreSlim.CurrentCount == 0)
+				{
+					Thread.Sleep(Common.GENERAL_SLEEP_TIME);
+				}
+			}
+			catch (Exception ex)
+			{
+				_logWriter?.ShowLogMessage(TraceEventType.Error, "インポートエクスポートウィンドウ破棄時エラー：\n" + ex.Message);
+				_logWriter?.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, "　スタックトレース：\n" + ex.StackTrace);
+			}
+
+			base.Dispose(isDisposing);
+		}
 
 		// --------------------------------------------------------------------
 		// インポート・エクスポート処理
@@ -285,10 +307,10 @@ namespace YukaLister.ViewModels.ImportExportWindowViewModels
 			{
 				_logWriter?.LogMessage(TraceEventType.Information, _kind + "を中止しました。");
 			}
-			catch (Exception excep)
+			catch (Exception ex)
 			{
-				_logWriter?.ShowLogMessage(TraceEventType.Error, _kind + "時エラー：\n" + excep.Message);
-				_logWriter?.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, "　スタックトレース：\n" + excep.StackTrace);
+				_logWriter?.ShowLogMessage(TraceEventType.Error, _kind + "時エラー：\n" + ex.Message);
+				_logWriter?.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, "　スタックトレース：\n" + ex.StackTrace);
 			}
 		}
 	}

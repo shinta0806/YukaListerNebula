@@ -90,6 +90,7 @@ namespace YukaLister.ViewModels.ImportExportWindowViewModels
 			catch (Exception)
 			{
 			}
+			_abortCancellationTokenSource.Token.ThrowIfCancellationRequested();
 
 			// 出力
 			// データベースファイルをそのまま圧縮しようとするとプロセスが使用中というエラーになることがある（2 回に 1 回くらい）ため、
