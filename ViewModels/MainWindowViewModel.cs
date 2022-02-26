@@ -1007,7 +1007,7 @@ namespace YukaLister.ViewModels
 		// --------------------------------------------------------------------
 		// リソース解放
 		// --------------------------------------------------------------------
-		protected override void Dispose(bool disposing)
+		protected override void Dispose(Boolean disposing)
 		{
 			base.Dispose(disposing);
 

@@ -200,7 +200,10 @@ namespace YukaLister.ViewModels.ImportExportWindowViewModels
 				_abortCancellationTokenSource.Cancel();
 
 				YlModel.Instance.EnvModel.LogWriter.AppendDisplayText = null;
-				Messenger.Raise(new WindowActionMessage(Common.MESSAGE_KEY_WINDOW_CLOSE));
+				if (!_isDisposed)
+				{
+					Close();
+				}
 			}
 		}
 
@@ -220,18 +223,23 @@ namespace YukaLister.ViewModels.ImportExportWindowViewModels
 		// --------------------------------------------------------------------
 		protected override void Dispose(Boolean isDisposing)
 		{
-			try
+			if (!_isDisposed)
 			{
-				// タスク実行中は待機（セマフォが破棄されないようにするため）
-				while (_semaphoreSlim.CurrentCount == 0)
+				try
 				{
-					Thread.Sleep(Common.GENERAL_SLEEP_TIME);
+					// タスク実行中は待機（セマフォが破棄されないようにするため）
+					while (_semaphoreSlim.CurrentCount == 0)
+					{
+						Thread.Sleep(Common.GENERAL_SLEEP_TIME);
+					}
+
+					_isDisposed = true;
 				}
-			}
-			catch (Exception ex)
-			{
-				_logWriter?.ShowLogMessage(TraceEventType.Error, "インポートエクスポートウィンドウ破棄時エラー：\n" + ex.Message);
-				_logWriter?.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, "　スタックトレース：\n" + ex.StackTrace);
+				catch (Exception ex)
+				{
+					_logWriter?.ShowLogMessage(TraceEventType.Error, "インポートエクスポートウィンドウ破棄時エラー：\n" + ex.Message);
+					_logWriter?.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, "　スタックトレース：\n" + ex.StackTrace);
+				}
 			}
 
 			base.Dispose(isDisposing);
@@ -255,6 +263,9 @@ namespace YukaLister.ViewModels.ImportExportWindowViewModels
 
 		// タスクが多重起動されるのを抑止する
 		private readonly SemaphoreSlim _semaphoreSlim = new(1);
+
+		// Dispose フラグ
+		private Boolean _isDisposed;
 
 		// ====================================================================
 		// private 関数
