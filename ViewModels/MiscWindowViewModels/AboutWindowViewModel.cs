@@ -70,10 +70,39 @@ namespace YukaLister.ViewModels.MiscWindowViewModels
 			{
 				Common.ShellExecute(parameter);
 			}
-			catch (Exception excep)
+			catch (Exception ex)
 			{
-				_logWriter?.ShowLogMessage(TraceEventType.Error, "リンククリック時エラー：\n" + excep.Message);
-				_logWriter?.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, "　スタックトレース：\n" + excep.StackTrace);
+				_logWriter?.ShowLogMessage(TraceEventType.Error, "リンククリック時エラー：\n" + ex.Message);
+				_logWriter?.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, "　スタックトレース：\n" + ex.StackTrace);
+			}
+		}
+		#endregion
+
+		#region 更新プログラムの確認ボタンの制御
+		private ViewModelCommand? _buttonCheckUpdateClickedCommand;
+
+		public ViewModelCommand ButtonCheckUpdateClickedCommand
+		{
+			get
+			{
+				if (_buttonCheckUpdateClickedCommand == null)
+				{
+					_buttonCheckUpdateClickedCommand = new ViewModelCommand(ButtonCheckUpdateClicked);
+				}
+				return _buttonCheckUpdateClickedCommand;
+			}
+		}
+
+		public void ButtonCheckUpdateClicked()
+		{
+			try
+			{
+				Common.OpenMicrosoftStore(YlConstants.STORE_PRODUCT_ID);
+			}
+			catch (Exception ex)
+			{
+				_logWriter?.ShowLogMessage(TraceEventType.Error, "更新プログラムの確認ボタンクリック時エラー：\n" + ex.Message);
+				_logWriter?.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, "　スタックトレース：\n" + ex.StackTrace);
 			}
 		}
 		#endregion
@@ -96,10 +125,10 @@ namespace YukaLister.ViewModels.MiscWindowViewModels
 				// 表示
 				Title = YlConstants.APP_NAME_J + " のバージョン情報";
 			}
-			catch (Exception excep)
+			catch (Exception ex)
 			{
-				_logWriter?.ShowLogMessage(TraceEventType.Error, "バージョン情報ウィンドウ初期化時エラー：\n" + excep.Message);
-				_logWriter?.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, "　スタックトレース：\n" + excep.StackTrace);
+				_logWriter?.ShowLogMessage(TraceEventType.Error, "バージョン情報ウィンドウ初期化時エラー：\n" + ex.Message);
+				_logWriter?.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, "　スタックトレース：\n" + ex.StackTrace);
 			}
 		}
 	}

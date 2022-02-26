@@ -98,7 +98,15 @@
                 </StackPanel>
             </StackPanel>
         </GroupBox>
-        <Button Content="_OK" HorizontalAlignment="Center" Margin="0,20" Width="100" Height="Auto" IsDefault="True" IsCancel="True" />
+        <DockPanel Margin="20,20,20,20" >
+            <StackPanel Orientation="Horizontal" >
+                <Button Content="更新プログラムの確認 (_U)" Style="{StaticResource MaterialDesignRaisedLightButton}" Width="180" Height="Auto" ToolTip="Microsoft Store を開く" Padding="4" Command="{Binding ButtonCheckUpdateClickedCommand}" Cursor="Hand" />
+            </StackPanel>
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" >
+                <Button Content="_OK" Width="100" Height="Auto" IsDefault="True" IsCancel="True" />
+            </StackPanel>
+        </DockPanel>
+
     </StackPanel>
 
 </Window>
