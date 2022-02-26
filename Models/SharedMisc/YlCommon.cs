@@ -223,7 +223,7 @@ namespace YukaLister.Models.SharedMisc
 		// --------------------------------------------------------------------
 		public static LatestInfoManager CreateLatestInfoManager(Boolean forceShow)
 		{
-			return new LatestInfoManager("http://shinta.coresv.com/soft/YukaListerNebula_JPN.xml", forceShow, 3,
+			return new LatestInfoManager("http://shinta.coresv.com/soft/YukaListerNebula_JPN.xml", forceShow, 3, YlConstants.APP_VER,
 					YlModel.Instance.EnvModel.AppCancellationTokenSource.Token, YlModel.Instance.EnvModel.LogWriter);
 		}
 
