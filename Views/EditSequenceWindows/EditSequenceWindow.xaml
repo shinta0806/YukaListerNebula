@@ -24,7 +24,7 @@
     </Window.InputBindings>
 
     <behaviors:Interaction.Behaviors>
-        <sb:WindowBindingSupportBehavior IsCascade="True" MinimizeBox="False"/>
+        <sb:WindowBindingSupportBehavior IsCascade="True" />
     </behaviors:Interaction.Behaviors>
 
     <behaviors:Interaction.Triggers>

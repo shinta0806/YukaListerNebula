@@ -17,7 +17,7 @@
     </Window.DataContext>
 
     <behaviors:Interaction.Behaviors>
-        <sb:WindowBindingSupportBehavior ClosingCommand="{Binding WindowClosingCommand}" IsCascade="True" MinimizeBox="False"/>
+        <sb:WindowBindingSupportBehavior ClosingCommand="{Binding WindowClosingCommand}" IsCascade="True" MinimizeBox="False" />
     </behaviors:Interaction.Behaviors>
 
     <behaviors:Interaction.Triggers>
