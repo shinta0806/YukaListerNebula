@@ -23,7 +23,7 @@
             <RadioButton Content="以下で追加した項目のみ (_N)" IsChecked="{Binding OutputAllItemsInvert}" GroupName="OutputAllItems" VerticalAlignment="Center" Margin="20,0,0,0">
             </RadioButton>
             <Label Margin="20,0,0,0" >
-                <Hyperlink Command="{Binding HelpClickedCommand}" CommandParameter="Kihonsetteitab" >
+                <Hyperlink Command="{Binding HelpClickedCommand}" CommandParameter="Shutsuryokukoumoku" >
                     <TextBlock Text="詳細情報" />
                 </Hyperlink>
             </Label>

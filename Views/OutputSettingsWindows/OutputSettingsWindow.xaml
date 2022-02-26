@@ -16,7 +16,7 @@
     </Window.DataContext>
 
     <behaviors:Interaction.Behaviors>
-        <sb:WindowBindingSupportBehavior IsCascade="True" MinimizeBox="False"/>
+        <sb:WindowBindingSupportBehavior IsCascade="True" HelpBox="True" HelpBoxClickedCommand="{Binding HelpClickedCommand}" HelpBoxClickedCommandParameter="Listshutsuryokusettei" />
     </behaviors:Interaction.Behaviors>
 
     <behaviors:Interaction.Triggers>
@@ -49,10 +49,14 @@
                 </behaviors:Interaction.Triggers>
             </TabControl>
         </StackPanel>
-        <DockPanel Margin="20,20,20,20" LastChildFill="False">
-            <Button Content="初期化 (_I)" Style="{StaticResource MaterialDesignRaisedLightButton}" Width="100" Height="Auto" ToolTip="出力設定を初期設定に戻す" Padding="4" Command="{Binding ButtonDefaultClickedCommand}" />
-            <Button Content="キャンセル" Margin="0" Height="Auto" Style="{StaticResource MaterialDesignRaisedLightButton}" IsCancel="True" Width="100" Padding="4" DockPanel.Dock="Right"/>
-            <Button Content="_OK" Height="Auto" IsDefault="True" Width="100" Command="{Binding ButtonOkClickedCommand}" sb:IsFocusedAttachedBehavior.IsFocused="{Binding IsButtonOkFocused}" DockPanel.Dock="Right" Margin="0,0,20,0" />
+        <DockPanel Margin="20,20,20,20" >
+            <StackPanel Orientation="Horizontal" >
+                <Button Content="初期化 (_I)" Style="{StaticResource MaterialDesignRaisedLightButton}" Width="100" Height="Auto" ToolTip="出力設定を初期設定に戻す" Padding="4" Command="{Binding ButtonDefaultClickedCommand}" />
+            </StackPanel>
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" >
+                <Button Content="_OK" Height="Auto" IsDefault="True" Width="100" Command="{Binding ButtonOkClickedCommand}" sb:IsFocusedAttachedBehavior.IsFocused="{Binding IsButtonOkFocused}" Margin="0,0,20,0" />
+                <Button Content="キャンセル" Margin="0" Height="Auto" Style="{StaticResource MaterialDesignRaisedLightButton}" IsCancel="True" Width="100" Padding="4" />
+            </StackPanel>
         </DockPanel>
     </StackPanel>
 
