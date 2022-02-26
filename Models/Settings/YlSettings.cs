@@ -206,6 +206,40 @@ namespace YukaLister.Models.Settings
 		// ====================================================================
 
 		// --------------------------------------------------------------------
+		// 調整
+		// --------------------------------------------------------------------
+		public void Adjust()
+		{
+			if (TargetExts.Count == 0)
+			{
+				// 動画の拡張子をアルファベット順に追加（比較的メジャーで現在もサポートが行われている形式のみ）
+				TargetExts.Add(Common.FILE_EXT_AVI);
+				TargetExts.Add(Common.FILE_EXT_MKV);
+				TargetExts.Add(Common.FILE_EXT_MOV);
+				TargetExts.Add(Common.FILE_EXT_MP4);
+				TargetExts.Add(Common.FILE_EXT_MPG);
+				TargetExts.Add(Common.FILE_EXT_WMV);
+			}
+			if (OffVocalWords.Count == 0)
+			{
+				OffVocalWords.AddRange(OFF_VOCAL_WORDS.Split(YlConstants.SMART_TRACK_SEPARATOR));
+			}
+			if (BothVocalWords.Count == 0)
+			{
+				BothVocalWords.AddRange(BOTH_VOCAL_WORDS.Split(YlConstants.SMART_TRACK_SEPARATOR));
+			}
+			if (LastIdNumbers.Count < (Int32)MusicInfoTables.__End__)
+			{
+				LastIdNumbers.Clear();
+				for (Int32 i = 0; i < (Int32)MusicInfoTables.__End__; i++)
+				{
+					LastIdNumbers.Add(0);
+				}
+			}
+			AnalyzeYukariConfig();
+		}
+
+		// --------------------------------------------------------------------
 		// ゆかり設定ファイルを解析してゆかりの設定を取得
 		// --------------------------------------------------------------------
 		public void AnalyzeYukariConfig()
@@ -315,39 +349,6 @@ namespace YukaLister.Models.Settings
 		}
 
 		// --------------------------------------------------------------------
-		// LastIdNumbers をこれから使う ID 番号に設定
-		// ＜返値＞ これから使う ID 文字列
-		// --------------------------------------------------------------------
-		internal String PrepareLastId<T>(DbSet<T> records) where T : class, IRcBase
-		{
-			Int32 tableIndex = DbCommon.MusicInfoTableIndex<T>();
-			for (; ; )
-			{
-				LastIdNumbers[tableIndex]++;
-				if (DbCommon.SelectBaseById(records, LastId(tableIndex)) == null)
-				{
-					return LastId(tableIndex);
-				}
-			}
-		}
-
-		// --------------------------------------------------------------------
-		// LastIdNumbers をこれから使う ID 番号に設定
-		// ＜返値＞ これから使う ID 文字列
-		// --------------------------------------------------------------------
-		internal String PrepareYukariStatisticsLastId(DbSet<TYukariStatistics> records)
-		{
-			for (; ; )
-			{
-				LastYukariStatisticsIdNumber++;
-				if (DbCommon.SelectBaseById(records, LastYukariStatisticsId()) == null)
-				{
-					return LastYukariStatisticsId();
-				}
-			}
-		}
-
-		// --------------------------------------------------------------------
 		// 保存パス
 		// --------------------------------------------------------------------
 		public static String YlSettingsPath()
@@ -398,6 +399,43 @@ namespace YukaLister.Models.Settings
 		}
 
 		// ====================================================================
+		// internal 関数
+		// ====================================================================
+
+		// --------------------------------------------------------------------
+		// LastIdNumbers をこれから使う ID 番号に設定
+		// ＜返値＞ これから使う ID 文字列
+		// --------------------------------------------------------------------
+		internal String PrepareLastId<T>(DbSet<T> records) where T : class, IRcBase
+		{
+			Int32 tableIndex = DbCommon.MusicInfoTableIndex<T>();
+			for (; ; )
+			{
+				LastIdNumbers[tableIndex]++;
+				if (DbCommon.SelectBaseById(records, LastId(tableIndex)) == null)
+				{
+					return LastId(tableIndex);
+				}
+			}
+		}
+
+		// --------------------------------------------------------------------
+		// LastIdNumbers をこれから使う ID 番号に設定
+		// ＜返値＞ これから使う ID 文字列
+		// --------------------------------------------------------------------
+		internal String PrepareYukariStatisticsLastId(DbSet<TYukariStatistics> records)
+		{
+			for (; ; )
+			{
+				LastYukariStatisticsIdNumber++;
+				if (DbCommon.SelectBaseById(records, LastYukariStatisticsId()) == null)
+				{
+					return LastYukariStatisticsId();
+				}
+			}
+		}
+
+		// ====================================================================
 		// protected 関数
 		// ====================================================================
 
@@ -407,33 +445,7 @@ namespace YukaLister.Models.Settings
 		// --------------------------------------------------------------------
 		protected override void AdjustAfterLoad()
 		{
-			if (TargetExts.Count == 0)
-			{
-				// 動画の拡張子をアルファベット順に追加（比較的メジャーで現在もサポートが行われている形式のみ）
-				TargetExts.Add(Common.FILE_EXT_AVI);
-				TargetExts.Add(Common.FILE_EXT_MKV);
-				TargetExts.Add(Common.FILE_EXT_MOV);
-				TargetExts.Add(Common.FILE_EXT_MP4);
-				TargetExts.Add(Common.FILE_EXT_MPG);
-				TargetExts.Add(Common.FILE_EXT_WMV);
-			}
-			if (OffVocalWords.Count == 0)
-			{
-				OffVocalWords.AddRange(OFF_VOCAL_WORDS.Split(YlConstants.SMART_TRACK_SEPARATOR));
-			}
-			if (BothVocalWords.Count == 0)
-			{
-				BothVocalWords.AddRange(BOTH_VOCAL_WORDS.Split(YlConstants.SMART_TRACK_SEPARATOR));
-			}
-			if (LastIdNumbers.Count < (Int32)MusicInfoTables.__End__)
-			{
-				LastIdNumbers.Clear();
-				for (Int32 i = 0; i < (Int32)MusicInfoTables.__End__; i++)
-				{
-					LastIdNumbers.Add(0);
-				}
-			}
-			AnalyzeYukariConfig();
+			Adjust();
 		}
 
 		// ====================================================================

@@ -15,7 +15,7 @@ using Shinta.ViewModels;
 
 using System;
 using System.Diagnostics;
-
+using System.Windows;
 using YukaLister.Models.Settings;
 using YukaLister.Models.SharedMisc;
 using YukaLister.Models.YukaListerModels;
@@ -109,6 +109,43 @@ namespace YukaLister.ViewModels.MiscWindowViewModels
 		public static ListenerCommand<String>? HelpClickedCommand
 		{
 			get => YlModel.Instance.EnvModel.HelpClickedCommand;
+		}
+		#endregion
+
+		#region 初期化ボタンの制御
+		private ViewModelCommand? _buttonDefaultClickedCommand;
+
+		public ViewModelCommand ButtonDefaultClickedCommand
+		{
+			get
+			{
+				if (_buttonDefaultClickedCommand == null)
+				{
+					_buttonDefaultClickedCommand = new ViewModelCommand(ButtonDefaultClicked);
+				}
+				return _buttonDefaultClickedCommand;
+			}
+		}
+
+		public void ButtonDefaultClicked()
+		{
+			try
+			{
+				if (MessageBox.Show("環境設定をすべて初期設定に戻します。\nよろしいですか？", "確認", MessageBoxButton.YesNo, MessageBoxImage.Exclamation) != MessageBoxResult.Yes)
+				{
+					return;
+				}
+
+				// 初期設定
+				YlSettings ylSettings = new();
+				ylSettings.Adjust();
+				SettingsToProperties(ylSettings);
+			}
+			catch (Exception excep)
+			{
+				_logWriter?.ShowLogMessage(TraceEventType.Error, "初期化ボタンクリック時エラー：\n" + excep.Message);
+				_logWriter?.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, "　スタックトレース：\n" + excep.StackTrace);
+			}
 		}
 		#endregion
 
