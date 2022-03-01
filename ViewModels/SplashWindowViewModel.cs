@@ -5,7 +5,7 @@
 // ============================================================================
 
 // ----------------------------------------------------------------------------
-// 本クラスは Yv2Model 未生成時に生成されるため、基底クラスに LogWriter を渡さない
+// 本クラスは YlModel 未生成時に生成されるため、YlViewModel の派生にせず、基底クラスに LogWriter を渡さない
 // ----------------------------------------------------------------------------
 
 using Livet.Messaging;
@@ -14,6 +14,7 @@ using MaterialDesignColors;
 using MaterialDesignThemes.Wpf;
 
 using Shinta;
+using Shinta.ViewModels;
 
 using System;
 using System.Collections.Generic;
@@ -27,7 +28,7 @@ using YukaLister.Models.YukaListerModels;
 
 namespace YukaLister.ViewModels
 {
-	internal class SplashWindowViewModel : YlViewModel
+	internal class SplashWindowViewModel : BasicWindowViewModel
 	{
 		// ====================================================================
 		// コンストラクター
@@ -37,7 +38,6 @@ namespace YukaLister.ViewModels
 		// メインコンストラクター
 		// --------------------------------------------------------------------
 		public SplashWindowViewModel()
-				: base(false)
 		{
 		}
 
@@ -54,6 +54,9 @@ namespace YukaLister.ViewModels
 
 			try
 			{
+				// インスタンス生成
+				_ = YlModel.Instance;
+
 				// マテリアルデザインの外観を変更
 				IEnumerable<Swatch> swatches = new SwatchesProvider().Swatches;
 				PaletteHelper paletteHelper = new();
@@ -98,14 +101,14 @@ namespace YukaLister.ViewModels
 				}
 				Messenger.Raise(new TransitionMessage(_mainWindowViewModel, YlConstants.MESSAGE_KEY_OPEN_MAIN_WINDOW));
 			}
-			catch (Exception excep)
+			catch (Exception ex)
 			{
 				// YlModel 未生成の可能性があるためまずはメッセージ表示のみ
-				MessageBox.Show("スプラッシュウィンドウ初期化時エラー：\n" + excep.Message + "\n" + excep.StackTrace, "エラー", MessageBoxButton.OK, MessageBoxImage.Error);
+				MessageBox.Show("スプラッシュウィンドウ初期化時エラー：\n" + ex.Message + "\n" + ex.StackTrace, "エラー", MessageBoxButton.OK, MessageBoxImage.Error);
 
 				// 可能であればログする。YlModel 生成中に例外が発生する可能性があるが、それについては集約エラーハンドラーに任せる
-				YlModel.Instance.EnvModel.LogWriter.LogMessage(TraceEventType.Error, "スプラッシュウィンドウ初期化時エラー：\n" + excep.Message);
-				YlModel.Instance.EnvModel.LogWriter.LogMessage(Common.TRACE_EVENT_TYPE_STATUS, "　スタックトレース：\n" + excep.StackTrace);
+				YlModel.Instance.EnvModel.LogWriter.LogMessage(TraceEventType.Error, "スプラッシュウィンドウ初期化時エラー：\n" + ex.Message);
+				YlModel.Instance.EnvModel.LogWriter.LogMessage(Common.TRACE_EVENT_TYPE_STATUS, "　スタックトレース：\n" + ex.StackTrace);
 
 				// 継続できないのでアプリを終了する
 				Environment.Exit(1);

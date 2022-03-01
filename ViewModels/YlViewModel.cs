@@ -5,12 +5,11 @@
 // ============================================================================
 
 // ----------------------------------------------------------------------------
-// YlSettingsWindowViewModel 以外のすべてのビューモデルの基底
+// SplashWindowViewModel・タブ系ビューモデル以外のすべてのビューモデルの基底
+// 現状は特に機能を有していないが、将来の拡張用
 // ----------------------------------------------------------------------------
 
 using Shinta.ViewModels;
-
-using System;
 
 using YukaLister.Models.YukaListerModels;
 
@@ -25,8 +24,8 @@ namespace YukaLister.ViewModels
 		// --------------------------------------------------------------------
 		// メインコンストラクター
 		// --------------------------------------------------------------------
-		public YlViewModel(Boolean useLogWriter = true)
-				: base(useLogWriter ? YlModel.Instance.EnvModel.LogWriter : null)
+		public YlViewModel()
+				: base(YlModel.Instance.EnvModel.LogWriter)
 		{
 		}
 	}
