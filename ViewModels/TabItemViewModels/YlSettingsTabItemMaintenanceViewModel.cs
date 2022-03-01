@@ -207,8 +207,9 @@ namespace YukaLister.ViewModels.TabItemViewModels
 				ZipFile.ExtractToDirectory(path, unzipFolder);
 
 				// 設定更新
-				String settingsFilePath = unzipFolder + Path.GetFileName(Path.GetDirectoryName(Common.UserAppDataFolderPath())) + "\\" + Path.GetFileName(YlSettings.YlSettingsPath());
-				File.Copy(settingsFilePath, YlSettings.YlSettingsPath(), true);
+				String settingsFilePath = unzipFolder + Path.GetFileName(Path.GetDirectoryName(Common.UserAppDataFolderPath())) + "\\" 
+						+ Path.GetFileName(YlModel.Instance.EnvModel.YlSettings.SettingsPath());
+				File.Copy(settingsFilePath, YlModel.Instance.EnvModel.YlSettings.SettingsPath(), true);
 				YlModel.Instance.EnvModel.YlSettings.Load();
 				_tabControlWindowViewModel.Initialize();
 				_logWriter?.ShowLogMessage(TraceEventType.Information, "設定を復元しました。");

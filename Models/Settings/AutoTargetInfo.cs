@@ -30,7 +30,7 @@ namespace YukaLister.Models.Settings
 		// driveLetter: "D:" のようにコロンまで
 		// --------------------------------------------------------------------
 		public AutoTargetInfo(String driveLetter)
-				: base(YlModel.Instance.EnvModel.LogWriter, null)
+				: base(YlModel.Instance.EnvModel.LogWriter)
 		{
 			Debug.Assert(driveLetter.Length == 2, "AutoTargetInfo() bad driveLetter");
 			_driveLetter = driveLetter;
@@ -40,7 +40,7 @@ namespace YukaLister.Models.Settings
 		// シリアライズ用コンストラクター
 		// --------------------------------------------------------------------
 		public AutoTargetInfo()
-				: base(YlModel.Instance.EnvModel.LogWriter, null)
+				: base(YlModel.Instance.EnvModel.LogWriter)
 		{
 			_driveLetter = String.Empty;
 		}
@@ -53,6 +53,22 @@ namespace YukaLister.Models.Settings
 		public List<String> Folders { get; set; } = new();
 
 		// ====================================================================
+		// public 関数
+		// ====================================================================
+
+		// --------------------------------------------------------------------
+		// 保存パス
+		// --------------------------------------------------------------------
+		public override String SettingsPath()
+		{
+			if (String.IsNullOrEmpty(_driveLetter))
+			{
+				throw new Exception("ドライブレターが設定されていません。");
+			}
+			return YlCommon.YukaListerStatusFolderPath(_driveLetter) + FILE_NAME_AUTO_TARGET_INFO;
+		}
+
+		// ====================================================================
 		// protected 関数
 		// ====================================================================
 
@@ -62,18 +78,6 @@ namespace YukaLister.Models.Settings
 		protected override void AdjustBeforeSave()
 		{
 			YlCommon.YukaListerStatusFolderPath(_driveLetter, true);
-		}
-
-		// --------------------------------------------------------------------
-		// 保存パス
-		// --------------------------------------------------------------------
-		protected override String SettingsPath()
-		{
-			if (String.IsNullOrEmpty(_driveLetter))
-			{
-				throw new Exception("ドライブレターが設定されていません。");
-			}
-			return YlCommon.YukaListerStatusFolderPath(_driveLetter) + FILE_NAME_AUTO_TARGET_INFO;
 		}
 
 		// ====================================================================

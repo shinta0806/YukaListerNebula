@@ -39,7 +39,7 @@ namespace YukaLister.Models.Settings
 		// EnvironmentModel 構築時に呼びだされるため、LogWriter は指定できない
 		// --------------------------------------------------------------------
 		public YlSettings()
-				: base(null, YlSettingsPath())
+				: base(null)
 		{
 		}
 
@@ -351,7 +351,7 @@ namespace YukaLister.Models.Settings
 		// --------------------------------------------------------------------
 		// 保存パス
 		// --------------------------------------------------------------------
-		public static String YlSettingsPath()
+		public override String SettingsPath()
 		{
 			return Common.UserAppDataFolderPath() + nameof(YlSettings) + Common.FILE_EXT_CONFIG;
 		}

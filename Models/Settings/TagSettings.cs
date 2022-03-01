@@ -28,7 +28,7 @@ namespace YukaLister.Models.Settings
 		// EnvironmentModel 構築時に呼びだされるため、LogWriter は指定できない
 		// --------------------------------------------------------------------
 		public TagSettings()
-				: base(null, Common.UserAppDataFolderPath() + nameof(TagSettings) + Common.FILE_EXT_CONFIG)
+				: base(null)
 		{
 		}
 
@@ -44,6 +44,18 @@ namespace YukaLister.Models.Settings
 		// 保存専用（プログラム中では使用しないこと）
 		public List<SerializableKeyValuePair<String, String>> FolderTagsSave { get; set; } = new();
 
+
+		// ====================================================================
+		// public 関数
+		// ====================================================================
+
+		// --------------------------------------------------------------------
+		// 保存パス
+		// --------------------------------------------------------------------
+		public override String SettingsPath()
+		{
+			return Common.UserAppDataFolderPath() + nameof(TagSettings) + Common.FILE_EXT_CONFIG;
+		}
 
 		// ====================================================================
 		// protected 関数
