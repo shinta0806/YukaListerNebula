@@ -33,7 +33,7 @@ namespace YukaLister.ViewModels.MiscWindowViewModels
 		// メインコンストラクター
 		// --------------------------------------------------------------------
 		public YlSettingsWindowViewModel()
-				: base(YlModel.Instance.EnvModel.LogWriter)
+				: base(YlModel.Instance.EnvModel.YlSettings, YlModel.Instance.EnvModel.LogWriter)
 		{
 			Debug.Assert(_tabItemViewModels.Length == (Int32)YlSettingsTabItem.__End__, "YlSettingsWindowViewModel() bad tab vm nums");
 		}
@@ -137,9 +137,9 @@ namespace YukaLister.ViewModels.MiscWindowViewModels
 				}
 
 				// 初期設定
-				YlSettings ylSettings = new();
-				ylSettings.Adjust();
-				SettingsToProperties(ylSettings);
+				_settings = new();
+				_settings.Adjust();
+				SettingsToProperties();
 			}
 			catch (Exception excep)
 			{
@@ -166,7 +166,7 @@ namespace YukaLister.ViewModels.MiscWindowViewModels
 				Title = "環境設定";
 
 				// 設定
-				SettingsToProperties(YlModel.Instance.EnvModel.YlSettings);
+				SettingsToProperties();
 			}
 			catch (Exception excep)
 			{
@@ -210,9 +210,10 @@ namespace YukaLister.ViewModels.MiscWindowViewModels
 		// --------------------------------------------------------------------
 		protected override void PropertiesToSettings()
 		{
-			base.PropertiesToSettings();
+			// 反映対象が初期化で入れ替わっている場合があるので元に戻す
+			_settings = YlModel.Instance.EnvModel.YlSettings;
 
-			PropertiesToSettings(YlModel.Instance.EnvModel.YlSettings);
+			base.PropertiesToSettings();
 		}
 
 		// --------------------------------------------------------------------
