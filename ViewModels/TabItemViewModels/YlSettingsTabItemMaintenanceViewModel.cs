@@ -209,6 +209,7 @@ namespace YukaLister.ViewModels.TabItemViewModels
 				// 設定更新
 				String settingsFilePath = unzipFolder + Path.GetFileName(Path.GetDirectoryName(Common.UserAppDataFolderPath())) + "\\" 
 						+ Path.GetFileName(YlModel.Instance.EnvModel.YlSettings.SettingsPath());
+				CheckRestore(settingsFilePath);
 				File.Copy(settingsFilePath, YlModel.Instance.EnvModel.YlSettings.SettingsPath(), true);
 				YlModel.Instance.EnvModel.YlSettings.Load();
 				_tabControlWindowViewModel.Initialize();
@@ -249,6 +250,23 @@ namespace YukaLister.ViewModels.TabItemViewModels
 		public override void SettingsToProperties(YlSettings srcSettings)
 		{
 			CheckRss = srcSettings.CheckRss;
+		}
+
+		// ====================================================================
+		// private 関数
+		// ====================================================================
+
+		// --------------------------------------------------------------------
+		// 設定ファイルが正常に読み込めるか確認
+		// ＜例外＞ Exception
+		// --------------------------------------------------------------------
+		private void CheckRestore(String settingsFilePath)
+		{
+			YlSettings tempSettings = new();
+			if (!tempSettings.Load(settingsFilePath))
+			{
+				throw new Exception("設定ファイルを読み込めません。");
+			}
 		}
 	}
 }
