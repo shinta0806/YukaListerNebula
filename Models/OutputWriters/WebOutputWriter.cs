@@ -381,7 +381,7 @@ namespace YukaLister.Models.OutputWriters
 			_topPage.AddChild(adult);
 
 			// 一時フォルダー
-			_tempFolderPath = YlCommon.TempPath() + "\\";
+			_tempFolderPath = Common.TempPath() + "\\";
 			Directory.CreateDirectory(_tempFolderPath);
 		}
 

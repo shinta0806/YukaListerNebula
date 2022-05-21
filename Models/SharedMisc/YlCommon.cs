@@ -878,16 +878,6 @@ namespace YukaLister.Models.SharedMisc
 		}
 
 		// --------------------------------------------------------------------
-		// テンポラリフォルダー配下のファイル・フォルダー名として使えるパス（呼びだす度に異なるファイル、拡張子なし）
-		// --------------------------------------------------------------------
-		public static String TempPath()
-		{
-			// マルチスレッドでも安全にインクリメント
-			Int32 counter = Interlocked.Increment(ref _tempPathCounter);
-			return Common.TempFolderPath() + counter.ToString() + "_" + Environment.CurrentManagedThreadId.ToString();
-		}
-
-		// --------------------------------------------------------------------
 		// 現在時刻（UTC）の修正ユリウス日
 		// --------------------------------------------------------------------
 		public static Double UtcNowMjd()
@@ -988,9 +978,6 @@ namespace YukaLister.Models.SharedMisc
 
 		// InputIdPrefix
 		private static Boolean _isInputtingIdPrefix;
-
-		// TempPath() 用カウンター（同じスレッドでもファイル名が分かれるようにするため）
-		private static Int32 _tempPathCounter;
 
 		// ====================================================================
 		// private 関数

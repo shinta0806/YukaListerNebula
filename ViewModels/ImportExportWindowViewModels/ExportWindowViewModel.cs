@@ -57,7 +57,7 @@ namespace YukaLister.ViewModels.ImportExportWindowViewModels
 		// --------------------------------------------------------------------
 		protected override Task ImportExportByWorker(Object? _)
 		{
-			String tempExportPath = YlCommon.TempPath();
+			String tempExportPath = Common.TempPath();
 			MusicInfoContextDefault musicInfoContextDefault = new();
 			musicInfoContextDefault.ChangeTracker.QueryTrackingBehavior = QueryTrackingBehavior.NoTracking;
 			MusicInfoContextExport musicInfoContextExport = new(tempExportPath);
@@ -96,7 +96,7 @@ namespace YukaLister.ViewModels.ImportExportWindowViewModels
 			// データベースファイルをそのまま圧縮しようとするとプロセスが使用中というエラーになることがある（2 回に 1 回くらい）ため、
 			// いったんデータベースファイルをコピーしてから圧縮する
 			Description = "保存しています...";
-			String tempFolder = YlCommon.TempPath();
+			String tempFolder = Common.TempPath();
 			Directory.CreateDirectory(tempFolder);
 			File.Copy(tempExportPath, tempFolder + "\\" + FILE_NAME_EXPORT_MUSIC_INFO);
 			ZipFile.CreateFromDirectory(tempFolder, _exportYukaListerPath, CompressionLevel.Optimal, false);

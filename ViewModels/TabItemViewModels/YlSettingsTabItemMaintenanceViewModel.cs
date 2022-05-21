@@ -202,7 +202,7 @@ namespace YukaLister.ViewModels.TabItemViewModels
 				}
 
 				// 解凍
-				String unzipFolder = YlCommon.TempPath() + "\\";
+				String unzipFolder = Common.TempPath() + "\\";
 				Directory.CreateDirectory(unzipFolder);
 				ZipFile.ExtractToDirectory(path, unzipFolder);
 

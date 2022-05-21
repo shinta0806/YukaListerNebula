@@ -352,7 +352,6 @@ namespace YukaLister.Models.SharedMisc
 		// 拡張子
 		// --------------------------------------------------------------------
 
-		public const String FILE_EXT_SETTINGS_ARCHIVE = ".sta";
 		public const String FILE_EXT_YL_EXPORT_ARCHIVE = ".ylexa";
 
 		// --------------------------------------------------------------------
@@ -360,7 +359,7 @@ namespace YukaLister.Models.SharedMisc
 		// --------------------------------------------------------------------
 
 		// 設定ファイル
-		public const String DIALOG_FILTER_SETTINGS_ARCHIVE = "設定ファイル|*" + FILE_EXT_SETTINGS_ARCHIVE;
+		public const String DIALOG_FILTER_SETTINGS_ARCHIVE = "設定ファイル|*" + Common.FILE_EXT_SETTINGS_ARCHIVE;
 
 		// 楽曲情報データベースエクスポートファイル
 		public const String DIALOG_FILTER_YL_EXPORT_ARCHIVE = "ゆかりすたー情報ファイル|*" + FILE_EXT_YL_EXPORT_ARCHIVE;

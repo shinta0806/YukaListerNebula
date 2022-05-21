@@ -250,7 +250,7 @@ namespace YukaLister.Models.YukaListerCores
 				YlModel.Instance.EnvModel.YlSettings.LastSyncDownloadDate = JulianDay.DateTimeToModifiedJulianDate(targetDate);
 
 				// ダウンロード
-				String downloadPath = YlCommon.TempPath();
+				String downloadPath = Common.TempPath();
 				await _downloader.DownloadAsFileAsync(SyncUrl(SYNC_MODE_NAME_DOWNLOAD_SYNC_DATA) + "&Date=" + targetDate.ToString(YlConstants.SYNC_URL_DATE_FORMAT), downloadPath);
 
 				FileInfo fileInfo = new(downloadPath);
@@ -464,7 +464,7 @@ namespace YukaLister.Models.YukaListerCores
 				List<List<String>> uploadContents = new();
 				uploadContents.Add(csvHead);
 				uploadContents.AddRange(csvContents.GetRange(j * SYNC_UPLOAD_BLOCK, Math.Min(SYNC_UPLOAD_BLOCK, csvContents.Count - j * SYNC_UPLOAD_BLOCK)));
-				String uploadFolder = YlCommon.TempPath();
+				String uploadFolder = Common.TempPath();
 				Directory.CreateDirectory(uploadFolder);
 				String uploadPath = uploadFolder + "\\" + tableName;
 				CsvManager.SaveCsv(uploadPath, uploadContents, "\n", Encoding.UTF8);

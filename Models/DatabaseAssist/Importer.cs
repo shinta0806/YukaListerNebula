@@ -137,7 +137,7 @@ namespace YukaLister.Models.DatabaseAssist
 		// --------------------------------------------------------------------
 		private String Extract()
 		{
-			String tempFolder = YlCommon.TempPath() + "\\";
+			String tempFolder = Common.TempPath() + "\\";
 			Directory.CreateDirectory(tempFolder);
 			ZipFile.ExtractToDirectory(_importSrcPath, tempFolder);
 			String[] files = Directory.GetFiles(tempFolder, "*", SearchOption.AllDirectories);
