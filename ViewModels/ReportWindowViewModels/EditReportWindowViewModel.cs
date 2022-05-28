@@ -106,6 +106,13 @@ namespace YukaLister.ViewModels.ReportWindowViewModels
 		// コマンド
 		// --------------------------------------------------------------------
 
+		#region ヘルプメニューアイテムの制御
+		public static ListenerCommand<String>? HelpClickedCommand
+		{
+			get => YlModel.Instance.EnvModel.HelpClickedCommand;
+		}
+		#endregion
+
 		#region 名称の編集ボタンの制御
 		private ViewModelCommand? _buttonEditMusicInfoClickedCommand;
 
