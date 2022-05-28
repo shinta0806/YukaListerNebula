@@ -20,7 +20,7 @@
     </Window.DataContext>
 
     <behaviors:Interaction.Behaviors>
-        <sb:WindowBindingSupportBehavior IsCascade="True" />
+        <sb:WindowBindingSupportBehavior IsCascade="True" HelpBox="True" HelpBoxClickedCommand="{Binding HelpClickedCommand}" HelpBoxClickedCommandParameter="NamaewoSoroeru" />
     </behaviors:Interaction.Behaviors>
 
     <behaviors:Interaction.Triggers>
@@ -61,11 +61,6 @@
     <StackPanel>
         <StackPanel Margin="20,15,20,0" Orientation="Horizontal">
             <Label Content="ファイル名等から取得した名称が間違っている場合でも楽曲情報データベースを適用できるようにします。" HorizontalAlignment="Left" Margin="0" VerticalAlignment="Center"/>
-            <Label Grid.Column="1" Margin="0" VerticalAlignment="Center" HorizontalAlignment="Left">
-                <Hyperlink Command="{Binding HelpClickedCommand}" CommandParameter="NamaewoSoroeru" >
-                    <TextBlock Text="詳細情報" />
-                </Hyperlink>
-            </Label>
         </StackPanel>
         <StackPanel Orientation="Horizontal" Margin="20,5,20,0">
             <Label Content="ファイル名：" Margin="0" HorizontalAlignment="Left"/>

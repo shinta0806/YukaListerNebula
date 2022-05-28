@@ -1,6 +1,6 @@
 ﻿// ============================================================================
 // 
-// 楽曲情報等編集ウィンドウの ViewModel
+// 名称の編集ウィンドウの ViewModel
 // 
 // ============================================================================
 
@@ -10,7 +10,6 @@
 
 using Livet.Commands;
 using Livet.Messaging;
-using Livet.Messaging.Windows;
 
 using Microsoft.EntityFrameworkCore;
 
