@@ -22,6 +22,12 @@
         <vm:MainWindowViewModel />
     </Window.DataContext>
 
+    <Window.InputBindings>
+        <KeyBinding Gesture="F1" Command="{Binding MenuItemHelpClickedCommand}" />
+        <KeyBinding Gesture="Alt+R" Command="{Binding ButtonReportsClickedCommand}" />
+        <KeyBinding Gesture="Alt+S" Command="{Binding ButtonYukaListerSettingsClickedCommand}" />
+    </Window.InputBindings>
+
     <behaviors:Interaction.Triggers>
         <!--  When ContentRendered event raised, Initialize method of ViewModel would be called.  -->
         <behaviors:EventTrigger EventName="ContentRendered">
@@ -93,11 +99,11 @@
                 </Button.ContextMenu>
                 <materialDesign:PackIcon Kind="HelpCircleOutline" Height="18" Width="18" />
             </Button>
-            <Button Style="{StaticResource MaterialDesignRaisedLightButton}" ToolTip="環境設定" Width="50" Height="25" Margin="0,0,10,0" DockPanel.Dock="Right" VerticalAlignment="Center" Command="{Binding ButtonYukaListerSettingsClickedCommand}" >
+            <Button Style="{StaticResource MaterialDesignRaisedLightButton}" ToolTip="環境設定 (S)" Width="50" Height="25" Margin="0,0,10,0" DockPanel.Dock="Right" VerticalAlignment="Center" Command="{Binding ButtonYukaListerSettingsClickedCommand}" >
                 <materialDesign:PackIcon Kind="SettingsOutline" Height="18" Width="18" />
             </Button>
             <materialDesign:Badged Badge="{Binding ReportsBadge}" BadgeColorZoneMode="Dark" DockPanel.Dock="Right" VerticalAlignment="Center" Margin="0,0,15,0" Padding="0,0,-15,0" >
-                <Button Style="{StaticResource MaterialDesignRaisedLightButton}" ToolTip="報告されたリストの問題を一覧表示" Width="50" Height="25" Margin="0,0,10,0" Command="{Binding ButtonReportsClickedCommand}" >
+                <Button Style="{StaticResource MaterialDesignRaisedLightButton}" ToolTip="報告されたリストの問題を一覧表示 (R)" Width="50" Height="25" Margin="0,0,10,0" Command="{Binding ButtonReportsClickedCommand}" >
                     <materialDesign:PackIcon Kind="MessageWarningOutline" Height="18" Width="18" />
                 </Button>
             </materialDesign:Badged>
