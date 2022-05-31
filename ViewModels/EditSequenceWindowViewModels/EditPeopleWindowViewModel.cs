@@ -51,7 +51,6 @@ namespace YukaLister.ViewModels.EditSequenceWindowViewModels
 			{
 				// ヘルプ
 				HelpCommandParameter = "KasyuSakushisyaSakkyokusyaHenkyokusyanoSentaku";
-
 			}
 			catch (Exception excep)
 			{

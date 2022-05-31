@@ -49,6 +49,9 @@ namespace YukaLister.ViewModels.EditMasterWindowViewModels
 
 			try
 			{
+				// ヘルプ
+				HelpCommandParameter = "KasyuSakushisyaSakkyokusyaHenkyokusyajouhounoShinkitourokutoHenkou";
+
 				// ヒント
 				NameHint = "一人分の人物名のみを入力して下さい（複数名をまとめないで下さい）。";
 			}

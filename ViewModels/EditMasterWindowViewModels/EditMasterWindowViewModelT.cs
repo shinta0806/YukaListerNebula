@@ -56,6 +56,14 @@ namespace YukaLister.ViewModels.EditMasterWindowViewModels
 		// View 通信用のプロパティー
 		// --------------------------------------------------------------------
 
+		// ヘルプ引数
+		private String? _helpCommandParameter;
+		public String? HelpCommandParameter
+		{
+			get => _helpCommandParameter;
+			set => RaisePropertyChangedIfSet(ref _helpCommandParameter, value);
+		}
+
 		// ID キャプション
 		private String? _idCaption;
 		public String? IdCaption
@@ -158,6 +166,13 @@ namespace YukaLister.ViewModels.EditMasterWindowViewModels
 		// --------------------------------------------------------------------
 		// コマンド
 		// --------------------------------------------------------------------
+
+		#region ヘルプリンクの制御
+		public static ListenerCommand<String>? HelpClickedCommand
+		{
+			get => YlModel.Instance.EnvModel.HelpClickedCommand;
+		}
+		#endregion
 
 		#region 削除ボタンの制御
 		private ViewModelCommand? _buttonDeleteClickedCommand;
