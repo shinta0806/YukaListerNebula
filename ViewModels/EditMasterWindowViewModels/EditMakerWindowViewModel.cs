@@ -48,6 +48,9 @@ namespace YukaLister.ViewModels.EditMasterWindowViewModels
 
 			try
 			{
+				// ヘルプ
+				HelpCommandParameter = "SeisakugaisyajouhounoShinkitourokutoHenkou";
+
 				// ヒント
 				NameHint = "株式会社・有限会社などの法人格は入力しないで下さい。";
 			}
