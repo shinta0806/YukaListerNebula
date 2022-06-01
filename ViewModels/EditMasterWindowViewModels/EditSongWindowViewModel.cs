@@ -914,6 +914,9 @@ namespace YukaLister.ViewModels.EditMasterWindowViewModels
 
 			try
 			{
+				// ヘルプ
+				HelpCommandParameter = "GakkyokujouhounoShinkitourokutoHenkou";
+
 				// 摘要ボタンのコンテキストメニュー
 				AddContextMenuItemToButtonSelectOpEd("OP（オープニング）");
 				AddContextMenuItemToButtonSelectOpEd("ED（エンディング）");

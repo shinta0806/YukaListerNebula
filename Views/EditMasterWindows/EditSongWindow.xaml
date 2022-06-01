@@ -21,7 +21,7 @@
     </Window.DataContext>
 
     <behaviors:Interaction.Behaviors>
-        <sb:WindowBindingSupportBehavior IsCascade="True" />
+        <sb:WindowBindingSupportBehavior IsCascade="True" HelpBox="True" HelpBoxClickedCommand="{Binding HelpClickedCommand}" HelpBoxClickedCommandParameter="{Binding HelpCommandParameter}" />
     </behaviors:Interaction.Behaviors>
 
     <behaviors:Interaction.Triggers>
