@@ -1,6 +1,6 @@
 ﻿// ============================================================================
 // 
-// タイアップ詳細情報編集ウィンドウの ViewModel
+// タイアップ詳細情報の編集ウィンドウの ViewModel
 // 
 // ============================================================================
 
@@ -327,6 +327,9 @@ namespace YukaLister.ViewModels.EditMasterWindowViewModels
 
 			try
 			{
+				// ヘルプ
+				HelpCommandParameter = "TieUpjouhounoShinkitourokutoHenkou";
+
 				// 年齢制限選択ボタンのコンテキストメニュー
 				AddContextMenuItemToButtonSelectAgeLimit("全年齢対象（CERO A 相当）");
 				AddContextMenuItemToButtonSelectAgeLimit(YlConstants.AGE_LIMIT_CERO_B.ToString() + " 才以上対象（CERO B 相当）");
