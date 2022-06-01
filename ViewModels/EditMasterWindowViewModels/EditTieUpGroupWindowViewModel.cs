@@ -1,6 +1,6 @@
 ﻿// ============================================================================
 // 
-// タイアップグループ詳細編集ウィンドウの ViewModel
+// タイアップグループ詳細情報の編集ウィンドウの ViewModel
 // 
 // ============================================================================
 
@@ -50,6 +50,9 @@ namespace YukaLister.ViewModels.EditMasterWindowViewModels
 
 			try
 			{
+				// ヘルプ
+				HelpCommandParameter = "SeriesjouhounoShinkitourokutoHenkou";
+
 				// ヒント
 				NameHint = "シリーズ名に「" + YlConstants.TIE_UP_GROUP_SUFFIX + "」は含めないで下さい。";
 			}
