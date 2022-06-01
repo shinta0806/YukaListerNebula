@@ -50,6 +50,9 @@ namespace YukaLister.ViewModels.EditMasterWindowViewModels
 
 			try
 			{
+				// ヘルプ
+				HelpCommandParameter = "TagjouhounoShinkitourokutoHenkou";
+
 				// ヒント
 				NameHint = "一個分のタグ名のみを入力して下さい（複数タグをまとめないで下さい）。";
 			}
