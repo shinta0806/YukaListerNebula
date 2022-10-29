@@ -343,7 +343,6 @@ healthchecksdb
 net5.0-windows/*
 AppPackages/
 *.bak
-*.tfm
 *.xlsx
 DatabaseSettings.php
 desktop.ini

@@ -1,18 +1,11 @@
 <!DOCTYPE html>
 <html>
-
-
-
-
-
-
-<head>
-<meta charset="UTF-8">
-<title>ゆかりすたー 4 NEBULA&nbsp; Ver 7.1 ヘルプ</title>
-<link rel="stylesheet" href="HelpParts/SHIHelpG3.css" type="text/css">
-<script src="HelpParts/jquery.min.js"></script>
-<script src="HelpParts/Scroll.js"></script>
-</head>
+<!-- Cfm/OutFile: YukaListerNebula_JPN.html -->
+<!-- Cfm/IncludeFolder: ../../../_Common/HelpIncludes -->
+<!-- Cfm/IncludeDefaultExt: html -->
+<!-- Cfm/Set: AppName = ゆかりすたー 4 NEBULA&nbsp; -->
+<!-- Cfm/Set: AppMajVer = Ver 7.1 -->
+<!-- Cfm/Include: ヘッダー -->
 <body>
 
 <!-- 先頭に戻るボタン -->
@@ -32,17 +25,17 @@
 
 <p>
   <img src="HelpParts/YukaListerNebula_Icon.png" alt="" width="128" align="right" hspace="10" vspace="10">
-  ゆかりすたー 4 NEBULA&nbsp;（ネビュラ）はカラオケ字幕動画ファイル（ニコカラ）を整理し、見やすくリスト化します。ファイル名から得られる情報に加え、楽曲情報データベースも活用することにより、カテゴリー別（アニメ、ゲーム等）・歌手別・年代別など、多彩なリストが作成されるため、目的のカラオケ字幕動画ファイルを見つけやすくなります。<br>
+  <!-- Cfm/Var: AppName -->（ネビュラ）はカラオケ字幕動画ファイル（ニコカラ）を整理し、見やすくリスト化します。ファイル名から得られる情報に加え、楽曲情報データベースも活用することにより、カテゴリー別（アニメ、ゲーム等）・歌手別・年代別など、多彩なリストが作成されるため、目的のカラオケ字幕動画ファイルを見つけやすくなります。<br>
   <br>
   リストのサンプルは<a href="SampleFolderSettings/リスト出力結果/index.html" target="_blank">こちら</a>になります。<br>
   <br>
-  動画持ち込みカラオケ用のブラウザリクエストツールである<a href="https://github.com/bee7813993/KaraokeRequestorWeb/wiki" target="_blank">ゆかり</a>（ゆーふうりん氏開発）との連携機能も備えています。ゆかりすたー 4 NEBULA&nbsp;とゆかりが協調して動作することにより、例えば、ファイル名に歌手名が含まれていない場合でも歌手名検索が可能になったり、フリガナでの検索が可能になったりするなど、単なるファイル名検索よりも一歩進んだ検索が可能となります。もちろん、ファイル名検索も可能です。<br clear="right">
+  動画持ち込みカラオケ用のブラウザリクエストツールである<a href="https://github.com/bee7813993/KaraokeRequestorWeb/wiki" target="_blank">ゆかり</a>（ゆーふうりん氏開発）との連携機能も備えています。<!-- Cfm/Var: AppName -->とゆかりが協調して動作することにより、例えば、ファイル名に歌手名が含まれていない場合でも歌手名検索が可能になったり、フリガナでの検索が可能になったりするなど、単なるファイル名検索よりも一歩進んだ検索が可能となります。もちろん、ファイル名検索も可能です。<br clear="right">
 </p>
 
 <blockquote>
   （補足）<br>
-  ゆかりすたー 4 NEBULA&nbsp;は、ニコカラりすたー（初代）、ゆかりすたー（ニコカラりすたー 2）、ゆかりすたー 3 METEOR の後継となる 4 代目のツールです。<br>
-  ニコカラりすたー（初代）、ゆかりすたー（ニコカラりすたー 2）、ゆかりすたー 3 METEOR は既に開発を終了しましたので、今後はゆかりすたー 4 NEBULA&nbsp;をご利用下さい。<br>
+  <!-- Cfm/Var: AppName -->は、ニコカラりすたー（初代）、ゆかりすたー（ニコカラりすたー 2）、ゆかりすたー 3 METEOR の後継となる 4 代目のツールです。<br>
+  ニコカラりすたー（初代）、ゆかりすたー（ニコカラりすたー 2）、ゆかりすたー 3 METEOR は既に開発を終了しましたので、今後は<!-- Cfm/Var: AppName -->をご利用下さい。<br>
 </blockquote>
 
 <blockquote>
@@ -53,7 +46,7 @@
 <h2 id="Shinkapoint">進化ポイント</h2>
 
 <p>
-  前世代のゆかりすたー 3 METEOR と比べて、ゆかりすたー 4 NEBULA&nbsp;は以下のような点が進化しています。<br>
+  前世代のゆかりすたー 3 METEOR と比べて、<!-- Cfm/Var: AppName -->は以下のような点が進化しています。<br>
 </p>
 
 <h3>すぐに使える</h3>
@@ -91,26 +84,26 @@
 <h2 id="Dousakankyou">動作環境</h2>
 
 <p>
-  <a href="http://shinta.coresv.com/software/yukalister-nebula-jpn/#Support" target="_blank">ゆかりすたー 4 NEBULA&nbsp;公式ページのサポート情報</a>をご覧ください。<br>
+  <a href="http://shinta.coresv.com/software/yukalister-nebula-jpn/#Support" target="_blank"><!-- Cfm/Var: AppName -->公式ページのサポート情報</a>をご覧ください。<br>
   <br>
-  Windows Defender がゆかりすたー 4 NEBULA&nbsp;の動作に悪影響を及ぼすことがありますので、Windows Defender は使用しないことを推奨します（別のセキュリティーソフトを使用する等）。詳しくは<a href="https://github.com/shinta0806/YukaListerNebula/issues/103" target="_blank">こちら</a>を参照して下さい。<br>
+  Windows Defender が<!-- Cfm/Var: AppName -->の動作に悪影響を及ぼすことがありますので、Windows Defender は使用しないことを推奨します（別のセキュリティーソフトを使用する等）。詳しくは<a href="https://github.com/shinta0806/YukaListerNebula/issues/103" target="_blank">こちら</a>を参照して下さい。<br>
 </p>
 
 <h2 id="Install">インストール</h2>
 
-<h3 id="AppInstall">ゆかりすたー 4 NEBULA&nbsp;のインストール</h3>
+<h3 id="AppInstall"><!-- Cfm/Var: AppName -->のインストール</h3>
 
 <p>
   <a href="HelpParts/YukaListerNebula_Store.png" target="_blank"><img src="HelpParts/YukaListerNebula_Store.png" alt="" width="256" align="right" border="0" hspace="10" vspace="10"></a>
-  ゆかりすたー 4 NEBULA&nbsp;を <a href="https://www.microsoft.com/store/apps/9NPC1S45SNHB" target="_blank">Microsoft Store</a> から入手することでインストールが完了します。<br>
+  <!-- Cfm/Var: AppName -->を <a href="https://www.microsoft.com/store/apps/9NPC1S45SNHB" target="_blank">Microsoft Store</a> から入手することでインストールが完了します。<br>
   <br>
-  更新（バージョンアップ）は自動的に行われます。更新版が公開された場合、何度かゆかりすたー 4 NEBULA&nbsp;を使用しているうちに自動的に更新されますので、通常は何ら更新作業は必要ありません。自動更新を待つのではなくすぐに更新したい場合は、Microsoft Store で更新してください。<br clear="right">
+  更新（バージョンアップ）は自動的に行われます。更新版が公開された場合、何度か<!-- Cfm/Var: AppName -->を使用しているうちに自動的に更新されますので、通常は何ら更新作業は必要ありません。自動更新を待つのではなくすぐに更新したい場合は、Microsoft Store で更新してください。<br clear="right">
 </p>
 
 <h3 id="YukariInstall">ゆかりのインストール</h3>
 
 <p>
-  ゆかりすたー 4 NEBULA&nbsp;をゆかり（ゆーふうりん氏開発）と連携させる場合は、に加えてゆかりもインストールされている必要があります。ゆかりのインストールについては<a href="https://github.com/bee7813993/KaraokeRequestorWeb/wiki" target="_blank">ゆかり公式サイト</a>をご覧ください。<br>
+  <!-- Cfm/Var: AppName -->をゆかり（ゆーふうりん氏開発）と連携させる場合は、<!-- Cfm/Var: AppName -->に加えてゆかりもインストールされている必要があります。ゆかりのインストールについては<a href="https://github.com/bee7813993/KaraokeRequestorWeb/wiki" target="_blank">ゆかり公式サイト</a>をご覧ください。<br>
 </p>
 
 <h3 id="Urawaza">裏技</h3>
@@ -134,31 +127,31 @@ C:\xampp\htdocs\list
 <h2 id="KyuuversionkaranoIkou">旧バージョンからの移行</h2>
 
 <p>
-  Ver 4.60 もしくはそれ以前の旧バージョンのゆかりすたー 4 NEBULA&nbsp;をしていた場合は、旧バージョンからの楽曲情報データベースの引き継ぎおよび、旧バージョンの削除（もしくは移動）が必要です。<br>
+  Ver 4.60 もしくはそれ以前の旧バージョンの<!-- Cfm/Var: AppName -->をしていた場合は、旧バージョンからの楽曲情報データベースの引き継ぎおよび、旧バージョンの削除（もしくは移動）が必要です。<br>
   <br>
   詳しくは、ブログ記事をご覧ください。<br>
 </p>
 
 <ul>
-  <li><a href="https://shinta0806be.ldblog.jp/archives/10472282.html" target="_blank">ゆかりすたー 4 NEBULA&nbsp;のストア移行について</a></li>
+  <li><a href="https://shinta0806be.ldblog.jp/archives/10472282.html" target="_blank"><!-- Cfm/Var: AppName -->のストア移行について</a></li>
 </ul>
 
 <h1 id="KantannaTsukaikata">チュートリアル</h1>
 
 <p>
-  ゆかりすたー 4 NEBULA&nbsp;でフォルダー内のカラオケ字幕動画ファイルを整理し、閲覧用リストを作成するまでの一連の流れを説明します。<br>
+  <!-- Cfm/Var: AppName -->でフォルダー内のカラオケ字幕動画ファイルを整理し、閲覧用リストを作成するまでの一連の流れを説明します。<br>
 </p>
 
 <h2 id="Kido">起動</h2>
 
 <p>
   <a href="HelpParts/YukaListerNebula_StartMenu.png" target="_blank"><img src="HelpParts/YukaListerNebula_StartMenu.png" alt="" width="256" align="right" border="0" hspace="10" vspace="10"></a>
-  スタートメニューの「や」行の位置にゆかりすたー 4 NEBULA&nbsp;が登録されているので、クリックして起動します。<br clear="right">
+  スタートメニューの「や」行の位置に<!-- Cfm/Var: AppName -->が登録されているので、クリックして起動します。<br clear="right">
   <br>
   <a href="HelpParts/YukaListerNebula_MainWindow.png" target="_blank"><img src="HelpParts/YukaListerNebula_MainWindow.png" alt="" width="256" align="right" border="0" hspace="10" vspace="10"></a>
   スプラッシュウィンドウ（オープニングウィンドウ）が表示された後で、メインウィンドウが表示されます。<br>
   <br>
-  メインウィンドウ上部が青色表示となり、「ゆかりすたー 4 NEBULA&nbsp;は正常に動作しています」と表示されていれば、は正常に動作しています。<br>
+  メインウィンドウ上部が青色表示となり、「<!-- Cfm/Var: AppName -->は正常に動作しています」と表示されていれば、<!-- Cfm/Var: AppName -->は正常に動作しています。<br>
   <br>
   メインウィンドウ上部が赤色表示となり、<a href="https://github.com/shinta0806/YukaListerNebula/issues/135" target="_blank">「ゆかり設定ファイルが正しく指定されていません」と表示されている場合</a>、一部機能が使えませんが、このチュートリアルはその状態でも問題ありません。<br clear="right">
   <br>
@@ -176,7 +169,7 @@ C:\xampp\htdocs\list
   <a href="HelpParts/YukaListerNebula_MainWindow_SampleMenuItem.png" target="_blank"><img src="HelpParts/YukaListerNebula_MainWindow_SampleMenuItem.png" alt="" width="256" align="right" border="0" hspace="10" vspace="10"></a>
   メインウィンドウのヘルプボタン（<img src="HelpParts/YukaListerNebula_ButtonHelp.png" alt="" height="24" class="InlineImg">）をクリックすると表示されるポップアップメニューから「サンプルフォルダー」をクリックします。エクスプローラーでサンプルフォルダーが表示されます。<br>
   <br>
-  サンプルフォルダーの中にある「AAAさんの例」～「DDDさんの例」の 4 つのフォルダーを、エクスプローラーからゆかりすたー 4 NEBULA&nbsp;のメインウィンドウにドラッグ＆ドロップし、フォルダーを追加します。もしくは、エクスプローラーで 1 つ上の「Documents」フォルダーを表示してから「SampleFolderSettings」フォルダーをドラッグ＆ドロップすると、すべてのサンプルフォルダーをまとめて追加できます。<br clear="right">
+  サンプルフォルダーの中にある「AAAさんの例」～「DDDさんの例」の 4 つのフォルダーを、エクスプローラーから<!-- Cfm/Var: AppName -->のメインウィンドウにドラッグ＆ドロップし、フォルダーを追加します。もしくは、エクスプローラーで 1 つ上の「Documents」フォルダーを表示してから「SampleFolderSettings」フォルダーをドラッグ＆ドロップすると、すべてのサンプルフォルダーをまとめて追加できます。<br clear="right">
   <br>
   <a href="HelpParts/YukaListerNebula_MainWindow_SampleFolderSettings.png" target="_blank"><img src="HelpParts/YukaListerNebula_MainWindow_SampleFolderSettings.png" alt="" width="256" align="right" border="0" hspace="10" vspace="10"></a>
   追加したフォルダーがメインウィンドウの一覧に表示されます。<br>
@@ -223,9 +216,9 @@ C:\xampp\htdocs\list
 
 <p>
   <a href="HelpParts/YukaListerNebula_MainWindow.png" target="_blank"><img src="HelpParts/YukaListerNebula_MainWindow.png" alt="" width="256" align="right" border="0" hspace="10" vspace="10"></a>
-  メインウィンドウ上部は、色でゆかりすたー 4 NEBULA&nbsp;の状態が分かるステータスラベルになっています。<br>
+  メインウィンドウ上部は、色で<!-- Cfm/Var: AppName -->の状態が分かるステータスラベルになっています。<br>
   <br>
-  緑色の時は、ゆかりすたー 4 NEBULA&nbsp;が作業中です。追加されたフォルダーにあるファイルの確認などを行っています。<br>
+  緑色の時は、<!-- Cfm/Var: AppName -->が作業中です。追加されたフォルダーにあるファイルの確認などを行っています。<br>
   <br>
   紫色（青色）の時は、作業が完了しています。<br>
   <br>
@@ -280,17 +273,17 @@ C:\xampp\htdocs\list
 </table>
 
 <p>
-  ゆかりすたー 4 NEBULA&nbsp;では、属性を活用し、見やすいリストを作成しています。<br>
+  <!-- Cfm/Var: AppName -->では、属性を活用し、見やすいリストを作成しています。<br>
 </p>
 
 <h2 id="FolderSettei">フォルダー設定</h2>
 
 <p>
-  属性での整理を行えるようにするために、ゆかりすたー 4 NEBULA&nbsp;は、ファイル名を解析してさまざまな情報（タイアップ名や楽曲名など）を読み取ります。<br>
+  属性での整理を行えるようにするために、<!-- Cfm/Var: AppName -->は、ファイル名を解析してさまざまな情報（タイアップ名や楽曲名など）を読み取ります。<br>
   <br>
   この時に重要になってくるのが、ファイル名がどのようなルール（命名規則）で名付けられているか、ということです。「さるかに合戦_蜂が飛ぶ.mp4」の例では、命名規則が「タイアップ名_楽曲名」となっています。一方で、「蜂が飛ぶ_さるかに合戦.mp4」というファイル名であれば、命名規則は「楽曲名_タイアップ名」ということになります。<br>
   <br>
-  命名規則を指示してゆかりすたー 4 NEBULA&nbsp;がファイル名を適切に解析できるようにするために行うのが、フォルダー設定です。<br>
+  命名規則を指示して<!-- Cfm/Var: AppName -->がファイル名を適切に解析できるようにするために行うのが、フォルダー設定です。<br>
   <br>
   フォルダー設定を行うには、メインウィンドウのゆかり検索対象フォルダー一覧からフォルダーを選択し、「フォルダー設定」ボタンをクリックします。すると、フォルダー設定ウィンドウが開きます。フォルダー設定ウィンドウの一番上に設定対象フォルダー名が表示されているので確認してください。<br>
 </p>
@@ -344,7 +337,7 @@ C:\xampp\htdocs\list
 
 <blockquote>
   （補足）<br>
-  ゆかりすたー 4 NEBULA&nbsp;の前身ツールであるニコカラりすたーでは、一部の項目を無視して命名規則を設定することが推奨されていましたが、では、ファイル名に含まれているすべての項目を命名規則として含めることが推奨されています。<br>
+  <!-- Cfm/Var: AppName -->の前身ツールであるニコカラりすたーでは、一部の項目を無視して命名規則を設定することが推奨されていましたが、<!-- Cfm/Var: AppName -->では、ファイル名に含まれているすべての項目を命名規則として含めることが推奨されています。<br>
 </blockquote>
 
 <h3 id="KoteichikoumokuTab">固定値項目タブ</h3>
@@ -388,7 +381,7 @@ C:\xampp\htdocs\list
   <br>
   ファイル名からは読み取れない属性も含めて、様々な属性を登録しておくデータベースが「楽曲情報データベース」です。楽曲の正式名称、タイアップ名、歌手名、作曲者、それぞれのフリガナ、といった楽曲に関する様々な情報を登録できます。楽曲情報データベースをに属性を登録し、ファイル名から読み取った属性と組み合わせることで、「カテゴリー＝アニメ」「歌手名＝蜂八兄弟」といったさらなる属性を確認することができるようになります。<br>
   <br>
-  楽曲情報データベースのすべての項目を入力するには、ゆかりすたー 4 NEBULA&nbsp;の画面上で情報を入力していきます。<br>
+  楽曲情報データベースのすべての項目を入力するには、<!-- Cfm/Var: AppName -->の画面上で情報を入力していきます。<br>
 </p>
 
 <blockquote>
@@ -429,7 +422,7 @@ C:\xampp\htdocs\list
     （補足）<br>
     カラオケ字幕動画ファイルのファイル名が間違っていて検索にヒットしなかった場合の対応策としては、当然ながら、ファイル名を修正するという方法もありますので、やりやすい方で対処して下さい。<br>
     <br>
-    ゆかりすたー 4 NEBULA&nbsp;の画面上でタイアップ名・楽曲名を名寄せするメリットとしては、<br>
+    <!-- Cfm/Var: AppName -->の画面上でタイアップ名・楽曲名を名寄せするメリットとしては、<br>
   </p>
   <ul>
     <li>既にたくさんのカラオケ字幕動画ファイルを作っていた場合、ファイル名のすべてをリネームするのが大変なのに対し、画面上での修正は 1 タイアップにつき 1 回で済む。</li>
@@ -542,7 +535,7 @@ C:\xampp\htdocs\list
   <br>
   HTML 形式でのリスト出力については、<a href="#ListsyutsuryokutabEtsuran">リスト出力タブ：閲覧用リスト節</a>を参照して下さい。<br>
   <br>
-  なお、楽曲情報データベースの内容を更新した場合、リストに反映させるには一度ゆかりすたー 4 NEBULA&nbsp;を再起動する必要があります。<br>
+  なお、楽曲情報データベースの内容を更新した場合、リストに反映させるには一度<!-- Cfm/Var: AppName -->を再起動する必要があります。<br>
 </p>
 
 <h3 id="YukaridenoListhyoujideKakunin">ゆかりでのリスト表示で確認</h3>
@@ -552,7 +545,7 @@ C:\xampp\htdocs\list
   <br>
   <a href="#YukaridenoListhyouji">ゆかりでのリスト表示</a>節に記載の手順でゆかり用リストを表示し、楽曲情報データベースの内容がリストに反映されているかを確認します。<br>
   <br>
-  なお、楽曲情報データベースの内容を更新した場合、リストに反映させるには一度ゆかりすたー 4 NEBULA&nbsp;を再起動する必要があります。<br>
+  なお、楽曲情報データベースの内容を更新した場合、リストに反映させるには一度<!-- Cfm/Var: AppName -->を再起動する必要があります。<br>
 </p>
 
 <h3 id="Mitourokukenshutsu">未登録検出</h3>
@@ -646,13 +639,13 @@ C:\xampp\htdocs\list
 <h1 id="Listnitsuite">リストについて</h1>
 
 <p>
-  ゆかりすたー 4 NEBULA&nbsp;が出力するリストについて、補足が必要と思われる事項について解説します。<br>
+  <!-- Cfm/Var: AppName -->が出力するリストについて、補足が必要と思われる事項について解説します。<br>
 </p>
 
 <h2 id="JouhougennoYuusenjuni">情報源の優先順位</h2>
 
 <p>
-  ゆかりすたー 4 NEBULA&nbsp;は、<br>
+  <!-- Cfm/Var: AppName -->は、<br>
 </p>
 
 <ol>
@@ -669,7 +662,7 @@ C:\xampp\htdocs\list
 
 <blockquote>
   （補足）<br>
-  ゆかりすたー 4 NEBULA&nbsp;の前身ツールであるニコカラりすたーとは優先順位が異なっています。ニコカラりすたーを使用していた方は、優先順位にご注意下さい。<br>
+  <!-- Cfm/Var: AppName -->の前身ツールであるニコカラりすたーとは優先順位が異なっています。ニコカラりすたーを使用していた方は、優先順位にご注意下さい。<br>
 </blockquote>
 
 <h2 id="ListKoumoku">リスト項目</h2>
@@ -695,7 +688,7 @@ C:\xampp\htdocs\list
 <p>
   <a href="https://github.com/bee7813993/KaraokeRequestorWeb/wiki" target="_blank">ゆかり</a>とは、ゆーふうりん氏が開発した動画持ち込みカラオケ用のブラウザリクエストツールです。カラオケ字幕動画ファイルを検索・予約できます。<br>
   <br>
-  ゆかりすたー 4 NEBULA&nbsp;のゆかり連携機能は、文字通り、とゆかりを連携させる機能です。ゆかりでカラオケ字幕動画ファイルを検索する際、ファイル名による検索だけではなく、属性による検索も行えるようになり、利便性が向上します。例えば、歌手名の「蜂八兄弟」で検索して「さるかに合戦_蜂が飛ぶ.mp4」がヒットするようになります。<br>
+  <!-- Cfm/Var: AppName -->のゆかり連携機能は、文字通り、<!-- Cfm/Var: AppName -->とゆかりを連携させる機能です。ゆかりでカラオケ字幕動画ファイルを検索する際、ファイル名による検索だけではなく、属性による検索も行えるようになり、利便性が向上します。例えば、歌手名の「蜂八兄弟」で検索して「さるかに合戦_蜂が飛ぶ.mp4」がヒットするようになります。<br>
   <br>
   ゆかり連携機能を使用するためには、以下が必要となります。<br>
 </p>
@@ -717,9 +710,9 @@ C:\xampp\htdocs\list
 
 <p>
   <a href="HelpParts/YukaListerNebula_YukariSettings_Version.png" target="_blank"><img src="HelpParts/YukaListerNebula_YukariSettings_Version.png" alt="" width="256" align="right" border="0" hspace="10" vspace="10"></a>
-  ゆかりは <a href="https://github.com/bee7813993/KaraokeRequestorWeb/commit/d2de06e5604f87a245f8880d33f3bd6f531a1074" target="_blank">v0.09.9-alpha-92</a> 以降のバージョンを使用してください。それよりも前のバージョンのゆかりではゆかりすたー 4 NEBULA&nbsp;との協調動作ができません。<br>
+  ゆかりは <a href="https://github.com/bee7813993/KaraokeRequestorWeb/commit/d2de06e5604f87a245f8880d33f3bd6f531a1074" target="_blank">v0.09.9-alpha-92</a> 以降のバージョンを使用してください。それよりも前のバージョンのゆかりでは<!-- Cfm/Var: AppName -->との協調動作ができません。<br>
   <br>
-  ウェブブラウザでゆかりにアクセスし（ゆかりすたー 4 NEBULA&nbsp;と同じパソコンからアクセスする場合は <a href="http://localhost/" target="_blank">http://localhost/</a>）、メニューから［Help 等→設定］をクリック、ユーザー名（admin）を入力してゆかり設定ページを開きます。<br>
+  ウェブブラウザでゆかりにアクセスし（<!-- Cfm/Var: AppName -->と同じパソコンからアクセスする場合は <a href="http://localhost/" target="_blank">http://localhost/</a>）、メニューから［Help 等→設定］をクリック、ユーザー名（admin）を入力してゆかり設定ページを開きます。<br>
   <br>
   ページ末尾のほうにある「オンラインアップデート画面」ボタンをクリックします。<br>
   <br>
@@ -747,7 +740,7 @@ C:\xampp\htdocs\list
 </p>
 
 <pre>
-【ゆかりすたー 4 NEBULA&nbsp;一覧】&lt;br&gt;
+【<!-- Cfm/Var: AppName -->一覧】&lt;br&gt;
 &lt;a href=&quot;list/List_index_New.php?yukarihost=#yukarihost#&quot;&gt;新着&lt;/a&gt;　
 &lt;a href=&quot;list/index.php?yukarihost=#yukarihost#&quot;&gt;カテゴリー別&lt;/a&gt;　
 &lt;a href=&quot;list/List_index_Series.php?yukarihost=#yukarihost#&quot;&gt;シリーズ別&lt;/a&gt;　
@@ -769,7 +762,7 @@ C:\xampp\htdocs\list
   <a href="HelpParts/YukaListerNebula_YukariSearch_FileName.png" target="_blank"><img src="HelpParts/YukaListerNebula_YukariSearch_FileName.png" alt="" width="256" align="right" border="0" hspace="10" vspace="10"></a>
   ゆかりの検索ページにアクセスします。<br>
   <br>
-  「キーワード検索」欄に、ゆかりすたー 4 NEBULA&nbsp;に追加したフォルダー内にあるファイルのファイル名、タイアップ名、楽曲名などを入力すると、検索結果として表示され、曲をリクエストすることができます。<br clear="right">
+  「キーワード検索」欄に、<!-- Cfm/Var: AppName -->に追加したフォルダー内にあるファイルのファイル名、タイアップ名、楽曲名などを入力すると、検索結果として表示され、曲をリクエストすることができます。<br clear="right">
   <br>
   <a href="HelpParts/YukaListerNebula_YukariSearch_TieUp.png" target="_blank"><img src="HelpParts/YukaListerNebula_YukariSearch_TieUp.png" alt="" width="256" align="right" border="0" hspace="10" vspace="10"></a>
   「キーワード検索」は作品名だけではなく、楽曲名やファイル名などが一致した場合も検索結果として表示します。例えば、「さるかに」で検索すると、「さるかに合戦」というタイトルのアニメ番組のカラオケ動画だけではなく、「さすがまさる君」というタイトルのアニメ番組の「まさるかにんげんのちから」という曲名のカラオケ動画も検索結果として表示します。<br>
@@ -780,9 +773,9 @@ C:\xampp\htdocs\list
 <h2 id="YukaridenoListhyouji">ゆかりでのリスト表示</h2>
 
 <p>
-  ゆかりの検索ページにアクセスし、【ゆかりすたー 4 NEBULA&nbsp;一覧】の下にある「カテゴリー別」などをクリックします。<br>
+  ゆかりの検索ページにアクセスし、【<!-- Cfm/Var: AppName -->一覧】の下にある「カテゴリー別」などをクリックします。<br>
   <br>
-  ゆかりすたー 4 NEBULA&nbsp;が生成したリストが表示され、ファイル名をクリックすると曲をリクエストすることができます。<br>
+  <!-- Cfm/Var: AppName -->が生成したリストが表示され、ファイル名をクリックすると曲をリクエストすることができます。<br>
 </p>
 
 <h1 id="RiyoushakaranoMondaihoukoku">利用者からの問題報告</h1>
@@ -815,7 +808,7 @@ C:\xampp\htdocs\list
 
 <p>
   <a href="HelpParts/YukaListerNebula_Report_Notice.png" target="_blank"><img src="HelpParts/YukaListerNebula_Report_Notice.png" alt="" width="256" align="right" border="0" hspace="10" vspace="10"></a>
-  利用者から報告されたリストの問題をゆかりすたー 4 NEBULA&nbsp;上で確認するには、のメインウィンドウを見ます。メインウィンドウ上部の「報告されたリストの問題を一覧表示」ボタン上に、報告された問題の数が表示されます。<br clear="right">
+  利用者から報告されたリストの問題を<!-- Cfm/Var: AppName -->上で確認するには、<!-- Cfm/Var: AppName -->のメインウィンドウを見ます。メインウィンドウ上部の「報告されたリストの問題を一覧表示」ボタン上に、報告された問題の数が表示されます。<br clear="right">
   <br>
   <a href="HelpParts/YukaListerNebula_Report_List.png" target="_blank"><img src="HelpParts/YukaListerNebula_Report_List.png" alt="" width="256" align="right" border="0" hspace="10" vspace="10"></a>
   「報告されたリストの問題を一覧表示」ボタンをクリックすると、リスト問題報告一覧ウィンドウが開き、報告された問題が一覧表示されます。<br clear="right">
@@ -848,9 +841,9 @@ C:\xampp\htdocs\list
 <h2 id="Doukikinoutowa">同期機能とは</h2>
 
 <p>
-  複数台のパソコンでゆかりすたー 4 NEBULA&nbsp;を使用する際、楽曲情報データベースの内容を常に最新の同じ内容に保つための機能が同期です。<br>
+  複数台のパソコンで<!-- Cfm/Var: AppName -->を使用する際、楽曲情報データベースの内容を常に最新の同じ内容に保つための機能が同期です。<br>
   <br>
-  例えば、昼間は画面の広いデスクトップパソコンでゆかりすたー 4 NEBULA&nbsp;を使っていて、夜はベッドに寝ながらノートパソコンでを使う、という使い方をしている場合、楽曲情報をデスクトップパソコンに入力しても、通常はノートパソコンにはその内容が反映されません。<br>
+  例えば、昼間は画面の広いデスクトップパソコンで<!-- Cfm/Var: AppName -->を使っていて、夜はベッドに寝ながらノートパソコンで<!-- Cfm/Var: AppName -->を使う、という使い方をしている場合、楽曲情報をデスクトップパソコンに入力しても、通常はノートパソコンにはその内容が反映されません。<br>
   <br>
   しかし、同期機能を使うことで、デスクトップパソコンで入力した楽曲情報データベースの内容がノートパソコンにも反映されるようになります。デスクトップパソコンとノートパソコンに同期設定をしておくことで、楽曲情報をデスクトップパソコンとノートパソコンのどちらで入力しても、もう片方のパソコンで参照できるため、利便性・作業効率の向上が可能となります。<br>
 </p>
@@ -858,7 +851,7 @@ C:\xampp\htdocs\list
 <h2 id="DoukikinounoTsukaikata">同期機能の使い方</h2>
 
 <p>
-  同期機能を使うためには、Web サーバーにゆかりすたー 4 NEBULA&nbsp;の同期機能を組み込む必要があります。<br>
+  同期機能を使うためには、Web サーバーに<!-- Cfm/Var: AppName -->の同期機能を組み込む必要があります。<br>
   <br>
   組み込み作業は難易度が高く、上級者向けですので、本ヘルプでは解説しません。<br>
   <br>
@@ -869,7 +862,7 @@ C:\xampp\htdocs\list
 
 <p>
   <a href="HelpParts/YukaListerNebula_YlSettingsWindow.png" target="_blank"><img src="HelpParts/YukaListerNebula_YlSettingsWindow.png" alt="" width="256" align="right" border="0" hspace="10" vspace="10"></a>
-  ゆかりすたー 4 NEBULA&nbsp;の全体的な動作に関する設定を行います。<br>
+  <!-- Cfm/Var: AppName -->の全体的な動作に関する設定を行います。<br>
   <br>
   設定後、OK ボタンをクリックすると設定が確定します。初期化ボタンをクリックすると、初期設定に戻すことができます。<br>
 </p>
@@ -928,9 +921,9 @@ C:\xampp\htdocs\config.ini
 <h3 id="IdSettouji">ID 先頭付与文字列</h3>
 
 <p>
-  ゆかりすたー 4 NEBULA&nbsp;では、登録される楽曲情報データベースのデータを識別するための ID を付与していますが、その ID の先頭に付与する文字列を指定します。<br>
+  <!-- Cfm/Var: AppName -->では、登録される楽曲情報データベースのデータを識別するための ID を付与していますが、その ID の先頭に付与する文字列を指定します。<br>
   <br>
-  ID を区別できるようにするためのものなので、任意の文字列で構いませんが、複数台のパソコンでゆかりすたー 4 NEBULA&nbsp;を使用している場合は、それぞれのパソコンで異なる文字列を指定する必要があります。<br>
+  ID を区別できるようにするためのものなので、任意の文字列で構いませんが、複数台のパソコンで<!-- Cfm/Var: AppName -->を使用している場合は、それぞれのパソコンで異なる文字列を指定する必要があります。<br>
   <br>
   一般的には、「ニックネーム-パソコンを区別するキーワード」の形式にしておけば問題ないでしょう。例えば、<br>
 </p>
@@ -1013,7 +1006,7 @@ C:\xampp\htdocs\config.ini
 <h3 id="Autocheckrss">ゆかりすたーの最新情報を自動的に確認する</h3>
 
 <p>
-  「ゆかりすたー 4 NEBULA&nbsp;の最新情報を自動的に確認する」を有効にすると、起動時にホームページから関連の最新情報を取得し、最新情報が見つかった場合はブラウザで表示します。Ver 7.1 現在、最新情報の確認は 3 日ごとに行います。<br>
+  「<!-- Cfm/Var: AppName -->の最新情報を自動的に確認する」を有効にすると、<!-- Cfm/Var: AppName -->起動時にホームページから<!-- Cfm/Var: AppName -->関連の最新情報を取得し、最新情報が見つかった場合はブラウザで表示します。<!-- Cfm/Var: AppMajVer --> 現在、最新情報の確認は 3 日ごとに行います。<br>
   <br>
   最新情報表示前には、表示するかどうかの確認が行われます。表示しないを選択した場合、当該情報については次回以降は表示されませんのでご注意下さい。<br>
   <br>
@@ -1023,13 +1016,13 @@ C:\xampp\htdocs\config.ini
 <h3 id="Setteinobackup">設定のバックアップ</h3>
 
 <p>
-  ゆかりすたー 4 NEBULA&nbsp;の設定を保存します。動作に問題が発生したときに開発者とやり取りする際、手助けになる場合があります。<br>
+  <!-- Cfm/Var: AppName -->の設定を保存します。動作に問題が発生したときに開発者とやり取りする際、手助けになる場合があります。<br>
 </p>
 
 <h3 id="Setteinofukugen">設定の復元</h3>
 
 <p>
-  バックアップしておいたゆかりすたー 4 NEBULA&nbsp;の設定を読み込みます。<br>
+  バックアップしておいた<!-- Cfm/Var: AppName -->の設定を読み込みます。<br>
 </p>
 
 <h2 id="Gakkyokujouhouichiran">楽曲情報一覧タブ</h2>
@@ -1114,7 +1107,7 @@ C:\xampp\htdocs\config.ini
 <p>
   リストに出力する情報を指定します。<br>
   <br>
-  「すべて」を選択すると、ゆかりすたー 4 NEBULA&nbsp;が出力できるすべての項目がリストに出力されます。<br>
+  「すべて」を選択すると、<!-- Cfm/Var: AppName -->が出力できるすべての項目がリストに出力されます。<br>
   <br>
   「以下で追加した項目のみ」を選択すると、下部のリストボックスで指定した項目のみが出力されます。<br>
   <br>
@@ -1329,11 +1322,11 @@ C:\xampp\htdocs\config.ini
 <h1 id="Komattatokiwa">困ったときは</h1>
 
 <p>
-  ゆかりすたー 4 NEBULA&nbsp;のサポートページをご覧ください。<br>
+  <!-- Cfm/Var: AppName -->のサポートページをご覧ください。<br>
 </p>
 
 <ul>
-  <li><a href="http://shinta.coresv.com/software/yukalister-nebula-jpn/#Support" target="_blank">ゆかりすたー 4 NEBULA&nbsp;　サポートページ</a></li>
+  <li><a href="http://shinta.coresv.com/software/yukalister-nebula-jpn/#Support" target="_blank"><!-- Cfm/Var: AppName -->　サポートページ</a></li>
 </ul>
 
 <h1 id="Sonota">その他</h1>
@@ -1343,7 +1336,7 @@ C:\xampp\htdocs\config.ini
 <table>
   <tr><th>種類別</th><td>フリーソフトウェア</td></tr>
   <tr><th>名称</th><td>リスト作成ツール</td></tr>
-  <tr><th>ソフトウェア名</th><td>ゆかりすたー 4 NEBULA&nbsp;</td></tr>
+  <tr><th>ソフトウェア名</th><td><!-- Cfm/Var: AppName --></td></tr>
   <tr><th>ダウンロード</th><td><a href="http://shinta.coresv.com/software/yukalister-nebula-jpn/#Download" target="_blank">http://shinta.coresv.com/software/yukalister-nebula-jpn/#Download</a>（メイン）<br><a href="http://shinta0806be.ldblog.jp/archives/9212448.html" target="_blank">http://shinta0806be.ldblog.jp/archives/9212448.html</a>（バックアップ）</td></tr>
   <tr><th>作者</th><td>SHINTA</td></tr>
   <tr><th>作者 E メール</th><td><img src="HelpParts/MailAddrG2.png" border="0"></td></tr>
@@ -1353,7 +1346,7 @@ C:\xampp\htdocs\config.ini
 <h2 id="License">ライセンス</h2>
 
 <p>
-  ゆかりすたー 4 NEBULA&nbsp;には以下のライセンスが適用されます。<br>
+  <!-- Cfm/Var: AppName -->には以下のライセンスが適用されます。<br>
 </p>
 
 <ul>
@@ -1368,7 +1361,7 @@ C:\xampp\htdocs\config.ini
 <h2 id="Kaiteirireki">改訂履歴</h2>
 
 <p>
-  ゆかりすたー 4 NEBULA&nbsp;の改訂履歴は以下をご覧ください。<br>
+  <!-- Cfm/Var: AppName -->の改訂履歴は以下をご覧ください。<br>
 </p>
 
 <ul>
@@ -1378,7 +1371,7 @@ C:\xampp\htdocs\config.ini
 <h2 id="Syaji">謝辞</h2>
 
 <p>
-  ゆかりすたー 4 NEBULA&nbsp;の動作に当たり、以下のソフトウェアを使用させていただいております。ありがとうございます。各ソフトウェアのライセンス等については、各ソフトウェアのドキュメントを <a href="ThirdPartyDocuments" target="_blank">ThirdPartyDocuments</a> フォルダ内に同梱しています。<br>
+  <!-- Cfm/Var: AppName -->の動作に当たり、以下のソフトウェアを使用させていただいております。ありがとうございます。各ソフトウェアのライセンス等については、各ソフトウェアのドキュメントを <a href="ThirdPartyDocuments" target="_blank">ThirdPartyDocuments</a> フォルダ内に同梱しています。<br>
 </p>
 
 <ul>
@@ -1390,92 +1383,7 @@ C:\xampp\htdocs\config.ini
 
 </div><!-- MainCol -->
 
-
-<!-- ★★★　左側メニュー　★★★ -->
-<a name="LColMenu"></a>
-<div id="LCol">
-
-<div class="TocArea">
-<div class="TocItemH1"><a href="#Hajimeni">はじめに</a></div>
-<div class="TocItemH2"><a href="#Gaiyou">概要</a></div>
-<div class="TocItemH2"><a href="#Shinkapoint">進化ポイント</a></div>
-<div class="TocItemH2"><a href="#Dousakankyou">動作環境</a></div>
-<div class="TocItemH2"><a href="#Install">インストール</a></div>
-<div class="TocItemH2"><a href="#KyuuversionkaranoIkou">旧バージョンからの移行</a></div>
-<div class="TocItemH1"><a href="#KantannaTsukaikata">チュートリアル</a></div>
-<div class="TocItemH2"><a href="#Kido">起動</a></div>
-<div class="TocItemH2"><a href="#YukariKensakutaishouFolderTsuika">フォルダー追加</a></div>
-<div class="TocItemH2"><a href="#EtsuranyoulistnoSyutsuryoku">閲覧用リストの出力</a></div>
-<div class="TocItemH1"><a href="#Mainwindow">メインウィンドウ</a></div>
-<div class="TocItemH1"><a href="#ZokuseiniyoruSeiri">属性による整理</a></div>
-<div class="TocItemH2"><a href="#Zokuseitowa">属性とは</a></div>
-<div class="TocItemH2"><a href="#FolderSettei">フォルダー設定</a></div>
-<div class="TocItemH1"><a href="#GakkyokujouhoudatabasenoSeibi">楽曲情報データベースの登録</a></div>
-<div class="TocItemH2"><a href="#Gakkyokujouhoudatabasetowa">楽曲情報データベースとは</a></div>
-<div class="TocItemH2"><a href="#NamaewoSoroeru">名前を揃える（名称の編集ウィンドウ）</a></div>
-<div class="TocItemH2"><a href="#TieUpjouhounoShinkitourokutoHenkou">タイアップ情報の新規登録と変更（タイアップ詳細情報の編集ウィンドウ）</a></div>
-<div class="TocItemH2"><a href="#SeisakugaisyajouhounoShinkitourokutoHenkou">制作会社情報の新規登録と変更（制作会社詳細情報の編集ウィンドウ）</a></div>
-<div class="TocItemH2"><a href="#SeriesnoSentaku">シリーズの選択</a></div>
-<div class="TocItemH2"><a href="#SeriesjouhounoShinkitourokutoHenkou">シリーズ情報の新規登録と変更（シリーズ詳細情報の編集ウィンドウ）</a></div>
-<div class="TocItemH2"><a href="#GakkyokujouhounoShinkitourokutoHenkou">楽曲情報の新規登録と変更（楽曲詳細情報の編集ウィンドウ）</a></div>
-<div class="TocItemH2"><a href="#TagnoSentaku">タグの選択</a></div>
-<div class="TocItemH2"><a href="#TagjouhounoShinkitourokutoHenkou">タグ情報の新規登録と変更（タグ詳細情報の編集ウィンドウ）</a></div>
-<div class="TocItemH2"><a href="#KasyuSakushisyaSakkyokusyaHenkyokusyanoSentaku">歌手・作詞者・作曲者・編曲者の選択</a></div>
-<div class="TocItemH2"><a href="#KasyuSakushisyaSakkyokusyaHenkyokusyajouhounoShinkitourokutoHenkou">歌手・作詞者・作曲者・編曲者情報の新規登録と変更（歌手詳細情報の編集ウィンドウ他）</a></div>
-<div class="TocItemH2"><a href="#NyuuryokukekkanoKakunin">登録結果の確認</a></div>
-<div class="TocItemH2"><a href="#Databaseichiranwindow">データベース一覧ウィンドウ</a></div>
-<div class="TocItemH1"><a href="#UmakuListkaSarenaibaainoTaishohou">うまくリスト化されない場合の対処法</a></div>
-<div class="TocItemH2"><a href="#FoldersetteinoKakunin">フォルダー設定の確認</a></div>
-<div class="TocItemH2"><a href="#GakkyokujouhoudatabasetoHyoukinoIcchinoKakunin">楽曲情報データベースと表記の一致の確認</a></div>
-<div class="TocItemH2"><a href="#Fileichiranwindow">ファイル一覧ウィンドウ</a></div>
-<div class="TocItemH1"><a href="#Listnitsuite">リストについて</a></div>
-<div class="TocItemH2"><a href="#JouhougennoYuusenjuni">情報源の優先順位</a></div>
-<div class="TocItemH2"><a href="#ListKoumoku">リスト項目</a></div>
-<div class="TocItemH1"><a href="#Yukarirenkei">ゆかり連携</a></div>
-<div class="TocItemH2"><a href="#Yukarirenkeikinoutowa">ゆかり連携機能とは</a></div>
-<div class="TocItemH2"><a href="#YukarinoSettei">ゆかりの設定</a></div>
-<div class="TocItemH2"><a href="#YukaridenoKensakuAttr">ゆかりでの検索</a></div>
-<div class="TocItemH2"><a href="#YukaridenoListhyouji">ゆかりでのリスト表示</a></div>
-<div class="TocItemH1"><a href="#RiyoushakaranoMondaihoukoku">利用者からの問題報告</a></div>
-<div class="TocItemH2"><a href="#Mondaihoukokukinoutowa">リスト問題報告機能とは</a></div>
-<div class="TocItemH2"><a href="#RiyoushaniyoruMondaihoukokunoYarikata">利用者による問題報告のやり方</a></div>
-<div class="TocItemH2"><a href="#HoukokusaretamondainoKakunin">報告された問題の確認</a></div>
-<div class="TocItemH2"><a href="#HoukokusaretamondaihenoTaiou">報告された問題への対応</a></div>
-<div class="TocItemH1"><a href="#Douki">同期</a></div>
-<div class="TocItemH2"><a href="#Doukikinoutowa">同期機能とは</a></div>
-<div class="TocItemH2"><a href="#DoukikinounoTsukaikata">同期機能の使い方</a></div>
-<div class="TocItemH1"><a href="#Kankyousettei">環境設定</a></div>
-<div class="TocItemH2"><a href="#Setteitab">設定タブ</a></div>
-<div class="TocItemH2"><a href="#Listtaisyoutab">リスト対象タブ：リスト化対象ファイル</a></div>
-<div class="TocItemH2"><a href="#ListtaisyoutabSmarttrackwords">リスト対象タブ：スマートトラック判定用単語</a></div>
-<div class="TocItemH2"><a href="#ListsyutsuryokutabYukari">リスト出力タブ：ゆかりリクエスト用リスト（PHP）</a></div>
-<div class="TocItemH2"><a href="#ListsyutsuryokutabEtsuran">リスト出力タブ：閲覧用リスト</a></div>
-<div class="TocItemH2"><a href="#Maintenancetab">メンテナンスタブ</a></div>
-<div class="TocItemH2"><a href="#Gakkyokujouhouichiran">楽曲情報一覧タブ</a></div>
-<div class="TocItemH2"><a href="#GakkyokujouhouikkatsusousaImport">楽曲情報一括操作タブ：インポート</a></div>
-<div class="TocItemH2"><a href="#GakkyokujouhouikkatsusousaExport">楽曲情報一括操作タブ：エクスポート</a></div>
-<div class="TocItemH2"><a href="#GakkyokujouhouikkatsusousaDeleteAll">楽曲情報一括操作タブ：すべて削除</a></div>
-<div class="TocItemH2"><a href="#YukaritoukeiSyutsuryoku">ゆかり統計タブ：出力</a></div>
-<div class="TocItemH2"><a href="#YukaritoukeiDeleteAll">ゆかり統計タブ：すべて削除</a></div>
-<div class="TocItemH2"><a href="#KankyousetteiDouki">同期タブ</a></div>
-<div class="TocItemH1"><a href="#Listshutsuryokusettei">リスト出力設定</a></div>
-<div class="TocItemH2"><a href="#Kihonsetteitab">基本設定タブ</a></div>
-<div class="TocItemH2"><a href="#Htmltab">HTML タブ</a></div>
-<div class="TocItemH1"><a href="#SuishouFilemei">推奨ファイル名</a></div>
-<div class="TocItemH1"><a href="#Sample">サンプル</a></div>
-<div class="TocItemH2"><a href="#AAAsannoRei">AAA さんの例</a></div>
-<div class="TocItemH2"><a href="#BBBsannoRei">BBB さんの例</a></div>
-<div class="TocItemH2"><a href="#CCCsannoRei">CCC さんの例</a></div>
-<div class="TocItemH2"><a href="#DDDsannoRei">DDD さんの例</a></div>
-<div class="TocItemH1"><a href="#Komattatokiwa">困ったときは</a></div>
-<div class="TocItemH1"><a href="#Sonota">その他</a></div>
-<div class="TocItemH2"><a href="#Database">データベース</a></div>
-<div class="TocItemH2"><a href="#License">ライセンス</a></div>
-<div class="TocItemH2"><a href="#Kaiteirireki">改訂履歴</a></div>
-<div class="TocItemH2"><a href="#Syaji">謝辞</a></div>
-</div>
-
-</div><!-- LCol -->
+<!-- Cfm/Include: メニュー -->
 
 </body>
 

@@ -184,19 +184,19 @@ pre
 -- サイドメニュー関連
 ---------------------------------------------------------------------------- */
 
-div.SideMenuItemH1
+div.TocItemH1
 {
 	margin: 20px 0px 10px 10px;
 	white-space: pre;
 }
 
-div.SideMenuItemH2
+div.TocItemH2
 {
 	margin: 0px 0px 0px 20px;
 	white-space: pre;
 }
 
-div.SideMenuItemH1 a
+div.TocItemH1 a
 {
 	border-radius: 4px 4px 4px 4px;
 	color: #00BB55;
@@ -207,35 +207,35 @@ div.SideMenuItemH1 a
 	text-decoration: none;
 }
 
-div.SideMenuItemH2 a
+div.TocItemH2 a
 {
 	color: #00BB55;
 	padding-left: 10px;
 	text-decoration: none;
 }
 
-div.SideMenuItemH1 a:visited
+div.TocItemH1 a:visited
 {
 	padding-left: 10px;
 	color: #006622;
 }
 
-div.SideMenuItemH2 a:visited
+div.TocItemH2 a:visited
 {
 	padding-left: 10px;
 	color: #006622;
 }
 
-div.SideMenuItemH1 a:hover
-, div.SideMenuItemH1 a:active
+div.TocItemH1 a:hover
+, div.TocItemH1 a:active
 {
 	padding-left: 5px;
 	border-left: solid 5px #00EE99;
 	text-decoration: underline;
 }
 
-div.SideMenuItemH2 a:hover
-, div.SideMenuItemH2 a:active
+div.TocItemH2 a:hover
+, div.TocItemH2 a:active
 {
 	padding-left: 5px;
 	border-left: solid 5px #00EE99;
