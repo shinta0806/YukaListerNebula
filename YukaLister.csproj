@@ -65,13 +65,13 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="gong-wpf-dragdrop" Version="3.1.1" />
+    <PackageReference Include="gong-wpf-dragdrop" Version="3.2.0" />
     <PackageReference Include="LivetCask" Version="4.0.2" />
     <PackageReference Include="LivetExtensions" Version="4.0.2" />
-    <PackageReference Include="MaterialDesignColors" Version="2.0.4" />
+    <PackageReference Include="MaterialDesignColors" Version="2.0.9" />
     <PackageReference Include="MaterialDesignThemes" Version="4.3.0" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="6.0.5" />
-    <PackageReference Include="Microsoft.Windows.Compatibility" Version="6.0.0" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="6.0.10" />
+    <PackageReference Include="Microsoft.Windows.Compatibility" Version="6.0.1" />
   </ItemGroup>
 
   <ItemGroup>
