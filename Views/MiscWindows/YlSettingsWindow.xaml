@@ -77,6 +77,7 @@
                     <CheckBox Content="起動時やリムーバブルメディア接続時、前回のフォルダーを自動的に追加する (_A)" IsChecked="{Binding AddFolderOnDeviceArrived}" Margin="20,20,0,0" />
                     <CheckBox Content="ゆかり用サーバー機能（プレビュー等）を提供する (_P)" IsChecked="{Binding ProvideYukariPreview}" Margin="20,10,0,0" />
                     <CheckBox Content="ゆかり用の追加検索支援データを出力する (_T)" IsChecked="{Binding OutputAdditionalYukariAssist}" Margin="20,10,0,0" />
+                    <CheckBox Content="ゆかり用の追加フリガナデータを出力する (_F)" IsChecked="{Binding OutputAdditionalYukariRuby}" Margin="20,10,0,0" />
                     <CheckBox Content="楽曲情報データベースが不十分な場合の誤適用を軽減（非推奨） (_S)" IsChecked="{Binding ApplyMusicInfoIntelligently}" Margin="20,10,0,0" />
                     <DockPanel Margin="20,10,20,0" >
                         <Label Content="ID 先頭付与文字列 (_D)：" Target="{Binding ElementName=TextBoxIdPrefix}" VerticalAlignment="Center" Width="140" HorizontalContentAlignment="Right" />

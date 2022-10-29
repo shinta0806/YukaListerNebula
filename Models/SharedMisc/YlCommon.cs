@@ -761,7 +761,7 @@ namespace YukaLister.Models.SharedMisc
 		// NormalizeDbRubyForMusicInfo() よりも強力に揺れを減らす
 		// ＜返値＞ フリガナ表記 or null（空になる場合）, 元の文字はすべてフリガナ対応文字だったか（null の場合は false）, 先頭文字がフリガナ対応文字だったか（null の場合は false）
 		// --------------------------------------------------------------------
-		public static (String? normalizedRuby, Boolean fromAllRuby, Boolean headRuby) NormalizeDbRubyForSearch(String? str)
+		public static (String? normalizedRuby, Boolean fromAllRuby, Boolean headRuby) NormalizeDbRubyForSearch(String? str, Boolean removeLongSound = true)
 		{
 			Debug.Assert(NORMALIZE_DB_RUBY_FOR_SEARCH_FROM.Length == NORMALIZE_DB_RUBY_FOR_SEARCH_TO.Length,
 					"NormalizeDbRubyForListContext() different one from/to length");
@@ -772,7 +772,7 @@ namespace YukaLister.Models.SharedMisc
 					NORMALIZE_DB_RUBY_FOR_SEARCH_MULTI_FROM, NORMALIZE_DB_RUBY_FOR_SEARCH_MULTI_TO);
 
 			// 長音はすべて削除
-			if (!String.IsNullOrEmpty(normalizedRuby))
+			if (!String.IsNullOrEmpty(normalizedRuby) && removeLongSound)
 			{
 				normalizedRuby = normalizedRuby.Replace("ー", null, StringComparison.Ordinal);
 				if (String.IsNullOrEmpty(normalizedRuby))

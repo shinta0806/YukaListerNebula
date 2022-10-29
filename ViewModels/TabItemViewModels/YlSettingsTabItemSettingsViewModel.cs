@@ -91,6 +91,14 @@ namespace YukaLister.ViewModels.TabItemViewModels
 			set => RaisePropertyChangedIfSet(ref _outputAdditionalYukariAssist, value);
 		}
 
+		// ゆかり用のさらなるフリガナデータを出力するか
+		private Boolean _outputAdditionalYukariRuby;
+		public Boolean OutputAdditionalYukariRuby
+		{
+			get => _outputAdditionalYukariRuby;
+			set => RaisePropertyChangedIfSet(ref _outputAdditionalYukariRuby, value);
+		}
+
 		// 楽曲情報データベースが不十分な場合の誤適用を軽減
 		private Boolean _applyMusicInfoIntelligently;
 		public Boolean ApplyMusicInfoIntelligently
@@ -213,6 +221,7 @@ namespace YukaLister.ViewModels.TabItemViewModels
 			destSettings.AddFolderOnDeviceArrived = AddFolderOnDeviceArrived;
 			destSettings.ProvideYukariPreview = ProvideYukariPreview;
 			destSettings.OutputAdditionalYukariAssist = OutputAdditionalYukariAssist;
+			destSettings.OutputAdditionalYukariRuby = OutputAdditionalYukariRuby;
 			destSettings.ApplyMusicInfoIntelligently = ApplyMusicInfoIntelligently;
 			destSettings.IdPrefix = IdPrefix;
 		}
@@ -226,6 +235,7 @@ namespace YukaLister.ViewModels.TabItemViewModels
 			AddFolderOnDeviceArrived = srcSettings.AddFolderOnDeviceArrived;
 			ProvideYukariPreview = srcSettings.ProvideYukariPreview;
 			OutputAdditionalYukariAssist = srcSettings.OutputAdditionalYukariAssist;
+			OutputAdditionalYukariRuby = srcSettings.OutputAdditionalYukariRuby;
 			ApplyMusicInfoIntelligently = srcSettings.ApplyMusicInfoIntelligently;
 			IdPrefix = srcSettings.IdPrefix;
 

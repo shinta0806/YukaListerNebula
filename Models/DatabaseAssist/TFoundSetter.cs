@@ -428,6 +428,33 @@ namespace YukaLister.Models.DatabaseAssist
 		// ====================================================================
 
 		// --------------------------------------------------------------------
+		// 環境設定を考慮した検索用フリガナ
+		// --------------------------------------------------------------------
+		private String? AdditionalRubyForSearch(IRcMaster master)
+		{
+			if (!YlModel.Instance.EnvModel.YlSettings.OutputAdditionalYukariRuby)
+			{
+				// 追加しない設定なら RubyForSearch をそのまま返す
+				return master.RubyForSearch;
+			}
+
+			// 元のフリガナが空なら RubyForSearch をそのまま返す
+			if (String.IsNullOrEmpty(master.Ruby))
+			{
+				return master.RubyForSearch;
+			}
+
+			// 元のフリガナに長音がないなら RubyForSearch をそのまま返す
+			if (!master.Ruby.Contains('ー', StringComparison.Ordinal))
+			{
+				return master.RubyForSearch;
+			}
+
+			// RubyForSearch（長音なし）に長音ありバージョンを追加して返す
+			return master.RubyForSearch + ',' + YlCommon.NormalizeDbRubyForSearch(master.Ruby, false).normalizedRuby;
+		}
+
+		// --------------------------------------------------------------------
 		// トラック情報からオンボーカル・オフボーカルがあるか解析する
 		// --------------------------------------------------------------------
 		private (Boolean hasOn, Boolean hasOff) AnalyzeSmartTrack(String? trackString)
@@ -806,7 +833,7 @@ namespace YukaLister.Models.DatabaseAssist
 				{
 					// TMaker 由来項目の設定
 					record.MakerName = makerOfTieUp.Name;
-					record.MakerRuby = makerOfTieUp.RubyForSearch;
+					record.MakerRuby = AdditionalRubyForSearch(makerOfTieUp);
 				}
 
 				List<TTieUpGroup> tieUpGroups = DbCommon.SelectSequencedTieUpGroupsByTieUpId(_musicInfoContext.TieUpGroupSequences, _musicInfoContext.TieUpGroups, selectedTieUp.Id);
@@ -814,13 +841,13 @@ namespace YukaLister.Models.DatabaseAssist
 				{
 					// TTieUpGroup 由来項目の設定
 					record.TieUpGroupName = tieUpGroups[0].Name;
-					record.TieUpGroupRuby = tieUpGroups[0].RubyForSearch;
+					record.TieUpGroupRuby = AdditionalRubyForSearch(tieUpGroups[0]);
 				}
 
 				// TieUp 由来項目の設定
 				record.TieUpId = selectedTieUp.Id;
 				record.TieUpName = selectedTieUp.Name;
-				record.TieUpRuby = selectedTieUp.RubyForSearch;
+				record.TieUpRuby = AdditionalRubyForSearch(selectedTieUp);
 				record.TieUpAgeLimit = selectedTieUp.AgeLimit;
 				record.SongReleaseDate = selectedTieUp.ReleaseDate;
 				record.Comment += KeywordToComment(selectedTieUp);
@@ -840,7 +867,7 @@ namespace YukaLister.Models.DatabaseAssist
 			// TSong 由来項目の設定
 			record.SongId = selectedSong.Id;
 			record.SongName = selectedSong.Name;
-			record.SongRuby = selectedSong.RubyForSearch;
+			record.SongRuby = AdditionalRubyForSearch(selectedSong);
 			record.SongOpEd = selectedSong.OpEd;
 			if (record.SongReleaseDate <= YlConstants.INVALID_MJD && selectedSong.ReleaseDate > YlConstants.INVALID_MJD)
 			{

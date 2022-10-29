@@ -64,8 +64,12 @@ namespace YukaLister.Models.Settings
 		public Int32 WebServerPort { get; set; } = DEFAULT_WEB_SERVER_PORT;
 
 		// ゆかり用のさらなる検索支援データを出力するか
-		// ゆかり側が対応するまでの暫定オプション
+		// ゆかり側が対応するまでの暫定オプション（対応後は常に true）
 		public Boolean OutputAdditionalYukariAssist { get; set; } = true;
+
+		// ゆかり用のさらなるフリガナデータを出力するか
+		// ゆかり側が対応するまでの暫定オプション（対応後は常に false）
+		public Boolean OutputAdditionalYukariRuby { get; set; } = true;
 
 		// 楽曲情報データベースが不十分な場合の誤適用を軽減
 		public Boolean ApplyMusicInfoIntelligently { get; set; }
