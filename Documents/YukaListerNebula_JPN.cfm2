@@ -4,8 +4,9 @@
 <!-- Cfm/IncludeFolder: ../../../_Common/HelpIncludes -->
 <!-- Cfm/IncludeDefaultExt: html -->
 <!-- Cfm/Set: AppName = ゆかりすたー 4 NEBULA&nbsp; -->
-<!-- Cfm/Set: AppMajVer = Ver 7.1 -->
+<!-- Cfm/Set: AppMajVer = Ver 7.2 -->
 <!-- Cfm/Include: ヘッダー -->
+<!-- Cfm/GenerateAnchorFiles:../../../_Common/HelpIncludes/AnchorMakeFile.cfm2, HelpParts -->
 <body>
 
 <!-- 先頭に戻るボタン -->
