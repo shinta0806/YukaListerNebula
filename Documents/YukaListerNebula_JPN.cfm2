@@ -6,7 +6,7 @@
 <!-- Cfm/Set: AppName = ゆかりすたー 4 NEBULA&nbsp; -->
 <!-- Cfm/Set: AppMajVer = Ver 7.2 -->
 <!-- Cfm/Include: ヘッダー -->
-<!-- Cfm/GenerateAnchorFiles:../../../_Common/HelpIncludes/AnchorMakeFile.cfm2, HelpParts -->
+<!-- Cfm/GenerateAnchorFiles:../../../_Common/HelpIncludes/AnchorMakeFile.cfm2, HelpParts, 123 -->
 <body>
 
 <!-- 先頭に戻るボタン -->
