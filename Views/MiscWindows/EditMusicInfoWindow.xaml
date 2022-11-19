@@ -5,7 +5,7 @@
         xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
         xmlns:msm="clr-namespace:YukaLister.Models.SharedMisc"
         xmlns:s="clr-namespace:Shinta"
-        xmlns:sb="clr-namespace:Shinta.Wpf.Behaviors"
+        xmlns:swb="clr-namespace:Shinta.Wpf.Behaviors"
         xmlns:v="clr-namespace:YukaLister.Views"
         xmlns:vem="clr-namespace:YukaLister.Views.EditMasterWindows"
         xmlns:vsm="clr-namespace:YukaLister.Views.SearchMasterWindows"
@@ -20,7 +20,7 @@
     </Window.DataContext>
 
     <behaviors:Interaction.Behaviors>
-        <sb:WindowBindingSupportBehavior IsCascade="True" HelpBox="True" HelpBoxClickedCommand="{Binding HelpClickedCommand}" HelpBoxClickedCommandParameter="NamaewoSoroeru" />
+        <swb:WindowBindingSupportBehavior IsCascade="True" HelpBox="True" HelpBoxClickedCommand="{Binding HelpClickedCommand}" HelpBoxClickedCommandParameter="NamaewoSoroeru" />
     </behaviors:Interaction.Behaviors>
 
     <behaviors:Interaction.Triggers>

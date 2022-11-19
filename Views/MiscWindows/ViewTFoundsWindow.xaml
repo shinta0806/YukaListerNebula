@@ -5,7 +5,7 @@
         xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
         xmlns:msm="clr-namespace:YukaLister.Models.SharedMisc"
         xmlns:s="clr-namespace:Shinta"
-        xmlns:sb="clr-namespace:Shinta.Wpf.Behaviors"
+        xmlns:swb="clr-namespace:Shinta.Wpf.Behaviors"
         xmlns:v="clr-namespace:YukaLister.Views"
         xmlns:vm="clr-namespace:YukaLister.ViewModels"
         xmlns:vmmw="clr-namespace:YukaLister.ViewModels.MiscWindowViewModels"
@@ -22,7 +22,7 @@
     </Window.InputBindings>
 
     <behaviors:Interaction.Behaviors>
-        <sb:WindowBindingSupportBehavior IsCascade="True" MinimizeBox="False"/>
+        <swb:WindowBindingSupportBehavior IsCascade="True" MinimizeBox="False"/>
     </behaviors:Interaction.Behaviors>
 
     <behaviors:Interaction.Triggers>
@@ -85,7 +85,7 @@
                 <MouseBinding MouseAction="LeftDoubleClick" Command="{Binding DataGridDoubleClickedCommand}" />
             </DataGrid.InputBindings>
             <behaviors:Interaction.Behaviors>
-                <sb:DataGridBindingSupportBehavior Columns="{Binding Columns}" CurrentCellLocation="{Binding CurrentCellLocation}" SelectedItem="{Binding SelectedFound}" SortingCommand="{Binding DataGridListSortingCommand}"/>
+                <swb:DataGridBindingSupportBehavior Columns="{Binding Columns}" CurrentCellLocation="{Binding CurrentCellLocation}" SelectedItem="{Binding SelectedFound}" SortingCommand="{Binding DataGridListSortingCommand}"/>
             </behaviors:Interaction.Behaviors>
         </DataGrid>
     </DockPanel>

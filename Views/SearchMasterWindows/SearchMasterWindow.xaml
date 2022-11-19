@@ -5,7 +5,7 @@
         xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
         xmlns:msm="clr-namespace:YukaLister.Models.SharedMisc"
         xmlns:s="clr-namespace:Shinta"
-        xmlns:sb="clr-namespace:Shinta.Wpf.Behaviors"
+        xmlns:swb="clr-namespace:Shinta.Wpf.Behaviors"
         xmlns:v="clr-namespace:YukaLister.Views"
         xmlns:vm="clr-namespace:YukaLister.ViewModels"
         xmlns:vmsmw="clr-namespace:YukaLister.ViewModels.SearchMasterWindowViewModels"
@@ -17,7 +17,7 @@
     </Window.DataContext>
 
     <behaviors:Interaction.Behaviors>
-        <sb:WindowBindingSupportBehavior IsCascade="True" MinimizeBox="False"/>
+        <swb:WindowBindingSupportBehavior IsCascade="True" MinimizeBox="False"/>
     </behaviors:Interaction.Behaviors>
 
     <behaviors:Interaction.Triggers>
@@ -43,7 +43,7 @@
         <Label Content="{Binding Description}" Margin="20,10,0,-2" DockPanel.Dock="Top" />
         <DockPanel Margin="20,5,20,0" DockPanel.Dock="Top" >
             <Button Content="検索 (_S)" Style="{StaticResource MaterialDesignRaisedLightButton}" Width="100" Height="Auto" DockPanel.Dock="Right" Command="{Binding ButtonSearchClickedCommand}"/>
-            <TextBox Name="TextBoxKeyword" Text="{Binding Keyword, UpdateSourceTrigger=PropertyChanged}" ToolTip="ここに検索したいキーワードを入力して下さい。" ToolTipService.ShowDuration="{x:Static msm:YlConstants.TOOL_TIP_LONG_DURATION}" materialDesign:HintAssist.Hint="{Binding ElementName=TextBoxKeyword, Path=ToolTip}" sb:IsFocusedAttachedBehavior.IsFocused="{Binding IsKeywordFocused}" VerticalAlignment="Center" Margin="0,0,5,0" >
+            <TextBox Name="TextBoxKeyword" Text="{Binding Keyword, UpdateSourceTrigger=PropertyChanged}" ToolTip="ここに検索したいキーワードを入力して下さい。" ToolTipService.ShowDuration="{x:Static msm:YlConstants.TOOL_TIP_LONG_DURATION}" materialDesign:HintAssist.Hint="{Binding ElementName=TextBoxKeyword, Path=ToolTip}" swb:IsFocusedAttachedBehavior.IsFocused="{Binding IsKeywordFocused}" VerticalAlignment="Center" Margin="0,0,5,0" >
                 <TextBox.InputBindings>
                     <KeyBinding Gesture="Enter" Command="{Binding ButtonSearchClickedCommand}" />
                 </TextBox.InputBindings>
@@ -59,7 +59,7 @@
         </StackPanel>
         <DataGrid AutoGenerateColumns="False" CanUserReorderColumns="False" CanUserSortColumns="False" CanUserResizeRows="False" SelectionMode="Single" IsReadOnly="True"
                 Margin="20,0,20,0" materialDesign:DataGridAssist.ColumnHeaderPadding="3 5 3 5" materialDesign:DataGridAssist.CellPadding="3" ItemsSource="{Binding Founds}" CanUserAddRows="False" CanUserDeleteRows="False" 
-                sb:IsFocusedAttachedBehavior.IsFocused="{Binding AreFoundsFocused}" DockPanel.Dock="Top" >
+                swb:IsFocusedAttachedBehavior.IsFocused="{Binding AreFoundsFocused}" DockPanel.Dock="Top" >
             <DataGrid.Columns>
                 <DataGridTextColumn Header="検索結果" Width="*" Binding="{Binding DisplayName}" />
             </DataGrid.Columns>
@@ -67,7 +67,7 @@
                 <MouseBinding MouseAction="LeftDoubleClick" Command="{Binding DataGridDoubleClickedCommand}" />
             </DataGrid.InputBindings>
             <behaviors:Interaction.Behaviors>
-                <sb:DataGridBindingSupportBehavior SelectedItem="{Binding SelectedFound}" />
+                <swb:DataGridBindingSupportBehavior SelectedItem="{Binding SelectedFound}" />
             </behaviors:Interaction.Behaviors>
         </DataGrid>
     </DockPanel>

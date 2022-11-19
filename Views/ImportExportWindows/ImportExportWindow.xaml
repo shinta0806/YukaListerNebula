@@ -4,7 +4,7 @@
         xmlns:l="http://schemas.livet-mvvm.net/2011/wpf"
         xmlns:msm="clr-namespace:YukaLister.Models.SharedMisc"
         xmlns:s="clr-namespace:Shinta"
-        xmlns:sb="clr-namespace:Shinta.Wpf.Behaviors"
+        xmlns:swb="clr-namespace:Shinta.Wpf.Behaviors"
         xmlns:v="clr-namespace:YukaLister.Views"
         xmlns:vm="clr-namespace:YukaLister.ViewModels"
         xmlns:vmiewvm="clr-namespace:YukaLister.ViewModels.ImportExportWindowViewModels"
@@ -17,7 +17,7 @@
     </Window.DataContext>
 
     <behaviors:Interaction.Behaviors>
-        <sb:WindowBindingSupportBehavior ClosingCommand="{Binding WindowClosingCommand}" IsCascade="True" MinimizeBox="False" />
+        <swb:WindowBindingSupportBehavior ClosingCommand="{Binding WindowClosingCommand}" IsCascade="True" MinimizeBox="False" />
     </behaviors:Interaction.Behaviors>
 
     <behaviors:Interaction.Triggers>

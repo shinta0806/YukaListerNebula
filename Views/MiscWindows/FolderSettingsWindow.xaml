@@ -6,7 +6,7 @@
         xmlns:msm="clr-namespace:YukaLister.Models.SharedMisc"
         xmlns:mvc="clr-namespace:YukaLister.Models.ValueConverters"
         xmlns:s="clr-namespace:Shinta"
-        xmlns:sb="clr-namespace:Shinta.Wpf.Behaviors"
+        xmlns:swb="clr-namespace:Shinta.Wpf.Behaviors"
         xmlns:v="clr-namespace:YukaLister.Views"
         xmlns:vm="clr-namespace:YukaLister.ViewModels"
         xmlns:vmmw="clr-namespace:YukaLister.ViewModels.MiscWindowViewModels"
@@ -24,7 +24,7 @@
     </Window.DataContext>
 
     <behaviors:Interaction.Behaviors>
-        <sb:WindowBindingSupportBehavior IsCascade="True" MinimizeBox="False" />
+        <swb:WindowBindingSupportBehavior IsCascade="True" MinimizeBox="False" />
     </behaviors:Interaction.Behaviors>
 
     <behaviors:Interaction.Triggers>
@@ -86,7 +86,7 @@
                             </Button.ContextMenu>
                             <materialDesign:PackIcon Kind="Tag" Height="18" Width="18" />
                         </Button>
-                        <TextBox Name="TextBoxFileNameRule" materialDesign:HintAssist.Hint="ここに命名規則を入力して下さい。右側のタグボタンでタグを追加できます。" VerticalAlignment="Center" Margin="0,0,10,0" Text="{Binding FileNameRule, UpdateSourceTrigger=PropertyChanged}" sb:IsFocusedAttachedBehavior.IsFocused="{Binding IsFileNameRuleFocused}" >
+                        <TextBox Name="TextBoxFileNameRule" materialDesign:HintAssist.Hint="ここに命名規則を入力して下さい。右側のタグボタンでタグを追加できます。" VerticalAlignment="Center" Margin="0,0,10,0" Text="{Binding FileNameRule, UpdateSourceTrigger=PropertyChanged}" swb:IsFocusedAttachedBehavior.IsFocused="{Binding IsFileNameRuleFocused}" >
                             <behaviors:Interaction.Behaviors>
                                 <l:TextBoxBindingSupportBehavior SelectionStart="{Binding FileNameRuleSelectionStart}" SelectionLength="{Binding FileNameRuleSelectionLength}" />
                             </behaviors:Interaction.Behaviors>
@@ -172,7 +172,7 @@
                   materialDesign:DataGridAssist.ColumnHeaderPadding="3 5 3 5" materialDesign:DataGridAssist.CellPadding="3" DockPanel.Dock="Top" ItemsSource="{Binding PreviewInfos}" 
                   IsEnabled="{Binding IsExcluded, Converter={StaticResource BooleanInvertConverter}}">
             <behaviors:Interaction.Behaviors>
-                <sb:DataGridBindingSupportBehavior SelectedItem="{Binding SelectedPreviewInfo}" SortingCommand="{Binding DataGridPreviewSortingCommand}" />
+                <swb:DataGridBindingSupportBehavior SelectedItem="{Binding SelectedPreviewInfo}" SortingCommand="{Binding DataGridPreviewSortingCommand}" />
             </behaviors:Interaction.Behaviors>
             <DataGrid.InputBindings>
                 <MouseBinding MouseAction="LeftDoubleClick" Command="{Binding DataGridDoubleClickedCommand}" />

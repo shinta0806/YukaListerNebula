@@ -5,7 +5,7 @@
         xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
         xmlns:msm="clr-namespace:YukaLister.Models.SharedMisc"
         xmlns:s="clr-namespace:Shinta"
-        xmlns:sb="clr-namespace:Shinta.Wpf.Behaviors"
+        xmlns:swb="clr-namespace:Shinta.Wpf.Behaviors"
         xmlns:v="clr-namespace:YukaLister.Views"
         xmlns:view="clr-namespace:YukaLister.Views.ImportExportWindows"
         xmlns:vm="clr-namespace:YukaLister.ViewModels"
@@ -20,7 +20,7 @@
     </Window.DataContext>
 
     <behaviors:Interaction.Behaviors>
-        <sb:WindowBindingSupportBehavior IsCascade="True" HelpBox="True" HelpBoxClickedCommand="{Binding HelpClickedCommand}" HelpBoxClickedCommandParameter="Kankyousettei" />
+        <swb:WindowBindingSupportBehavior IsCascade="True" HelpBox="True" HelpBoxClickedCommand="{Binding HelpClickedCommand}" HelpBoxClickedCommandParameter="Kankyousettei" />
     </behaviors:Interaction.Behaviors>
 
     <behaviors:Interaction.Triggers>
@@ -63,7 +63,7 @@
     </behaviors:Interaction.Triggers>
 
     <StackPanel>
-        <TabControl Height="500" Width="700" Margin="10,10,10,0" SelectedIndex="{Binding SelectedTabIndex}" sb:FileDropAttachedBehavior.DropCommand="{Binding TabControlFileDropCommand}">
+        <TabControl Height="500" Width="700" Margin="10,10,10,0" SelectedIndex="{Binding SelectedTabIndex}" swb:FileDropAttachedBehavior.DropCommand="{Binding TabControlFileDropCommand}">
             <TabItem Header="設定" >
                 <TabItem.DataContext>
                     <Binding Path="YlSettingsTabItemSettingsViewModel" />
@@ -72,7 +72,7 @@
                     <DockPanel Margin="20,20,20,0">
                         <Label Content="ゆかり設定ファイル (_Y)：" Target="{Binding ElementName=TextBoxYukariConfigPathSeed}" VerticalAlignment="Center" Width="140" HorizontalContentAlignment="Right" />
                         <Button Height="Auto" Content="参照 (_B)" Style="{StaticResource MaterialDesignRaisedLightButton}" Margin="0" DockPanel.Dock="Right" Width="100" Command="{Binding ButtonBrowseYukariConfigPathSeedClickedCommand}"/>
-                        <TextBox Name="TextBoxYukariConfigPathSeed" Text="{Binding YukariConfigPathSeed, UpdateSourceTrigger=PropertyChanged}" VerticalAlignment="Center" Margin="0,0,10,0" sb:FileDropAttachedBehavior.PreviewDragCommand="{Binding TextBoxYukariConfigPathSeedPreviewDragCommand}" />
+                        <TextBox Name="TextBoxYukariConfigPathSeed" Text="{Binding YukariConfigPathSeed, UpdateSourceTrigger=PropertyChanged}" VerticalAlignment="Center" Margin="0,0,10,0" swb:FileDropAttachedBehavior.PreviewDragCommand="{Binding TextBoxYukariConfigPathSeedPreviewDragCommand}" />
                     </DockPanel>
                     <CheckBox Content="起動時やリムーバブルメディア接続時、前回のフォルダーを自動的に追加する (_A)" IsChecked="{Binding AddFolderOnDeviceArrived}" Margin="20,20,0,0" />
                     <CheckBox Content="ゆかり用サーバー機能（プレビュー等）を提供する (_P)" IsChecked="{Binding ProvideYukariPreview}" Margin="20,10,0,0" />
@@ -183,7 +183,7 @@
                                 </behaviors:EventTrigger>
                             </behaviors:Interaction.Triggers>
                         </Button>
-                        <TextBox Name="TextBoxListFolder" Text="{Binding ListFolder}" VerticalAlignment="Center" Margin="0,0,10,0" sb:FileDropAttachedBehavior.PreviewDragCommand="{Binding TextBoxListFolderPreviewDragCommand}" />
+                        <TextBox Name="TextBoxListFolder" Text="{Binding ListFolder}" VerticalAlignment="Center" Margin="0,0,10,0" swb:FileDropAttachedBehavior.PreviewDragCommand="{Binding TextBoxListFolderPreviewDragCommand}" />
                     </DockPanel>
                     <DockPanel Margin="170,10,20,0" >
                         <Button Height="Auto" Content="閲覧用リスト出力 (_L)" Style="{StaticResource MaterialDesignRaisedLightButton}" Margin="0" Width="200" DockPanel.Dock="Right" Command="{Binding ButtonOutputListClickedCommand}" />
@@ -248,7 +248,7 @@
                     <Label Content="ファイルから楽曲情報データベースをインポートする (_M)" Margin="20,10,20,0" Target="{Binding ElementName=TextBoxImportYukaListerPath}" />
                     <DockPanel Margin="40,0,20,0">
                         <Button Height="Auto" Content="参照 (_1)" Style="{StaticResource MaterialDesignRaisedLightButton}" Margin="0" DockPanel.Dock="Right" Width="100" Command="{Binding ButtonBrowseImportYukaListerClickedCommand}"/>
-                        <TextBox Name="TextBoxImportYukaListerPath" Text="{Binding ImportYukaListerPath}" ToolTip="インポート元ファイル" ToolTipService.ShowDuration="{x:Static msm:YlConstants.TOOL_TIP_LONG_DURATION}" materialDesign:HintAssist.Hint="{Binding ElementName=TextBoxImportYukaListerPath, Path=ToolTip}" VerticalAlignment="Center" Margin="0,0,10,0" sb:FileDropAttachedBehavior.PreviewDragCommand="{Binding TextBoxImportYukaListerPathPreviewDragCommand}" />
+                        <TextBox Name="TextBoxImportYukaListerPath" Text="{Binding ImportYukaListerPath}" ToolTip="インポート元ファイル" ToolTipService.ShowDuration="{x:Static msm:YlConstants.TOOL_TIP_LONG_DURATION}" materialDesign:HintAssist.Hint="{Binding ElementName=TextBoxImportYukaListerPath, Path=ToolTip}" VerticalAlignment="Center" Margin="0,0,10,0" swb:FileDropAttachedBehavior.PreviewDragCommand="{Binding TextBoxImportYukaListerPathPreviewDragCommand}" />
                     </DockPanel>
                     <DockPanel Margin="40,10,20,0">
                         <StackPanel>
@@ -363,7 +363,7 @@
                 <Button Content="初期化 (_I)" Style="{StaticResource MaterialDesignRaisedLightButton}" Width="100" Height="Auto" ToolTip="環境設定を初期設定に戻す" Padding="4" Command="{Binding ButtonDefaultClickedCommand}" />
             </StackPanel>
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" >
-                <Button Content="_OK" Margin="0,0,20,0" Height="Auto" IsDefault="True" Width="100" Command="{Binding ButtonOkClickedCommand}" sb:IsFocusedAttachedBehavior.IsFocused="{Binding IsButtonOkFocused}"/>
+                <Button Content="_OK" Margin="0,0,20,0" Height="Auto" IsDefault="True" Width="100" Command="{Binding ButtonOkClickedCommand}" swb:IsFocusedAttachedBehavior.IsFocused="{Binding IsButtonOkFocused}"/>
                 <Button Content="キャンセル" Margin="0" Height="Auto" Style="{StaticResource MaterialDesignRaisedLightButton}" IsCancel="True" Width="100" Padding="4"/>
             </StackPanel>
         </DockPanel>

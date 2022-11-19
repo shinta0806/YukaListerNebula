@@ -4,7 +4,7 @@
         xmlns:l="http://schemas.livet-mvvm.net/2011/wpf"
         xmlns:msm="clr-namespace:YukaLister.Models.SharedMisc"
         xmlns:s="clr-namespace:Shinta"
-        xmlns:sb="clr-namespace:Shinta.Wpf.Behaviors"
+        xmlns:swb="clr-namespace:Shinta.Wpf.Behaviors"
         xmlns:v="clr-namespace:YukaLister.Views"
         xmlns:vm="clr-namespace:YukaLister.ViewModels"
         xmlns:vmoswvm="clr-namespace:YukaLister.ViewModels.OutputSettingsWindowViewModels"
@@ -16,7 +16,7 @@
     </Window.DataContext>
 
     <behaviors:Interaction.Behaviors>
-        <sb:WindowBindingSupportBehavior IsCascade="True" HelpBox="True" HelpBoxClickedCommand="{Binding HelpClickedCommand}" HelpBoxClickedCommandParameter="Listshutsuryokusettei" />
+        <swb:WindowBindingSupportBehavior IsCascade="True" HelpBox="True" HelpBoxClickedCommand="{Binding HelpClickedCommand}" HelpBoxClickedCommandParameter="Listshutsuryokusettei" />
     </behaviors:Interaction.Behaviors>
 
     <behaviors:Interaction.Triggers>
@@ -54,7 +54,7 @@
                 <Button Content="初期化 (_I)" Style="{StaticResource MaterialDesignRaisedLightButton}" Width="100" Height="Auto" ToolTip="出力設定を初期設定に戻す" Padding="4" Command="{Binding ButtonDefaultClickedCommand}" />
             </StackPanel>
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" >
-                <Button Content="_OK" Height="Auto" IsDefault="True" Width="100" Command="{Binding ButtonOkClickedCommand}" sb:IsFocusedAttachedBehavior.IsFocused="{Binding IsButtonOkFocused}" Margin="0,0,20,0" />
+                <Button Content="_OK" Height="Auto" IsDefault="True" Width="100" Command="{Binding ButtonOkClickedCommand}" swb:IsFocusedAttachedBehavior.IsFocused="{Binding IsButtonOkFocused}" Margin="0,0,20,0" />
                 <Button Content="キャンセル" Margin="0" Height="Auto" Style="{StaticResource MaterialDesignRaisedLightButton}" IsCancel="True" Width="100" Padding="4" />
             </StackPanel>
         </DockPanel>

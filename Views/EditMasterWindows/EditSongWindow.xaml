@@ -5,7 +5,7 @@
         xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
         xmlns:msm="clr-namespace:YukaLister.Models.SharedMisc"
         xmlns:s="clr-namespace:Shinta"
-        xmlns:sb="clr-namespace:Shinta.Wpf.Behaviors"
+        xmlns:swb="clr-namespace:Shinta.Wpf.Behaviors"
         xmlns:v="clr-namespace:YukaLister.Views"
         xmlns:vem="clr-namespace:YukaLister.Views.EditMasterWindows"
         xmlns:vm="clr-namespace:YukaLister.ViewModels"
@@ -21,7 +21,7 @@
     </Window.DataContext>
 
     <behaviors:Interaction.Behaviors>
-        <sb:WindowBindingSupportBehavior IsCascade="True" HelpBox="True" HelpBoxClickedCommand="{Binding HelpClickedCommand}" HelpBoxClickedCommandParameter="{Binding HelpCommandParameter}" />
+        <swb:WindowBindingSupportBehavior IsCascade="True" HelpBox="True" HelpBoxClickedCommand="{Binding HelpClickedCommand}" HelpBoxClickedCommandParameter="{Binding HelpCommandParameter}" />
     </behaviors:Interaction.Behaviors>
 
     <behaviors:Interaction.Triggers>
@@ -185,7 +185,7 @@
         <DockPanel Margin="20" LastChildFill="False" >
             <Button Content="削除 (_D)" Style="{StaticResource MaterialDesignRaisedLightButton}" Width="100" Height="Auto" Padding="4" Command="{Binding ButtonDeleteClickedCommand}" />
             <Button Content="キャンセル" Style="{StaticResource MaterialDesignRaisedLightButton}" IsCancel="True" Width="100" Height="Auto" Padding="4" DockPanel.Dock="Right"/>
-            <Button Content="_OK" Height="Auto" IsDefault="True" Width="100" Command="{Binding ButtonOkClickedCommand}" sb:IsFocusedAttachedBehavior.IsFocused="{Binding IsButtonOkFocused}" DockPanel.Dock="Right" Margin="0,0,20,0"/>
+            <Button Content="_OK" Height="Auto" IsDefault="True" Width="100" Command="{Binding ButtonOkClickedCommand}" swb:IsFocusedAttachedBehavior.IsFocused="{Binding IsButtonOkFocused}" DockPanel.Dock="Right" Margin="0,0,20,0"/>
         </DockPanel>
     </StackPanel>
 

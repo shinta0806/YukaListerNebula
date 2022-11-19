@@ -6,7 +6,7 @@
         xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:msm="clr-namespace:YukaLister.Models.SharedMisc"
-        xmlns:sb="clr-namespace:Shinta.Wpf.Behaviors"
+        xmlns:swb="clr-namespace:Shinta.Wpf.Behaviors"
         xmlns:vmrwvm="clr-namespace:YukaLister.ViewModels.ReportWindowViewModels"
         xmlns:vrw="clr-namespace:YukaLister.Views.ReportWindows"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
@@ -18,7 +18,7 @@
     </Window.DataContext>
 
     <behaviors:Interaction.Behaviors>
-        <sb:WindowBindingSupportBehavior IsCascade="True" MinimizeBox="False"/>
+        <swb:WindowBindingSupportBehavior IsCascade="True" MinimizeBox="False"/>
     </behaviors:Interaction.Behaviors>
 
     <behaviors:Interaction.Triggers>

@@ -5,7 +5,7 @@
     xmlns:l="http://schemas.livet-mvvm.net/2011/wpf"
     xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
     xmlns:msm="clr-namespace:YukaLister.Models.SharedMisc"
-    xmlns:sb="clr-namespace:Shinta.Wpf.Behaviors"
+    xmlns:swb="clr-namespace:Shinta.Wpf.Behaviors"
     xmlns:v="clr-namespace:YukaLister.Views"
     xmlns:vcc="clr-namespace:YukaLister.Views.CustomControls"
     xmlns:vdgc="clr-namespace:YukaLister.Views.DataGridControls"
@@ -15,8 +15,8 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     Title="{Binding Title}" Left="{Binding Left, Mode=TwoWay}" Top="{Binding Top, Mode=TwoWay}" Width="{Binding Width, Mode=TwoWay}" Height="{Binding Height, Mode=TwoWay}" 
     MinWidth="640" MinHeight="330" ResizeMode="CanResizeWithGrip" Cursor="{Binding Cursor}" 
-    sb:FileDropAttachedBehavior.DropCommand="{Binding WindowFileDropCommand}" 
-    sb:DeviceChangeAttachedBehavior.Command="{Binding WindowDeviceChangeCommand}" >
+    swb:FileDropAttachedBehavior.DropCommand="{Binding WindowFileDropCommand}" 
+    swb:DeviceChangeAttachedBehavior.Command="{Binding WindowDeviceChangeCommand}" >
 
     <Window.DataContext>
         <vm:MainWindowViewModel />
@@ -161,7 +161,7 @@
                 </Style>
             </DataGrid.ItemContainerStyle>
             <behaviors:Interaction.Behaviors>
-                <sb:DataGridBindingSupportBehavior SelectedItems="{Binding SelectedTargetFolderInfos}" />
+                <swb:DataGridBindingSupportBehavior SelectedItems="{Binding SelectedTargetFolderInfos}" />
             </behaviors:Interaction.Behaviors>
             <DataGrid.Columns>
                 <vdgc:DataGridFtcColumn Header="フォルダー" Width="*" Binding="{Binding Mode=OneWay}" IsReadOnly="True" />
