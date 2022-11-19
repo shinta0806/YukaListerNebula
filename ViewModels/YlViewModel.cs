@@ -9,7 +9,7 @@
 // 現状は特に機能を有していないが、将来の拡張用
 // ----------------------------------------------------------------------------
 
-using Shinta.ViewModels;
+using Shinta.Wpf.ViewModels;
 
 using YukaLister.Models.YukaListerModels;
 

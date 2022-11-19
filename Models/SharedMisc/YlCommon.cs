@@ -14,6 +14,7 @@ using Livet.Messaging;
 using Microsoft.EntityFrameworkCore;
 
 using Shinta;
+using Shinta.Wpf;
 
 using System;
 using System.Collections.Generic;

@@ -11,7 +11,7 @@
 using Livet.Commands;
 
 using Shinta;
-using Shinta.ViewModels;
+using Shinta.Wpf.ViewModels;
 
 using System;
 using System.Diagnostics;

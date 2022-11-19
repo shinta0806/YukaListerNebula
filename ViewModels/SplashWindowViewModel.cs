@@ -14,7 +14,7 @@ using MaterialDesignColors;
 using MaterialDesignThemes.Wpf;
 
 using Shinta;
-using Shinta.ViewModels;
+using Shinta.Wpf.ViewModels;
 
 using System;
 using System.Collections.Generic;

@@ -5,7 +5,7 @@
     xmlns:l="http://schemas.livet-mvvm.net/2011/wpf"
     xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
     xmlns:msm="clr-namespace:YukaLister.Models.SharedMisc"
-    xmlns:sb="clr-namespace:Shinta.Behaviors"
+    xmlns:sb="clr-namespace:Shinta.Wpf.Behaviors"
     xmlns:v="clr-namespace:YukaLister.Views"
     xmlns:vcc="clr-namespace:YukaLister.Views.CustomControls"
     xmlns:vdgc="clr-namespace:YukaLister.Views.DataGridControls"

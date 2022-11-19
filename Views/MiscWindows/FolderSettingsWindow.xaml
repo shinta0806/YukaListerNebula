@@ -6,7 +6,7 @@
         xmlns:msm="clr-namespace:YukaLister.Models.SharedMisc"
         xmlns:mvc="clr-namespace:YukaLister.Models.ValueConverters"
         xmlns:s="clr-namespace:Shinta"
-        xmlns:sb="clr-namespace:Shinta.Behaviors"
+        xmlns:sb="clr-namespace:Shinta.Wpf.Behaviors"
         xmlns:v="clr-namespace:YukaLister.Views"
         xmlns:vm="clr-namespace:YukaLister.ViewModels"
         xmlns:vmmw="clr-namespace:YukaLister.ViewModels.MiscWindowViewModels"

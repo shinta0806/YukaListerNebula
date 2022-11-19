@@ -12,6 +12,7 @@ using Livet;
 using Livet.Commands;
 
 using Shinta;
+using Shinta.Wpf;
 
 using System;
 using System.Collections.Concurrent;
