@@ -1,4 +1,4 @@
-﻿// ============================================================================
+// ============================================================================
 // 
 // メインウィンドウの ViewModel
 // 
@@ -39,6 +39,8 @@ using YukaLister.Models.WebServer;
 using YukaLister.Models.YukaListerModels;
 using YukaLister.ViewModels.MiscWindowViewModels;
 using YukaLister.ViewModels.ReportWindowViewModels;
+
+using Windows.Win32;
 
 namespace YukaLister.ViewModels
 {
@@ -234,11 +236,11 @@ namespace YukaLister.ViewModels
 
 				switch (deviceChangeInfo.Kind)
 				{
-					case DBT.DBT_DEVICEARRIVAL:
+					case PInvoke.DBT_DEVICEARRIVAL:
 						SetStatusBarMessageWithInvoke(Common.TRACE_EVENT_TYPE_STATUS, "リムーバブルドライブが接続されました：" + deviceChangeInfo.DriveLetter);
 						await DeviceArrivalAsync(deviceChangeInfo.DriveLetter);
 						break;
-					case DBT.DBT_DEVICEREMOVECOMPLETE:
+					case PInvoke.DBT_DEVICEREMOVECOMPLETE:
 						SetStatusBarMessageWithInvoke(Common.TRACE_EVENT_TYPE_STATUS, "リムーバブルドライブが切断されました：" + deviceChangeInfo.DriveLetter);
 						DeviceRemoveComplete(deviceChangeInfo.DriveLetter);
 						break;

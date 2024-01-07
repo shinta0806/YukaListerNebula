@@ -19,6 +19,7 @@
     <ApplicationManifest>app.manifest</ApplicationManifest>
     <PlatformTarget>x64</PlatformTarget>
     <DefaultLanguage>ja-JP</DefaultLanguage>
+    <ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>
 
   <ItemGroup>
@@ -85,6 +86,10 @@
     <Folder Include="Templates\" />
     <Folder Include="_Common\Wpf\Behaviors\" />
     <Folder Include="_Common\Wpf\ViewModels\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\YukaLister_CsWin32\YukaLister_CsWin32.csproj" />
   </ItemGroup>
 
   <ItemGroup>
@@ -206,6 +211,13 @@
     <None Update="Templates\*.tpl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Using Include="System.Diagnostics" />
+    <Using Include="System.IO" />
+    <Using Include="System.Net.Http" />
+    <Using Include="System.Text" />
   </ItemGroup>
 
 </Project>
