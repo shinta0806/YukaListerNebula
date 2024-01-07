@@ -1,0 +1,13 @@
+// モジュール
+Kernel32.*
+Shell32.*
+User32.*
+
+// モジュール外定数
+DBT_*
+SC_*
+WM_*
+
+// モジュール外構造体
+DEV_BROADCAST_HDR
+DEV_BROADCAST_VOLUME

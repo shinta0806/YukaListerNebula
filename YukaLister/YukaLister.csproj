@@ -32,28 +32,28 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Compile Include="..\..\_Common\CsvManager.cs" Link="_Common\CsvManager.cs" />
-    <Compile Include="..\..\_Common\Downloader.cs" Link="_Common\Downloader.cs" />
-    <Compile Include="..\..\_Common\JulianDay.cs" Link="_Common\JulianDay.cs" />
-    <Compile Include="..\..\_Common\ShintaCommon.cs" Link="_Common\ShintaCommon.cs" />
-    <Compile Include="..\..\_Common\ShintaCommonWindows.cs" Link="_Common\ShintaCommonWindows.cs" />
-    <Compile Include="..\..\_Common\WindowsApi.cs" Link="_Common\WindowsApi.cs" />
-    <Compile Include="..\..\_Common\Wpf\Behaviors\DataGridBindingSupportBehavior.cs" Link="_Common\Wpf\Behaviors\DataGridBindingSupportBehavior.cs" />
-    <Compile Include="..\..\_Common\Wpf\Behaviors\DeviceChangeAttachedBehavior.cs" Link="_Common\Wpf\Behaviors\DeviceChangeAttachedBehavior.cs" />
-    <Compile Include="..\..\_Common\Wpf\Behaviors\FileDropAttachedBehavior.cs" Link="_Common\Wpf\Behaviors\FileDropAttachedBehavior.cs" />
-    <Compile Include="..\..\_Common\Wpf\Behaviors\IsFocusedAttachedBehavior.cs" Link="_Common\Wpf\Behaviors\IsFocusedAttachedBehavior.cs" />
-    <Compile Include="..\..\_Common\Wpf\Behaviors\SelectorBindingSupportBehavior.cs" Link="_Common\Wpf\Behaviors\SelectorBindingSupportBehavior.cs" />
-    <Compile Include="..\..\_Common\Wpf\Behaviors\WindowBindingSupportBehavior.cs" Link="_Common\Wpf\Behaviors\WindowBindingSupportBehavior.cs" />
-    <Compile Include="..\..\_Common\Wpf\ExecutableHistory.cs" Link="_Common\Wpf\ExecutableHistory.cs" />
-    <Compile Include="..\..\_Common\Wpf\LatestInfoManager.cs" Link="_Common\Wpf\LatestInfoManager.cs" />
-    <Compile Include="..\..\_Common\Wpf\LogWriter.cs" Link="_Common\Wpf\LogWriter.cs" />
-    <Compile Include="..\..\_Common\Wpf\RssManager.cs" Link="_Common\Wpf\RssManager.cs" />
-    <Compile Include="..\..\_Common\Wpf\SerializableSettings.cs" Link="_Common\Wpf\SerializableSettings.cs" />
-    <Compile Include="..\..\_Common\Wpf\SimpleTraceListener.cs" Link="_Common\Wpf\SimpleTraceListener.cs" />
-    <Compile Include="..\..\_Common\Wpf\SystemEnvironment.cs" Link="_Common\Wpf\SystemEnvironment.cs" />
-    <Compile Include="..\..\_Common\Wpf\ViewModels\BasicWindowViewModel.cs" Link="_Common\Wpf\ViewModels\BasicWindowViewModel.cs" />
-    <Compile Include="..\..\_Common\Wpf\ViewModels\TabControlWindowViewModel.cs" Link="_Common\Wpf\ViewModels\TabControlWindowViewModel.cs" />
-    <Compile Include="..\..\_Common\Wpf\ViewModels\TabItemViewModel.cs" Link="_Common\Wpf\ViewModels\TabItemViewModel.cs" />
+    <Compile Include="..\..\..\_Common\CsvManager.cs" Link="_Common\CsvManager.cs" />
+    <Compile Include="..\..\..\_Common\Downloader.cs" Link="_Common\Downloader.cs" />
+    <Compile Include="..\..\..\_Common\JulianDay.cs" Link="_Common\JulianDay.cs" />
+    <Compile Include="..\..\..\_Common\ShintaCommon.cs" Link="_Common\ShintaCommon.cs" />
+    <Compile Include="..\..\..\_Common\ShintaCommonWindows.cs" Link="_Common\ShintaCommonWindows.cs" />
+    <Compile Include="..\..\..\_Common\WindowsApi.cs" Link="_Common\WindowsApi.cs" />
+    <Compile Include="..\..\..\_Common\Wpf\Behaviors\DataGridBindingSupportBehavior.cs" Link="_Common\Wpf\Behaviors\DataGridBindingSupportBehavior.cs" />
+    <Compile Include="..\..\..\_Common\Wpf\Behaviors\DeviceChangeAttachedBehavior.cs" Link="_Common\Wpf\Behaviors\DeviceChangeAttachedBehavior.cs" />
+    <Compile Include="..\..\..\_Common\Wpf\Behaviors\FileDropAttachedBehavior.cs" Link="_Common\Wpf\Behaviors\FileDropAttachedBehavior.cs" />
+    <Compile Include="..\..\..\_Common\Wpf\Behaviors\IsFocusedAttachedBehavior.cs" Link="_Common\Wpf\Behaviors\IsFocusedAttachedBehavior.cs" />
+    <Compile Include="..\..\..\_Common\Wpf\Behaviors\SelectorBindingSupportBehavior.cs" Link="_Common\Wpf\Behaviors\SelectorBindingSupportBehavior.cs" />
+    <Compile Include="..\..\..\_Common\Wpf\Behaviors\WindowBindingSupportBehavior.cs" Link="_Common\Wpf\Behaviors\WindowBindingSupportBehavior.cs" />
+    <Compile Include="..\..\..\_Common\Wpf\ExecutableHistory.cs" Link="_Common\Wpf\ExecutableHistory.cs" />
+    <Compile Include="..\..\..\_Common\Wpf\LatestInfoManager.cs" Link="_Common\Wpf\LatestInfoManager.cs" />
+    <Compile Include="..\..\..\_Common\Wpf\LogWriter.cs" Link="_Common\Wpf\LogWriter.cs" />
+    <Compile Include="..\..\..\_Common\Wpf\RssManager.cs" Link="_Common\Wpf\RssManager.cs" />
+    <Compile Include="..\..\..\_Common\Wpf\SerializableSettings.cs" Link="_Common\Wpf\SerializableSettings.cs" />
+    <Compile Include="..\..\..\_Common\Wpf\SimpleTraceListener.cs" Link="_Common\Wpf\SimpleTraceListener.cs" />
+    <Compile Include="..\..\..\_Common\Wpf\SystemEnvironment.cs" Link="_Common\Wpf\SystemEnvironment.cs" />
+    <Compile Include="..\..\..\_Common\Wpf\ViewModels\BasicWindowViewModel.cs" Link="_Common\Wpf\ViewModels\BasicWindowViewModel.cs" />
+    <Compile Include="..\..\..\_Common\Wpf\ViewModels\TabControlWindowViewModel.cs" Link="_Common\Wpf\ViewModels\TabControlWindowViewModel.cs" />
+    <Compile Include="..\..\..\_Common\Wpf\ViewModels\TabItemViewModel.cs" Link="_Common\Wpf\ViewModels\TabItemViewModel.cs" />
   </ItemGroup>
 
   <ItemGroup>
@@ -89,7 +89,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\YukaLister_CsWin32\YukaLister_CsWin32.csproj" />
+    <ProjectReference Include="..\CsWin32\YukaLister_CsWin32.csproj" />
   </ItemGroup>
 
   <ItemGroup>
