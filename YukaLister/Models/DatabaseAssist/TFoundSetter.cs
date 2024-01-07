@@ -1,4 +1,4 @@
-﻿// ============================================================================
+// ============================================================================
 // 
 // TFound の項目を埋める
 // 
@@ -842,6 +842,10 @@ namespace YukaLister.Models.DatabaseAssist
 					// TTieUpGroup 由来項目の設定
 					record.TieUpGroupName = tieUpGroups[0].Name;
 					record.TieUpGroupRuby = AdditionalRubyForSearch(tieUpGroups[0]);
+					foreach(TTieUpGroup group in tieUpGroups)
+					{
+						record.Comment += KeywordToComment(group);
+					}
 				}
 
 				// TieUp 由来項目の設定
