@@ -10,7 +10,7 @@
     <ApplicationIcon>Icon\YukaListerアイコン_1.ico</ApplicationIcon>
     <Authors>SHINTA</Authors>
     <Copyright>Copyright © by SHINTA</Copyright>
-    <Platforms>AnyCPU;x64</Platforms>
+    <Platforms>x64</Platforms>
   </PropertyGroup>
 
   <PropertyGroup>
