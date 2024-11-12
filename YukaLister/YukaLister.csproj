@@ -35,6 +35,7 @@
     <Compile Include="..\..\..\_Common\CsvManager.cs" Link="_Common\CsvManager.cs" />
     <Compile Include="..\..\..\_Common\Downloader.cs" Link="_Common\Downloader.cs" />
     <Compile Include="..\..\..\_Common\JulianDay.cs" Link="_Common\JulianDay.cs" />
+    <Compile Include="..\..\..\_Common\RubyReconverter.cs" Link="_Common\RubyReconverter.cs" />
     <Compile Include="..\..\..\_Common\ShintaCommon.cs" Link="_Common\ShintaCommon.cs" />
     <Compile Include="..\..\..\_Common\ShintaCommonWindows.cs" Link="_Common\ShintaCommonWindows.cs" />
     <Compile Include="..\..\..\_Common\WindowsApi.cs" Link="_Common\WindowsApi.cs" />
@@ -54,6 +55,7 @@
     <Compile Include="..\..\..\_Common\Wpf\ViewModels\BasicWindowViewModel.cs" Link="_Common\Wpf\ViewModels\BasicWindowViewModel.cs" />
     <Compile Include="..\..\..\_Common\Wpf\ViewModels\TabControlWindowViewModel.cs" Link="_Common\Wpf\ViewModels\TabControlWindowViewModel.cs" />
     <Compile Include="..\..\..\_Common\Wpf\ViewModels\TabItemViewModel.cs" Link="_Common\Wpf\ViewModels\TabItemViewModel.cs" />
+    <Compile Include="..\..\..\_Common\Wpf\WpfCommon.cs" Link="_Common\Wpf\WpfCommon.cs" />
   </ItemGroup>
 
   <ItemGroup>

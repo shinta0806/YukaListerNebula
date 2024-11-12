@@ -1,4 +1,4 @@
-﻿// ============================================================================
+// ============================================================================
 // 
 // スプラッシュウィンドウの ViewModel
 // 
@@ -14,6 +14,7 @@ using MaterialDesignColors;
 using MaterialDesignThemes.Wpf;
 
 using Shinta;
+using Shinta.Wpf;
 using Shinta.Wpf.ViewModels;
 
 using System;
@@ -93,7 +94,7 @@ namespace YukaLister.ViewModels
 				else
 				{
 					// 前回のウィンドウサイズ
-					Rect adjustedRect = CommonWindows.AdjustWindowRect(YlModel.Instance.EnvModel.YlSettings.DesktopBounds);
+					Rect adjustedRect = WpfCommon.AdjustWindowRect(YlModel.Instance.EnvModel.YlSettings.DesktopBounds);
 					_mainWindowViewModel.Left = adjustedRect.Left;
 					_mainWindowViewModel.Top = adjustedRect.Top;
 					_mainWindowViewModel.Width = adjustedRect.Width;
