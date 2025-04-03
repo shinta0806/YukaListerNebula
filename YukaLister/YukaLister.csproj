@@ -36,6 +36,7 @@
     <Compile Include="..\..\..\_Common\Downloader.cs" Link="_Common\Downloader.cs" />
     <Compile Include="..\..\..\_Common\JulianDay.cs" Link="_Common\JulianDay.cs" />
     <Compile Include="..\..\..\_Common\RubyReconverter.cs" Link="_Common\RubyReconverter.cs" />
+    <Compile Include="..\..\..\_Common\SerilogUtils.cs" Link="_Common\SerilogUtils.cs" />
     <Compile Include="..\..\..\_Common\ShintaCommon.cs" Link="_Common\ShintaCommon.cs" />
     <Compile Include="..\..\..\_Common\ShintaCommonWindows.cs" Link="_Common\ShintaCommonWindows.cs" />
     <Compile Include="..\..\..\_Common\WindowsApi.cs" Link="_Common\WindowsApi.cs" />
@@ -75,6 +76,10 @@
     <PackageReference Include="MaterialDesignThemes" Version="4.3.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="8.0.0" />
     <PackageReference Include="Microsoft.Windows.Compatibility" Version="8.0.0" />
+    <PackageReference Include="Serilog.Enrichers.Process" Version="3.0.0" />
+    <PackageReference Include="Serilog.Enrichers.Thread" Version="4.0.0" />
+    <PackageReference Include="Serilog.Sinks.Debug" Version="3.0.0" />
+    <PackageReference Include="Serilog.Sinks.File" Version="6.0.0" />
   </ItemGroup>
 
   <ItemGroup>
@@ -216,6 +221,8 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Using Include="Serilog" />
+    <Using Include="Serilog.Events" />
     <Using Include="System.Diagnostics" />
     <Using Include="System.IO" />
     <Using Include="System.Net.Http" />

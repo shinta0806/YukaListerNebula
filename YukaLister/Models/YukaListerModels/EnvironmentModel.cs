@@ -1,4 +1,4 @@
-﻿// ============================================================================
+// ============================================================================
 // 
 // 環境設定類を管理する
 // 
@@ -272,6 +272,7 @@ namespace YukaLister.Models.YukaListerModels
 		// ファイル名
 		// --------------------------------------------------------------------
 		private const String FILE_NAME_HELP_PREFIX = YlConstants.APP_ID + "Nebula_JPN";
+		private const String FILE_NAME_LOG = YlConstants.APP_ID + Common.FILE_EXT_LOG;
 
 		// --------------------------------------------------------------------
 		// フォルダー名
@@ -287,6 +288,7 @@ namespace YukaLister.Models.YukaListerModels
 		// --------------------------------------------------------------------
 		private void SetLogWriter()
 		{
+			// 従来型ログ（将来的に廃止）
 			LogWriter.ApplicationQuitToken = AppCancellationTokenSource.Token;
 			LogWriter.SimpleTraceListener.MaxSize = 10 * 1024 * 1024;
 			LogWriter.SimpleTraceListener.MaxOldGenerations = 5;
@@ -297,6 +299,9 @@ namespace YukaLister.Models.YukaListerModels
 #endif
 			LogWriter.ShowLogMessage(Common.TRACE_EVENT_TYPE_STATUS, "プロセス動作モード：" + (Environment.Is64BitProcess ? "64" : "32"));
 			LogWriter.ShowLogMessage(TraceEventType.Verbose, "Path: " + ExeFullPath);
+
+			// Serilog（従来型ログと同じフォルダーに作成するために CommonWindows.SettingsFolder() は指定しない
+			SerilogUtils.CreateLogger(10 * 1024 * 1024, 3, Common.UserAppDataFolderPath() + FILE_NAME_LOG);
 		}
 
 		// --------------------------------------------------------------------

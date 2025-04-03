@@ -302,7 +302,7 @@ namespace YukaLister.Models.SharedMisc
 		public const String APP_GENERATION = "NEBULA";
 		public const String APP_NAME_J = "ゆかりすたー 4 " + APP_GENERATION + " ";
 		public const String APP_VER = "Ver 7.34";
-		public const String COPYRIGHT_J = "Copyright (C) 2021-2024 by SHINTA";
+		public const String COPYRIGHT_J = "Copyright (C) 2021-2025 by SHINTA";
 #if DISTRIB_STORE
 		public const String APP_DISTRIB = "ストア版";
 #else
