@@ -1,4 +1,4 @@
-﻿// ============================================================================
+// ============================================================================
 // 
 // フォルダー設定ウィンドウの ViewModel
 // 
@@ -960,9 +960,10 @@ namespace YukaLister.ViewModels.MiscWindowViewModels
 					return;
 				}
 
-				YlCommon.DeleteFileIfExists(FolderPath + '\\' + YlConstants.FILE_NAME_YUKA_LISTER_CONFIG);
+				YlCommon.DeleteFileIfExists(FolderPath + '\\' + YlConstants.FILE_NAME_YUKA_LISTER_CONFIG_JSON);
+				YlCommon.DeleteFileIfExists(FolderPath + '\\' + YlConstants.FILE_NAME_YUKA_LISTER_CONFIG_OLD);
 				YlCommon.DeleteFileIfExists(FolderPath + '\\' + YlConstants.FILE_NAME_YUKA_LISTER_EXCLUDE_CONFIG);
-				YlCommon.DeleteFileIfExists(FolderPath + '\\' + YlConstants.FILE_NAME_NICO_KARA_LISTER_CONFIG);
+				YlCommon.DeleteFileIfExists(FolderPath + '\\' + YlConstants.FILE_NAME_NICO_KARA_LISTER_CONFIG_OLD);
 
 				// UI に反映
 				SettingsToProperties();
@@ -1121,7 +1122,7 @@ namespace YukaLister.ViewModels.MiscWindowViewModels
 			}
 
 			// ニコカラりすたーの設定ファイルがある場合は削除
-			YlCommon.DeleteFileIfExists(FolderPath + '\\' + YlConstants.FILE_NAME_NICO_KARA_LISTER_CONFIG);
+			YlCommon.DeleteFileIfExists(FolderPath + '\\' + YlConstants.FILE_NAME_NICO_KARA_LISTER_CONFIG_OLD);
 
 			// 設定ファイルの状態
 			SettingsFileStatus = YlCommon.DetectFolderSettingsStatus2Ex(FolderPath);
@@ -1659,13 +1660,8 @@ namespace YukaLister.ViewModels.MiscWindowViewModels
 		// --------------------------------------------------------------------
 		private void SaveFolderSettingsInDisk(FolderSettingsInDisk folderSettings)
 		{
-			String yukaListerConfigPath = FolderPath + "\\" + YlConstants.FILE_NAME_YUKA_LISTER_CONFIG;
-			FileAttributes prevAttr = YlCommon.DeleteFileIfExists(yukaListerConfigPath);
-			Common.Serialize(yukaListerConfigPath, folderSettings);
-			if (prevAttr != 0)
-			{
-				File.SetAttributes(yukaListerConfigPath, prevAttr);
-			}
+			String yukaListerConfigPath = FolderPath + "\\" + YlConstants.FILE_NAME_YUKA_LISTER_CONFIG_JSON;
+			YlCommon.SaveFolderSettingsInDisk(folderSettings, yukaListerConfigPath);
 		}
 
 		// --------------------------------------------------------------------

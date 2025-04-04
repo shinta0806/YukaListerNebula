@@ -34,6 +34,7 @@
   <ItemGroup>
     <Compile Include="..\..\..\_Common\CsvManager.cs" Link="_Common\CsvManager.cs" />
     <Compile Include="..\..\..\_Common\Downloader.cs" Link="_Common\Downloader.cs" />
+    <Compile Include="..\..\..\_Common\JsonManager.cs" Link="_Common\JsonManager.cs" />
     <Compile Include="..\..\..\_Common\JulianDay.cs" Link="_Common\JulianDay.cs" />
     <Compile Include="..\..\..\_Common\RubyReconverter.cs" Link="_Common\RubyReconverter.cs" />
     <Compile Include="..\..\..\_Common\SerilogUtils.cs" Link="_Common\SerilogUtils.cs" />

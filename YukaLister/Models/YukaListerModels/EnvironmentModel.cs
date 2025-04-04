@@ -163,6 +163,14 @@ namespace YukaLister.Models.YukaListerModels
 			}
 		}
 
+		/// <summary>
+		/// 設定保存管理
+		/// </summary>
+		public JsonManager JsonManager
+		{
+			get;
+		} = new();
+
 		// アプリケーション終了時タスク安全中断用
 		public CancellationTokenSource AppCancellationTokenSource { get; } = new();
 

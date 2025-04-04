@@ -428,11 +428,15 @@ internal class YlCommon
 	{
 		while (!String.IsNullOrEmpty(folder))
 		{
-			if (File.Exists(folder + '\\' + YlConstants.FILE_NAME_YUKA_LISTER_CONFIG))
+			if (File.Exists(folder + '\\' + YlConstants.FILE_NAME_YUKA_LISTER_CONFIG_JSON))
 			{
 				return folder;
 			}
-			if (File.Exists(folder + '\\' + YlConstants.FILE_NAME_NICO_KARA_LISTER_CONFIG))
+			if (File.Exists(folder + '\\' + YlConstants.FILE_NAME_YUKA_LISTER_CONFIG_OLD))
+			{
+				return folder;
+			}
+			if (File.Exists(folder + '\\' + YlConstants.FILE_NAME_NICO_KARA_LISTER_CONFIG_OLD))
 			{
 				return folder;
 			}
@@ -650,14 +654,31 @@ internal class YlCommon
 			String? folderSettingsFolder = FindSettingsFolder(folder);
 			if (!String.IsNullOrEmpty(folderSettingsFolder))
 			{
-				if (File.Exists(folderSettingsFolder + '\\' + YlConstants.FILE_NAME_YUKA_LISTER_CONFIG))
+				String jsonPath = folderSettingsFolder + '\\' + YlConstants.FILE_NAME_YUKA_LISTER_CONFIG_JSON;
+				if (File.Exists(jsonPath))
 				{
-					// エントリーが欠損しているファイルから Deserialize() しても FileNameRules 等は null にはならない
-					folderSettings = Common.Deserialize(folderSettingsFolder + '\\' + YlConstants.FILE_NAME_YUKA_LISTER_CONFIG, folderSettings);
+					try
+					{
+						folderSettings = YlModel.Instance.EnvModel.JsonManager.Load<FolderSettingsInDisk>(jsonPath, false, null);
+					}
+					catch (Exception)
+					{
+					}
 				}
 				else
 				{
-					folderSettings = Common.Deserialize(folderSettingsFolder + '\\' + YlConstants.FILE_NAME_NICO_KARA_LISTER_CONFIG, folderSettings);
+					// 現行形式のフォルダー設定が無い場合は、旧形式のフォルダー設定を読み込んで変換
+					if (File.Exists(folderSettingsFolder + '\\' + YlConstants.FILE_NAME_YUKA_LISTER_CONFIG_OLD))
+					{
+						// エントリーが欠損しているファイルから Deserialize() しても FileNameRules 等は null にはならない
+						folderSettings = Common.Deserialize(folderSettingsFolder + '\\' + YlConstants.FILE_NAME_YUKA_LISTER_CONFIG_OLD, folderSettings);
+						SaveFolderSettingsInDisk(folderSettings, jsonPath);
+					}
+					else if (File.Exists(folderSettingsFolder + '\\' + YlConstants.FILE_NAME_NICO_KARA_LISTER_CONFIG_OLD))
+					{
+						folderSettings = Common.Deserialize(folderSettingsFolder + '\\' + YlConstants.FILE_NAME_NICO_KARA_LISTER_CONFIG_OLD, folderSettings);
+						SaveFolderSettingsInDisk(folderSettings, jsonPath);
+					}
 				}
 			}
 		}
@@ -840,6 +861,21 @@ internal class YlCommon
 	public static void OpenExplorer(String path)
 	{
 		Process.Start("EXPLORER.EXE", @"/select,""" + path + @"""");
+	}
+
+	// --------------------------------------------------------------------
+	// フォルダー設定を保存（JSON 形式）
+	// 原則として通常属性で保存するが、既存ファイルに隠し属性等あれば同じ属性で保存する
+	// --------------------------------------------------------------------
+	public static void SaveFolderSettingsInDisk(FolderSettingsInDisk folderSettings, String yukaListerConfigPathJson)
+	{
+		FileAttributes prevAttr = DeleteFileIfExists(yukaListerConfigPathJson);
+		YlModel.Instance.EnvModel.JsonManager.Save(folderSettings, yukaListerConfigPathJson, false);
+		//Common.Serialize(yukaListerConfigPathJson, folderSettings);
+		if (prevAttr != 0)
+		{
+			File.SetAttributes(yukaListerConfigPathJson, prevAttr);
+		}
 	}
 
 	// --------------------------------------------------------------------
