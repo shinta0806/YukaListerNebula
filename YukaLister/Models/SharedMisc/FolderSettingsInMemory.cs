@@ -8,9 +8,6 @@
 // 
 // ----------------------------------------------------------------------------
 
-using System;
-using System.Collections.Generic;
-
 namespace YukaLister.Models.SharedMisc;
 
 internal class FolderSettingsInMemory
@@ -36,10 +33,10 @@ internal class FolderSettingsInMemory
 	// --------------------------------------------------------------------
 
 	// ファイル命名規則（正規表現）
-	public List<String> FileNameRules { get; set; } = new();
+	public List<String> FileNameRules { get; set; } = [];
 
 	// ファイル正規表現にマッチしたグループが表す項目（TFound のカラム名）
-	public List<List<String>> FileRegexGroups { get; set; } = new();
+	public List<List<String>> FileRegexGroups { get; set; } = [];
 
 	// フォルダー命名規則（辞書）
 	public Dictionary<String, String?> FolderNameRules { get; set; }

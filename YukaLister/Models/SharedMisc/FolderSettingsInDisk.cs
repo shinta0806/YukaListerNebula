@@ -31,8 +31,8 @@ public class FolderSettingsInDisk
 	// --------------------------------------------------------------------
 
 	// ファイル命名規則（アプリ独自ルール表記）
-	public List<String> FileNameRules { get; set; } = new();
+	public List<String> FileNameRules { get; set; } = [];
 
 	// フォルダー命名規則（アプリ独自ルール表記）
-	public List<String> FolderNameRules { get; set; } = new();
+	public List<String> FolderNameRules { get; set; } = [];
 }

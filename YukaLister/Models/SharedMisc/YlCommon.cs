@@ -642,7 +642,7 @@ internal class YlCommon
 
 	// --------------------------------------------------------------------
 	// フォルダー設定を読み込む
-	// FILE_NAME_YUKA_LISTER_CONFIG 優先、無い場合は FILE_NAME_NICO_KARA_LISTER_CONFIG
+	// FILE_NAME_YUKA_LISTER_CONFIG_JSON 優先、無い場合は FILE_NAME_YUKA_LISTER_CONFIG や FILE_NAME_NICO_KARA_LISTER_CONFIG
 	// 見つからない場合は親フォルダーの設定を読み込む
 	// それでも見つからない場合は null ではなく空のインスタンスを返す
 	// --------------------------------------------------------------------
