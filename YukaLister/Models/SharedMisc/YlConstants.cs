@@ -10,9 +10,9 @@
 
 using Shinta;
 
-using System;
-using System.Threading.Tasks;
+#if YUKALISTER
 using System.Windows.Media;
+#endif
 
 using YukaLister.Models.Database.Aliases;
 using YukaLister.Models.Database.Masters;
@@ -375,30 +375,30 @@ internal class YlConstants
 	// 楽曲情報データベースの各テーブルの ID 第二接頭辞
 	// この他、報告データベースで "_R_"、ゆかり統計データベースで "_Y_" を使用する
 	public static readonly String[] MUSIC_INFO_ID_SECOND_PREFIXES =
-	{
+	[
 		"_S_", "_P_", "_T_","_C_", "_G_", "_M_", "_Z_",
 		"_SA_", "_PA_", "_TA_","_CA_", "_GA_", "_MA_",
 		String.Empty, String.Empty, String.Empty, String.Empty, String.Empty, String.Empty,
-	};
+	];
 
 	// 楽曲情報データベースのテーブル名
 	public static readonly String[] MUSIC_INFO_DB_TABLE_NAMES =
-	{
+	[
 		TSong.TABLE_NAME_SONG, TPerson.TABLE_NAME_PERSON, TTieUp.TABLE_NAME_TIE_UP,
 		TCategory.TABLE_NAME_CATEGORY, TTieUpGroup.TABLE_NAME_TIE_UP_GROUP, TMaker.TABLE_NAME_MAKER, TTag.TABLE_NAME_TAG,
 		TSongAlias.TABLE_NAME_SONG_ALIAS, TPersonAlias.TABLE_NAME_PERSON_ALIAS, TTieUpAlias.TABLE_NAME_TIE_UP_ALIAS,
 		TCategoryAlias.TABLE_NAME_CATEGORY_ALIAS, TTieUpGroupAlias.TABLE_NAME_TIE_UP_GROUP_ALIAS, TMakerAlias.TABLE_NAME_MAKER_ALIAS,
 		TArtistSequence.TABLE_NAME_ARTIST_SEQUENCE, TLyristSequence.TABLE_NAME_LYRIST_SEQUENCE, TComposerSequence.TABLE_NAME_COMPOSER_SEQUENCE,
 		TArrangerSequence.TABLE_NAME_ARRANGER_SEQUENCE, TTieUpGroupSequence.TABLE_NAME_TIE_UP_GROUP_SEQUENCE, TTagSequence.TABLE_NAME_TAG_SEQUENCE,
-	};
+	];
 
 	// 楽曲情報データベースのテーブル名（表示用）
 	public static readonly String[] MUSIC_INFO_TABLE_NAME_LABELS =
-	{
+	[
 		"楽曲", "人物", "タイアップ", "カテゴリー", "シリーズ", "制作会社", "タグ",
 		"楽曲別名", "人物別名", "タイアップ別名", "カテゴリー別名", "シリーズ別名", "制作会社別名",
 		"歌手紐付", "作詞者紐付", "作曲者紐付", "編曲者紐付", "シリーズ紐付", "タグ紐付",
-	};
+	];
 
 	// 楽曲情報データベースのシステム ID 接頭辞（ユーザーは指定できない文字 '_' を含める）
 	public const String MUSIC_INFO_SYSTEM_ID_PREFIX = "_SYS";
@@ -454,15 +454,15 @@ internal class YlConstants
 
 	// 問題項目名
 	public static readonly String?[] REPORT_ADJUST_KEY_NAMES =
-	{
+	[
 		null, "その他", "カテゴリー名", "タイアップ名", "摘要", "楽曲名", "歌手名", "トラック", "制作者", "シリーズ名", "年齢制限",
-	};
+	];
 
 	// 対応状況名
 	public static readonly String[] REPORT_STATUS_NAMES =
-	{
+	[
 		"未対応", "対応中", "保留", "無効", "完了"
-	};
+	];
 
 	// --------------------------------------------------------------------
 	// MessageKey
@@ -570,10 +570,10 @@ internal class YlConstants
 	public const Int32 NEW_DAYS_MIN = 1;
 
 	// enum.OutputItems の表示名
-	public static readonly String[] OUTPUT_ITEM_NAMES = new String[] { "フルパス", "ファイル名", "頭文字", "ニコカラ制作者", "トラック", "スマートトラック",
+	public static readonly String[] OUTPUT_ITEM_NAMES = [ "フルパス", "ファイル名", "頭文字", "ニコカラ制作者", "トラック", "スマートトラック",
 			"備考", "最終更新日時", "ファイルサイズ", "楽曲名", "楽曲フリガナ", "摘要", "リリース日",
 			"歌手名", "歌手フリガナ", "作詞者名", "作詞者フリガナ", "作曲者名", "作曲者フリガナ", "編曲者名", "編曲者フリガナ",
-			"タイアップ名", "タイアップフリガナ", "年齢制限", "カテゴリー", "タイアップグループ名", "タイアップグループフリガナ", "制作会社名", "制作会社フリガナ" };
+			"タイアップ名", "タイアップフリガナ", "年齢制限", "カテゴリー", "タイアップグループ名", "タイアップグループフリガナ", "制作会社名", "制作会社フリガナ" ];
 
 	// リストの種類の名前（グループナビ用の名前）
 	public const String GROUP_NAME_ARTIST = "歌手別";
@@ -587,9 +587,9 @@ internal class YlConstants
 
 	// リストの種類の名前（GroupNaviItems 順、結合アイテムは結合した名前）
 	public static readonly String[] GROUP_NAVI_NAMES =
-	{
+	[
 		GROUP_NAME_NEW, GROUP_NAME_CATEGORY, GROUP_NAME_TIE_UP_GROUP, GROUP_NAME_SEASON + "・" + GROUP_NAME_PERIOD, GROUP_NAME_ARTIST + "・" + GROUP_NAME_COMPOSER, GROUP_NAME_TAG,
-	};
+	];
 
 	// --------------------------------------------------------------------
 	// カテゴリー名
@@ -615,6 +615,7 @@ internal class YlConstants
 	public const String SERVER_OPTION_NAME_UID = "uid";
 	public const String SERVER_OPTION_NAME_WIDTH = "width";
 
+#if YUKALISTER
 	// --------------------------------------------------------------------
 	// 状態色
 	// --------------------------------------------------------------------
@@ -669,6 +670,7 @@ internal class YlConstants
 
 	// エラー文字
 	public static readonly SolidColorBrush BRUSH_ERROR_STRING = new(Colors.Red);
+#endif
 
 	// --------------------------------------------------------------------
 	// 実行中
@@ -723,7 +725,7 @@ internal class YlConstants
 	public const String STORE_PRODUCT_ID = "9NPC1S45SNHB";
 
 	// FolderSettingsStatus に対応する文字列
-	public static readonly String[] FOLDER_SETTINGS_STATUS_LABELS = { "無", "有", "親に有", "未確認" };
+	public static readonly String[] FOLDER_SETTINGS_STATUS_LABELS = ["無", "有", "親に有", "未確認"];
 
 	// グループの「その他」
 	public const String GROUP_MISC = "未分類";
@@ -771,7 +773,7 @@ internal class YlConstants
 	public const String TEMP_ID_PREFIX = "!";
 
 	// ゆかり統計の出力対象期間
-	public static readonly String[] YUKARI_STATISTICS_PERIOD_LABELS = { "今日", "昨日", String.Empty, "今月", "先月", String.Empty, "今年", "昨年", String.Empty, "全期間", String.Empty, "期間指定" };
+	public static readonly String[] YUKARI_STATISTICS_PERIOD_LABELS = ["今日", "昨日", String.Empty, "今月", "先月", String.Empty, "今年", "昨年", String.Empty, "全期間", String.Empty, "期間指定"];
 
 	// ツールチップを長く表示する場合の時間 [ms]
 	public const Int32 TOOL_TIP_LONG_DURATION = 20 * 1000;
@@ -795,5 +797,5 @@ internal class YlConstants
 	public const Int32 TCP_NUM_RETRIES = 5;
 
 	// サムネイルの横幅として指定可能なサイズ [px]
-	public static readonly Int32[] THUMB_WIDTH_LIST = new Int32[] { 80, 128, 160, 240, 320 };
+	public static readonly Int32[] THUMB_WIDTH_LIST = [80, 128, 160, 240, 320];
 }

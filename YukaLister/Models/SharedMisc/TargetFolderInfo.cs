@@ -8,11 +8,9 @@
 //
 // ----------------------------------------------------------------------------
 
-using System;
-using System.Diagnostics;
-using System.IO;
-using System.Threading;
+#if YUKALISTER
 using System.Windows.Media;
+#endif
 
 using YukaLister.Models.YukaListerModels;
 
@@ -37,7 +35,12 @@ internal class TargetFolderInfo
 		TargetPathLabel = ParentPath;
 		Level = 0;
 		_folderTaskKind = (Int32)FolderTaskKind.Add;
+#if YUKALISTER
 		_folderTaskDetail = (Int32)(YlModel.Instance.EnvModel.YukaListerWholeStatus != YukaListerStatus.Error ? FolderTaskDetail.CacheToDisk : FolderTaskDetail.FindSubFolders);
+#endif
+#if MOCHIKARA_PRODUCER
+		_folderTaskDetail = (Int32)FolderTaskDetail.FindSubFolders;
+#endif
 		Visible = true;
 	}
 
@@ -66,31 +69,42 @@ internal class TargetFolderInfo
 	// ====================================================================
 
 	// IsOpen が変更された時のイベントハンドラー
-	public static IsOpenChanged IsOpenChanged { get; set; } = delegate { };
+	public static IsOpenChanged IsOpenChanged
+	{
+		get;
+		set;
+	} = delegate { };
 
 	// 対象フォルダーパス（末尾は '\\' ではない）
-	public String TargetPath { get; }
+	public String TargetPath
+	{
+		get;
+	}
 
 	// 親フォルダーのパス（削除用）（親の場合は TargetPath と同じ値にすること）（末尾は '\\' ではない）
-	public String ParentPath { get; }
+	public String ParentPath
+	{
+		get;
+	}
 
 	// 親フォルダーからの深さ（親フォルダーは 0）
-	public Int32 Level { get; }
+	public Int32 Level
+	{
+		get;
+	}
 
 	// 親フォルダーかどうか
-	public Boolean IsParent
-	{
-		get => Level == 0;
-	}
+	public Boolean IsParent => Level == 0;
 
 	// サブフォルダーがあるかどうか
-	public Boolean HasChildren
-	{
-		get => NumTotalFolders > 1;
-	}
+	public Boolean HasChildren => NumTotalFolders > 1;
 
 	// 自分＋サブフォルダーの数（サブフォルダーが無い場合は 1 となる）
-	public Int32 NumTotalFolders { get; set; } = 1;
+	public Int32 NumTotalFolders
+	{
+		get;
+		set;
+	} = 1;
 
 	// サブフォルダーがある場合のみ有効：サブフォルダーを表示しているかどうか
 	private Boolean _isOpen;
@@ -120,24 +134,26 @@ internal class TargetFolderInfo
 
 	// キャッシュ DB からディスク DB へコピーにコピー済かどうか
 	// 親でない場合は、基本的には親フォルダーの IsCacheUsed と同じ値だが、更新すると false となる
-	public Boolean IsCacheUsed { get; set; }
+	public Boolean IsCacheUsed
+	{
+		get;
+		set;
+	}
 
 	// 操作の種類
 	private volatile Int32 _folderTaskKind;
-	public FolderTaskKind FolderTaskKind
-	{
-		get => (FolderTaskKind)_folderTaskKind;
-	}
+	public FolderTaskKind FolderTaskKind => (FolderTaskKind)_folderTaskKind;
 
 	// 操作の詳細
 	private volatile Int32 _folderTaskDetail;
-	public FolderTaskDetail FolderTaskDetail
-	{
-		get => (FolderTaskDetail)_folderTaskDetail;
-	}
+	public FolderTaskDetail FolderTaskDetail => (FolderTaskDetail)_folderTaskDetail;
 
 	// 動作状況
-	public FolderTaskStatus FolderTaskStatus { get; set; } = FolderTaskStatus.Queued;
+	public FolderTaskStatus FolderTaskStatus
+	{
+		get;
+		set;
+	} = FolderTaskStatus.Queued;
 
 	// フォルダー除外設定の状態
 	private FolderExcludeSettingsStatus _folderExcludeSettingsStatus = FolderExcludeSettingsStatus.Unchecked;
@@ -170,28 +186,33 @@ internal class TargetFolderInfo
 	}
 
 	// UI に表示するかどうか
-	public Boolean Visible { get; set; }
-
-	// 表示用：背景色
-	public Brush Background
+	public Boolean Visible
 	{
-		get => FolderTaskStatusLabelAndBrush().brush;
+		get;
+		set;
 	}
+
+#if YUKALISTER
+	// 表示用：背景色
+	public Brush Background => FolderTaskStatusLabelAndBrush().brush;
+#endif
 
 	// 表示用：パス
-	public String TargetPathLabel { get; }
+	public String TargetPathLabel
+	{
+		get;
+	}
 
 	// 表示用：フォルダー設定の状態
-	public String FolderSettingsStatusLabel
-	{
-		get => YlConstants.FOLDER_SETTINGS_STATUS_LABELS[(Int32)FolderSettingsStatus];
-	}
+	public String FolderSettingsStatusLabel => YlConstants.FOLDER_SETTINGS_STATUS_LABELS[(Int32)FolderSettingsStatus];
 
 	// 表示用：動作状況
-	public String FolderTaskStatusLabel
-	{
-		get => FolderTaskStatusLabelAndBrush().label;
-	}
+#if YUKALISTER
+	public String FolderTaskStatusLabel => FolderTaskStatusLabelAndBrush().label;
+#endif
+#if MOCHIKARA_PRODUCER
+	public String FolderTaskStatusLabel => "未実装";
+#endif
 
 	// ====================================================================
 	// public 関数
@@ -234,16 +255,10 @@ internal class TargetFolderInfo
 	}
 
 	// ====================================================================
-	// private 定数
-	// ====================================================================
-
-	// ボリュームシリアル番号のセパレーター（パスとして使えない文字）
-	//private const String SEPARATOR = "|";
-
-	// ====================================================================
 	// private 関数
 	// ====================================================================
 
+#if YUKALISTER
 	// --------------------------------------------------------------------
 	// 動作状況のラベルと背景色
 	// --------------------------------------------------------------------
@@ -371,4 +386,5 @@ internal class TargetFolderInfo
 		}
 		return (label, brush);
 	}
+#endif
 }

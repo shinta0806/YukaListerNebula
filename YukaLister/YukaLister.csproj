@@ -15,11 +15,19 @@
 
   <PropertyGroup>
     <DefineConstants>TRACE;DISTRIB_STORE;TESTz</DefineConstants>
-    <NoWarn>1701;1702;1416</NoWarn>
+    <NoWarn>1701;1702;1416;CA1860</NoWarn>
     <ApplicationManifest>app.manifest</ApplicationManifest>
     <PlatformTarget>x64</PlatformTarget>
     <DefaultLanguage>ja-JP</DefaultLanguage>
     <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <DefineConstants>$(DefineConstants);YUKALISTER</DefineConstants>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <DefineConstants>$(DefineConstants);YUKALISTER</DefineConstants>
   </PropertyGroup>
 
   <ItemGroup>

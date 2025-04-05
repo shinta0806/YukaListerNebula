@@ -8,32 +8,31 @@
 //
 // ----------------------------------------------------------------------------
 
+#if YUKALISTER
 using Livet;
 using Livet.Messaging;
+using Shinta.Wpf;
+using System.Windows;
+using System.Windows.Controls;
+using YukaLister.ViewModels.MiscWindowViewModels;
+#endif
+
+#if MOCHIKARA_PRODUCER
+using MochikaraProducer.Models.MpModels;
+using MochikaraProducer.Models.SharedMisc;
+#endif
 
 using Microsoft.EntityFrameworkCore;
 
 using Shinta;
-using Shinta.Wpf;
 
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.IO;
-using System.Linq;
 using System.Security.Cryptography;
-using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading;
-using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Controls;
 
 using YukaLister.Models.Database;
 using YukaLister.Models.DatabaseAssist;
 using YukaLister.Models.DatabaseContexts;
 using YukaLister.Models.YukaListerModels;
-using YukaLister.ViewModels.MiscWindowViewModels;
 
 namespace YukaLister.Models.SharedMisc;
 
@@ -43,6 +42,7 @@ internal class YlCommon
 	// public 関数
 	// ====================================================================
 
+#if YUKALISTER
 	// --------------------------------------------------------------------
 	// 必要に応じて待機中の動画リスト作成担当をアクティブ化
 	// --------------------------------------------------------------------
@@ -84,8 +84,10 @@ internal class YlCommon
 		}
 		else
 		{
-			ComboBoxItem comboBoxItem = new();
-			comboBoxItem.Content = label;
+			ComboBoxItem comboBoxItem = new()
+			{
+				Content = label
+			};
 			items.Add(comboBoxItem);
 		}
 	}
@@ -103,8 +105,10 @@ internal class YlCommon
 		}
 		else
 		{
-			MenuItem menuItem = new();
-			menuItem.Header = label;
+			MenuItem menuItem = new()
+			{
+				Header = label
+			};
 			menuItem.Click += click;
 			items.Add(menuItem);
 		}
@@ -172,6 +176,7 @@ internal class YlCommon
 			YlModel.Instance.EnvModel.YlSettings.Save();
 		}
 	}
+#endif
 
 	// --------------------------------------------------------------------
 	// 設定ファイルのルールを動作時用に変換
@@ -219,6 +224,7 @@ internal class YlCommon
 		return folderSettingsInMemory;
 	}
 
+#if YUKALISTER
 	// --------------------------------------------------------------------
 	// 最新情報管理者を作成
 	// --------------------------------------------------------------------
@@ -227,6 +233,7 @@ internal class YlCommon
 		return new LatestInfoManager("http://shinta.coresv.com/soft/YukaListerNebula_JPN.xml", forceShow, 3, YlConstants.APP_VER,
 				YlModel.Instance.EnvModel.AppCancellationTokenSource.Token, YlModel.Instance.EnvModel.LogWriter);
 	}
+#endif
 
 	// --------------------------------------------------------------------
 	// アプリ独自の変数を格納する変数を生成し、定義済みキーをすべて初期化（キーには <> は含まない）
@@ -236,7 +243,7 @@ internal class YlCommon
 	public static Dictionary<String, String?> CreateRuleDictionary()
 	{
 		Dictionary<String, String> varMapWith = CreateRuleDictionaryWithDescription();
-		Dictionary<String, String?> varMap = new();
+		Dictionary<String, String?> varMap = [];
 
 		foreach (String key in varMapWith.Keys)
 		{
@@ -251,31 +258,32 @@ internal class YlCommon
 	// --------------------------------------------------------------------
 	public static Dictionary<String, String> CreateRuleDictionaryWithDescription()
 	{
-		Dictionary<String, String> varMap = new();
+		Dictionary<String, String> varMap = new()
+		{
+			// タイアップマスターにも同様の項目があるもの
+			[YlConstants.RULE_VAR_CATEGORY] = "カテゴリー",
+			[YlConstants.RULE_VAR_PROGRAM] = "タイアップ名",
+			[YlConstants.RULE_VAR_AGE_LIMIT] = "年齢制限",
 
-		// タイアップマスターにも同様の項目があるもの
-		varMap[YlConstants.RULE_VAR_CATEGORY] = "カテゴリー";
-		varMap[YlConstants.RULE_VAR_PROGRAM] = "タイアップ名";
-		varMap[YlConstants.RULE_VAR_AGE_LIMIT] = "年齢制限";
+			// 楽曲マスターにも同様の項目があるもの
+			[YlConstants.RULE_VAR_OP_ED] = "摘要（OP/ED 別）",
+			[YlConstants.RULE_VAR_TITLE] = "楽曲名",
+			[YlConstants.RULE_VAR_TITLE_RUBY] = "楽曲名フリガナ",
+			[YlConstants.RULE_VAR_ARTIST] = "歌手名",
 
-		// 楽曲マスターにも同様の項目があるもの
-		varMap[YlConstants.RULE_VAR_OP_ED] = "摘要（OP/ED 別）";
-		varMap[YlConstants.RULE_VAR_TITLE] = "楽曲名";
-		varMap[YlConstants.RULE_VAR_TITLE_RUBY] = "楽曲名フリガナ";
-		varMap[YlConstants.RULE_VAR_ARTIST] = "歌手名";
+			// ファイル名からのみ取得可能なもの
+			[YlConstants.RULE_VAR_WORKER] = "カラオケ動画制作者",
+			[YlConstants.RULE_VAR_TRACK] = "トラック情報",
+			[YlConstants.RULE_VAR_ON_VOCAL] = "オンボーカルトラック",
+			[YlConstants.RULE_VAR_OFF_VOCAL] = "オフボーカルトラック",
+			[YlConstants.RULE_VAR_COMMENT] = "備考",
 
-		// ファイル名からのみ取得可能なもの
-		varMap[YlConstants.RULE_VAR_WORKER] = "カラオケ動画制作者";
-		varMap[YlConstants.RULE_VAR_TRACK] = "トラック情報";
-		varMap[YlConstants.RULE_VAR_ON_VOCAL] = "オンボーカルトラック";
-		varMap[YlConstants.RULE_VAR_OFF_VOCAL] = "オフボーカルトラック";
-		varMap[YlConstants.RULE_VAR_COMMENT] = "備考";
+			// 楽曲マスターにも同様の項目があるもの
+			[YlConstants.RULE_VAR_TAG] = "タグ",
 
-		// 楽曲マスターにも同様の項目があるもの
-		varMap[YlConstants.RULE_VAR_TAG] = "タグ";
-
-		// その他
-		varMap[YlConstants.RULE_VAR_ANY] = "無視する部分";
+			// その他
+			[YlConstants.RULE_VAR_ANY] = "無視する部分"
+		};
 
 		return varMap;
 	}
@@ -306,6 +314,7 @@ internal class YlCommon
 		return Encoding.Unicode.GetString(plainBytes);
 	}
 
+#if YUKALISTER
 	// --------------------------------------------------------------------
 	// ファイルが存在していれば削除
 	// ＜返値＞ ファイルが存在していた場合の属性
@@ -331,6 +340,7 @@ internal class YlCommon
 		}
 		return attrs;
 	}
+#endif
 
 	// --------------------------------------------------------------------
 	// 指定されたフォルダーの除外設定有無
@@ -422,7 +432,7 @@ internal class YlCommon
 
 	// --------------------------------------------------------------------
 	// 指定されたフォルダーのフォルダー設定ファイルがあるフォルダーを返す
-	// 互換性維持のため、ニコカラりすたーの設定ファイルも扱う
+	// ゆかりすたー 4 NEBULA では、互換性維持のため、ニコカラりすたーの設定ファイルも扱う
 	// --------------------------------------------------------------------
 	public static String? FindSettingsFolder(String? folder)
 	{
@@ -432,6 +442,7 @@ internal class YlCommon
 			{
 				return folder;
 			}
+#if YUKALISTER
 			if (File.Exists(folder + '\\' + YlConstants.FILE_NAME_YUKA_LISTER_CONFIG_OLD))
 			{
 				return folder;
@@ -440,6 +451,7 @@ internal class YlCommon
 			{
 				return folder;
 			}
+#endif
 			folder = Path.GetDirectoryName(folder);
 		}
 		return null;
@@ -480,6 +492,7 @@ internal class YlCommon
 		return YlConstants.HEAD_MISC;
 	}
 
+#if YUKALISTER
 	// --------------------------------------------------------------------
 	// ID 接頭辞が未設定ならばユーザーに入力してもらう
 	// ＜例外＞ OperationCanceledException
@@ -529,6 +542,7 @@ internal class YlCommon
 			throw new OperationCanceledException();
 		}
 	}
+#endif
 
 	// --------------------------------------------------------------------
 	// ゆかり検索対象外のフォルダーかどうか
@@ -585,7 +599,7 @@ internal class YlCommon
 		}
 
 		String[] elements = keyword.Split(YlConstants.VAR_VALUE_DELIMITER[0], StringSplitOptions.RemoveEmptyEntries);
-		List<String> forSearchElements = new();
+		List<String> forSearchElements = [];
 		foreach (String element in elements)
 		{
 			(String? ruby, Boolean allRuby, _) = NormalizeDbRubyForSearch(element);
@@ -604,6 +618,7 @@ internal class YlCommon
 		return keywordRubyForSearch;
 	}
 
+#if YUKALISTER
 	// --------------------------------------------------------------------
 	// 関数を非同期駆動
 	// --------------------------------------------------------------------
@@ -639,6 +654,7 @@ internal class YlCommon
 			}
 		});
 	}
+#endif
 
 	// --------------------------------------------------------------------
 	// フォルダー設定を読み込む
@@ -659,12 +675,18 @@ internal class YlCommon
 				{
 					try
 					{
+#if YUKALISTER
 						folderSettings = YlModel.Instance.EnvModel.JsonManager.Load<FolderSettingsInDisk>(jsonPath, false, null);
+#endif
+#if MOCHIKARA_PRODUCER
+						folderSettings = MpModel.Instance.EnvModel.JsonManager.LoadAot(jsonPath, false, MpJsonSerializerContext.Default.FolderSettingsInDisk);
+#endif
 					}
 					catch (Exception)
 					{
 					}
 				}
+#if YUKALISTER
 				else
 				{
 					// 現行形式のフォルダー設定が無い場合は、旧形式のフォルダー設定を読み込んで変換
@@ -680,6 +702,7 @@ internal class YlCommon
 						SaveFolderSettingsInDisk(folderSettings, jsonPath);
 					}
 				}
+#endif
 			}
 		}
 		catch (Exception)
@@ -689,6 +712,7 @@ internal class YlCommon
 		return folderSettings;
 	}
 
+#if YUKALISTER
 	// --------------------------------------------------------------------
 	// 環境情報をログする
 	// --------------------------------------------------------------------
@@ -697,6 +721,7 @@ internal class YlCommon
 		SystemEnvironment se = new();
 		se.LogEnvironment(YlModel.Instance.EnvModel.LogWriter);
 	}
+#endif
 
 	// --------------------------------------------------------------------
 	// 検索結果ソート用関数（大文字小文字を区別しない名前順）
@@ -775,7 +800,7 @@ internal class YlCommon
 	{
 		Debug.Assert(NORMALIZE_DB_RUBY_FOR_MUSIC_INFO_FROM.Length == NORMALIZE_DB_RUBY_FOR_MUSIC_INFO_TO.Length,
 				"NormalizeDbRubyForMusicInfo() different from/to length");
-		return NormalizeDbRubyCore(str, NORMALIZE_DB_RUBY_FOR_MUSIC_INFO_FROM, NORMALIZE_DB_RUBY_FOR_MUSIC_INFO_TO, Array.Empty<String>(), Array.Empty<String>());
+		return NormalizeDbRubyCore(str, NORMALIZE_DB_RUBY_FOR_MUSIC_INFO_FROM, NORMALIZE_DB_RUBY_FOR_MUSIC_INFO_TO, [], []);
 	}
 
 	// --------------------------------------------------------------------
@@ -863,6 +888,7 @@ internal class YlCommon
 		Process.Start("EXPLORER.EXE", @"/select,""" + path + @"""");
 	}
 
+#if YUKALISTER
 	// --------------------------------------------------------------------
 	// フォルダー設定を保存（JSON 形式）
 	// 原則として通常属性で保存するが、既存ファイルに隠し属性等あれば同じ属性で保存する
@@ -871,7 +897,6 @@ internal class YlCommon
 	{
 		FileAttributes prevAttr = DeleteFileIfExists(yukaListerConfigPathJson);
 		YlModel.Instance.EnvModel.JsonManager.Save(folderSettings, yukaListerConfigPathJson, false);
-		//Common.Serialize(yukaListerConfigPathJson, folderSettings);
 		if (prevAttr != 0)
 		{
 			File.SetAttributes(yukaListerConfigPathJson, prevAttr);
@@ -904,6 +929,7 @@ internal class YlCommon
 		logWriterSyncDetail.SimpleTraceListener.MaxOldGenerations = 5;
 		logWriterSyncDetail.SimpleTraceListener.LogFileName = Path.GetDirectoryName(logWriterSyncDetail.SimpleTraceListener.LogFileName) + "\\" + FILE_NAME_SYNC_DETAIL_LOG;
 	}
+#endif
 
 	// --------------------------------------------------------------------
 	// カンマ区切り ID をリストに分割
@@ -911,7 +937,7 @@ internal class YlCommon
 	// --------------------------------------------------------------------
 	public static List<String> SplitIds(String? ids)
 	{
-		return String.IsNullOrEmpty(ids) ? new() : ids.Split(YlConstants.VAR_VALUE_DELIMITER[0], StringSplitOptions.RemoveEmptyEntries).ToList();
+		return String.IsNullOrEmpty(ids) ? [] : [.. ids.Split(YlConstants.VAR_VALUE_DELIMITER[0], StringSplitOptions.RemoveEmptyEntries)];
 	}
 
 	// --------------------------------------------------------------------
@@ -957,8 +983,8 @@ internal class YlCommon
 	// --------------------------------------------------------------------
 
 	// NormalizeDbRubyForSearch() 用：フリガナ正規化対象文字（複数文字）
-	private static readonly String[] NORMALIZE_DB_RUBY_FOR_SEARCH_MULTI_FROM = { "ヴァ", "ヴィ", "ヴェ", "ヴォ" };
-	private static readonly String[] NORMALIZE_DB_RUBY_FOR_SEARCH_MULTI_TO = { "ハ", "ヒ", "ヘ", "ホ" };
+	private static readonly String[] NORMALIZE_DB_RUBY_FOR_SEARCH_MULTI_FROM = ["ヴァ", "ヴィ", "ヴェ", "ヴォ"];
+	private static readonly String[] NORMALIZE_DB_RUBY_FOR_SEARCH_MULTI_TO = ["ハ", "ヒ", "ヘ", "ホ"];
 
 	// NormalizeDbRubyForSearch() 用：フリガナ正規化対象文字（小文字・濁点→大文字・清音）
 	private const String NORMALIZE_DB_RUBY_FOR_SEARCH_FROM = "ァィゥェォッャュョヮヵヶヲガギグゲゴザジズゼゾダヂヅデドバビブベボパピプペポヰヱヴヷヸヹヺｧｨｩｪｫｯｬｭｮｦ"
@@ -991,16 +1017,16 @@ internal class YlCommon
 
 	// 暗号化キー（256 bit = 32 byte）
 	private static readonly Byte[] ENCRYPT_KEY =
-	{
+	[
 		0x07, 0xC1, 0x19, 0x4A, 0x99, 0x9A, 0xF0, 0x2D, 0x0C, 0x52, 0xB0, 0x65, 0x48, 0xE6, 0x1F, 0x61,
 		0x9C, 0x37, 0x9C, 0xA1, 0xC2, 0x31, 0xBA, 0xD1, 0x64, 0x1D, 0x85, 0x46, 0xCA, 0xF4, 0xE6, 0x5F,
-	};
+	];
 
 	// 暗号化 IV（128 bit = 16 byte）
 	private static readonly Byte[] ENCRYPT_IV =
-	{
+	[
 		0x80, 0xB5, 0x40, 0x56, 0x9A, 0xE0, 0x3A, 0x9F, 0xd0, 0x90, 0xC6, 0x7C, 0xAA, 0xCD, 0xE7, 0x53,
-	};
+	];
 
 	// 頭文字変換用
 	private const String HEAD_CONVERT_FROM = "ぁぃぅぇぉゕゖゃゅょゎゔがぎぐげござじずぜぞだぢづでどばびぶべぼぱぴぷぺぽゐゑ";
@@ -1043,7 +1069,7 @@ internal class YlCommon
 	// --------------------------------------------------------------------
 	private static void MakeRegexPattern(String ruleInDisk, out String ruleInMemory, out List<String> groups)
 	{
-		groups = new();
+		groups = [];
 
 		// 元が空なら空で返す
 		if (String.IsNullOrEmpty(ruleInDisk))
@@ -1128,7 +1154,7 @@ internal class YlCommon
 	{
 		foreach (KeyValuePair<String, String?> folderRule in folderSettingsInMemory.FolderNameRules)
 		{
-			if (dic.ContainsKey(folderRule.Key) && String.IsNullOrEmpty(dic[folderRule.Key]))
+			if (dic.TryGetValue(folderRule.Key, out String? value) && String.IsNullOrEmpty(value))
 			{
 				dic[folderRule.Key] = folderRule.Value;
 			}

@@ -12,9 +12,15 @@ using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 
+#if MOCHIKARA_PRODUCER
+using MochikaraProducer.Models.MpModels;
+#endif
+
 using Shinta;
 
+#if YUKALISTER
 using System.Reflection;
+#endif
 
 using YukaLister.Models.Database;
 using YukaLister.Models.Database.Aliases;
@@ -33,6 +39,7 @@ internal class DbCommon
 	// public 関数
 	// ====================================================================
 
+#if YUKALISTER
 	// --------------------------------------------------------------------
 	// データベースファイルのバックアップを作成
 	// --------------------------------------------------------------------
@@ -64,7 +71,7 @@ internal class DbCommon
 			Log.Information("データベース " + fileNameForLog + " のバックアップ作成：" + backupPath);
 
 			// 溢れたバックアップを削除
-			List<FileInfo> backupFileInfos = new();
+			List<FileInfo> backupFileInfos = [];
 			String[] backupFiles = Directory.GetFiles(srcFolder, Path.GetFileNameWithoutExtension(srcPath) + "_(bak)_*" + Common.FILE_EXT_BAK);
 			foreach (String backupFile in backupFiles)
 			{
@@ -83,6 +90,7 @@ internal class DbCommon
 			SerilogUtils.LogException("データベース " + fileNameForLog + " バックアップ時エラー", excep);
 		}
 	}
+#endif
 
 	// --------------------------------------------------------------------
 	// データベース接続
@@ -96,6 +104,7 @@ internal class DbCommon
 		return new SqliteConnection(stringBuilder.ToString());
 	}
 
+#if YUKALISTER
 	// --------------------------------------------------------------------
 	// TFound → TYukariStatistics へコピー（TFound の属性情報がある場合のみ）
 	// --------------------------------------------------------------------
@@ -159,6 +168,7 @@ internal class DbCommon
 		statisticsPropertyInfo.SetValue(yukariStatistics, foundValue);
 		yukariStatistics.Dirty = true;
 	}
+#endif
 
 	// --------------------------------------------------------------------
 	// 標準的な計算方法で算出される DisplayCategoryName
@@ -205,7 +215,7 @@ internal class DbCommon
 	// --------------------------------------------------------------------
 	public static List<T> ExceptInvalid<T>(DbSet<T> records, List<String> validAndInvalidItemIds) where T : class, IRcBase
 	{
-		List<T> valids = new();
+		List<T> valids = [];
 		foreach (String id in validAndInvalidItemIds)
 		{
 			T? item = SelectBaseById(records, id);
@@ -223,7 +233,7 @@ internal class DbCommon
 	// --------------------------------------------------------------------
 	public static void InvalidateSequenceByLinkId<T>(DbSet<T> records, String linkId) where T : class, IRcSequence
 	{
-		List<T> validSequences = records.Where(x => x.LinkId == linkId && !x.Invalid).ToList();
+		List<T> validSequences = [.. records.Where(x => x.LinkId == linkId && !x.Invalid)];
 		for (Int32 i = 0; i < validSequences.Count; i++)
 		{
 			validSequences[i].Invalid = true;
@@ -232,6 +242,7 @@ internal class DbCommon
 		}
 	}
 
+#if YUKALISTER
 	// --------------------------------------------------------------------
 	// レコードの内容が更新されたか（IRcAlias）
 	// --------------------------------------------------------------------
@@ -306,6 +317,7 @@ internal class DbCommon
 	{
 		return YukariDatabaseFullFolder(ylSettings) + FILE_NAME_LIST_DATABASE_IN_DISK;
 	}
+#endif
 
 	// --------------------------------------------------------------------
 	// 例外がデータベース系の場合に詳細をログする
@@ -458,8 +470,14 @@ internal class DbCommon
 			// using しない
 			ListContextInMemory listContextInMemory = new();
 			listContextInMemory.CreateDatabase();
+#if YUKALISTER
 			YlModel.Instance.EnvModel.ListContextInMemory = listContextInMemory;
+#endif
+#if MOCHIKARA_PRODUCER
+			MpModel.Instance.EnvModel.ListContextInMemory = listContextInMemory;
+#endif
 
+#if YUKALISTER
 			// 楽曲情報データベース等が存在しない場合は作成
 			Directory.CreateDirectory(YukaListerDatabaseFullFolder());
 
@@ -488,6 +506,7 @@ internal class DbCommon
 			// 常に作成（クリア）
 			using ListContextInDisk listContextInDisk = new();
 			listContextInDisk.CreateDatabase();
+#endif
 		}
 		catch (Exception excep)
 		{
@@ -511,6 +530,7 @@ internal class DbCommon
 		}
 	}
 
+#if YUKALISTER
 	// --------------------------------------------------------------------
 	// 紐付テーブルに新規登録または更新
 	// SaveChanges() は呼び出し元で実施する必要がある
@@ -518,7 +538,7 @@ internal class DbCommon
 	public static void RegisterSequence<T>(DbSet<T> records, String id, List<String> linkIds, Boolean isImport = false) where T : class, IRcSequence, new()
 	{
 		// 新規レコード
-		List<T> newSequences = new();
+		List<T> newSequences = [];
 		for (Int32 i = 0; i < linkIds.Count; i++)
 		{
 			T newSequence = CreateSequenceRecord<T>(id, i, linkIds[i], isImport);
@@ -581,6 +601,7 @@ internal class DbCommon
 	{
 		return YukariDatabaseFullFolder(ylSettings) + FILE_NAME_REPORT_DATABASE;
 	}
+#endif
 
 	// --------------------------------------------------------------------
 	// 楽曲情報データベースから別名を検索
@@ -613,7 +634,7 @@ internal class DbCommon
 	// --------------------------------------------------------------------
 	public static List<String> SelectCategoryNames(IQueryable<TCategory> categories, Boolean includesInvalid = false)
 	{
-		return categories.Where(x => (includesInvalid || !x.Invalid) && !String.IsNullOrEmpty(x.Name)).Select(x => x.Name)!.ToList<String>();
+		return [.. categories.Where(x => (includesInvalid || !x.Invalid) && !String.IsNullOrEmpty(x.Name)).Select(x => x.Name)!];
 	}
 
 	// --------------------------------------------------------------------
@@ -635,9 +656,9 @@ internal class DbCommon
 	{
 		if (String.IsNullOrEmpty(name))
 		{
-			return new List<T>();
+			return [];
 		}
-		return records.Where(x => x.Name == name && (includesInvalid || !x.Invalid)).ToList();
+		return [.. records.Where(x => x.Name == name && (includesInvalid || !x.Invalid))];
 	}
 
 	// --------------------------------------------------------------------
@@ -647,9 +668,9 @@ internal class DbCommon
 	{
 		if (String.IsNullOrEmpty(name))
 		{
-			return new List<T>();
+			return [];
 		}
-		return records.Where(x => x.Name != null && EF.Functions.Like(x.Name, $"{name}") && (includesInvalid || !x.Invalid)).ToList();
+		return [.. records.Where(x => x.Name != null && EF.Functions.Like(x.Name, $"{name}") && (includesInvalid || !x.Invalid))];
 	}
 
 	// --------------------------------------------------------------------
@@ -661,7 +682,7 @@ internal class DbCommon
 	public static List<TPerson> SelectSequencedPeopleBySongId<T>(IQueryable<T> sequenceRecords, IQueryable<TPerson> personRecords, String songId) where T : class, IRcSequence
 	{
 		List<T> sequences = SelectSequencesById(sequenceRecords, songId);
-		List<TPerson> people = new();
+		List<TPerson> people = [];
 
 		foreach (T sequence in sequences)
 		{
@@ -683,7 +704,7 @@ internal class DbCommon
 	public static List<TTag> SelectSequencedTagsBySongId(IQueryable<TTagSequence> tagSequenceRecords, IQueryable<TTag> tagRecords, String songId)
 	{
 		List<TTagSequence> sequences = SelectSequencesById(tagSequenceRecords, songId);
-		List<TTag> tags = new();
+		List<TTag> tags = [];
 
 		foreach (TTagSequence sequence in sequences)
 		{
@@ -705,7 +726,7 @@ internal class DbCommon
 	public static List<TTieUpGroup> SelectSequencedTieUpGroupsByTieUpId(IQueryable<TTieUpGroupSequence> tieUpGroupSequenceRecords, IQueryable<TTieUpGroup> tieUpGroupRecords, String tieUpId)
 	{
 		List<TTieUpGroupSequence> sequences = SelectSequencesById(tieUpGroupSequenceRecords, tieUpId);
-		List<TTieUpGroup> tieUpGroups = new();
+		List<TTieUpGroup> tieUpGroups = [];
 
 		foreach (TTieUpGroupSequence sequence in sequences)
 		{
@@ -727,10 +748,10 @@ internal class DbCommon
 	{
 		if (String.IsNullOrEmpty(id))
 		{
-			return new();
+			return [];
 		}
 
-		return records.Where(x => x.Id == id && (includesInvalid || !x.Invalid)).OrderBy(x => x.Sequence).ToList();
+		return [.. records.Where(x => x.Id == id && (includesInvalid || !x.Invalid)).OrderBy(x => x.Sequence)];
 	}
 
 	// --------------------------------------------------------------------
@@ -741,6 +762,7 @@ internal class DbCommon
 		master.AvoidSameName = SelectMastersByName(records, master.Name).Count > 1;
 	}
 
+#if YUKALISTER
 	// --------------------------------------------------------------------
 	// サムネイルキャッシュデータベースのフルパス
 	// --------------------------------------------------------------------
@@ -748,6 +770,7 @@ internal class DbCommon
 	{
 		return YukariDatabaseFullFolder(ylSettings) + FILE_NAME_THUMB_DATABASE;
 	}
+#endif
 
 	// --------------------------------------------------------------------
 	// データベースのプロパティーを更新（存在しない場合は新規作成）
@@ -773,6 +796,7 @@ internal class DbCommon
 		return property.AppId == YlConstants.APP_ID && property.AppVer.Contains(YlConstants.APP_GENERATION);
 	}
 
+#if YUKALISTER
 	// --------------------------------------------------------------------
 	// ゆかりすたーデータベースを保存するフォルダーのフルパス（末尾 '\\'）
 	// 設定のバックアップのやりやすさを考慮し、Common.UserAppDataFolderPath() の配下ではなく
@@ -791,6 +815,7 @@ internal class DbCommon
 	{
 		return Path.GetDirectoryName(ylSettings.YukariConfigPath()) + "\\" + YlConstants.FOLDER_NAME_LIST;
 	}
+#endif
 
 	// ====================================================================
 	// private 定数

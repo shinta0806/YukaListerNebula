@@ -8,12 +8,13 @@
 //
 // ----------------------------------------------------------------------------
 
+using Shinta;
 using YukaLister.Models.DatabaseAssist;
 using YukaLister.Models.YukaListerModels;
 
 namespace YukaLister.Models.DatabaseContexts;
 
-internal class ListContextInDisk : ListContext
+internal partial class ListContextInDisk : ListContext
 {
 	// ====================================================================
 	// コンストラクター
@@ -36,6 +37,12 @@ internal class ListContextInDisk : ListContext
 	// --------------------------------------------------------------------
 	public override String DatabasePath()
 	{
+#if YUKALISTER
 		return DbCommon.ListDatabasePath(YlModel.Instance.EnvModel.YlSettings);
+#endif
+#if MOCHIKARA_PRODUCER
+		// デバッグ用
+		return @"C:\Temp\List" + Common.FILE_EXT_SQLITE3;
+#endif
 	}
 }

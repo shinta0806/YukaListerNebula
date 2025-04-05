@@ -10,6 +10,10 @@
 
 using Microsoft.EntityFrameworkCore;
 
+#if MOCHIKARA_PRODUCER
+using MochikaraProducer.Models.MpModels;
+#endif
+
 using Shinta;
 
 using YukaLister.Models.Database;
@@ -21,7 +25,7 @@ using YukaLister.Models.YukaListerModels;
 
 namespace YukaLister.Models.DatabaseAssist;
 
-internal class TFoundSetter : IDisposable
+internal partial class TFoundSetter : IDisposable
 {
 	// ====================================================================
 	// コンストラクター
@@ -42,8 +46,18 @@ internal class TFoundSetter : IDisposable
 		_categoryNames = DbCommon.SelectCategoryNames(_musicInfoContext.Categories);
 
 		// スマートトラック判定用単語
-		_offVocalWords = YlConstants.SMART_TRACK_SEPARATOR + String.Join(YlConstants.SMART_TRACK_SEPARATOR, YlModel.Instance.EnvModel.YlSettings.OffVocalWords) + YlConstants.SMART_TRACK_SEPARATOR;
-		_bothVocalWords = YlConstants.SMART_TRACK_SEPARATOR + String.Join(YlConstants.SMART_TRACK_SEPARATOR, YlModel.Instance.EnvModel.YlSettings.BothVocalWords) + YlConstants.SMART_TRACK_SEPARATOR;
+#if YUKALISTER
+		_offVocalWords = YlConstants.SMART_TRACK_SEPARATOR 
+			+ String.Join(YlConstants.SMART_TRACK_SEPARATOR, YlModel.Instance.EnvModel.YlSettings.OffVocalWords) + YlConstants.SMART_TRACK_SEPARATOR;
+		_bothVocalWords = YlConstants.SMART_TRACK_SEPARATOR 
+			+ String.Join(YlConstants.SMART_TRACK_SEPARATOR, YlModel.Instance.EnvModel.YlSettings.BothVocalWords) + YlConstants.SMART_TRACK_SEPARATOR;
+#endif
+#if MOCHIKARA_PRODUCER
+		_offVocalWords = YlConstants.SMART_TRACK_SEPARATOR
+			+ String.Join(YlConstants.SMART_TRACK_SEPARATOR, MpModel.Instance.EnvModel.MpSettings.OffVocalWords) + YlConstants.SMART_TRACK_SEPARATOR;
+		_bothVocalWords = YlConstants.SMART_TRACK_SEPARATOR
+			+ String.Join(YlConstants.SMART_TRACK_SEPARATOR, MpModel.Instance.EnvModel.MpSettings.BothVocalWords) + YlConstants.SMART_TRACK_SEPARATOR;
+#endif
 	}
 
 	// ====================================================================
@@ -88,10 +102,14 @@ internal class TFoundSetter : IDisposable
 #endif
 		// 楽曲名で検索
 		List<TSong> songs = DbCommon.SelectMastersByName(_musicInfoContext.Songs, dicByFile[YlConstants.RULE_VAR_TITLE]);
+
+#if YUKALISTER
+		// 楽曲情報データベースが不十分な場合の誤適用を軽減
 		if (YlModel.Instance.EnvModel.YlSettings.ApplyMusicInfoIntelligently)
 		{
 			songs = RefineSongIntelligently(songs, dicByFile);
 		}
+#endif
 
 		// タイアップで絞り込み
 		if (songs.Count > 1)
@@ -101,7 +119,7 @@ internal class TFoundSetter : IDisposable
 			// タイアップ名で絞り込み
 			if (songs.Count > 1 && dicByFile[YlConstants.RULE_VAR_PROGRAM] != null)
 			{
-				List<TSong> songsWithTieUpName = new();
+				List<TSong> songsWithTieUpName = [];
 				foreach (KeyValuePair<TSong, TTieUp> kvp in songsAndTieUps)
 				{
 					if (kvp.Value.Name == dicByFile[YlConstants.RULE_VAR_PROGRAM])
@@ -118,7 +136,7 @@ internal class TFoundSetter : IDisposable
 			// タイアップのカテゴリーで絞り込み
 			if (songs.Count > 1 && dicByFile[YlConstants.RULE_VAR_CATEGORY] != null)
 			{
-				List<TSong> songsWithTieUpCategory = new();
+				List<TSong> songsWithTieUpCategory = [];
 				foreach (KeyValuePair<TSong, TTieUp> kvp in songsAndTieUps)
 				{
 					TCategory? category = DbCommon.SelectBaseById(_musicInfoContext.Categories, kvp.Value.CategoryId);
@@ -138,7 +156,7 @@ internal class TFoundSetter : IDisposable
 		// タイアップの年齢制限より先に絞り込む（一般アニメと VOCALOID の 2 つがある場合、年齢制限を先にするとタイアップの付いていない VOCALOID が絞り込みから外れてしまう）
 		if (songs.Count > 1 && dicByFile[YlConstants.RULE_VAR_CATEGORY] != null)
 		{
-			List<TSong> songsWithCategory = new();
+			List<TSong> songsWithCategory = [];
 			foreach (TSong song in songs)
 			{
 				TCategory? category = DbCommon.SelectBaseById(_musicInfoContext.Categories, song.CategoryId);
@@ -156,10 +174,10 @@ internal class TFoundSetter : IDisposable
 		// 歌手名で絞り込み
 		if (songs.Count > 1 && dicByFile[YlConstants.RULE_VAR_ARTIST] != null)
 		{
-			List<TSong> songsWithArtist = new();
+			List<TSong> songsWithArtist = [];
 			foreach (TSong song in songs)
 			{
-				(String? artistNames, _) = ConcatMasterNamesAndRubies(DbCommon.SelectSequencedPeopleBySongId(_musicInfoContext.ArtistSequences, _musicInfoContext.People, song.Id).ToList<IRcMaster>());
+				(String? artistNames, _) = ConcatMasterNamesAndRubies([.. DbCommon.SelectSequencedPeopleBySongId(_musicInfoContext.ArtistSequences, _musicInfoContext.People, song.Id)]);
 				if (!String.IsNullOrEmpty(artistNames) && artistNames == dicByFile[YlConstants.RULE_VAR_ARTIST])
 				{
 					songsWithArtist.Add(song);
@@ -175,7 +193,7 @@ internal class TFoundSetter : IDisposable
 		if (songs.Count > 1 && dicByFile[YlConstants.RULE_VAR_AGE_LIMIT] != null)
 		{
 			Int32 dicAgeLimt = Common.StringToInt32(dicByFile[YlConstants.RULE_VAR_AGE_LIMIT]);
-			List<TSong> songsWithAgeLimit = new();
+			List<TSong> songsWithAgeLimit = [];
 			Dictionary<TSong, TTieUp> songsAndTieUps = SongsAndTieUps(songs);
 			foreach (KeyValuePair<TSong, TTieUp> kvp in songsAndTieUps)
 			{
@@ -194,10 +212,10 @@ internal class TFoundSetter : IDisposable
 		// 作曲者名で絞り込み
 		if (songs.Count > 1 && dicByFile[YlConstants.RULE_VAR_COMMENT] != null)
 		{
-			List<TSong> songsWithComposer = new();
+			List<TSong> songsWithComposer = [];
 			foreach (TSong song in songs)
 			{
-				(String? composerNames, _) = ConcatMasterNamesAndRubies(DbCommon.SelectSequencedPeopleBySongId(_musicInfoContext.ComposerSequences, _musicInfoContext.People, song.Id).ToList<IRcMaster>());
+				(String? composerNames, _) = ConcatMasterNamesAndRubies([.. DbCommon.SelectSequencedPeopleBySongId(_musicInfoContext.ComposerSequences, _musicInfoContext.People, song.Id)]);
 				if (!String.IsNullOrEmpty(composerNames) && dicByFile[YlConstants.RULE_VAR_COMMENT]!.Contains(composerNames))
 				{
 					songsWithComposer.Add(song);
@@ -279,10 +297,7 @@ internal class TFoundSetter : IDisposable
 		record.TieUpName ??= dicByFile[YlConstants.RULE_VAR_PROGRAM];
 		record.TieUpAgeLimit = record.TieUpAgeLimit == 0 ? Common.StringToInt32(dicByFile[YlConstants.RULE_VAR_AGE_LIMIT]) : record.TieUpAgeLimit;
 		record.SongOpEd ??= dicByFile[YlConstants.RULE_VAR_OP_ED];
-		if (record.SongName == null)
-		{
-			record.SongName = dicByFile[YlConstants.RULE_VAR_TITLE] ?? Path.GetFileNameWithoutExtension(record.Path);
-		}
+		record.SongName ??= dicByFile[YlConstants.RULE_VAR_TITLE] ?? Path.GetFileNameWithoutExtension(record.Path);
 
 		// SongId が無い場合は楽曲名を採用（フォルダー設定の歌手名やタグを紐付できるように）
 		if (String.IsNullOrEmpty(record.SongId))
@@ -409,10 +424,10 @@ internal class TFoundSetter : IDisposable
 	private readonly List<String> _categoryNames;
 
 	// オフボーカルと見なす単語
-	private String _offVocalWords;
+	private readonly String _offVocalWords;
 
 	// オンボーカル・オフボーカル両方と見なす単語
-	private String _bothVocalWords;
+	private readonly String _bothVocalWords;
 
 	// Dispose フラグ
 	private Boolean _isDisposed;
@@ -424,13 +439,15 @@ internal class TFoundSetter : IDisposable
 	// --------------------------------------------------------------------
 	// 環境設定を考慮した検索用フリガナ
 	// --------------------------------------------------------------------
-	private String? AdditionalRubyForSearch(IRcMaster master)
+	private static String? AdditionalRubyForSearch(IRcMaster master)
 	{
+#if YUKALISTER
 		if (!YlModel.Instance.EnvModel.YlSettings.OutputAdditionalYukariRuby)
 		{
 			// 追加しない設定なら RubyForSearch をそのまま返す
 			return master.RubyForSearch;
 		}
+#endif
 
 		// 元のフリガナが空なら RubyForSearch をそのまま返す
 		if (String.IsNullOrEmpty(master.Ruby))
@@ -458,7 +475,7 @@ internal class TFoundSetter : IDisposable
 
 		if (!String.IsNullOrEmpty(trackString))
 		{
-			String[] tracks = trackString.Split(new Char[] { '-', '_', '+', ',', '.', ' ', (Char)0x2010 }, StringSplitOptions.RemoveEmptyEntries);
+			String[] tracks = trackString.Split(['-', '_', '+', ',', '.', ' ', (Char)0x2010], StringSplitOptions.RemoveEmptyEntries);
 			for (Int32 i = 0; i < tracks.Length; i++)
 			{
 				if (_bothVocalWords.Contains("|" + tracks[i] + "|", StringComparison.OrdinalIgnoreCase))
@@ -510,7 +527,7 @@ internal class TFoundSetter : IDisposable
 		// カテゴリーで絞り込み
 		if (tieUps.Count > 1 && dicByFile[YlConstants.RULE_VAR_CATEGORY] != null)
 		{
-			List<TTieUp> tieUpsWithCategory = new();
+			List<TTieUp> tieUpsWithCategory = [];
 			foreach (TTieUp tieUp in tieUps)
 			{
 				TCategory? category = DbCommon.SelectBaseById(_musicInfoContext.Categories, tieUp.CategoryId);
@@ -529,7 +546,7 @@ internal class TFoundSetter : IDisposable
 		if (tieUps.Count > 1 && dicByFile[YlConstants.RULE_VAR_AGE_LIMIT] != null)
 		{
 			Int32 dicAgeLimt = Common.StringToInt32(dicByFile[YlConstants.RULE_VAR_AGE_LIMIT]);
-			List<TTieUp> tieUpsWithAgeLimit = new();
+			List<TTieUp> tieUpsWithAgeLimit = [];
 			foreach (TTieUp tieUp in tieUps)
 			{
 				if (0 <= tieUp.AgeLimit && tieUp.AgeLimit < YlConstants.AGE_LIMIT_CERO_Z && 0 <= dicAgeLimt && dicAgeLimt < YlConstants.AGE_LIMIT_CERO_Z
@@ -552,10 +569,12 @@ internal class TFoundSetter : IDisposable
 	// --------------------------------------------------------------------
 	private static String? KeywordToComment(IRcMaster master)
 	{
+#if YUKALISTER
 		if (!YlModel.Instance.EnvModel.YlSettings.OutputAdditionalYukariAssist)
 		{
 			return null;
 		}
+#endif
 
 		String? comment = null;
 		if (!String.IsNullOrEmpty(master.Keyword))
@@ -573,10 +592,11 @@ internal class TFoundSetter : IDisposable
 		return comment;
 	}
 
+#if YUKALISTER
 	// --------------------------------------------------------------------
 	// 適合割合が高いかどうか
 	// --------------------------------------------------------------------
-	private Boolean MatchIntelligently(String dicByFileName, String musicInfoName)
+	private static Boolean MatchIntelligently(String dicByFileName, String musicInfoName)
 	{
 		// 適合割合チェック
 		Int32 numIncludes = 0;
@@ -596,7 +616,7 @@ internal class TFoundSetter : IDisposable
 	// --------------------------------------------------------------------
 	private List<TSong> RefineSongIntelligently(List<TSong> songs, Dictionary<String, String?> dicByFile)
 	{
-		List<TSong> refineSongs = new();
+		List<TSong> refineSongs = [];
 		foreach (TSong song in songs)
 		{
 			// タイアップ名の適合割合をチェック
@@ -618,8 +638,7 @@ internal class TFoundSetter : IDisposable
 			// 歌手名の適合割合をチェック
 			if (dicByFile[YlConstants.RULE_VAR_ARTIST] != null)
 			{
-				(String? artistNames, _) = ConcatMasterNamesAndRubies(DbCommon.SelectSequencedPeopleBySongId(_musicInfoContext.ArtistSequences, _musicInfoContext.People, song.Id)
-						.ToList<IRcMaster>());
+				(String? artistNames, _) = ConcatMasterNamesAndRubies([.. DbCommon.SelectSequencedPeopleBySongId(_musicInfoContext.ArtistSequences, _musicInfoContext.People, song.Id)]);
 				if (String.IsNullOrEmpty(artistNames))
 				{
 					// 歌手を持たない楽曲は除外
@@ -637,6 +656,7 @@ internal class TFoundSetter : IDisposable
 		}
 		return refineSongs;
 	}
+#endif
 
 	// --------------------------------------------------------------------
 	// （dicByFile から取得した）人物情報をゆかり用リストデータベースに登録
@@ -758,7 +778,7 @@ internal class TFoundSetter : IDisposable
 							artists.Add(artistTmp);
 						}
 					}
-					(record.ArtistName, record.ArtistRuby) = ConcatMasterNamesAndRubies(artists.ToList<IRcMaster>());
+					(record.ArtistName, record.ArtistRuby) = ConcatMasterNamesAndRubies([.. artists]);
 					for (Int32 i = 0; i < artists.Count; i++)
 					{
 						RegisterPerson(_listContextInMemory.ArtistSequences, record, artists[i]);
@@ -802,11 +822,8 @@ internal class TFoundSetter : IDisposable
 			// 楽曲情報データベース内に曲情報がある場合は、曲に紐付くタイアップを得る
 			selectedTieUp = DbCommon.SelectBaseById(_musicInfoContext.TieUps, selectedSong.TieUpId);
 		}
-		if (selectedTieUp == null)
-		{
-			// 曲に紐付くタイアップが無い場合は、ファイル名からタイアップを取得
-			selectedTieUp = FindTieUpByMusicInfoDatabase(dicByFile);
-		}
+		// 曲に紐付くタイアップが無い場合は、ファイル名からタイアップを取得
+		selectedTieUp ??= FindTieUpByMusicInfoDatabase(dicByFile);
 		if (selectedSong == null && selectedTieUp == null)
 		{
 			// 曲情報もタイアップ情報も無い場合は諦める
@@ -836,7 +853,7 @@ internal class TFoundSetter : IDisposable
 				// TTieUpGroup 由来項目の設定
 				record.TieUpGroupName = tieUpGroups[0].Name;
 				record.TieUpGroupRuby = AdditionalRubyForSearch(tieUpGroups[0]);
-				foreach(TTieUpGroup group in tieUpGroups)
+				foreach (TTieUpGroup group in tieUpGroups)
 				{
 					record.Comment += KeywordToComment(group);
 				}
@@ -857,10 +874,14 @@ internal class TFoundSetter : IDisposable
 		}
 
 		// 人物系
-		(record.ArtistName, record.ArtistRuby) = ConcatMasterNamesAndRubies(DbCommon.SelectSequencedPeopleBySongId(_musicInfoContext.ArtistSequences, _musicInfoContext.People, selectedSong.Id).ToList<IRcMaster>());
-		(record.LyristName, record.LyristRuby) = ConcatMasterNamesAndRubies(DbCommon.SelectSequencedPeopleBySongId(_musicInfoContext.LyristSequences, _musicInfoContext.People, selectedSong.Id).ToList<IRcMaster>());
-		(record.ComposerName, record.ComposerRuby) = ConcatMasterNamesAndRubies(DbCommon.SelectSequencedPeopleBySongId(_musicInfoContext.ComposerSequences, _musicInfoContext.People, selectedSong.Id).ToList<IRcMaster>());
-		(record.ArrangerName, record.ArrangerRuby) = ConcatMasterNamesAndRubies(DbCommon.SelectSequencedPeopleBySongId(_musicInfoContext.ArrangerSequences, _musicInfoContext.People, selectedSong.Id).ToList<IRcMaster>());
+		(record.ArtistName, record.ArtistRuby) 
+			= ConcatMasterNamesAndRubies([.. DbCommon.SelectSequencedPeopleBySongId(_musicInfoContext.ArtistSequences, _musicInfoContext.People, selectedSong.Id)]);
+		(record.LyristName, record.LyristRuby) 
+			= ConcatMasterNamesAndRubies([.. DbCommon.SelectSequencedPeopleBySongId(_musicInfoContext.LyristSequences, _musicInfoContext.People, selectedSong.Id)]);
+		(record.ComposerName, record.ComposerRuby) 
+			= ConcatMasterNamesAndRubies([.. DbCommon.SelectSequencedPeopleBySongId(_musicInfoContext.ComposerSequences, _musicInfoContext.People, selectedSong.Id)]);
+		(record.ArrangerName, record.ArrangerRuby) 
+			= ConcatMasterNamesAndRubies([.. DbCommon.SelectSequencedPeopleBySongId(_musicInfoContext.ArrangerSequences, _musicInfoContext.People, selectedSong.Id)]);
 
 		// TSong 由来項目の設定
 		record.SongId = selectedSong.Id;
@@ -882,7 +903,7 @@ internal class TFoundSetter : IDisposable
 		record.Comment += KeywordToComment(selectedSong);
 
 		// タグ
-		(record.TagName, record.TagRuby) = ConcatMasterNamesAndRubies(DbCommon.SelectSequencedTagsBySongId(_musicInfoContext.TagSequences, _musicInfoContext.Tags, selectedSong.Id).ToList<IRcMaster>());
+		(record.TagName, record.TagRuby) = ConcatMasterNamesAndRubies([.. DbCommon.SelectSequencedTagsBySongId(_musicInfoContext.TagSequences, _musicInfoContext.Tags, selectedSong.Id)]);
 	}
 
 	// --------------------------------------------------------------------
@@ -890,7 +911,7 @@ internal class TFoundSetter : IDisposable
 	// --------------------------------------------------------------------
 	private Dictionary<TSong, TTieUp> SongsAndTieUps(List<TSong> songs)
 	{
-		Dictionary<TSong, TTieUp> songsAndTieUps = new();
+		Dictionary<TSong, TTieUp> songsAndTieUps = [];
 		foreach (TSong song in songs)
 		{
 			TTieUp? tieUpOfSong = DbCommon.SelectBaseById(_musicInfoContext.TieUps, song.TieUpId);
