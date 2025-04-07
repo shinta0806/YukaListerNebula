@@ -5,7 +5,7 @@
 // ============================================================================
 
 // ----------------------------------------------------------------------------
-//
+// もちからプロデューサーでもカテゴリテーブルのために必要
 // ----------------------------------------------------------------------------
 
 using Microsoft.EntityFrameworkCore;
@@ -41,11 +41,9 @@ internal partial class MusicInfoContextDefault : MusicInfoContext
 	// --------------------------------------------------------------------
 	public override void CreateDatabase()
 	{
-#if YUKALISTER
 		BackupDatabase();
 		base.CreateDatabase();
 		InsertCategoryDefaultRecords();
-#endif
 	}
 
 	// --------------------------------------------------------------------
@@ -53,13 +51,7 @@ internal partial class MusicInfoContextDefault : MusicInfoContext
 	// --------------------------------------------------------------------
 	public override String DatabasePath()
 	{
-#if YUKALISTER
 		return DbCommon.YukaListerDatabaseFullFolder() + YlConstants.FILE_NAME_MUSIC_INFO_DATABASE;
-#endif
-#if MOCHIKARA_PRODUCER
-		// ToDo: 仮
-		return @"C:\Temp\NebulaMusicInfo.sqlite3";
-#endif
 	}
 
 	// ====================================================================
@@ -120,7 +112,6 @@ internal partial class MusicInfoContextDefault : MusicInfoContext
 	// private 関数
 	// ====================================================================
 
-#if YUKALISTER
 	// --------------------------------------------------------------------
 	// カテゴリーテーブルのレコードを作成
 	// --------------------------------------------------------------------
@@ -179,5 +170,4 @@ internal partial class MusicInfoContextDefault : MusicInfoContext
 
 		SaveChanges();
 	}
-#endif
 }

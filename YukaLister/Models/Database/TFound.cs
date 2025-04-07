@@ -1,4 +1,4 @@
-﻿// ============================================================================
+// ============================================================================
 // 
 // 検出ファイルリストテーブル
 // 
@@ -32,6 +32,12 @@ namespace YukaLister.Models.Database
 		[Key]
 		[Column(FIELD_NAME_FOUND_UID)]
 		public Int64 Uid { get; set; }
+
+#if MOCHIKARA_PRODUCER
+		// 外部公開用 ID（Guid）
+		[Column(FIELD_NAME_FOUND_GUID)]
+		public String Guid { get; set; } = String.Empty;
+#endif
 
 		// フルパス
 		[Column(FIELD_NAME_FOUND_PATH)]
@@ -226,6 +232,7 @@ namespace YukaLister.Models.Database
 
 		public const String TABLE_NAME_FOUND = "t_found";
 		public const String FIELD_NAME_FOUND_UID = "found_uid";
+		public const String FIELD_NAME_FOUND_GUID = "found_guid";
 		public const String FIELD_NAME_FOUND_PATH = "found_path";
 		public const String FIELD_NAME_FOUND_FOLDER = "found_folder";
 		public const String FIELD_NAME_FOUND_PARENT_FOLDER = "found_parent_folder";

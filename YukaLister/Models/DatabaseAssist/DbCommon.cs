@@ -39,7 +39,6 @@ internal class DbCommon
 	// public 関数
 	// ====================================================================
 
-#if YUKALISTER
 	// --------------------------------------------------------------------
 	// データベースファイルのバックアップを作成
 	// --------------------------------------------------------------------
@@ -90,7 +89,6 @@ internal class DbCommon
 			SerilogUtils.LogException("データベース " + fileNameForLog + " バックアップ時エラー", excep);
 		}
 	}
-#endif
 
 	// --------------------------------------------------------------------
 	// データベース接続
@@ -477,13 +475,13 @@ internal class DbCommon
 			MpModel.Instance.EnvModel.ListContextInMemory = listContextInMemory;
 #endif
 
-#if YUKALISTER
 			// 楽曲情報データベース等が存在しない場合は作成
 			Directory.CreateDirectory(YukaListerDatabaseFullFolder());
 
 			using MusicInfoContextDefault musicInfoContextDefault = new();
 			musicInfoContextDefault.CreateDatabaseIfNeeded();
 
+#if YUKALISTER
 			using YukariStatisticsContext yukariStatisticsContext = new();
 			yukariStatisticsContext.CreateDatabaseIfNeeded();
 
@@ -796,7 +794,6 @@ internal class DbCommon
 		return property.AppId == YlConstants.APP_ID && property.AppVer.Contains(YlConstants.APP_GENERATION);
 	}
 
-#if YUKALISTER
 	// --------------------------------------------------------------------
 	// ゆかりすたーデータベースを保存するフォルダーのフルパス（末尾 '\\'）
 	// 設定のバックアップのやりやすさを考慮し、Common.UserAppDataFolderPath() の配下ではなく
@@ -804,10 +801,17 @@ internal class DbCommon
 	// --------------------------------------------------------------------
 	public static String YukaListerDatabaseFullFolder()
 	{
+#if YUKALISTER
 		return Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData, Environment.SpecialFolderOption.DoNotVerify) + "\\"
 				+ Common.FOLDER_NAME_SHINTA + Path.GetFileNameWithoutExtension(Environment.GetCommandLineArgs()[0]) + YlConstants.FOLDER_NAME_DATABASE;
+#endif
+#if MOCHIKARA_PRODUCER
+		// ToDo: 仮
+		return @"C:\Temp\";
+#endif
 	}
 
+#if YUKALISTER
 	// --------------------------------------------------------------------
 	// ゆかり用データベースを保存するフォルダーのフルパス（末尾 '\\'）
 	// --------------------------------------------------------------------

@@ -1039,8 +1039,10 @@ internal class YlCommon
 	// private 変数
 	// ====================================================================
 
+#if YUKALISTER
 	// InputIdPrefix
 	private static Boolean _isInputtingIdPrefix;
+#endif
 
 	// ====================================================================
 	// private 関数
@@ -1295,6 +1297,7 @@ internal class YlCommon
 		return (katakanaString, fromAllRuby, headRuby);
 	}
 
+#if YUKALISTER
 	// --------------------------------------------------------------------
 	// ID 接頭辞がユーザー入力中なら待つ
 	// --------------------------------------------------------------------
@@ -1308,4 +1311,5 @@ internal class YlCommon
 			}
 		});
 	}
+#endif
 }

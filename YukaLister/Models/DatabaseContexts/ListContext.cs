@@ -1,4 +1,4 @@
-﻿// ============================================================================
+// ============================================================================
 // 
 // リストデータベースのコンテキストの基底クラス
 // 
@@ -88,6 +88,9 @@ namespace YukaLister.Models.DatabaseContexts
 		{
 			// 検出ファイルリストテーブル
 			// TieUpAgeLimit はインデックス化しないほうが HTML リスト作成が高速だった
+#if MOCHIKARA_PRODUCER
+			modelBuilder.Entity<TFound>().HasIndex(x => x.Guid);
+#endif
 			modelBuilder.Entity<TFound>().HasIndex(x => x.Path);
 			modelBuilder.Entity<TFound>().HasIndex(x => x.Folder);
 			modelBuilder.Entity<TFound>().HasIndex(x => x.ParentFolder);

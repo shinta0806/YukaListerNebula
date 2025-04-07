@@ -60,7 +60,11 @@ internal partial class ListContextInMemory : ListContext
 		// sqliteConnection は using にしない（テーブルが見つからなくなりエラーとなる）
 		SqliteConnection sqliteConnection = new(stringBuilder.ToString());
 		sqliteConnection.Open();
-		optionsBuilder.UseSqlite(sqliteConnection);
+		optionsBuilder
+#if DEBUG
+			.EnableSensitiveDataLogging()
+#endif
+			.UseSqlite(sqliteConnection);
 	}
 
 	// ====================================================================
