@@ -12,8 +12,19 @@ using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 
-#if MOCHIKARA_PRODUCER
+#if MOCHIKARA_PRODUCER_DB
+using MochikaraProducer.Models.Database.DatabaseContexts;
+#endif
+#if MOCHIKARA_PRODUCER || MOCHIKARA_PRODUCER_DB
+using MochikaraProducer.Models.SharedMisc;
+#endif
+
+#if MOCHIKARA_PRODUCER || MOCHIKARA_PRODUCER_DB
 using MochikaraProducer.Models.MpModels;
+#endif
+
+#if MOCHIKARA_PRODUCER_DB || MOCHIKARA_PRODUCER_DB
+using MochikaraProducerDb.Models.SharedMisc;
 #endif
 
 using Shinta;
@@ -165,6 +176,41 @@ internal class DbCommon
 		Debug.WriteLine("CopyFoundToYukariStatisticsIfUpdated() copy " + yukariStatistics.Id + ", " + foundPropertyInfo.Name + ": " + foundValue);
 		statisticsPropertyInfo.SetValue(yukariStatistics, foundValue);
 		yukariStatistics.Dirty = true;
+	}
+#endif
+
+	/// <summary>
+	/// NoTracking な ListContextInMemory を作成
+	/// </summary>
+	/// <returns>呼出元で Dispose() する必要あり</returns>
+	public static ListContextInMemory CreateNoTrackingListContextInMemory()
+	{
+		ListContextInMemory listContextInMemory = new();
+		listContextInMemory.ChangeTracker.QueryTrackingBehavior = QueryTrackingBehavior.NoTracking;
+		return listContextInMemory;
+	}
+
+#if MOCHIKARA_PRODUCER_DB
+	/// <summary>
+	/// NoTracking な OrganizedContextInMemory を作成
+	/// </summary>
+	/// <returns>呼出元で Dispose() する必要あり</returns>
+	public static OrganizedContextInMemory CreateNoTrackingOrganizedContextInMemory()
+	{
+		OrganizedContextInMemory organizedContextInMemory = new();
+		organizedContextInMemory.ChangeTracker.QueryTrackingBehavior = QueryTrackingBehavior.NoTracking;
+		return organizedContextInMemory;
+	}
+
+	/// <summary>
+	/// NoTracking な RequestListContext を作成
+	/// </summary>
+	/// <returns>呼出元で Dispose() する必要あり</returns>
+	public static RequestListContext CreateNoTrackingRequestListContext()
+	{
+		RequestListContext requestListContext = new();
+		requestListContext.ChangeTracker.QueryTrackingBehavior = QueryTrackingBehavior.NoTracking;
+		return requestListContext;
 	}
 #endif
 
@@ -471,14 +517,21 @@ internal class DbCommon
 #if YUKALISTER
 			YlModel.Instance.EnvModel.ListContextInMemory = listContextInMemory;
 #endif
-#if MOCHIKARA_PRODUCER
+#if MOCHIKARA_PRODUCER_DB
 			MpModel.Instance.EnvModel.ListContextInMemory = listContextInMemory;
+
+			OrganizedContextInMemory organizedContextInMemory = new();
+			organizedContextInMemory.CreateDatabase();
+			MpModel.Instance.EnvModel.OrganizedContextInMemory = organizedContextInMemory;
 #endif
 
 			// 楽曲情報データベース等が存在しない場合は作成
 			Directory.CreateDirectory(YukaListerDatabaseFullFolder());
 
 			using MusicInfoContextDefault musicInfoContextDefault = new();
+#if MOCHIKARA_PRODUCER_DB
+			CopyMusicInfoDatabase(musicInfoContextDefault);
+#endif
 			musicInfoContextDefault.CreateDatabaseIfNeeded();
 
 #if YUKALISTER
@@ -504,6 +557,12 @@ internal class DbCommon
 			// 常に作成（クリア）
 			using ListContextInDisk listContextInDisk = new();
 			listContextInDisk.CreateDatabase();
+#endif
+
+#if MOCHIKARA_PRODUCER_DB
+			// 予約一覧
+			using RequestListContext requestListContext = new();
+			requestListContext.CreateDatabaseIfNeeded();
 #endif
 		}
 		catch (Exception excep)
@@ -806,8 +865,10 @@ internal class DbCommon
 				+ Common.FOLDER_NAME_SHINTA + Path.GetFileNameWithoutExtension(Environment.GetCommandLineArgs()[0]) + YlConstants.FOLDER_NAME_DATABASE;
 #endif
 #if MOCHIKARA_PRODUCER
-		// ToDo: 仮
-		return @"C:\Temp\";
+		return CommonWindows.SettingsFolder() + MpConstants.FOLDER_NAME_DATABASE;
+#endif
+#if MOCHIKARA_PRODUCER_DB
+		return MpdCommon.SettingsFolder() + MpConstants.FOLDER_NAME_DATABASE;
 #endif
 	}
 
@@ -836,6 +897,35 @@ internal class DbCommon
 	// ====================================================================
 	// private 関数
 	// ====================================================================
+
+#if MOCHIKARA_PRODUCER || MOCHIKARA_PRODUCER_DB
+	/// <summary>
+	/// 環境設定で指定されたフォルダーから楽曲情報データベースをコピーしてくる
+	/// </summary>
+	private static void CopyMusicInfoDatabase(MusicInfoContextDefault musicInfoContextDefault)
+	{
+		String srcPath;
+		if (MpModel.Instance.EnvModel.MpSettings.MusicInfoDatabaseAuto)
+		{
+			srcPath = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData, Environment.SpecialFolderOption.DoNotVerify) + "\\"
+				+ Common.FOLDER_NAME_SHINTA + "YukaLister" + YlConstants.FOLDER_NAME_DATABASE + YlConstants.FILE_NAME_MUSIC_INFO_DATABASE;
+		}
+		else
+		{
+			srcPath = MpModel.Instance.EnvModel.MpSettings.MusicInfoDatabaseManualPath;
+		}
+		String destPath = musicInfoContextDefault.DatabasePath();
+		try
+		{
+			File.Copy(srcPath, destPath, true);
+			Log.Information("楽曲情報データベースをコピーしました。");
+		}
+		catch (Exception)
+		{
+			Log.Error("楽曲情報データベースをコピーできませんでした。");
+		}
+	}
+#endif
 
 	// --------------------------------------------------------------------
 	// 紐付テーブルのレコードを作成

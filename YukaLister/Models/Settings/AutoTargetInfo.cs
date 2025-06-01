@@ -21,7 +21,7 @@ namespace YukaLister.Models.Settings;
 #if YUKALISTER
 public class AutoTargetInfo : SerializableSettings
 #endif
-#if MOCHIKARA_PRODUCER
+#if MOCHIKARA_PRODUCER || MOCHIKARA_PRODUCER_DB
 internal class AutoTargetInfo
 #endif
 {

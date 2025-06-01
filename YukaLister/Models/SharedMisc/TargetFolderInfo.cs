@@ -38,7 +38,7 @@ internal class TargetFolderInfo
 #if YUKALISTER
 		_folderTaskDetail = (Int32)(YlModel.Instance.EnvModel.YukaListerWholeStatus != YukaListerStatus.Error ? FolderTaskDetail.CacheToDisk : FolderTaskDetail.FindSubFolders);
 #endif
-#if MOCHIKARA_PRODUCER
+#if MOCHIKARA_PRODUCER || MOCHIKARA_PRODUCER_DB
 		_folderTaskDetail = (Int32)FolderTaskDetail.FindSubFolders;
 #endif
 		Visible = true;

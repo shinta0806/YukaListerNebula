@@ -10,7 +10,7 @@
 
 using Microsoft.EntityFrameworkCore;
 
-#if MOCHIKARA_PRODUCER
+#if MOCHIKARA_PRODUCER || MOCHIKARA_PRODUCER_DB
 using MochikaraProducer.Models.MpModels;
 #endif
 
@@ -52,7 +52,7 @@ internal partial class TFoundSetter : IDisposable
 		_bothVocalWords = YlConstants.SMART_TRACK_SEPARATOR 
 			+ String.Join(YlConstants.SMART_TRACK_SEPARATOR, YlModel.Instance.EnvModel.YlSettings.BothVocalWords) + YlConstants.SMART_TRACK_SEPARATOR;
 #endif
-#if MOCHIKARA_PRODUCER
+#if MOCHIKARA_PRODUCER || MOCHIKARA_PRODUCER_DB
 		_offVocalWords = YlConstants.SMART_TRACK_SEPARATOR
 			+ String.Join(YlConstants.SMART_TRACK_SEPARATOR, MpModel.Instance.EnvModel.MpSettings.OffVocalWords) + YlConstants.SMART_TRACK_SEPARATOR;
 		_bothVocalWords = YlConstants.SMART_TRACK_SEPARATOR

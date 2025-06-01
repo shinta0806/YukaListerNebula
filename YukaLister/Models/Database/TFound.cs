@@ -33,7 +33,7 @@ namespace YukaLister.Models.Database
 		[Column(FIELD_NAME_FOUND_UID)]
 		public Int64 Uid { get; set; }
 
-#if MOCHIKARA_PRODUCER
+#if MOCHIKARA_PRODUCER || MOCHIKARA_PRODUCER_DB
 		// 外部公開用 ID（Guid）
 		[Column(FIELD_NAME_FOUND_GUID)]
 		public String Guid { get; set; } = String.Empty;

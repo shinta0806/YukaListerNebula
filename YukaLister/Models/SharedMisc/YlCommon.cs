@@ -17,7 +17,7 @@ using System.Windows.Controls;
 using YukaLister.ViewModels.MiscWindowViewModels;
 #endif
 
-#if MOCHIKARA_PRODUCER
+#if MOCHIKARA_PRODUCER || MOCHIKARA_PRODUCER_DB
 using MochikaraProducer.Models.MpModels;
 using MochikaraProducer.Models.SharedMisc;
 #endif
@@ -678,7 +678,7 @@ internal class YlCommon
 #if YUKALISTER
 						folderSettings = YlModel.Instance.EnvModel.JsonManager.Load<FolderSettingsInDisk>(jsonPath, false, null);
 #endif
-#if MOCHIKARA_PRODUCER
+#if MOCHIKARA_PRODUCER || MOCHIKARA_PRODUCER_DB
 						folderSettings = MpModel.Instance.EnvModel.JsonManager.LoadAot(jsonPath, false, MpJsonSerializerContext.Default.FolderSettingsInDisk);
 #endif
 					}
