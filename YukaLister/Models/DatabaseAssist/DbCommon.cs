@@ -898,7 +898,7 @@ internal class DbCommon
 	// private 関数
 	// ====================================================================
 
-#if MOCHIKARA_PRODUCER || MOCHIKARA_PRODUCER_DB
+#if MOCHIKARA_PRODUCER_DB
 	/// <summary>
 	/// 環境設定で指定されたフォルダーから楽曲情報データベースをコピーしてくる
 	/// </summary>
@@ -907,8 +907,21 @@ internal class DbCommon
 		String srcPath;
 		if (MpModel.Instance.EnvModel.MpSettings.MusicInfoDatabaseAuto)
 		{
-			srcPath = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData, Environment.SpecialFolderOption.DoNotVerify) + "\\"
+			// ゆかりすたー 4 NEBULA Ver 7.32 時点で
+			// C:\Users\ユーザー名\AppData\Local\Packages\22724SHINTA.YukaLister4NEBULA_7y6dzca6yqjvw\LocalCache\Roaming\SHINTA\YukaListerDatabase\NebulaMusicInfo.sqlite3
+			String packagePath = Path.GetDirectoryName(Path.GetDirectoryName(Path.GetDirectoryName(MpdCommon.SettingsFolder()))) ?? String.Empty;
+			srcPath = packagePath + "\\" + MpConstants.FOLDER_NAME_YUKALISTER_PACKAGE + MpConstants.FOLDER_NAME_LOCAL_CACHE + MpConstants.FOLDER_NAME_ROAMING
 				+ Common.FOLDER_NAME_SHINTA + "YukaLister" + YlConstants.FOLDER_NAME_DATABASE + YlConstants.FILE_NAME_MUSIC_INFO_DATABASE;
+#if TEST
+			Log.Information("楽曲情報データベースのコピー元パス：" + srcPath);
+#endif
+			if (!File.Exists(srcPath))
+			{
+				// 旧方式のパスも試す
+				// 発行・非発行にかかわらず C:\Users\ユーザー名\AppData\Roaming\ 配下になる
+				srcPath = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData, Environment.SpecialFolderOption.DoNotVerify) + "\\"
+					+ Common.FOLDER_NAME_SHINTA + "YukaLister" + YlConstants.FOLDER_NAME_DATABASE + YlConstants.FILE_NAME_MUSIC_INFO_DATABASE;
+			}
 		}
 		else
 		{
