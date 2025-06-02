@@ -58,10 +58,11 @@ namespace YukaLister.ViewModels
 				// インスタンス生成
 				_ = YlModel.Instance;
 
+#if false
 				// マテリアルデザインの外観を変更
 				IEnumerable<Swatch> swatches = new SwatchesProvider().Swatches;
 				PaletteHelper paletteHelper = new();
-				ITheme theme = paletteHelper.GetTheme();
+				Theme theme = paletteHelper.GetTheme();
 				Swatch? orangeSwatch = swatches.FirstOrDefault(x => x.Name == "orange");
 				if (orangeSwatch != null)
 				{
@@ -73,6 +74,7 @@ namespace YukaLister.ViewModels
 					theme.SetSecondaryColor(limeSwatch.ExemplarHue.Color);
 				}
 				paletteHelper.SetTheme(theme);
+#endif
 
 				// テンポラリフォルダー準備
 				Common.InitializeTempFolder();

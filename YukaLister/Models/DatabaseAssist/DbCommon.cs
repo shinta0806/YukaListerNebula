@@ -917,7 +917,7 @@ internal class DbCommon
 #endif
 			if (!File.Exists(srcPath))
 			{
-				// 旧方式のパスも試す
+				// 旧方式のパスも試す（環境によってはこちらになることもある模様）
 				// 発行・非発行にかかわらず C:\Users\ユーザー名\AppData\Roaming\ 配下になる
 				srcPath = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData, Environment.SpecialFolderOption.DoNotVerify) + "\\"
 					+ Common.FOLDER_NAME_SHINTA + "YukaLister" + YlConstants.FOLDER_NAME_DATABASE + YlConstants.FILE_NAME_MUSIC_INFO_DATABASE;

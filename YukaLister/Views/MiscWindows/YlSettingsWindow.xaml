@@ -1,4 +1,4 @@
-﻿<Window x:Class="YukaLister.Views.MiscWindows.YlSettingsWindow"
+<Window x:Class="YukaLister.Views.MiscWindows.YlSettingsWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:behaviors="http://schemas.microsoft.com/xaml/behaviors"
         xmlns:l="http://schemas.livet-mvvm.net/2011/wpf"
@@ -63,8 +63,9 @@
     </behaviors:Interaction.Triggers>
 
     <StackPanel>
-        <TabControl Height="500" Width="700" Margin="10,10,10,0" SelectedIndex="{Binding SelectedTabIndex}" swb:FileDropAttachedBehavior.DropCommand="{Binding TabControlFileDropCommand}">
-            <TabItem Header="設定" >
+        <TabControl Height="520" Width="700" Margin="10,10,10,0" HorizontalContentAlignment="Left"
+					SelectedIndex="{Binding SelectedTabIndex}" swb:FileDropAttachedBehavior.DropCommand="{Binding TabControlFileDropCommand}">
+			<TabItem Header="設定" >
                 <TabItem.DataContext>
                     <Binding Path="YlSettingsTabItemSettingsViewModel" />
                 </TabItem.DataContext>
@@ -168,7 +169,7 @@
                     <DockPanel Margin="0,10,20,0">
                         <Label Content="リスト出力形式 (_R)：" Target="{Binding ElementName=ComboBoxOutputWriters}" Width="170" HorizontalContentAlignment="Right"/>
                         <Button Height="Auto" Content="出力設定 (_T)" Style="{StaticResource MaterialDesignRaisedLightButton}" Margin="0" DockPanel.Dock="Right" Width="100" Padding="0,4" Command="{Binding ButtonListSettingsClickedCommand}"/>
-                        <ComboBox Name="ComboBoxOutputWriters" ItemsSource="{Binding OutputWriters}" SelectedItem="{Binding SelectedOutputWriter}" DisplayMemberPath="FormatName" Margin="0,0,10,0" materialDesign:ComboBoxAssist.ClassicMode="True" materialDesign:ComboBoxAssist.ShowSelectedItem="True" />
+                        <ComboBox Name="ComboBoxOutputWriters" ItemsSource="{Binding OutputWriters}" SelectedItem="{Binding SelectedOutputWriter}" DisplayMemberPath="FormatName" Margin="0,0,10,0" materialDesign:ComboBoxAssist.ShowSelectedItem="True" />
                     </DockPanel>
                     <DockPanel Margin="0,10,20,0">
                         <Label Content="リスト出力先フォルダー (_F)：" Target="{Binding ElementName=TextBoxListFolder}" Width="170" HorizontalContentAlignment="Right"/>
@@ -294,7 +295,7 @@
                     </DockPanel>
                     <StackPanel Orientation="Horizontal" Margin="0,10,0,0">
                         <Label Content="出力対象期間 (_P)：" Target="{Binding ElementName=ComboBoxYukariStatisticsPeriod}" Width="170" HorizontalContentAlignment="Right" />
-                        <ComboBox Name="ComboBoxYukariStatisticsPeriod" ItemsSource="{Binding YukariStatisticsPeriodItems}" SelectedIndex="{Binding SelectedYukariStatisticsPeriodIndex}" Width="150" materialDesign:ComboBoxAssist.ClassicMode="True" materialDesign:ComboBoxAssist.ShowSelectedItem="True" >
+                        <ComboBox Name="ComboBoxYukariStatisticsPeriod" ItemsSource="{Binding YukariStatisticsPeriodItems}" SelectedIndex="{Binding SelectedYukariStatisticsPeriodIndex}" Width="150" materialDesign:ComboBoxAssist.ShowSelectedItem="True" >
                         </ComboBox>
                     </StackPanel>
                     <StackPanel Orientation="Horizontal" Margin="170,5,0,0" IsEnabled="{Binding IsCustomYukariStatisticsPeriodEnabled}" >
