@@ -78,7 +78,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="gong-wpf-dragdrop" Version="3.2.1" />
+    <PackageReference Include="gong-wpf-dragdrop" Version="4.0.0" />
     <PackageReference Include="LivetCask" Version="4.0.2" />
     <PackageReference Include="LivetExtensions" Version="4.0.2" />
     <PackageReference Include="MaterialDesignColors" Version="2.1.4" />
